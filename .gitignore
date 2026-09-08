@@ -17,6 +17,7 @@ pids
 # Dist
 dist
 dist-docs
+packages/discord-api-types
 
 # Miscellaneous
 .tmp

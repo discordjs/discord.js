@@ -1,8 +1,13 @@
-/* eslint-disable max-len */
+/* eslint-disable unicorn/no-empty-file */
 
 /**
  * @external ActivityFlags
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ActivityFlags}
+ */
+
+/**
+ * @external ActivityLocationKind
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ActivityLocationKind}
  */
 
 /**
@@ -31,6 +36,11 @@
  */
 
 /**
+ * @external ApplicationIntegrationType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationIntegrationType}
+ */
+
+/**
  * @external APIAutoModerationAction
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIAutoModerationAction}
  */
@@ -48,6 +58,11 @@
 /**
  * @external APIChannelSelectComponent
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIChannelSelectComponent}
+ */
+
+/**
+ * @external APIContainerComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIContainerComponent}
  */
 
 /**
@@ -71,6 +86,11 @@
  */
 
 /**
+ * @external APIFileComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIFileComponent}
+ */
+
+/**
  * @external APIGuild
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIGuild}
  */
@@ -88,6 +108,16 @@
 /**
  * @external APIGuildMember
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIGuildMember}
+ */
+
+/**
+ * @external APIGuildScheduledEventRecurrenceRule
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIGuildScheduledEventRecurrenceRule}
+ */
+
+/**
+ * @external APIIncidentsData
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIIncidentsData}
  */
 
 /**
@@ -116,6 +146,16 @@
  */
 
 /**
+ * @external APIMediaGalleryComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIMediaGalleryComponent}
+ */
+
+/**
+ * @external APIMediaGalleryItem
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIMediaGalleryItem}
+ */
+
+/**
  * @external APIMentionableSelectComponent
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIMentionableSelectComponent}
  */
@@ -126,8 +166,8 @@
  */
 
 /**
- * @external APIMessageActionRowComponent
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIMessageActionRowComponent}
+ * @external APIComponentInMessageActionRow
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIComponentInMessageActionRow}
  */
 
 /**
@@ -138,6 +178,16 @@
 /**
  * @external APIMessageComponentEmoji
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIMessageComponentEmoji}
+ */
+
+/**
+ * @external APIMessageInteractionMetadata
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIMessageInteractionMetadata}
+ */
+
+/**
+ * @external APIMessageTopLevelComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIMessageTopLevelComponent}
  */
 
 /**
@@ -161,6 +211,11 @@
  */
 
 /**
+ * @external APIOverwrite
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIOverwrite}
+ */
+
+/**
  * @external APIPartialEmoji
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIPartialEmoji}
  */
@@ -181,6 +236,16 @@
  */
 
 /**
+ * @external APISelectMenuDefaultValue
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISelectMenuDefaultValue}
+ */
+
+/**
+ * @external APISectionComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISectionComponent}
+ */
+
+/**
  * @external APISticker
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISticker}
  */
@@ -193,6 +258,16 @@
 /**
  * @external APITextInputComponent
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APITextInputComponent}
+ */
+
+/**
+ * @external APIThumbnailComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIThumbnailComponent}
+ */
+
+/**
+ * @external APIUnfurledMediaItem
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIUnfurledMediaItem}
  */
 
 /**
@@ -231,6 +306,16 @@
  */
 
 /**
+ * @external ApplicationWebhookEventStatus
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationWebhookEventStatus}
+ */
+
+/**
+ * @external ApplicationWebhookEventType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationWebhookEventType}
+ */
+
+/**
  * @external AttachmentFlags
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AttachmentFlags}
  */
@@ -261,6 +346,11 @@
  */
 
 /**
+ * @external BaseThemeType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/BaseThemeType}
+ */
+
+/**
  * @external ButtonStyle
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ButtonStyle}
  */
@@ -281,6 +371,21 @@
  */
 
 /**
+ * @external EntitlementType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/EntitlementType}
+ */
+
+/**
+ * @external EntryPointCommandHandlerType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/EntryPointCommandHandlerType}
+ */
+
+/**
+ * @external FileUploadType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#FileUploadType}
+ */
+
+/**
  * @external ForumLayoutType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ForumLayoutType}
  */
@@ -295,6 +400,10 @@
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GatewayDispatchEvents}
  */
 
+/**
+ * @external GatewayDispatchPayload
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#GatewayDispatchPayload}
+ */
 /**
  * @external GatewayIntentBits
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GatewayIntentBits}
@@ -366,6 +475,21 @@
  */
 
 /**
+ * @external GuildScheduledEventRecurrenceRuleFrequency
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventRecurrenceRuleFrequency}
+ */
+
+/**
+ * @external GuildScheduledEventRecurrenceRuleMonth
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventRecurrenceRuleMonth}
+ */
+
+/**
+ * @external GuildScheduledEventRecurrenceRuleWeekday
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventRecurrenceRuleWeekday}
+ */
+
+/**
  * @external GuildScheduledEventStatus
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventStatus}
  */
@@ -391,6 +515,11 @@
  */
 
 /**
+ * @external InteractionContextType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InteractionContextType}
+ */
+
+/**
  * @external InteractionType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InteractionType}
  */
@@ -401,23 +530,38 @@
  */
 
 /**
+ * @external InviteFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InviteFlags}
+ */
+
+/**
+ * @external InviteType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InviteType}
+ */
+
+/**
  * @external InviteTargetType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InviteTargetType}
  */
 
 /**
  * @external Locale
- * @see {@link https://discord-api-types.dev/api/discord-api-types-rest/common/enum/Locale}
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/Locale}
  */
 
 /**
- * @external LocaleString
- * @see {@link https://discord-api-types.dev/api/discord-api-types-rest/common#LocaleString}
+ * @external LocalizationMap
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#LocalizationMap}
  */
 
 /**
  * @external MessageActivityType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageActivityType}
+ */
+
+/**
+ * @external MessageReferenceType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageReferenceType}
  */
 
 /**
@@ -428,6 +572,11 @@
 /**
  * @external MessageFlags
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageFlags}
+ */
+
+/**
+ * @external NameplatePalette
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/NameplatePalette}
  */
 
 /**
@@ -442,7 +591,17 @@
 
 /**
  * @external PermissionFlagsBits
- * @see {@link https://discord-api-types.dev/api/discord-api-types-payloads/common#PermissionFlagsBits}
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#PermissionFlagsBits}
+ */
+
+/**
+ * @external PollLayoutType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/PollLayoutType}
+ */
+
+/**
+ * @external ReactionType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ReactionType}
  */
 
 /**
@@ -457,7 +616,17 @@
 
 /**
  * @external RESTJSONErrorCodes
- * @see {@link https://discord-api-types.dev/api/discord-api-types-rest/common/enum/RESTJSONErrorCodes}
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/RESTJSONErrorCodes}
+ */
+
+/**
+ * @external SKUFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/SKUFlags}
+ */
+
+/**
+ * @external SKUType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/SKUType}
  */
 
 /**
@@ -501,6 +670,11 @@
  */
 
 /**
+ * @external ThreadMemberFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ThreadMemberFlags}
+ */
+
+/**
  * @external UserFlags
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/UserFlags}
  */
@@ -511,6 +685,21 @@
  */
 
 /**
+ * @external VoiceChannelEffectSendAnimationType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/VoiceChannelEffectSendAnimationType}
+ */
+
+/**
  * @external WebhookType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/WebhookType}
+ */
+
+/**
+ * @external RESTPatchAPIChannelMessageJSONBody
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/RESTPatchAPIChannelMessageJSONBody}
+ */
+
+/**
+ * @external RESTPostAPIChannelMessageJSONBody
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/RESTPostAPIChannelMessageJSONBody}
  */

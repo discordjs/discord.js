@@ -25,3 +25,6 @@ docs/**/*
 # Miscellaneous
 .turbo
 .tmp
+
+# Generated files
+typings/index.d.mts

@@ -1,79 +1,60 @@
 import { Analytics } from '@vercel/analytics/react';
+import { GeistMono } from 'geist/font/mono';
+import { GeistSans } from 'geist/font/sans';
 import type { Metadata, Viewport } from 'next';
 import type { PropsWithChildren } from 'react';
-import { DESCRIPTION } from '~/util/constants';
-import { inter, jetBrainsMono } from '~/util/fonts';
+import { DESCRIPTION } from '@/util/constants';
+import { ENV } from '@/util/env';
 import { Providers } from './providers';
 
-import '~/styles/cmdk.css';
-import '~/styles/main.css';
+import '@/styles/base.css';
+import 'overlayscrollbars/overlayscrollbars.css';
 
 export const viewport: Viewport = {
 	themeColor: [
-		{ media: '(prefers-color-scheme: light)', color: '#f1f3f5' },
-		{ media: '(prefers-color-scheme: dark)', color: '#1c1c1e' },
+		{ media: '(prefers-color-scheme: light)', color: '#fbfbfb' },
+		{ media: '(prefers-color-scheme: dark)', color: '#1a1a1e' },
 	],
 	colorScheme: 'light dark',
 };
 
 export const metadata: Metadata = {
-	metadataBase: new URL(
-		process.env.METADATA_BASE_URL ? process.env.METADATA_BASE_URL : `http://localhost:${process.env.PORT ?? 3_000}`,
-	),
-	title: 'discord.js',
+	metadataBase: new URL(ENV.IS_LOCAL_DEV ? `http://localhost:${ENV.PORT}` : 'https://discord.js.org'),
+	title: {
+		template: '%s | discord.js',
+		default: 'discord.js',
+	},
 	description: DESCRIPTION,
 	icons: {
 		other: [
 			{
-				url: '/favicon-32x32.png',
-				sizes: '32x32',
-				type: 'image/png',
-			},
-			{
-				url: '/favicon-16x16.png',
-				sizes: '16x16',
+				url: '/favicon-96x96.png',
+				sizes: '96x96',
 				type: 'image/png',
 			},
 		],
-		apple: [
-			'/apple-touch-icon.png',
-			{
-				url: '/safari-pinned-tab.svg',
-				rel: 'mask-icon',
-			},
-		],
+		apple: ['/apple-touch-icon.png'],
 	},
 
 	manifest: '/site.webmanifest',
-
-	appleWebApp: {
-		title: 'discord.js',
-	},
-
-	applicationName: 'discord.js',
 
 	openGraph: {
 		siteName: 'discord.js',
 		type: 'website',
 		title: 'discord.js',
 		description: DESCRIPTION,
-		images: 'https://discordjs.dev/api/open-graph.png',
 	},
 
 	twitter: {
 		card: 'summary_large_image',
 		creator: '@iCrawlToGo',
 	},
-
-	other: {
-		'msapplication-TileColor': '#1c1c1e',
-	},
 };
 
-export default function RootLayout({ children }: PropsWithChildren) {
+export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<html className={`${inter.variable} ${jetBrainsMono.variable}`} lang="en" suppressHydrationWarning>
-			<body className="bg-light-600 dark:bg-dark-600 dark:text-light-900">
+		<html className={`${GeistSans.variable} ${GeistMono.variable} antialiased`} lang="en" suppressHydrationWarning>
+			<body className="text-base-md text-base-neutral-900 dark:text-base-neutral-40 overscroll-y-none bg-[#fbfbfb] dark:bg-[#1a1a1e]">
 				<Providers>{children}</Providers>
 				<Analytics />
 			</body>

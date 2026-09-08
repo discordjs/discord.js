@@ -11,6 +11,8 @@ import {
 	type Parameter,
 	type ApiFunction,
 	ApiDeclaredItem,
+	type ApiMethod,
+	type ApiMethodSignature,
 } from '@discordjs/api-extractor-model';
 import type { DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
 import { type Meaning, ModuleSource } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
@@ -23,6 +25,10 @@ export function findPackage(model: ApiModel, name: string): ApiPackage | undefin
 		| undefined;
 }
 
+function hasOverloadIndex(item: ApiItem): item is ApiFunction | ApiMethod | ApiMethodSignature {
+	return 'overloadIndex' in item;
+}
+
 export function generatePath(items: readonly ApiItem[], version: string) {
 	let path = '/docs/packages';
 
@@ -30,23 +36,25 @@ export function generatePath(items: readonly ApiItem[], version: string) {
 		switch (item.kind) {
 			case ApiItemKind.Model:
 			case ApiItemKind.EntryPoint:
-			case ApiItemKind.EnumMember:
 				break;
 			case ApiItemKind.Package:
 				path += `/${item.displayName}`;
 				break;
 			case ApiItemKind.Function:
-				// eslint-disable-next-line no-case-declarations
-				const functionItem = item as ApiFunction;
-				path += `/${functionItem.displayName}${
-					functionItem.overloadIndex && functionItem.overloadIndex > 1 ? `:${functionItem.overloadIndex}` : ''
+				path += `/${item.displayName}${
+					hasOverloadIndex(item) && item.overloadIndex > 1 ? `:${item.overloadIndex}` : ''
 				}:${item.kind}`;
 				break;
-			case ApiItemKind.Property:
 			case ApiItemKind.Method:
 			case ApiItemKind.MethodSignature:
+				path += `#${item.displayName}${
+					hasOverloadIndex(item) && item.overloadIndex > 1 ? `:${item.overloadIndex}` : ''
+				}`;
+				break;
+			case ApiItemKind.Property:
 			case ApiItemKind.PropertySignature:
-				// TODO: Take overloads into account
+			case ApiItemKind.Event:
+			case ApiItemKind.EnumMember:
 				path += `#${item.displayName}`;
 				break;
 			default:
@@ -55,8 +63,8 @@ export function generatePath(items: readonly ApiItem[], version: string) {
 	}
 
 	return path.includes('@discordjs/')
-		? path.replace(/@discordjs\/(.*)\/(.*)?/, `$1/${version}/$2`)
-		: path.replace(/(.*)\/(.*)?/, `$1/${version}/$2`);
+		? path.replace(/@discordjs\/(?<package>.*)\/(?<member>.*)?/, `$<package>/${version}/$<member>`)
+		: path.replace(/(?<package>.*)\/(?<member>.*)?/, `$<package>/${version}/$<member>`);
 }
 
 export function resolveDocComment(item: ApiDeclaredItem) {
@@ -191,7 +199,7 @@ export function genToken(model: ApiModel, token: ExcerptToken, version: string) 
 	}
 
 	const item = token.canonicalReference
-		? model.resolveDeclarationReference(token.canonicalReference, undefined).resolvedApiItem ?? null
+		? (model.resolveDeclarationReference(token.canonicalReference, undefined).resolvedApiItem ?? null)
 		: null;
 
 	return {

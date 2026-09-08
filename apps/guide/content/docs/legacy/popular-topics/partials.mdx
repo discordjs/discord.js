@@ -1,0 +1,74 @@
+---
+title: Partials
+---
+
+Partial Structures were introduced to the library in version 12 and are optionally received whenever there is insufficient data to emit the client event with a fully intact discord.js structure. They are (as the name suggests) incomplete, and you cannot expect them to have any information besides their ID. All other properties and methods on this object should be considered invalid and defunct. Before this feature, discord.js client events would not emit if one of the necessary structures could not be built with sufficient data to guarantee a fully functional structure. If you do not opt into partials, this is still the case.
+
+One example leveraging partials is the handling of reactions on uncached messages, which is explained on [this page](./reactions#listening-for-reactions-on-old-messages).
+
+Prior you had to either handle the undocumented `raw` event or fetch the respective messages on startup. The first approach was prone to errors and unexpected internal behavior. The second was not fully fail-proof either, as the messages could still be uncached if cache size was exceeded in busy channels.
+
+## Enabling Partials
+
+As we said earlier, partials do not have all the information necessary to make them fully functional discord.js structures, so it would not be a good idea to enable the functionality by default. Users should know how to handle them before opting into this feature.
+
+You choose which structures you want to emit as partials as client options when instantiating your bot client. Available structures are: `User`, `Channel` (only DM channels can be uncached, server channels will always be available), `GuildMember`, `Message`, `Reaction`, `GuildScheduledEvent` and `ThreadMember`.
+
+```js
+const { Client, Partials } = require('discord.js');
+
+const client = new Client({ partials: [Partials.Message, Partials.Channel, Partials.Reaction] });
+```
+
+<Callout type="warn">
+	Make sure you enable all partials you need for your use case! If you miss one, the event does not get emitted.
+</Callout>
+
+<Callout type="warn">
+	Partial structures are enabled **globally**. You cannot make them work for only a specific event or cache. You very
+	**likely need to adapt** other parts of your code that are accessing data from the relevant caches. All caches holding
+	the respective structure type might return partials as well!
+</Callout>
+
+## Handling Partial data
+
+All structures you can choose to use partials for have a new property, fittingly called `.partial`, indicating if it is a fully functional or partial instance of its class. The value is `true` if partial, `false` if fully functional.
+
+<Callout type="error">
+	Partial data is only ever guaranteed to contain an ID! **Do not assume any property or method to work when dealing
+	with a partial structure**!
+</Callout>
+
+```js
+if (message.partial) {
+	console.log('The message is partial.');
+} else {
+	console.log('The message is not partial.');
+}
+```
+
+## Obtaining the full structure
+
+Along with `.partial` to check if the structure you call it on is partial or not, the library also introduced a `.fetch()` method to retrieve the missing data from the API and complete the structure. The method returns a [Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise) you need to handle. After the Promise resolves (and with it, the missing data arrived), you can use the structure as you would before.
+
+```js
+// [!code word:partial]
+if (message.partial) {
+	message
+		.fetch()
+		.then((fullMessage) => {
+			console.log(fullMessage.content);
+		})
+		.catch((error) => {
+			console.log('Something went wrong when fetching the message: ', error);
+		});
+} else {
+	console.log(message.content);
+}
+```
+
+<Callout type="warn">
+	You **cannot fetch deleted data** from the API. For message deletions, `messageDelete` will only emit with the ID,
+	which you cannot use to fetch the complete message containing content, author, or other information, as it is already
+	inaccessible by the time you receive the event.
+</Callout>

@@ -1,15 +1,15 @@
 'use strict';
 
-const { userMention } = require('@discordjs/builders');
+const { userMention } = require('@discordjs/formatters');
 const { calculateUserDefaultAvatarIndex } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const Base = require('./Base');
-const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const UserFlagsBitField = require('../util/UserFlagsBitField');
+const { _transformCollectibles } = require('../util/Transformers.js');
+const { UserFlagsBitField } = require('../util/UserFlagsBitField.js');
+const { Base } = require('./Base.js');
 
 /**
  * Represents a user on Discord.
- * @implements {TextBasedChannel}
+ *
  * @extends {Base}
  */
 class User extends Base {
@@ -18,6 +18,7 @@ class User extends Base {
 
     /**
      * The user's id
+     *
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -35,6 +36,7 @@ class User extends Base {
     if ('username' in data) {
       /**
        * The username of the user
+       *
        * @type {?string}
        */
       this.username = data.username;
@@ -45,6 +47,7 @@ class User extends Base {
     if ('global_name' in data) {
       /**
        * The global name of this user
+       *
        * @type {?string}
        */
       this.globalName = data.global_name;
@@ -55,6 +58,7 @@ class User extends Base {
     if ('bot' in data) {
       /**
        * Whether or not the user is a bot
+       *
        * @type {?boolean}
        */
       this.bot = Boolean(data.bot);
@@ -66,6 +70,7 @@ class User extends Base {
       /**
        * The discriminator of this user
        * <info>`'0'`, or a 4-digit stringified number if they're using the legacy username system</info>
+       *
        * @type {?string}
        */
       this.discriminator = data.discriminator;
@@ -76,6 +81,7 @@ class User extends Base {
     if ('avatar' in data) {
       /**
        * The user avatar's hash
+       *
        * @type {?string}
        */
       this.avatar = data.avatar;
@@ -87,6 +93,7 @@ class User extends Base {
       /**
        * The user banner's hash
        * <info>The user must be force fetched for this property to be present or be updated</info>
+       *
        * @type {?string}
        */
       this.banner = data.banner;
@@ -98,6 +105,7 @@ class User extends Base {
       /**
        * The base 10 accent color of the user's banner
        * <info>The user must be force fetched for this property to be present or be updated</info>
+       *
        * @type {?number}
        */
       this.accentColor = data.accent_color;
@@ -108,6 +116,7 @@ class User extends Base {
     if ('system' in data) {
       /**
        * Whether the user is an Official Discord System user (part of the urgent message system)
+       *
        * @type {?boolean}
        */
       this.system = Boolean(data.system);
@@ -118,24 +127,92 @@ class User extends Base {
     if ('public_flags' in data) {
       /**
        * The flags for this user
+       *
        * @type {?UserFlagsBitField}
        */
       this.flags = new UserFlagsBitField(data.public_flags);
     }
 
-    if ('avatar_decoration' in data) {
-      /**
-       * The user avatar decoration's hash
-       * @type {?string}
-       */
-      this.avatarDecoration = data.avatar_decoration;
+    /**
+     * @typedef {Object} AvatarDecorationData
+     * @property {string} asset The avatar decoration hash
+     * @property {Snowflake} skuId The id of the avatar decoration's SKU
+     */
+
+    if ('avatar_decoration_data' in data) {
+      if (data.avatar_decoration_data) {
+        /**
+         * The user avatar decoration's data
+         *
+         * @type {?AvatarDecorationData}
+         */
+        this.avatarDecorationData = {
+          asset: data.avatar_decoration_data.asset,
+          skuId: data.avatar_decoration_data.sku_id,
+        };
+      } else {
+        this.avatarDecorationData = null;
+      }
     } else {
-      this.avatarDecoration ??= null;
+      this.avatarDecorationData ??= null;
+    }
+
+    /**
+     * @typedef {Object} NameplateData
+     * @property {Snowflake} skuId The id of the nameplate's SKU
+     * @property {string} asset The nameplate's asset path
+     * @property {string} label The nameplate's label
+     * @property {NameplatePalette} palette Background color of the nameplate
+     */
+
+    /**
+     * @typedef {Object} Collectibles
+     * @property {?NameplateData} nameplate The user's nameplate data
+     */
+
+    if ('collectibles' in data) {
+      /**
+       * The user's collectibles
+       *
+       * @type {?Collectibles}
+       */
+      this.collectibles = data.collectibles ? _transformCollectibles(data.collectibles) : null;
+    } else {
+      this.collectibles ??= null;
+    }
+
+    /**
+     * @typedef {Object} UserPrimaryGuild
+     * @property {?Snowflake} identityGuildId The id of the user's primary guild
+     * @property {?boolean} identityEnabled Whether the user is displaying the primary guild's tag
+     * @property {?string} tag The user's guild tag. Limited to 4 characters
+     * @property {?string} badge The guild tag badge hash
+     */
+
+    if ('primary_guild' in data) {
+      if (data.primary_guild) {
+        /**
+         * The primary guild of the user
+         *
+         * @type {?UserPrimaryGuild}
+         */
+        this.primaryGuild = {
+          identityGuildId: data.primary_guild.identity_guild_id,
+          identityEnabled: data.primary_guild.identity_enabled,
+          tag: data.primary_guild.tag,
+          badge: data.primary_guild.badge,
+        };
+      } else {
+        this.primaryGuild = null;
+      }
+    } else {
+      this.primaryGuild ??= null;
     }
   }
 
   /**
    * Whether this User is a partial
+   *
    * @type {boolean}
    * @readonly
    */
@@ -145,6 +222,7 @@ class User extends Base {
 
   /**
    * The timestamp the user was created at
+   *
    * @type {number}
    * @readonly
    */
@@ -154,6 +232,7 @@ class User extends Base {
 
   /**
    * The time the user was created at
+   *
    * @type {Date}
    * @readonly
    */
@@ -163,6 +242,7 @@ class User extends Base {
 
   /**
    * A link to the user's avatar.
+   *
    * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
@@ -172,27 +252,33 @@ class User extends Base {
 
   /**
    * A link to the user's avatar decoration.
-   * @param {BaseImageURLOptions} [options={}] Options for the image URL
+   *
    * @returns {?string}
    */
-  avatarDecorationURL(options = {}) {
-    return this.avatarDecoration && this.client.rest.cdn.avatarDecoration(this.id, this.avatarDecoration, options);
+  avatarDecorationURL() {
+    return this.avatarDecorationData ? this.client.rest.cdn.avatarDecoration(this.avatarDecorationData.asset) : null;
   }
 
   /**
    * A link to the user's default avatar
+   *
    * @type {string}
    * @readonly
    */
   get defaultAvatarURL() {
-    const index = this.discriminator === '0' ? calculateUserDefaultAvatarIndex(this.id) : this.discriminator % 5;
+    const index =
+      this.discriminator === '0' || this.discriminator === '0000'
+        ? calculateUserDefaultAvatarIndex(this.id)
+        : this.discriminator % 5;
+
     return this.client.rest.cdn.defaultAvatar(index);
   }
 
   /**
    * A link to the user's avatar if they have one.
    * Otherwise a link to their default avatar will be returned.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   *
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {string}
    */
   displayAvatarURL(options) {
@@ -202,6 +288,7 @@ class User extends Base {
   /**
    * The hexadecimal version of the user accent color, with a leading hash
    * <info>The user must be force fetched for this property to be present</info>
+   *
    * @type {?string}
    * @readonly
    */
@@ -212,6 +299,7 @@ class User extends Base {
 
   /**
    * A link to the user's banner. See {@link User#banner} for more info
+   *
    * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
@@ -220,15 +308,28 @@ class User extends Base {
   }
 
   /**
+   * A link to the user's guild tag badge.
+   *
+   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @returns {?string}
+   */
+  guildTagBadgeURL(options = {}) {
+    return this.primaryGuild?.badge
+      ? this.client.rest.cdn.guildTagBadge(this.primaryGuild.identityGuildId, this.primaryGuild.badge, options)
+      : null;
+  }
+
+  /**
    * The tag of this user
    * <info>This user's username, or their legacy tag (e.g. `hydrabolt#0001`)
    * if they're using the legacy username system</info>
+   *
    * @type {?string}
    * @readonly
    */
   get tag() {
     return typeof this.username === 'string'
-      ? this.discriminator === '0'
+      ? this.discriminator === '0' || this.discriminator === '0000'
         ? this.username
         : `${this.username}#${this.discriminator}`
       : null;
@@ -236,6 +337,7 @@ class User extends Base {
 
   /**
    * The global name of this user, or their username if they don't have one
+   *
    * @type {?string}
    * @readonly
    */
@@ -245,6 +347,7 @@ class User extends Base {
 
   /**
    * The DM between the client's user and this user
+   *
    * @type {?DMChannel}
    * @readonly
    */
@@ -254,25 +357,45 @@ class User extends Base {
 
   /**
    * Creates a DM channel between the client and the user.
+   *
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<DMChannel>}
    */
-  createDM(force = false) {
+  async createDM(force = false) {
     return this.client.users.createDM(this.id, { force });
   }
 
   /**
    * Deletes a DM channel (if one exists) between the client and the user. Resolves with the channel if successful.
+   *
    * @returns {Promise<DMChannel>}
    */
-  deleteDM() {
+  async deleteDM() {
     return this.client.users.deleteDM(this.id);
+  }
+
+  /**
+   * Sends a message to this user.
+   *
+   * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
+   * @returns {Promise<Message>}
+   * @example
+   * // Send a direct message
+   * user.send('Hello!')
+   *   .then(message => console.log(`Sent message: ${message.content} to ${user.tag}`))
+   *   .catch(console.error);
+   */
+  async send(options) {
+    const dmChannel = await this.createDM();
+
+    return this.client.channels.createMessage(dmChannel, options);
   }
 
   /**
    * Checks if the user is equal to another.
    * It compares id, username, discriminator, avatar, banner, accent color, and bot flags.
    * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
+   *
    * @param {User} user User to compare with
    * @returns {boolean}
    */
@@ -286,12 +409,23 @@ class User extends Base {
       this.avatar === user.avatar &&
       this.flags?.bitfield === user.flags?.bitfield &&
       this.banner === user.banner &&
-      this.accentColor === user.accentColor
+      this.accentColor === user.accentColor &&
+      this.avatarDecorationData?.asset === user.avatarDecorationData?.asset &&
+      this.avatarDecorationData?.skuId === user.avatarDecorationData?.skuId &&
+      this.collectibles?.nameplate?.skuId === user.collectibles?.nameplate?.skuId &&
+      this.collectibles?.nameplate?.asset === user.collectibles?.nameplate?.asset &&
+      this.collectibles?.nameplate?.label === user.collectibles?.nameplate?.label &&
+      this.collectibles?.nameplate?.palette === user.collectibles?.nameplate?.palette &&
+      this.primaryGuild?.identityGuildId === user.primaryGuild?.identityGuildId &&
+      this.primaryGuild?.identityEnabled === user.primaryGuild?.identityEnabled &&
+      this.primaryGuild?.tag === user.primaryGuild?.tag &&
+      this.primaryGuild?.badge === user.primaryGuild?.badge
     );
   }
 
   /**
    * Compares the user with an API user object
+   *
    * @param {APIUser} user The API user object to compare
    * @returns {boolean}
    * @private
@@ -306,30 +440,39 @@ class User extends Base {
       this.avatar === user.avatar &&
       this.flags?.bitfield === user.public_flags &&
       ('banner' in user ? this.banner === user.banner : true) &&
-      ('accent_color' in user ? this.accentColor === user.accent_color : true)
+      ('accent_color' in user ? this.accentColor === user.accent_color : true) &&
+      ('avatar_decoration_data' in user
+        ? this.avatarDecorationData?.asset === user.avatar_decoration_data?.asset &&
+          this.avatarDecorationData?.skuId === user.avatar_decoration_data?.sku_id
+        : true) &&
+      ('collectibles' in user
+        ? this.collectibles?.nameplate?.skuId === user.collectibles?.nameplate?.sku_id &&
+          this.collectibles?.nameplate?.asset === user.collectibles?.nameplate?.asset &&
+          this.collectibles?.nameplate?.label === user.collectibles?.nameplate?.label &&
+          this.collectibles?.nameplate?.palette === user.collectibles?.nameplate?.palette
+        : true) &&
+      ('primary_guild' in user
+        ? this.primaryGuild?.identityGuildId === user.primary_guild?.identity_guild_id &&
+          this.primaryGuild?.identityEnabled === user.primary_guild?.identity_enabled &&
+          this.primaryGuild?.tag === user.primary_guild?.tag &&
+          this.primaryGuild?.badge === user.primary_guild?.badge
+        : true)
     );
   }
 
   /**
-   * Fetches this user's flags.
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
-   * @returns {Promise<UserFlagsBitField>}
-   */
-  fetchFlags(force = false) {
-    return this.client.users.fetchFlags(this.id, { force });
-  }
-
-  /**
    * Fetches this user.
+   *
    * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<User>}
    */
-  fetch(force = true) {
+  async fetch(force = true) {
     return this.client.users.fetch(this.id, { force });
   }
 
   /**
    * When concatenated with a string, this automatically returns the user's mention instead of the User object.
+   *
    * @returns {string}
    * @example
    * // Logs: Hello from <@123456789012345678>!
@@ -352,24 +495,9 @@ class User extends Base {
     json.avatarURL = this.avatarURL();
     json.displayAvatarURL = this.displayAvatarURL();
     json.bannerURL = this.banner ? this.bannerURL() : this.banner;
+    json.guildTagBadgeURL = this.guildTagBadgeURL();
     return json;
   }
 }
 
-/**
- * Sends a message to this user.
- * @method send
- * @memberof User
- * @instance
- * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
- * @returns {Promise<Message>}
- * @example
- * // Send a direct message
- * user.send('Hello!')
- *   .then(message => console.log(`Sent message: ${message.content} to ${user.tag}`))
- *   .catch(console.error);
- */
-
-TextBasedChannel.applyToClass(User);
-
-module.exports = User;
+exports.User = User;

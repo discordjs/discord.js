@@ -12,12 +12,6 @@ export interface IGlobalVariableAnalyzer {
 }
 
 export class TypeScriptInternals {
-	public static getImmediateAliasedSymbol(symbol: ts.Symbol, typeChecker: ts.TypeChecker): ts.Symbol {
-		// Compiler internal:
-		// https://github.com/microsoft/TypeScript/blob/v3.2.2/src/compiler/checker.ts
-		return (typeChecker as any).getImmediateAliasedSymbol(symbol);
-	}
-
 	/**
 	 * Returns the Symbol for the provided Declaration.  This is a workaround for a missing
 	 * feature of the TypeScript Compiler API.   It is the only apparent way to reach
@@ -31,7 +25,7 @@ export class TypeScriptInternals {
 		checker: ts.TypeChecker,
 	): ts.Symbol | undefined {
 		let symbol: ts.Symbol | undefined = (declaration as any).symbol;
-		if (symbol && symbol.escapedName === ts.InternalSymbolName.Computed) {
+		if (symbol?.escapedName === ts.InternalSymbolName.Computed) {
 			const name: ts.DeclarationName | undefined = ts.getNameOfDeclaration(declaration);
 			symbol = (name && checker.getSymbolAtLocation(name)) || symbol;
 		}
@@ -75,27 +69,19 @@ export class TypeScriptInternals {
 	 * The compiler populates this cache as part of analyzing the source file.
 	 */
 	public static getResolvedModule(
+		program: ts.Program,
 		sourceFile: ts.SourceFile,
 		moduleNameText: string,
 		mode: ts.ModuleKind.CommonJS | ts.ModuleKind.ESNext | undefined,
 	): ts.ResolvedModuleFull | undefined {
 		// Compiler internal:
-		// https://github.com/microsoft/TypeScript/blob/v4.7.2/src/compiler/utilities.ts#L161
-
-		return (ts as any).getResolvedModule(sourceFile, moduleNameText, mode);
-	}
-
-	/**
-	 * Gets the mode required for module resolution required with the addition of Node16/nodenext
-	 */
-	public static getModeForUsageLocation(
-		file: { impliedNodeFormat?: ts.SourceFile['impliedNodeFormat'] },
-		usage: ts.StringLiteralLike | undefined,
-	): ts.ModuleKind.CommonJS | ts.ModuleKind.ESNext | undefined {
-		// Compiler internal:
-		// https://github.com/microsoft/TypeScript/blob/v4.7.2/src/compiler/program.ts#L568
-
-		return (ts as any).getModeForUsageLocation?.(file, usage);
+		// https://github.com/microsoft/TypeScript/blob/v5.3.3/src/compiler/types.ts#L4698
+		const result: ts.ResolvedModuleWithFailedLookupLocations | undefined = (program as any).getResolvedModule(
+			sourceFile,
+			moduleNameText,
+			mode,
+		);
+		return result?.resolvedModule;
 	}
 
 	/**

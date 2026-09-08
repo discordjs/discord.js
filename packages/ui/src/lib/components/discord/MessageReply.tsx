@@ -11,7 +11,7 @@ export interface IDiscordMessageReply {
 export function DiscordMessageReply({ author, authorNode, content }: IDiscordMessageReply) {
 	return (
 		<DiscordMessageBaseReply author={author} authorNode={authorNode}>
-			<div className="cursor-pointer select-none text-sm leading-snug text-[rgb(163_166_170)] hover:text-white">
+			<div className="cursor-pointer select-none text-sm text-[rgb(163_166_170)] leading-snug hover:text-white">
 				{content}
 			</div>
 		</DiscordMessageBaseReply>

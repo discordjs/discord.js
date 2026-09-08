@@ -109,14 +109,13 @@ export class DocumentedClass extends DocumentedItem<Class | DeclarationReflectio
 					signature.comment?.blockTags?.some((block) => block.tag === '@private' || block.tag === '@internal')
 						? 'private'
 						: undefined,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				abstract: signature.comment?.blockTags?.some((block) => block.tag === '@abstract') || undefined,
 				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
-					? signature.comment.blockTags
+					? (signature.comment.blockTags
 							.find((block) => block.tag === '@deprecated')
 							// eslint-disable-next-line no-param-reassign
 							?.content.reduce((prev, curr) => (prev += curr.text), '')
-							.trim() ?? true
+							.trim() ?? true)
 					: undefined,
 				construct: this.construct?.serialize(),
 				props: this.props.size ? [...this.props.values()].map((param) => param.serialize()) : undefined,

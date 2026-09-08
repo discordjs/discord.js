@@ -36,14 +36,13 @@ export class DocumentedMember extends DocumentedItem<DeclarationReflection | Mem
 						? 'private'
 						: undefined,
 				readonly: data.flags.isReadonly,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				abstract: signature.comment?.blockTags?.some((block) => block.tag === '@abstract') || undefined,
 				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
-					? signature.comment.blockTags
+					? (signature.comment.blockTags
 							.find((block) => block.tag === '@deprecated')
 							// eslint-disable-next-line no-param-reassign
 							?.content.reduce((prev, curr) => (prev += curr.text), '')
-							.trim() ?? true
+							.trim() ?? true)
 					: undefined,
 				default:
 					(data.defaultValue === '...' ? undefined : data.defaultValue) ??
@@ -89,14 +88,13 @@ export class DocumentedMember extends DocumentedItem<DeclarationReflection | Mem
 							? 'private'
 							: undefined,
 					readonly: base.readonly || !hasSetter,
-					// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 					abstract: getter.comment?.blockTags?.some((block) => block.tag === '@abstract') || undefined,
 					deprecated: getter.comment?.blockTags?.some((block) => block.tag === '@deprecated')
-						? getter.comment.blockTags
+						? (getter.comment.blockTags
 								.find((block) => block.tag === '@deprecated')
 								// eslint-disable-next-line no-param-reassign
 								?.content.reduce((prev, curr) => (prev += curr.text), '')
-								.trim() ?? true
+								.trim() ?? true)
 						: undefined,
 					default:
 						base.default ??

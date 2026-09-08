@@ -1,0 +1,97 @@
+import type { APIFileUploadComponent, FileUploadType } from 'discord-api-types/v10';
+import { ComponentType } from 'discord-api-types/v10';
+import { describe, test, expect } from 'vitest';
+import { FileUploadBuilder } from '../../src/components/fileUpload/FileUpload.js';
+
+const fileUploadComponent = () => new FileUploadBuilder();
+
+describe('File Upload Components', () => {
+	describe('Assertion Tests', () => {
+		test('GIVEN valid fields THEN builder does not throw', () => {
+			expect(() => {
+				fileUploadComponent().setCustomId('foobar').toJSON();
+			}).not.toThrowError();
+
+			expect(() => {
+				fileUploadComponent().setCustomId('foobar').setMinValues(2).setMaxValues(9).toJSON();
+			}).not.toThrowError();
+
+			expect(() => {
+				fileUploadComponent().setCustomId('foobar').setFileTypes('audio', 'image', 'video', '.pdf').toJSON();
+			}).not.toThrow();
+		});
+
+		test('GIVEN file types THEN they can be added', () => {
+			expect(
+				fileUploadComponent().setCustomId('foobar').addFileTypes('image').addFileTypes(['.pdf']).toJSON().file_types,
+			).toEqual(['image', '.pdf']);
+		});
+	});
+
+	test('GIVEN invalid fields THEN builder throws', () => {
+		expect(() => fileUploadComponent().toJSON()).toThrowError();
+
+		expect(() => fileUploadComponent().setCustomId('test').setId(4.4).toJSON()).toThrowError();
+
+		expect(() => {
+			fileUploadComponent().setCustomId('a'.repeat(500)).toJSON();
+		}).toThrowError();
+
+		expect(() => {
+			fileUploadComponent().setCustomId('a').setMaxValues(55).toJSON();
+		}).toThrowError();
+
+		expect(() => {
+			fileUploadComponent().setCustomId('a').setMinValues(-1).toJSON();
+		}).toThrowError();
+
+		expect(() => {
+			fileUploadComponent()
+				.setCustomId('a')
+				.setFileTypes(Array.from({ length: 11 }, () => '.txt' as const))
+				.toJSON();
+		}).toThrow();
+
+		for (const invalidFileType of ['document', 'pdf', '.']) {
+			expect(() => {
+				fileUploadComponent()
+					.setCustomId('a')
+					.setFileTypes(invalidFileType as FileUploadType)
+					.toJSON();
+			}).toThrow();
+		}
+
+		expect(() => {
+			new FileUploadBuilder({
+				type: ComponentType.FileUpload,
+				custom_id: 'a',
+				file_types: ['document' as FileUploadType],
+			}).toJSON();
+		}).toThrow();
+	});
+
+	test('GIVEN valid input THEN valid JSON outputs are given', () => {
+		const fileUploadData = {
+			type: ComponentType.FileUpload,
+			custom_id: 'custom id',
+			min_values: 5,
+			max_values: 6,
+			file_types: ['image', '.pdf'],
+			required: false,
+		} satisfies APIFileUploadComponent;
+
+		expect(new FileUploadBuilder(fileUploadData).toJSON()).toEqual(fileUploadData);
+
+		expect(
+			fileUploadComponent()
+				.setCustomId(fileUploadData.custom_id)
+				.setMaxValues(fileUploadData.max_values)
+				.setMinValues(fileUploadData.min_values)
+				.setFileTypes(fileUploadData.file_types)
+				.setRequired(fileUploadData.required)
+				.toJSON(),
+		).toEqual(fileUploadData);
+
+		expect(new FileUploadBuilder(fileUploadData).clearFileTypes().toJSON().file_types).toBeUndefined();
+	});
+});

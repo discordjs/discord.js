@@ -4,15 +4,20 @@
  * be needed at all.
  *
  * @param cb - The callback to lazily evaluate
- * @typeParam T - The type of the value
+ * @typeParam Value - The type of the value
  * @example
  * ```ts
  * const value = lazy(() => computeExpensiveValue());
  * ```
  */
 // eslint-disable-next-line promise/prefer-await-to-callbacks
-export function lazy<T>(cb: () => T): () => T {
-	let defaultValue: T;
-	// eslint-disable-next-line promise/prefer-await-to-callbacks
-	return () => (defaultValue ??= cb());
+export function lazy<Value>(cb: () => Value): () => Value {
+	let defaultValue: Value;
+	let called = false;
+	return () => {
+		if (called) return defaultValue;
+		called = true;
+		// eslint-disable-next-line promise/prefer-await-to-callbacks
+		return (defaultValue = cb());
+	};
 }

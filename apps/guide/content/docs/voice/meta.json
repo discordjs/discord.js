@@ -1,0 +1,16 @@
+{
+	"title": "Voice",
+	"description": "Working with the voice library",
+	"pages": [
+		"external:[LibraryBig][Documentation](https://discord.js.org/docs/packages/voice/main)",
+		"---Working with Voice---",
+		"index",
+		"life-cycles",
+		"voice-connections",
+		"audio-player",
+		"audio-resources",
+		"seeking"
+	],
+	"root": true,
+	"icon": "Volume2"
+}

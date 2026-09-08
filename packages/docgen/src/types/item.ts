@@ -1,9 +1,9 @@
 import type { DeclarationReflection } from 'typedoc';
 import type { Config, Item } from '../interfaces/index.js';
 
-export class DocumentedItem<T = DeclarationReflection | Item> {
+export class DocumentedItem<Data = DeclarationReflection | Item> {
 	public constructor(
-		public readonly data: T,
+		public readonly data: Data,
 		public readonly config: Config,
 	) {}
 

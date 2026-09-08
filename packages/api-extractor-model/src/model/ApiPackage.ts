@@ -1,6 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
+import { Buffer } from 'node:buffer';
+import path from 'node:path';
+import util from 'node:util';
 import { TSDocConfiguration } from '@microsoft/tsdoc';
 import { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { TSDocConfigFile } from '@microsoft/tsdoc-config';
@@ -10,6 +13,7 @@ import {
 	PackageJsonLookup,
 	type IPackageJson,
 	type JsonObject,
+	FileSystem,
 } from '@rushstack/node-core-library';
 import { ApiDocumentedItem, type IApiDocumentedItemOptions } from '../items/ApiDocumentedItem.js';
 import { ApiItem, ApiItemKind, type IApiItemJson } from '../items/ApiItem.js';
@@ -24,12 +28,59 @@ import { DeserializerContext, ApiJsonSchemaVersion } from './DeserializerContext
  * @public
  */
 export interface IApiPackageOptions
-	extends IApiItemContainerMixinOptions,
-		IApiNameMixinOptions,
-		IApiDocumentedItemOptions {
+	extends IApiItemContainerMixinOptions, IApiNameMixinOptions, IApiDocumentedItemOptions {
+	dependencies?: Record<string, string> | undefined;
 	projectFolderUrl?: string | undefined;
 	tsdocConfiguration: TSDocConfiguration;
 }
+
+const MinifyJSONMapping = {
+	canonicalReference: 'c',
+	constraintTokenRange: 'ctr',
+	dependencies: 'dp',
+	defaultTypeTokenRange: 'dtr',
+	defaultValue: 'dv',
+	docComment: 'd',
+	endIndex: 'en',
+	excerptTokens: 'ex',
+	extendsTokenRange: 'etr',
+	extendsTokenRanges: 'etrs',
+	fileColumn: 'co',
+	fileLine: 'l',
+	fileUrlPath: 'pat',
+	implementsTokenRanges: 'itrs',
+	initializerTokenRange: 'itr',
+	isAbstract: 'ab',
+	isOptional: 'op',
+	isProtected: 'pr',
+	isReadonly: 'ro',
+	isRest: 'rs',
+	isStatic: 'sta',
+	kind: 'k',
+	members: 'ms',
+	metadata: 'meta',
+	name: 'n',
+	oldestForwardsCompatibleVersion: 'ov',
+	overloadIndex: 'oi',
+	parameterName: 'pn',
+	parameterTypeTokenRange: 'ptr',
+	parameters: 'ps',
+	preserveMemberOrder: 'pmo',
+	projectFolderUrl: 'pdir',
+	propertyTypeTokenRange: 'prtr',
+	releaseTag: 'r',
+	returnTypeTokenRange: 'rtr',
+	schemaVersion: 'v',
+	startIndex: 'st',
+	text: 't',
+	toolPackage: 'tpk',
+	toolVersion: 'tv',
+	tsdocConfig: 'ts',
+	typeParameterName: 'tp',
+	typeParameters: 'tps',
+	typeTokenRange: 'ttr',
+	variableTypeTokenRange: 'vtr',
+};
 
 export interface IApiPackageMetadataJson {
 	/**
@@ -75,10 +126,15 @@ export interface IApiPackageMetadataJson {
 	 * Normally this configuration is loaded from the project's tsdoc.json file.  It is stored
 	 * in the .api.json file so that doc comments can be parsed accurately when loading the file.
 	 */
-	tsdocConfig: JsonObject;
+	tsdocConfig?: JsonObject;
 }
 
 export interface IApiPackageJson extends IApiItemJson {
+	/**
+	 * Names of packages in the same monorepo this one uses mapped to the version of said package.
+	 */
+	dependencies?: Record<string, string>;
+
 	/**
 	 * A file header that stores metadata about the tool that wrote the *.api.json file.
 	 */
@@ -98,6 +154,11 @@ export interface IApiPackageJson extends IApiItemJson {
  * @public
  */
 export interface IApiPackageSaveOptions extends IJsonFileSaveOptions {
+	/**
+	 * Set to true to not have indentation or newlines in resulting JSON.
+	 */
+	minify?: boolean;
+
 	/**
 	 * Set to true only when invoking API Extractor's test harness.
 	 *
@@ -134,11 +195,32 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 
 	private readonly _projectFolderUrl?: string | undefined;
 
+	private readonly _dependencies?: Record<string, string> | undefined;
+
 	public constructor(options: IApiPackageOptions) {
 		super(options);
 
 		this._tsdocConfiguration = options.tsdocConfiguration;
 		this._projectFolderUrl = options.projectFolderUrl;
+
+		if (options.dependencies) {
+			this._dependencies = options.dependencies;
+		} else {
+			const packageJson = PackageJsonLookup.instance.tryLoadPackageJsonFor('.');
+			if (packageJson?.dependencies) {
+				this._dependencies = {};
+				for (const [pack, semVer] of Object.entries(packageJson.dependencies)) {
+					const pathToPackage = path.join('..', pack.includes('/') ? pack.slice(pack.lastIndexOf('/')) : pack);
+					if (semVer === 'workspace:^') {
+						this._dependencies[pack] =
+							PackageJsonLookup.instance.tryLoadPackageJsonFor(pathToPackage)?.version ?? 'unknown';
+					} else {
+						// if (FileSystem.exists(pathToPackage))
+						this._dependencies[pack] = semVer.replace(/^[\^~]/, '');
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -152,11 +234,17 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 		super.onDeserializeInto(options, context, jsonObject);
 
 		options.projectFolderUrl = jsonObject.projectFolderUrl;
+		options.dependencies = jsonObject.dependencies;
 	}
 
 	public static loadFromJsonFile(apiJsonFilename: string): ApiPackage {
-		const jsonObject: IApiPackageJson = JsonFile.load(apiJsonFilename);
+		return this.loadFromJson(JsonFile.load(apiJsonFilename), apiJsonFilename);
+	}
 
+	public static loadFromJson(rawJson: any, apiJsonFilename: string = ''): ApiPackage {
+		const jsonObject =
+			MinifyJSONMapping.metadata in rawJson ? this._mapFromMinified(rawJson) : (rawJson as IApiPackageJson);
+		if (!jsonObject?.metadata) throw new Error(util.inspect(rawJson, { depth: 2 }));
 		if (!jsonObject?.metadata || typeof jsonObject.metadata.schemaVersion !== 'number') {
 			throw new Error(
 				`Error loading ${apiJsonFilename}:` +
@@ -205,7 +293,11 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 
 		const tsdocConfiguration: TSDocConfiguration = new TSDocConfiguration();
 
-		if (versionToDeserialize >= ApiJsonSchemaVersion.V_1004) {
+		if (
+			versionToDeserialize >= ApiJsonSchemaVersion.V_1004 &&
+			'tsdocConfig' in jsonObject.metadata &&
+			'$schema' in jsonObject.metadata.tsdocConfig
+		) {
 			const tsdocConfigFile: TSDocConfigFile = TSDocConfigFile.loadFromObject(jsonObject.metadata.tsdocConfig);
 			if (tsdocConfigFile.hasErrors) {
 				throw new Error(`Error loading ${apiJsonFilename}:\n` + tsdocConfigFile.getErrorSummary());
@@ -242,6 +334,10 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 
 	public get entryPoints(): readonly ApiEntryPoint[] {
 		return this.members as readonly ApiEntryPoint[];
+	}
+
+	public get dependencies(): Record<string, string> | undefined {
+		return this._dependencies;
 	}
 
 	/**
@@ -288,7 +384,7 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 				toolPackage: ioptions.toolPackage ?? packageJson.name,
 				// In test mode, we don't write the real version, since that would cause spurious diffs whenever
 				// the version is bumped.  Instead we write a placeholder string.
-				toolVersion: ioptions.testMode ? '[test mode]' : ioptions.toolVersion ?? packageJson.version,
+				toolVersion: ioptions.testMode ? '[test mode]' : (ioptions.toolVersion ?? packageJson.version),
 				schemaVersion: ApiJsonSchemaVersion.LATEST,
 				oldestForwardsCompatibleVersion: ApiJsonSchemaVersion.OLDEST_FORWARDS_COMPATIBLE,
 				tsdocConfig,
@@ -299,8 +395,18 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 			jsonObject.projectFolderUrl = this.projectFolderUrl;
 		}
 
+		if (this._dependencies) {
+			jsonObject.dependencies = this._dependencies;
+		}
+
 		this.serializeInto(jsonObject);
-		JsonFile.save(jsonObject, apiJsonFilename, ioptions);
+		if (ioptions.minify) {
+			FileSystem.writeFile(apiJsonFilename, Buffer.from(JSON.stringify(this._mapToMinified(jsonObject)), 'utf8'), {
+				ensureFolderExists: ioptions.ensureFolderExists ?? true,
+			});
+		} else {
+			JsonFile.save(jsonObject, apiJsonFilename, ioptions);
+		}
 	}
 
 	/**
@@ -308,5 +414,52 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 	 */
 	public override buildCanonicalReference(): DeclarationReference {
 		return DeclarationReference.package(this.name);
+	}
+
+	private _mapToMinified(jsonObject: IApiPackageJson) {
+		const mapper = (item: any): any => {
+			if (Array.isArray(item)) return item.map(mapper);
+			else {
+				const result: any = {};
+				for (const key of Object.keys(item)) {
+					if (key === 'dependencies') {
+						result[MinifyJSONMapping.dependencies] = item.dependencies;
+					} else if (key === 'tsdocConfig') {
+						result[MinifyJSONMapping.tsdocConfig] = item.tsdocConfig;
+					} else
+						result[MinifyJSONMapping[key as keyof typeof MinifyJSONMapping]] =
+							typeof item[key] === 'object' ? mapper(item[key]) : item[key];
+				}
+
+				return result;
+			}
+		};
+
+		return mapper(jsonObject);
+	}
+
+	private static _mapFromMinified(jsonObject: any): IApiPackageJson {
+		const mapper = (item: any): any => {
+			if (Array.isArray(item)) return item.map(mapper);
+			else {
+				const result: any = {};
+				for (const key of Object.keys(item)) {
+					if (key === MinifyJSONMapping.dependencies) {
+						result.dependencies = item[MinifyJSONMapping.dependencies];
+					} else if (key === MinifyJSONMapping.tsdocConfig) {
+						result.tsdocConfig = item[MinifyJSONMapping.tsdocConfig];
+					} else
+						result[
+							Object.keys(MinifyJSONMapping).find(
+								(look) => MinifyJSONMapping[look as keyof typeof MinifyJSONMapping] === key,
+							)!
+						] = typeof item[key] === 'object' ? mapper(item[key]) : item[key];
+				}
+
+				return result;
+			}
+		};
+
+		return mapper(jsonObject) as IApiPackageJson;
 	}
 }

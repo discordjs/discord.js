@@ -1,18 +1,19 @@
 'use strict';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Events } = require('../../util/Events.js');
+const { Action } = require('./Action.js');
 
 class StageInstanceCreateAction extends Action {
   handle(data) {
     const client = this.client;
-    const channel = this.getChannel(data);
+    const channel = this.getChannel({ id: data.channel_id, guild_id: data.guild_id });
 
     if (channel) {
       const stageInstance = channel.guild.stageInstances._add(data);
 
       /**
        * Emitted whenever a stage instance is created.
+       *
        * @event Client#stageInstanceCreate
        * @param {StageInstance} stageInstance The created stage instance
        */
@@ -25,4 +26,4 @@ class StageInstanceCreateAction extends Action {
   }
 }
 
-module.exports = StageInstanceCreateAction;
+exports.StageInstanceCreateAction = StageInstanceCreateAction;

@@ -1,0 +1,122 @@
+---
+title: Voice Connections
+---
+
+Voice connections represent connections to voice channels in a guild. You can only connect to one voice channel in a guild at a time.
+
+Voice connections will automatically try their best to re-establish their connections when they move across voice channels, or if the voice server region changes.
+
+## Cheat sheet
+
+### Creation
+
+Creating a voice connection is simple:
+
+```js
+const { joinVoiceChannel } = require('@discordjs/voice');
+
+const connection = joinVoiceChannel({
+	channelId: channel.id,
+	guildId: channel.guild.id,
+	adapterCreator: channel.guild.voiceAdapterCreator,
+});
+```
+
+If you try to call `joinVoiceChannel` on another channel in the same guild in which there is already an active voice connection, the existing voice connection switches over to the new channel.
+
+### Access
+
+You can access created connections elsewhere in your code without having to track the connections yourself. It is best practice to not track the voice connections yourself as you may forget to clean them up once they are destroyed, leading to memory leaks.
+
+```js
+const { getVoiceConnection } = require('@discordjs/voice');
+
+const connection = getVoiceConnection(myVoiceChannel.guild.id);
+```
+
+### Deletion
+
+You can destroy a voice connection when you no longer require it. This will disconnect its connection if it is still active, stop audio playing to it, and will remove it from the internal tracker for voice connections.
+
+It's important that you destroy voice connections when they are no longer required so that your bot leaves the voice channel, and to prevent memory leaks.
+
+```js
+connection.destroy();
+```
+
+### Playing audio
+
+You can subscribe voice connections to audio players as soon as they're created. Audio players will try to stream audio to all their subscribed voice connections that are in the Ready state. Destroyed voice connections cannot be subscribed to audio players.
+
+```js
+// Subscribe the connection to the audio player (will play audio on the voice connection)
+const subscription = connection.subscribe(audioPlayer);
+
+// subscription could be undefined if the connection is destroyed!
+if (subscription) {
+	// Unsubscribe after 5 seconds (stop playing audio on the voice connection)
+	setTimeout(() => subscription.unsubscribe(), 5_000);
+}
+```
+
+<Callout>
+    **Voice connections can be subscribed to one audio player at most.** If you try to subscribe to another audio player while already subscribed to one, the current audio player is unsubscribed and replaced with the new one.
+
+    It is also worth noting that the **GuildVoiceStates** [gateway intent](../legacy/popular-topics/intents) is required. Without it, the connection will permanently stay in the `signalling` state, and you'll be unable to play audio.
+
+</Callout>
+
+## Life cycle
+
+Voice connections have their own life cycle, with five distinct states. You can follow the methods discussed in the [life cycles](./life-cycles) section to subscribe to changes to voice connections.
+
+- **Signalling** - the initial state of a voice connection. The connection will be in this state when it is requesting permission to join a voice channel.
+
+- **Connecting** - the state a voice connection enters once it has permission to join a voice channel and is in the process of establishing a connection to it.
+
+- **Ready** - the state a voice connection enters once it has successfully established a connection to the voice channel. It is ready to play audio in this state.
+
+- **Disconnected** - the state a voice connection enters when the connection to a voice channel has been severed. This can occur even if the connection has not yet been established. You may choose to attempt to reconnect in this state.
+
+- **Destroyed** - the state a voice connection enters when it has been manually been destroyed. This will prevent it from accidentally being reused, and it will be removed from an in-memory tracker of voice connections.
+
+```js
+const { VoiceConnectionStatus } = require('@discordjs/voice');
+
+connection.on(VoiceConnectionStatus.Ready, () => {
+	console.log('The connection has entered the Ready state - ready to play audio!');
+});
+```
+
+## Handling disconnects
+
+Disconnects can be quite complex to handle. There are 3 cases for handling disconnects:
+
+1. **Resumable disconnects** - there is no clear reason why the disconnect occurred. In this case, voice connections will automatically try to resume the existing session. The voice connection will enter the `Connecting` state. If this fails, it may enter a `Disconnected` state again.
+
+2. **Reconnectable disconnects** - Discord has closed the connection and given a reason as to why, and that the reason is recoverable. In this case, the voice connection will automatically try to rejoin the voice channel. The voice connection will enter the `Signalling` state. If this fails, it may enter a `Disconnected` state again.
+
+3. **Potentially reconnectable disconnects** - the bot has either been moved to another voice channel, the channel has been deleted, or the bot has been kicked/lost access to the voice channel. The bot will enter the `Disconnected` state.
+
+As shown above, the first two cases are covered automatically by the voice connection itself. The only case you need to think carefully about is the third case.
+
+The third case can be quite problematic to treat as a disconnect, as the bot could simply be moving to another voice channel and so not "truly" disconnected.
+
+An imperfect workaround to this is to see if the bot has entered a `Signalling` / `Connecting` state shortly after entering the `Disconnected` state. If it has, then it means that the bot has moved voice channels. Otherwise, we should treat it as a real disconnect and not reconnect.
+
+```js
+const { VoiceConnectionStatus, entersState } = require('@discordjs/voice');
+
+connection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
+	try {
+		await Promise.race([
+			entersState(connection, VoiceConnectionStatus.Signalling, 5_000),
+			entersState(connection, VoiceConnectionStatus.Connecting, 5_000),
+		]);
+		// Seems to be reconnecting to a new channel - ignore disconnect
+	} catch {
+		// Seems to be a real disconnect which SHOULDN'T be recovered from
+		connection.destroy();
+	}
+});
+```

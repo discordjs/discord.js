@@ -1,14 +1,26 @@
-import { Code } from 'bright';
+import { codeToHtml } from '@/util/shiki.bundle';
 
-export async function SyntaxHighlighter(props: typeof Code) {
+export async function SyntaxHighlighter({
+	lang,
+	code,
+	className = '',
+}: {
+	readonly className?: string;
+	readonly code: string;
+	readonly lang: string;
+}) {
+	const codeHTML = await codeToHtml(code.trim(), {
+		lang,
+		themes: {
+			light: 'github-light',
+			dark: 'github-dark-dimmed',
+		},
+	});
+
 	return (
 		<>
-			<div data-theme="dark">
-				<Code codeClassName="font-mono" lang={props.lang ?? 'typescript'} {...props} theme="github-dark-dimmed" />
-			</div>
-			<div className="[&_pre]:border [&_pre]:border-gray-300 [&_pre]:rounded-md" data-theme="light">
-				<Code codeClassName="font-mono" lang={props.lang ?? 'typescript'} {...props} theme="min-light" />
-			</div>
+			{/* eslint-disable-next-line react/no-danger */}
+			<div className={className} dangerouslySetInnerHTML={{ __html: codeHTML }} />
 		</>
 	);
 }

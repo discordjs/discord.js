@@ -3,11 +3,11 @@
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
-		"source.fixAll": true,
-		"source.organizeImports": false
+		"source.fixAll": "explicit",
+		"source.organizeImports": "never"
 	},
 	"editor.trimAutoWhitespace": false,
 	"files.insertFinalNewline": true,
 	"files.eol": "\n",
-	"npm.packageManager": "[REPLACE_ME]"
+	"npm.packageManager": "[REPLACE_PACKAGE_MANAGER]"
 }

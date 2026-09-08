@@ -1,15 +1,19 @@
 import type { InternalRequest, RawFile } from '../utils/types.js';
 
-interface DiscordErrorFieldInformation {
+export interface DiscordErrorFieldInformation {
 	code: string;
 	message: string;
 }
 
-interface DiscordErrorGroupWrapper {
+export interface DiscordErrorGroupWrapper {
 	_errors: DiscordError[];
 }
 
-type DiscordError = DiscordErrorFieldInformation | DiscordErrorGroupWrapper | string | { [k: string]: DiscordError };
+export type DiscordError =
+	| DiscordErrorFieldInformation
+	| DiscordErrorGroupWrapper
+	| string
+	| { [k: string]: DiscordError };
 
 export interface DiscordErrorData {
 	code: number;
@@ -45,8 +49,8 @@ export class DiscordAPIError extends Error {
 	 * @param rawError - The error reported by Discord
 	 * @param code - The error code reported by Discord
 	 * @param status - The status code of the response
-	 * @param method - The method of the request that erred
-	 * @param url - The url of the request that erred
+	 * @param method - The method of the request that errored
+	 * @param url - The url of the request that errored
 	 * @param bodyData - The unparsed data for the request that errored
 	 */
 	public constructor(
@@ -93,10 +97,10 @@ export class DiscordAPIError extends Error {
 			const nextKey = otherKey.startsWith('_')
 				? key
 				: key
-				? Number.isNaN(Number(otherKey))
-					? `${key}.${otherKey}`
-					: `${key}[${otherKey}]`
-				: otherKey;
+					? Number.isNaN(Number(otherKey))
+						? `${key}.${otherKey}`
+						: `${key}[${otherKey}]`
+					: otherKey;
 
 			if (typeof val === 'string') {
 				yield val;

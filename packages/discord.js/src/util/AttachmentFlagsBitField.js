@@ -1,15 +1,18 @@
+/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { AttachmentFlags } = require('discord-api-types/v10');
-const BitField = require('./BitField');
+const { BitField } = require('./BitField.js');
 
 /**
  * Data structure that makes it easy to interact with an {@link Attachment#flags} bitfield.
+ *
  * @extends {BitField}
  */
 class AttachmentFlagsBitField extends BitField {
   /**
    * Numeric attachment flags.
+   *
    * @type {AttachmentFlags}
    * @memberof AttachmentFlagsBitField
    */
@@ -23,4 +26,4 @@ class AttachmentFlagsBitField extends BitField {
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */
 
-module.exports = AttachmentFlagsBitField;
+exports.AttachmentFlagsBitField = AttachmentFlagsBitField;

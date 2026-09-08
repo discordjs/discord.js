@@ -7,7 +7,10 @@ export default defineConfig({
 	plugins: [
 		dts(),
 		react(),
-		Unocss({ content: { pipeline: { include: ['.storybook/preview.ts'] } }, configFile: '../../unocss.config.ts' }),
+		Unocss({
+			content: { pipeline: { include: ['.storybook/preview.ts'] } },
+			configFile: '../../unocss.config.ts',
+		}),
 	],
 	build: {
 		lib: {
@@ -34,11 +37,11 @@ export default defineConfig({
 			formats: ['es'],
 			name: 'ui',
 		},
-		rollupOptions: {
+		rolldownOptions: {
 			external: [
 				'react',
 				'react-dom',
-				'ariakit/disclosure',
+				'@ariakit/react/disclosure',
 				'@react-icons/all-files/vsc/VscFlame',
 				'@react-icons/all-files/vsc/VscInfo',
 				'@react-icons/all-files/vsc/VscWarning',

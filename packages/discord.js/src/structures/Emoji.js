@@ -1,13 +1,12 @@
 'use strict';
 
-const process = require('node:process');
+const { formatEmoji } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const Base = require('./Base');
-
-let deprecationEmittedForURL = false;
+const { Base } = require('./Base.js');
 
 /**
- * Represents an emoji, see {@link GuildEmoji} and {@link ReactionEmoji}.
+ * Represents an emoji, see {@link ApplicationEmoji}, {@link GuildEmoji} and {@link ReactionEmoji}.
+ *
  * @extends {Base}
  */
 class Emoji extends Base {
@@ -15,25 +14,29 @@ class Emoji extends Base {
     super(client);
     /**
      * Whether or not the emoji is animated
+     *
      * @type {?boolean}
      */
     this.animated = emoji.animated ?? null;
 
     /**
      * The emoji's name
+     *
      * @type {?string}
      */
     this.name = emoji.name ?? null;
 
     /**
      * The emoji's id
+     *
      * @type {?Snowflake}
      */
-    this.id = emoji.id;
+    this.id = emoji.id ?? null;
   }
 
   /**
    * The identifier of this emoji, used for message reactions
+   *
    * @type {string}
    * @readonly
    */
@@ -44,30 +47,26 @@ class Emoji extends Base {
 
   /**
    * Returns a URL for the emoji or `null` if this is not a custom emoji.
-   * @param {BaseImageURLOptions} [options] Options for the image URL
+   *
+   * @param {EmojiURLOptions} [options={}] Options for the emoji URL
    * @returns {?string}
    */
-  imageURL(options) {
-    return this.id && this.client.rest.cdn.emoji(this.id, options);
-  }
+  imageURL(options = {}) {
+    if (!this.id) return null;
 
-  /**
-   * Returns a URL for the emoji or `null` if this is not a custom emoji.
-   * @type {?string}
-   * @readonly
-   * @deprecated Use {@link Emoji#imageURL} instead.
-   */
-  get url() {
-    if (!deprecationEmittedForURL) {
-      process.emitWarning('The Emoji#url getter is deprecated. Use Emoji#imageURL() instead.', 'DeprecationWarning');
-      deprecationEmittedForURL = true;
+    // Return a dynamic extension depending on whether the emoji is animated.
+    const resolvedOptions = { extension: options.extension, size: options.size };
+
+    if (!options.extension || options.extension === 'webp') {
+      resolvedOptions.animated = options.animated ?? (this.animated || undefined);
     }
 
-    return this.imageURL({ extension: this.animated ? 'gif' : 'png' });
+    return this.client.rest.cdn.emoji(this.id, resolvedOptions);
   }
 
   /**
    * The timestamp the emoji was created at, or null if unicode
+   *
    * @type {?number}
    * @readonly
    */
@@ -77,6 +76,7 @@ class Emoji extends Base {
 
   /**
    * The time the emoji was created at, or null if unicode
+   *
    * @type {?Date}
    * @readonly
    */
@@ -87,6 +87,7 @@ class Emoji extends Base {
   /**
    * When concatenated with a string, this automatically returns the text required to form a graphical emoji on Discord
    * instead of the Emoji object.
+   *
    * @returns {string}
    * @example
    * // Send a custom emoji from a guild:
@@ -97,16 +98,17 @@ class Emoji extends Base {
    * reaction.message.channel.send(`The emoji used was: ${reaction.emoji}`);
    */
   toString() {
-    return this.id ? `<${this.animated ? 'a' : ''}:${this.name}:${this.id}>` : this.name;
+    return this.id ? formatEmoji({ animated: this.animated, id: this.id, name: this.name }) : this.name;
   }
 
   toJSON() {
-    return super.toJSON({
+    const json = super.toJSON({
       guild: 'guildId',
       createdTimestamp: true,
-      url: true,
       identifier: true,
     });
+    json.imageURL = this.imageURL();
+    return json;
   }
 }
 

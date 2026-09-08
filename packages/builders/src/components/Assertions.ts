@@ -1,101 +1,182 @@
-import { s } from '@sapphire/shapeshift';
-import { ButtonStyle, ChannelType, type APIMessageComponentEmoji } from 'discord-api-types/v10';
-import { isValidationEnabled } from '../util/validation.js';
-import { StringSelectMenuOptionBuilder } from './selectMenu/StringSelectMenuOption.js';
+import { ButtonStyle, ChannelType, ComponentType, SelectMenuDefaultValueType } from 'discord-api-types/v10';
+import { z } from 'zod';
+import { idPredicate, customIdPredicate, snowflakePredicate } from '../Assertions.js';
 
-export const customIdValidator = s.string
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(100)
-	.setValidationEnabled(isValidationEnabled);
-
-export const emojiValidator = s
-	.object({
-		id: s.string,
-		name: s.string,
-		animated: s.boolean,
+export const emojiPredicate = z
+	.strictObject({
+		id: snowflakePredicate.optional(),
+		name: z.string().min(1).max(32).optional(),
+		animated: z.boolean().optional(),
 	})
-	.partial.strict.setValidationEnabled(isValidationEnabled);
+	.refine((data) => data.id !== undefined || data.name !== undefined, {
+		error: "Either 'id' or 'name' must be provided",
+	});
 
-export const disabledValidator = s.boolean;
+const buttonPredicateBase = z.strictObject({
+	type: z.literal(ComponentType.Button),
+	disabled: z.boolean().optional(),
+});
 
-export const buttonLabelValidator = s.string
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(80)
-	.setValidationEnabled(isValidationEnabled);
+const buttonLabelPredicate = z.string().min(1).max(80);
 
-export const buttonStyleValidator = s.nativeEnum(ButtonStyle);
-
-export const placeholderValidator = s.string.lengthLessThanOrEqual(150).setValidationEnabled(isValidationEnabled);
-export const minMaxValidator = s.number.int
-	.greaterThanOrEqual(0)
-	.lessThanOrEqual(25)
-	.setValidationEnabled(isValidationEnabled);
-
-export const labelValueDescriptionValidator = s.string
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(100)
-	.setValidationEnabled(isValidationEnabled);
-
-export const jsonOptionValidator = s
-	.object({
-		label: labelValueDescriptionValidator,
-		value: labelValueDescriptionValidator,
-		description: labelValueDescriptionValidator.optional,
-		emoji: emojiValidator.optional,
-		default: s.boolean.optional,
+const buttonCustomIdPredicateBase = buttonPredicateBase
+	.extend({
+		custom_id: customIdPredicate,
+		emoji: emojiPredicate.optional(),
+		label: buttonLabelPredicate.optional(),
 	})
-	.setValidationEnabled(isValidationEnabled);
+	.refine((data) => data.emoji !== undefined || data.label !== undefined, {
+		message: 'Buttons with a custom id must have either an emoji or a label.',
+	});
 
-export const optionValidator = s.instance(StringSelectMenuOptionBuilder).setValidationEnabled(isValidationEnabled);
+const buttonPrimaryPredicate = buttonCustomIdPredicateBase.safeExtend({ style: z.literal(ButtonStyle.Primary) });
+const buttonSecondaryPredicate = buttonCustomIdPredicateBase.safeExtend({ style: z.literal(ButtonStyle.Secondary) });
+const buttonSuccessPredicate = buttonCustomIdPredicateBase.safeExtend({ style: z.literal(ButtonStyle.Success) });
+const buttonDangerPredicate = buttonCustomIdPredicateBase.safeExtend({ style: z.literal(ButtonStyle.Danger) });
 
-export const optionsValidator = optionValidator.array
-	.lengthGreaterThanOrEqual(0)
-	.setValidationEnabled(isValidationEnabled);
-export const optionsLengthValidator = s.number.int
-	.greaterThanOrEqual(0)
-	.lessThanOrEqual(25)
-	.setValidationEnabled(isValidationEnabled);
-
-export function validateRequiredSelectMenuParameters(options: StringSelectMenuOptionBuilder[], customId?: string) {
-	customIdValidator.parse(customId);
-	optionsValidator.parse(options);
-}
-
-export const defaultValidator = s.boolean;
-
-export function validateRequiredSelectMenuOptionParameters(label?: string, value?: string) {
-	labelValueDescriptionValidator.parse(label);
-	labelValueDescriptionValidator.parse(value);
-}
-
-export const channelTypesValidator = s.nativeEnum(ChannelType).array.setValidationEnabled(isValidationEnabled);
-
-export const urlValidator = s.string
-	.url({
-		allowedProtocols: ['http:', 'https:', 'discord:'],
+const buttonLinkPredicate = buttonPredicateBase
+	.extend({
+		style: z.literal(ButtonStyle.Link),
+		url: z.url({ protocol: /^(?:https?|discord)$/ }).max(512),
+		emoji: emojiPredicate.optional(),
+		label: buttonLabelPredicate.optional(),
 	})
-	.setValidationEnabled(isValidationEnabled);
+	.refine((data) => data.emoji !== undefined || data.label !== undefined, {
+		message: 'Link buttons must have either an emoji or a label.',
+	});
 
-export function validateRequiredButtonParameters(
-	style?: ButtonStyle,
-	label?: string,
-	emoji?: APIMessageComponentEmoji,
-	customId?: string,
-	url?: string,
-) {
-	if (url && customId) {
-		throw new RangeError('URL and custom id are mutually exclusive');
-	}
+const buttonPremiumPredicate = buttonPredicateBase.extend({
+	style: z.literal(ButtonStyle.Premium),
+	sku_id: snowflakePredicate,
+});
 
-	if (!label && !emoji) {
-		throw new RangeError('Buttons must have a label and/or an emoji');
-	}
+export const buttonPredicate = z.discriminatedUnion('style', [
+	buttonLinkPredicate,
+	buttonPrimaryPredicate,
+	buttonSecondaryPredicate,
+	buttonSuccessPredicate,
+	buttonDangerPredicate,
+	buttonPremiumPredicate,
+]);
 
-	if (style === ButtonStyle.Link) {
-		if (!url) {
-			throw new RangeError('Link buttons must have a url');
+const selectMenuBasePredicate = z.object({
+	id: idPredicate,
+	placeholder: z.string().max(150).optional(),
+	min_values: z.number().min(0).max(25).optional(),
+	max_values: z.number().min(1).max(25).optional(),
+	custom_id: customIdPredicate,
+	disabled: z.boolean().optional(),
+});
+
+export const selectMenuChannelPredicate = selectMenuBasePredicate.extend({
+	type: z.literal(ComponentType.ChannelSelect),
+	channel_types: z.enum(ChannelType).array().optional(),
+	default_values: z
+		.object({ id: snowflakePredicate, type: z.literal(SelectMenuDefaultValueType.Channel) })
+		.array()
+		.max(25)
+		.optional(),
+});
+
+export const selectMenuMentionablePredicate = selectMenuBasePredicate.extend({
+	type: z.literal(ComponentType.MentionableSelect),
+	default_values: z
+		.object({
+			id: snowflakePredicate,
+			type: z.literal([SelectMenuDefaultValueType.Role, SelectMenuDefaultValueType.User]),
+		})
+		.array()
+		.max(25)
+		.optional(),
+});
+
+export const selectMenuRolePredicate = selectMenuBasePredicate.extend({
+	type: z.literal(ComponentType.RoleSelect),
+	default_values: z
+		.object({ id: snowflakePredicate, type: z.literal(SelectMenuDefaultValueType.Role) })
+		.array()
+		.max(25)
+		.optional(),
+});
+
+export const selectMenuStringOptionPredicate = z.object({
+	label: z.string().min(1).max(100),
+	value: z.string().min(1).max(100),
+	description: z.string().min(1).max(100).optional(),
+	emoji: emojiPredicate.optional(),
+	default: z.boolean().optional(),
+});
+
+export const selectMenuStringPredicate = selectMenuBasePredicate
+	.extend({
+		type: z.literal(ComponentType.StringSelect),
+		options: selectMenuStringOptionPredicate.array().min(1).max(25),
+	})
+	.check((ctx) => {
+		const addIssue = (name: string, minimum: number) =>
+			ctx.issues.push({
+				code: 'too_small',
+				message: `The number of options must be greater than or equal to ${name}`,
+				inclusive: true,
+				minimum,
+				type: 'number',
+				path: ['options'],
+				origin: 'number',
+				input: minimum,
+			});
+
+		if (ctx.value.min_values !== undefined && ctx.value.options.length < ctx.value.min_values) {
+			addIssue('min_values', ctx.value.min_values);
 		}
-	} else if (url) {
-		throw new RangeError('Non-link buttons cannot have a url');
-	}
-}
+
+		if (
+			ctx.value.min_values !== undefined &&
+			ctx.value.max_values !== undefined &&
+			ctx.value.min_values > ctx.value.max_values
+		) {
+			ctx.issues.push({
+				code: 'too_big',
+				message: `The maximum amount of options must be greater than or equal to the minimum amount of options`,
+				inclusive: true,
+				maximum: ctx.value.max_values,
+				type: 'number',
+				path: ['min_values'],
+				origin: 'number',
+				input: ctx.value.min_values,
+			});
+		}
+	});
+
+export const selectMenuUserPredicate = selectMenuBasePredicate.extend({
+	type: z.literal(ComponentType.UserSelect),
+	default_values: z
+		.object({ id: snowflakePredicate, type: z.literal(SelectMenuDefaultValueType.User) })
+		.array()
+		.max(25)
+		.optional(),
+});
+
+export const actionRowPredicate = z.object({
+	id: idPredicate,
+	type: z.literal(ComponentType.ActionRow),
+	components: z.union([
+		z
+			.object({ type: z.literal(ComponentType.Button) })
+			.array()
+			.min(1)
+			.max(5),
+		z
+			.object({
+				type: z.literal([
+					ComponentType.ChannelSelect,
+					ComponentType.MentionableSelect,
+					ComponentType.StringSelect,
+					ComponentType.RoleSelect,
+					ComponentType.TextInput,
+					ComponentType.UserSelect,
+				]),
+			})
+			.array()
+			.length(1),
+	]),
+});

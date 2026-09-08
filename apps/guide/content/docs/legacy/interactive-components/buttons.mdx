@@ -1,0 +1,122 @@
+---
+title: Buttons
+---
+
+The first type of interactive component we'll cover creating is a Button. Buttons are available in a variety of styles and can be used to provide permanent interfaces, temporary confirmation workflows, and other forms of additional interaction with your bot.
+
+<Callout>
+	This page is a follow-up to the [slash commands](../slash-commands/advanced-creation) section and [action
+	rows](./action-rows) page. Please carefully read those pages first so that you can understand the methods used here.
+</Callout>
+
+## Building buttons
+
+Buttons are one of the `MessageComponent` classes, which can be sent via messages or interaction responses.
+
+For this example, you're going to expand on the `ban` command that was previously covered on the [parsing options](../slash-commands/parsing-options) page with a confirmation workflow.
+
+To create your buttons, use the `ButtonBuilder` class, defining at least the `customId`, `style` and `label`.
+
+```js
+const { ButtonBuilder, ButtonStyle, SlashCommandBuilder } = require('discord.js');
+
+module.exports = {
+	// data: new SlashCommandBuilder()...
+	async execute(interaction) {
+		const target = interaction.options.getUser('target');
+		const reason = interaction.options.getString('reason') ?? 'No reason provided';
+
+		const confirm = new ButtonBuilder().setCustomId('confirm').setLabel('Confirm Ban').setStyle(ButtonStyle.Danger);
+
+		const cancel = new ButtonBuilder().setCustomId('cancel').setLabel('Cancel').setStyle(ButtonStyle.Secondary);
+	},
+};
+```
+
+<Callout>
+	The custom id is a developer-defined string of up to 100 characters. Use this field to ensure you can uniquely define
+	all incoming interactions.
+</Callout>
+
+## Sending buttons
+
+To send your buttons, create an action row and add the buttons as components. Then, send the row in the `components` property of `InteractionReplyOptions` (extends `BaseMessageOptions`).
+
+```js
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } = require('discord.js');
+
+module.exports = {
+	// data: new SlashCommandBuilder()...
+	async execute(interaction) {
+		const target = interaction.options.getUser('target');
+		const reason = interaction.options.getString('reason') ?? 'No reason provided';
+
+		const confirm = new ButtonBuilder().setCustomId('confirm').setLabel('Confirm Ban').setStyle(ButtonStyle.Danger);
+
+		const cancel = new ButtonBuilder().setCustomId('cancel').setLabel('Cancel').setStyle(ButtonStyle.Secondary);
+
+		const row = new ActionRowBuilder().addComponents(cancel, confirm);
+
+		await interaction.reply({
+			content: `Are you sure you want to ban ${target} for reason: ${reason}?`,
+			components: [row],
+		});
+	},
+};
+```
+
+Restart your bot and then send the command to a channel your bot has access to. If all goes well, you should see something like this:
+
+## Button styles
+
+You'll notice in the above example that two different styles of buttons have been used, the grey Secondary style and the red Danger style. These were chosen specifically to support good UI/UX principles. In total, there are five button styles that can be used as appropriate to the action of the button:
+
+- `Primary` style buttons are blue. These are suitable for most general purpose actions, where it's the primary or most significant action expected.
+- `Secondary` style buttons are grey. Use these for less important actions like the "Cancel" button in the example above.
+- `Success` style buttons are green. Similar to the Primary button, these are a good choice for "positive" confirmation actions.
+- `Danger` style buttons are red. Where the action being confirmed is "destructive", such a ban or delete, using a red button helps alert the user to the risk of the action.
+- `Link` style buttons are also grey, but are tagged with the "external link" symbol. These buttons will open the provided link in the browser without sending an interaction to the bot.
+
+## Link buttons
+
+Link buttons are a little different to the other styles. `Link` buttons **must** have a `url`, **cannot** have a `customId` and **do not** send an interaction event when clicked.
+
+```js
+const button = new ButtonBuilder()
+	.setLabel('discord.js docs')
+	.setURL('https://discord.js.org') // [!code word:setURL]
+	.setStyle(ButtonStyle.Link); // [!code word:Link]
+```
+
+## Disabled buttons
+
+If you want to prevent a button from being used, but not remove it from the message, you can disable it with the `ButtonBuilder#setDisabled` method:
+
+```js
+const button = new ButtonBuilder()
+	.setCustomId('disabled')
+	.setLabel('Click me?')
+	.setStyle(ButtonStyle.Primary)
+	.setDisabled(true); // [!code word:setDisabled]
+```
+
+## Emoji buttons
+
+If you want to use a guild emoji within a `ButtonBuilder`, you can use the `ButtonBuilder#setEmoji` method:
+
+```js
+const button = new ButtonBuilder()
+	.setCustomId('primary')
+	.setLabel('Primary')
+	.setStyle(ButtonStyle.Primary)
+	.setEmoji('123456789012345678'); // [!code word:setEmoji]
+```
+
+#### Next steps
+
+<Callout>
+	Buttons can also be set as an accessory in section components. Check the guide section on [display
+	components](../popular-topics/display-components) if you want to find out more about this.
+</Callout>
+
+That's everything you need to know about building and sending buttons! From here you can learn about the other type of message component, [select menus](./select-menus), or have your bot start listening to [component interactions](./interactions) from your buttons.

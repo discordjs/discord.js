@@ -1,7 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
-import { URL } from 'node:url';
 import { describe, test, expect, vitest } from 'vitest';
 import {
+	applicationDirectory,
 	chatInputApplicationCommandMention,
 	blockQuote,
 	bold,
@@ -10,23 +10,28 @@ import {
 	codeBlock,
 	Faces,
 	formatEmoji,
+	gameProfileMention,
 	heading,
 	HeadingLevel,
 	hideLinkEmbed,
 	hyperlink,
 	inlineCode,
 	italic,
+	linkedRoleMention,
 	messageLink,
 	orderedList,
 	quote,
 	roleMention,
 	spoiler,
 	strikethrough,
+	subtext,
 	time,
 	TimestampStyles,
-	underscore,
+	underline,
 	unorderedList,
 	userMention,
+	email,
+	phoneNumber,
 } from '../src/index.js';
 
 describe('Message formatters', () => {
@@ -58,9 +63,9 @@ describe('Message formatters', () => {
 		});
 	});
 
-	describe('underscore', () => {
+	describe('underline', () => {
 		test('GIVEN "discord.js" THEN returns "__discord.js__"', () => {
-			expect<'__discord.js__'>(underscore('discord.js')).toEqual('__discord.js__');
+			expect<'__discord.js__'>(underline('discord.js')).toEqual('__discord.js__');
 		});
 	});
 
@@ -143,21 +148,33 @@ describe('Message formatters', () => {
 			});
 		});
 
+		describe('linkedRoleMention', () => {
+			test('GIVEN roleId THEN returns "<id:linked-roles:[roleId]>"', () => {
+				expect(linkedRoleMention('815434166602170409')).toEqual('<id:linked-roles:815434166602170409>');
+			});
+		});
+
+		describe('gameProfileMention', () => {
+			test('GIVEN gameId THEN returns "<@$[gameId]>"', () => {
+				expect<'<@$1402418491272986635>'>(gameProfileMention('1402418491272986635')).toEqual('<@$1402418491272986635>');
+			});
+		});
+
 		describe('chatInputApplicationCommandMention', () => {
-			test('GIVEN commandName and commandId THEN returns "</[commandName]:[commandId]>"', () => {
-				expect(chatInputApplicationCommandMention('airhorn', '815434166602170409')).toEqual(
+			test('GIVEN commandId and commandName THEN returns "</[commandName]:[commandId]>"', () => {
+				expect(chatInputApplicationCommandMention('815434166602170409', 'airhorn')).toEqual(
 					'</airhorn:815434166602170409>',
 				);
 			});
 
-			test('GIVEN commandName, subcommandName, and commandId THEN returns "</[commandName] [subcommandName]:[commandId]>"', () => {
-				expect(chatInputApplicationCommandMention('airhorn', 'sub', '815434166602170409')).toEqual(
+			test('GIVEN commandId, commandName, subcommandName  THEN returns "</[commandName] [subcommandName]:[commandId]>"', () => {
+				expect(chatInputApplicationCommandMention('815434166602170409', 'airhorn', 'sub')).toEqual(
 					'</airhorn sub:815434166602170409>',
 				);
 			});
 
-			test('GIVEN commandName, subcommandGroupName, subcommandName, and commandId THEN returns "</[commandName] [subcommandGroupName] [subcommandName]:[commandId]>"', () => {
-				expect(chatInputApplicationCommandMention('airhorn', 'group', 'sub', '815434166602170409')).toEqual(
+			test('GIVEN commandId, commandName, subcommandName, and subcommandGroupName, THEN returns "</[commandName] [subcommandGroupName] [subcommandName]:[commandId]>"', () => {
+				expect(chatInputApplicationCommandMention('815434166602170409', 'airhorn', 'sub', 'group')).toEqual(
 					'</airhorn group sub:815434166602170409>',
 				);
 			});
@@ -165,16 +182,56 @@ describe('Message formatters', () => {
 	});
 
 	describe('formatEmoji', () => {
-		test('GIVEN static emojiId THEN returns "<:_:${emojiId}>"', () => {
-			expect<`<:_:851461487498493952>`>(formatEmoji('851461487498493952')).toEqual('<:_:851461487498493952>');
+		test('GIVEN static emojiId THEN returns "<:emoji:${emojiId}>"', () => {
+			expect<`<:emoji:851461487498493952>`>(formatEmoji('851461487498493952')).toEqual('<:emoji:851461487498493952>');
 		});
 
-		test('GIVEN static emojiId WITH animated explicitly false THEN returns "<:_:[emojiId]>"', () => {
-			expect<`<:_:851461487498493952>`>(formatEmoji('851461487498493952', false)).toEqual('<:_:851461487498493952>');
+		test('GIVEN static emojiId WITH animated explicitly false THEN returns "<:emoji:[emojiId]>"', () => {
+			expect<`<:emoji:851461487498493952>`>(formatEmoji('851461487498493952', false)).toEqual(
+				'<:emoji:851461487498493952>',
+			);
 		});
 
-		test('GIVEN animated emojiId THEN returns "<a:_:${emojiId}>"', () => {
-			expect<`<a:_:827220205352255549>`>(formatEmoji('827220205352255549', true)).toEqual('<a:_:827220205352255549>');
+		test('GIVEN animated emojiId THEN returns "<a:emoji:${emojiId}>"', () => {
+			expect<`<a:emoji:827220205352255549>`>(formatEmoji('827220205352255549', true)).toEqual(
+				'<a:emoji:827220205352255549>',
+			);
+		});
+
+		test('GIVEN static id in options object THEN returns "<:emoji:${id}>"', () => {
+			expect<`<:emoji:851461487498493952>`>(formatEmoji({ id: '851461487498493952' })).toEqual(
+				'<:emoji:851461487498493952>',
+			);
+		});
+
+		test('GIVEN static id in options object WITH animated explicitly false THEN returns "<:emoji:${id}>"', () => {
+			expect<`<:emoji:851461487498493952>`>(formatEmoji({ animated: false, id: '851461487498493952' })).toEqual(
+				'<:emoji:851461487498493952>',
+			);
+		});
+
+		test('GIVEN animated id in options object THEN returns "<a:emoji:${id}>"', () => {
+			expect<`<a:emoji:827220205352255549>`>(formatEmoji({ animated: true, id: '827220205352255549' })).toEqual(
+				'<a:emoji:827220205352255549>',
+			);
+		});
+
+		test('GIVEN static id and name in options object THEN returns "<:${name}:${id}>"', () => {
+			expect<`<:test:851461487498493952>`>(formatEmoji({ id: '851461487498493952', name: 'test' })).toEqual(
+				'<:test:851461487498493952>',
+			);
+		});
+
+		test('GIVEN static id and name WITH animated explicitly false THEN returns "<:${name}:${id}>"', () => {
+			expect<`<:test:851461487498493952>`>(
+				formatEmoji({ animated: false, id: '851461487498493952', name: 'test' }),
+			).toEqual('<:test:851461487498493952>');
+		});
+
+		test('GIVEN animated id and name THEN returns "<a:${name}:${id}>"', () => {
+			expect<`<a:test:827220205352255549>`>(
+				formatEmoji({ id: '827220205352255549', name: 'test', animated: true }),
+			).toEqual('<a:test:827220205352255549>');
 		});
 	});
 
@@ -242,6 +299,12 @@ describe('Message formatters', () => {
 		});
 	});
 
+	describe('subtext', () => {
+		test('GIVEN "discord.js" THEN returns "-# discord.js"', () => {
+			expect<'-# discord.js'>(subtext('discord.js')).toEqual('-# discord.js');
+		});
+	});
+
 	describe('time', () => {
 		test('GIVEN no arguments THEN returns "<t:${bigint}>"', () => {
 			vitest.useFakeTimers();
@@ -274,18 +337,66 @@ describe('Message formatters', () => {
 			expect<'<t:1867424897:d>'>(time(1_867_424_897, 'd')).toEqual('<t:1867424897:d>');
 		});
 
-		test('GIVEN a date and a format from enum THEN returns "<t:${time}:${style}>"', () => {
-			expect<'<t:1867424897:R>'>(time(1_867_424_897, TimestampStyles.RelativeTime)).toEqual('<t:1867424897:R>');
+		test.each([
+			[TimestampStyles.ShortTime, 't'],
+			[TimestampStyles.MediumTime, 'T'],
+			[TimestampStyles.ShortDate, 'd'],
+			[TimestampStyles.LongDate, 'D'],
+			[TimestampStyles.LongDateShortTime, 'f'],
+			[TimestampStyles.FullDateShortTime, 'F'],
+			[TimestampStyles.ShortDateShortTime, 's'],
+			[TimestampStyles.ShortDateMediumTime, 'S'],
+			[TimestampStyles.RelativeTime, 'R'],
+		])('GIVEN a date and style from enum THEN returns "<t:${time}:${style}>"', (style, expectedStyle) => {
+			expect<`<t:1867424897:${typeof style}>`>(time(1_867_424_897, style)).toEqual(`<t:1867424897:${expectedStyle}>`);
+		});
+	});
+
+	describe('applicationDirectory', () => {
+		test('GIVEN application id THEN returns application directory store', () => {
+			expect(applicationDirectory('123456789012345678')).toEqual(
+				'https://discord.com/application-directory/123456789012345678/store',
+			);
+		});
+
+		test('GIVEN application id AND SKU id THEN returns SKU within the application directory store', () => {
+			expect(applicationDirectory('123456789012345678', '123456789012345678')).toEqual(
+				'https://discord.com/application-directory/123456789012345678/store/123456789012345678',
+			);
+		});
+	});
+
+	describe('email', () => {
+		test('GIVEN an email THEN returns "<[email]>"', () => {
+			expect<'<test@example.com>'>(email('test@example.com')).toEqual('<test@example.com>');
+		});
+
+		test('GIVEN an email AND headers THEN returns "<[email]?[headers]>"', () => {
+			expect<`<test@example.com?${string}>`>(email('test@example.com', { subject: 'Hello', body: 'World' })).toEqual(
+				'<test@example.com?subject=Hello&body=World>',
+			);
+		});
+	});
+
+	describe('phoneNumber', () => {
+		test('GIVEN a phone number with + THEN returns "<[phoneNumber]>"', () => {
+			expect<'<+1234567890>'>(phoneNumber('+1234567890')).toEqual('<+1234567890>');
+		});
+
+		test('GIVEN a phone number without + THEN throws', () => {
+			expect(() =>
+				phoneNumber(
+					// @ts-expect-error - Invalid input
+					'1234567890',
+				),
+			).toThrowError();
 		});
 	});
 
 	describe('Faces', () => {
-		// prettier-ignore
-		/* eslint-disable no-useless-escape */
-		test('GIVEN Faces.Shrug THEN returns "¯\_(ツ)_/¯"', () => {
-			expect<'¯\_(ツ)_/¯'>(Faces.Shrug).toEqual('¯\_(ツ)_/¯');
+		test('GIVEN Faces.Shrug THEN returns "¯\\_(ツ)_/¯"', () => {
+			expect<'¯\\_(ツ)_/¯'>(Faces.Shrug).toEqual('¯\\_(ツ)_/¯');
 		});
-		/* eslint-enable no-useless-escape */
 
 		test('GIVEN Faces.Tableflip THEN returns "(╯°□°)╯︵ ┻━┻"', () => {
 			expect<'(╯°□°)╯︵ ┻━┻'>(Faces.Tableflip).toEqual('(╯°□°)╯︵ ┻━┻');

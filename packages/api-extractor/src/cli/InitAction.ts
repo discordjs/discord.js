@@ -20,8 +20,7 @@ export class InitAction extends CommandLineAction {
 		});
 	}
 
-	protected async onExecute(): Promise<void> {
-		// override
+	protected override async onExecuteAsync(): Promise<void> {
 		const inputFilePath: string = path.resolve(__dirname, './schemas/api-extractor-template.json');
 		const outputFilePath: string = path.resolve(ExtractorConfig.FILENAME);
 

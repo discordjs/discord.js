@@ -9,26 +9,45 @@ export const BuiltinDocumentationLinks = {
 	undefined: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined',
 
 	// Built-in classes
+	AbortSignal: 'https://developer.mozilla.org/docs/Web/API/AbortSignal',
+	Agent: 'https://undici.nodejs.org/#/docs/api/Agent',
 	Array: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array',
 	ArrayBuffer: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer',
 	AsyncGenerator: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/AsyncGenerator',
 	AsyncIterable: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Iteration_protocols',
 	AsyncIterableIterator: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Iteration_protocols',
 	Buffer: 'https://nodejs.org/api/buffer.html#class-buffer',
+	ChildProcess: 'https://nodejs.org/api/child_process.html#class-childprocess',
 	Date: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date',
+	Dispatcher: 'https://undici.nodejs.org/#/docs/api/Dispatcher',
 	Error: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error',
 	Function: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Function',
 	Generator: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Generator',
+	IncomingMessage: 'https://nodejs.org/api/http.html#class-httpincomingmessage',
 	Iterable: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Iteration_protocols',
 	IterableIterator: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Iteration_protocols',
 	Iterator: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Iterator',
 	Map: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map',
+	MessagePort: 'https://nodejs.org/api/worker_threads.html#class-messageport',
 	Promise: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise',
+	RangeError: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RangeError',
+	Readable: 'https://nodejs.org/api/stream.html#class-streamreadable',
+	ReadableStream: 'https://developer.mozilla.org/docs/Web/API/ReadableStream',
 	RegExp: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp',
+	Response: 'https://developer.mozilla.org/docs/Web/API/Response',
+	ServerResponse: 'https://nodejs.org/api/http.html#class-httpserverresponse',
 	Set: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set',
+	Stream: 'https://nodejs.org/api/stream.html#stream',
+	SymbolConstructor: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol',
+	TypeError: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/TypeError',
+	URL: 'https://developer.mozilla.org/docs/Web/API/URL',
+	URLSearchParams: 'https://developer.mozilla.org/docs/Web/API/URLSearchParams',
 	WeakMap: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WeakMap',
 	WeakRef: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WeakRef',
 	WeakSet: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WeakSet',
+	WebSocket: 'https://developer.mozilla.org/docs/Web/API/WebSocket',
+	Worker: 'https://nodejs.org/api/worker_threads.html#class-worker',
+	'NodeJS.Timeout': 'https://nodejs.org/api/timers.html#class-timeout',
 
 	// Typed arrays
 	BigInt64Array: 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/BigInt64Array',
@@ -48,6 +67,10 @@ export const BuiltinDocumentationLinks = {
 	never: 'https://www.typescriptlang.org/docs/handbook/2/functions.html#never',
 	object: 'https://www.typescriptlang.org/docs/handbook/2/functions.html#object',
 	ReadonlyArray: 'https://www.typescriptlang.org/docs/handbook/2/objects.html#the-readonlyarray-type',
+	ReadonlyMap:
+		'https://github.com/microsoft/TypeScript/blob/1416053b9e85ca2344a7a6aa10456d633ea1cd65/src/lib/es2015.collection.d.ts#L38-L43',
+	ReadonlySet:
+		'https://github.com/microsoft/TypeScript/blob/1416053b9e85ca2344a7a6aa10456d633ea1cd65/src/lib/es2015.collection.d.ts#L104-L108',
 	unknown: 'https://www.typescriptlang.org/docs/handbook/2/functions.html#unknown',
 	void: 'https://www.typescriptlang.org/docs/handbook/2/functions.html#void',
 
@@ -73,4 +96,11 @@ export const BuiltinDocumentationLinks = {
 	Lowercase: 'https://www.typescriptlang.org/docs/handbook/utility-types.html#lowercasestringtype',
 	Capitalize: 'https://www.typescriptlang.org/docs/handbook/utility-types.html#capitalizestringtype',
 	Uncapitalize: 'https://www.typescriptlang.org/docs/handbook/utility-types.html#uncapitalizestringtype',
+
+	// External Libraries
+	AsyncEventEmitter: 'https://github.com/vladfrangu/async_event_emitter',
+	AsyncQueue: 'https://www.sapphirejs.dev/docs/Documentation/api-utilities/classes/sapphire_async_queue.AsyncQueue',
+	Redis: 'https://redis.github.io/ioredis/classes/Redis.html',
+	'prism.opus.Encoder': 'https://amishshah.github.io/prism-media/opus.Encoder.html',
+	'prism.VolumeTransformer': 'https://amishshah.github.io/prism-media/core.VolumeTransformer.html',
 } as const;

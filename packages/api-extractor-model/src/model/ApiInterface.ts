@@ -35,7 +35,8 @@ import { HeritageType } from './HeritageType.js';
  * @public
  */
 export interface IApiInterfaceOptions
-	extends IApiItemContainerMixinOptions,
+	extends
+		IApiItemContainerMixinOptions,
 		IApiNameMixinOptions,
 		IApiTypeParameterListMixinOptions,
 		IApiReleaseTagMixinOptions,
@@ -45,7 +46,8 @@ export interface IApiInterfaceOptions
 }
 
 export interface IApiInterfaceJson
-	extends IApiItemContainerJson,
+	extends
+		IApiItemContainerJson,
 		IApiNameMixinJson,
 		IApiTypeParameterListMixinJson,
 		IApiReleaseTagMixinJson,

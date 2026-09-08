@@ -1,17 +1,22 @@
 'use strict';
 
 const process = require('node:process');
+const { lazy, isFileBodyEncodable, isJSONEncodable } = require('@discordjs/util');
 const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
-const { BaseChannel } = require('../structures/BaseChannel');
-const { createChannel } = require('../util/Channels');
-const { ThreadChannelTypes } = require('../util/Constants');
-const Events = require('../util/Events');
+const { BaseChannel } = require('../structures/BaseChannel.js');
+const { MessagePayload } = require('../structures/MessagePayload.js');
+const { createChannel } = require('../util/Channels.js');
+const { ThreadChannelTypes } = require('../util/Constants.js');
+const { Events } = require('../util/Events.js');
+const { CachedManager } = require('./CachedManager.js');
+
+const getMessage = lazy(() => require('../structures/Message.js').Message);
 
 let cacheWarningEmitted = false;
 
 /**
  * A manager of channels belonging to a client
+ *
  * @extends {CachedManager}
  */
 class ChannelManager extends CachedManager {
@@ -32,6 +37,7 @@ class ChannelManager extends CachedManager {
 
   /**
    * The cache of Channels
+   *
    * @type {Collection<Snowflake, BaseChannel>}
    * @name ChannelManager#cache
    */
@@ -44,6 +50,7 @@ class ChannelManager extends CachedManager {
       if (ThreadChannelTypes.includes(existing.type)) {
         existing.parent?.threads?._add(existing);
       }
+
       return existing;
     }
 
@@ -69,17 +76,26 @@ class ChannelManager extends CachedManager {
 
     channel?.parent?.threads?.cache.delete(id);
     this.cache.delete(id);
+
+    if (channel?.threads) {
+      for (const threadId of channel.threads.cache.keys()) {
+        this.cache.delete(threadId);
+        channel.guild?.channels.cache.delete(threadId);
+      }
+    }
   }
 
   /**
    * Data that can be resolved to give a Channel object. This can be:
-   * * A Channel object
-   * * A Snowflake
+   * - A Channel object
+   * - A Snowflake
+   *
    * @typedef {BaseChannel|Snowflake} ChannelResolvable
    */
 
   /**
    * Resolves a ChannelResolvable to a Channel object.
+   *
    * @method resolve
    * @memberof ChannelManager
    * @instance
@@ -89,6 +105,7 @@ class ChannelManager extends CachedManager {
 
   /**
    * Resolves a ChannelResolvable to a channel id string.
+   *
    * @method resolveId
    * @memberof ChannelManager
    * @instance
@@ -98,6 +115,7 @@ class ChannelManager extends CachedManager {
 
   /**
    * Options for fetching a channel from Discord
+   *
    * @typedef {BaseFetchOptions} FetchChannelOptions
    * @property {boolean} [allowUnknownGuild=false] Allows the channel to be returned even if the guild is not in cache,
    * it will not be cached. <warn>Many of the properties and methods on the returned channel will throw errors</warn>
@@ -105,6 +123,7 @@ class ChannelManager extends CachedManager {
 
   /**
    * Obtains a channel from Discord, or the channel cache if it's already available.
+   *
    * @param {Snowflake} id The channel's id
    * @param {FetchChannelOptions} [options] Additional options for this fetch
    * @returns {Promise<?BaseChannel>}
@@ -123,6 +142,56 @@ class ChannelManager extends CachedManager {
     const data = await this.client.rest.get(Routes.channel(id));
     return this._add(data, null, { cache, allowUnknownGuild });
   }
+
+  /**
+   * Creates a message in a channel.
+   *
+   * @param {TextChannelResolvable} channel The channel to send the message to
+   * @param {string|MessagePayload|MessageCreateOptions|JSONEncodable<RESTPostAPIChannelMessageJSONBody>|FileBodyEncodable<RESTPostAPIChannelMessageJSONBody>} options The options to provide
+   * @returns {Promise<Message>}
+   * @example
+   * // Send a basic message
+   * client.channels.createMessage(channel, 'hello!')
+   *   .then(message => console.log(`Sent message: ${message.content}`))
+   *   .catch(console.error);
+   * @example
+   * // Send a remote file
+   * client.channels.createMessage(channel, {
+   *   files: ['https://github.com/discordjs.png']
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Send a local file
+   * client.channels.createMessage(channel, {
+   *   files: [{
+   *     attachment: 'entire/path/to/file.jpg',
+   *     name: 'file.jpg',
+   *     description: 'A description of the file'
+   *   }]
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
+   */
+  async createMessage(channel, options) {
+    let payload;
+
+    if (options instanceof MessagePayload) {
+      payload = await options.resolveBody().resolveFiles();
+    } else if (isFileBodyEncodable(options)) {
+      payload = options.toFileBody();
+    } else if (isJSONEncodable(options)) {
+      payload = { body: options.toJSON() };
+    } else {
+      payload = await MessagePayload.create(this, options).resolveBody().resolveFiles();
+    }
+
+    const resolvedChannelId = this.resolveId(channel);
+    const resolvedChannel = this.resolve(channel);
+    const data = await this.client.rest.post(Routes.channelMessages(resolvedChannelId), payload);
+
+    return resolvedChannel?.messages._add(data) ?? new (getMessage())(this.client, data);
+  }
 }
 
-module.exports = ChannelManager;
+exports.ChannelManager = ChannelManager;

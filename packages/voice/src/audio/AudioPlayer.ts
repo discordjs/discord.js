@@ -182,9 +182,9 @@ export interface AudioPlayer extends EventEmitter {
 	 *
 	 * @eventProperty
 	 */
-	on<T extends AudioPlayerStatus>(
-		event: T,
-		listener: (oldState: AudioPlayerState, newState: AudioPlayerState & { status: T }) => void,
+	on<Event extends AudioPlayerStatus>(
+		event: Event,
+		listener: (oldState: AudioPlayerState, newState: AudioPlayerState & { status: Event }) => void,
 	): this;
 }
 
@@ -304,14 +304,14 @@ export class AudioPlayer extends EventEmitter {
 
 	/**
 	 * The state that the player is in.
+	 *
+	 * @remarks
+	 * The setter will perform clean-up operations where necessary.
 	 */
 	public get state() {
 		return this._state;
 	}
 
-	/**
-	 * Sets a new state for the player, performing clean-up operations where necessary.
-	 */
 	public set state(newState: AudioPlayerState) {
 		const oldState = this._state;
 		const newResource = Reflect.get(newState, 'resource') as AudioResource | undefined;
@@ -375,7 +375,7 @@ export class AudioPlayer extends EventEmitter {
 	 * @param resource - The resource to play
 	 * @throws Will throw if attempting to play an audio resource that has already ended, or is being played by another player
 	 */
-	public play<T>(resource: AudioResource<T>) {
+	public play<Metadata>(resource: AudioResource<Metadata>) {
 		if (resource.ended) {
 			throw new Error('Cannot play a resource that has already ended.');
 		}

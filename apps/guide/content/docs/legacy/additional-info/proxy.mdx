@@ -1,0 +1,73 @@
+---
+title: Using a Proxy
+---
+
+This guide will show you how to set up a proxy with discord.js. This may be necessary if you are deploying your bot to a server with a firewall only allowing outside traffic through the proxy.
+
+Proxying discord.js requires two components: a REST proxy and a WebSocket proxy.
+
+## Prerequisites
+
+To achieve these two components you can utilize the `undici` and `global-agent` packages:
+
+```sh tab="npm"
+npm install undici global-agent
+```
+
+```sh tab="yarn"
+yarn add undici global-agent
+```
+
+```sh tab="pnpm"
+pnpm add undici global-agent
+```
+
+```sh tab="bun"
+bun add undici global-agent
+```
+
+## Setting up the proxy for REST calls
+
+The `@discordjs/rest` package handling HTTP requests in discord.js uses the `undici` package. Accordingly, you can provide a custom `ProxyAgent` configuration to the client constructor:
+
+```js title="index.js" lineNumbers
+const { ProxyAgent } = require('undici'); // [!code word:ProxyAgent]
+const { Client } = require('discord.js');
+
+const client = new Client({
+	// ...other client options
+	rest: {
+		agent: new ProxyAgent('http://my-proxy-server:port'),
+	},
+});
+
+client.login('your-token-goes-here');
+```
+
+<Callout>
+	For further information on the `undici` `ProxyAgent`, please refer to the [undici
+	documentation](https://undici.nodejs.org/#/docs/api/ProxyAgent.md).
+</Callout>
+
+## Setting up the proxy for the WebSocket connection
+
+To set up a proxy for WebSocket, you can use the `global-agent` package. You will need to import and call the `bootstrap()` function and set the required `GLOBAL_AGENT` globals as shown below:
+
+```js title="index.js" lineNumbers
+const { ProxyAgent } = require('undici');
+const { Client } = require('discord.js');
+const { bootstrap } = require('global-agent'); // [!code ++:5]
+
+bootstrap(); // [!code word:bootstrap]
+global.GLOBAL_AGENT.HTTP_PROXY = 'http://my-proxy-server:port';
+global.GLOBAL_AGENT.HTTPS_PROXY = 'https://my-proxy-server:port';
+
+const client = new Client({
+	// ...other client options
+	rest: {
+		agent: new ProxyAgent('http://my-proxy-server:port'),
+	},
+});
+
+client.login('your-token-goes-here');
+```

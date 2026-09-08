@@ -1,14 +1,12 @@
 'use client';
 
-import { FiCheck } from '@react-icons/all-files/fi/FiCheck';
-import { FiCopy } from '@react-icons/all-files/fi/FiCopy';
+import { Copy, CopyCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useCopyToClipboard } from 'react-use';
-import { buttonVariants } from '~/styles/Button';
+import { useCopyToClipboard } from 'usehooks-ts';
 
-export function InstallButton() {
+export function InstallButton({ className = '' }: { readonly className?: string }) {
 	const [interacted, setInteracted] = useState(false);
-	const [state, copyToClipboard] = useCopyToClipboard();
+	const [copiedText, copyToClipboard] = useCopyToClipboard();
 
 	useEffect(() => {
 		const timer = setTimeout(() => setInteracted(false), 2_000);
@@ -17,18 +15,18 @@ export function InstallButton() {
 
 	return (
 		<button
-			className={buttonVariants({ variant: 'secondary', className: 'cursor-copy font-mono' })}
-			onClick={() => {
+			className={`cursor-copy rounded-sm border border-neutral-300 bg-white px-4 py-2 font-mono hover:bg-neutral-200 dark:border-neutral-700 dark:bg-transparent dark:hover:bg-neutral-800 ${className}`}
+			onClick={async () => {
 				setInteracted(true);
-				copyToClipboard('npm install discord.js');
+				await copyToClipboard('npm install discord.js');
 			}}
 			type="button"
 		>
-			<span className="font-semibold text-blurple">{'>'}</span> npm install discord.js{' '}
-			{state.value && interacted ? (
-				<FiCheck className="ml-1 inline-block text-green-500" />
+			<span className="text-base-blurple-400 font-semibold">{'>'}</span> npm install discord.js{' '}
+			{copiedText && interacted ? (
+				<CopyCheck aria-hidden className="ml-1 inline-block text-green-500" size={20} />
 			) : (
-				<FiCopy className="ml-1 inline-block" />
+				<Copy aria-hidden className="ml-1 inline-block" size={20} />
 			)}
 		</button>
 	);

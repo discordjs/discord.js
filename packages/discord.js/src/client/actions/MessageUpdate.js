@@ -1,10 +1,10 @@
 'use strict';
 
-const Action = require('./Action');
+const { Action } = require('./Action.js');
 
 class MessageUpdateAction extends Action {
   handle(data) {
-    const channel = this.getChannel(data);
+    const channel = this.getChannel({ id: data.channel_id, ...('guild_id' in data && { guild_id: data.guild_id }) });
     if (channel) {
       if (!channel.isTextBased()) return {};
 
@@ -23,4 +23,4 @@ class MessageUpdateAction extends Action {
   }
 }
 
-module.exports = MessageUpdateAction;
+exports.MessageUpdateAction = MessageUpdateAction;

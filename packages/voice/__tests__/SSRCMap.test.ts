@@ -1,8 +1,9 @@
 import { type EventEmitter, once } from 'node:events';
 import process from 'node:process';
+import { describe, test, expect } from 'vitest';
 import { SSRCMap, type VoiceUserData } from '../src/receive/SSRCMap';
 
-async function onceOrThrow<T extends EventEmitter>(target: T, event: string, after: number) {
+async function onceOrThrow<Emitter extends EventEmitter>(target: Emitter, event: string, after: number) {
 	return new Promise((resolve, reject) => {
 		target.on(event, resolve);
 		setTimeout(() => reject(new Error('Time up')), after);

@@ -1,17 +1,24 @@
 /* eslint-disable jsdoc/check-param-names */
 
 import { Buffer } from 'node:buffer';
-import { VoiceOpcodes } from 'discord-api-types/voice/v4';
-import type { VoiceConnection } from '../VoiceConnection';
-import type { ConnectionData } from '../networking/Networking';
+import crypto from 'node:crypto';
+import type { VoiceReceivePayload } from 'discord-api-types/voice/v8';
+import { VoiceOpcodes } from 'discord-api-types/voice/v8';
+import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
+import { NetworkingStatusCode, type ConnectionData } from '../networking/Networking';
 import { methods } from '../util/Secretbox';
+import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants';
 import {
 	AudioReceiveStream,
 	createDefaultAudioReceiveStreamOptions,
+	AudioPacket,
 	type AudioReceiveStreamOptions,
 } from './AudioReceiveStream';
 import { SSRCMap } from './SSRCMap';
 import { SpeakingMap } from './SpeakingMap';
+
+const UNPADDED_NONCE_LENGTH = 4;
+const AUTH_TAG_LENGTH = 16;
 
 /**
  * Attaches to a VoiceConnection, allowing you to receive audio packets from other
@@ -64,67 +71,132 @@ export class VoiceReceiver {
 	 * @param packet - The received packet
 	 * @internal
 	 */
-	public onWsPacket(packet: any) {
-		if (packet.op === VoiceOpcodes.ClientDisconnect && typeof packet.d?.user_id === 'string') {
+	public onWsPacket(packet: VoiceReceivePayload) {
+		if (packet.op === VoiceOpcodes.ClientDisconnect) {
 			this.ssrcMap.delete(packet.d.user_id);
-		} else if (
-			packet.op === VoiceOpcodes.Speaking &&
-			typeof packet.d?.user_id === 'string' &&
-			typeof packet.d?.ssrc === 'number'
-		) {
+		} else if (packet.op === VoiceOpcodes.Speaking) {
 			this.ssrcMap.update({ userId: packet.d.user_id, audioSSRC: packet.d.ssrc });
-		} else if (
-			packet.op === VoiceOpcodes.ClientConnect &&
-			typeof packet.d?.user_id === 'string' &&
-			typeof packet.d?.audio_ssrc === 'number'
-		) {
-			this.ssrcMap.update({
-				userId: packet.d.user_id,
-				audioSSRC: packet.d.audio_ssrc,
-				videoSSRC: packet.d.video_ssrc === 0 ? undefined : packet.d.video_ssrc,
-			});
 		}
 	}
 
-	private decrypt(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array) {
-		// Choose correct nonce depending on encryption
-		let end;
-		if (mode === 'xsalsa20_poly1305_lite') {
-			buffer.copy(nonce, 0, buffer.length - 4);
-			end = buffer.length - 4;
-		} else if (mode === 'xsalsa20_poly1305_suffix') {
-			buffer.copy(nonce, 0, buffer.length - 24);
-			end = buffer.length - 24;
-		} else {
-			buffer.copy(nonce, 0, 0, 12);
-		}
+	/**
+	 * Decrypt RTP packet payload
+	 *
+	 * @param buffer - RTP packet buffer
+	 * @param mode - cipher mode
+	 * @param nonce - encryption nonce
+	 * @param secretKey - encryption key
+	 * @param headerSize - size of the unencrypted RTP header (fixed header + CSRC + extension header)
+	 * @returns decrypted packet payload
+	 */
+	private decrypt(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array, headerSize: number) {
+		// Copy the last 4 bytes of unpadded nonce to the padding of (12 - 4) or (24 - 4) bytes
+		buffer.copy(nonce, 0, buffer.length - UNPADDED_NONCE_LENGTH);
 
-		// Open packet
-		const decrypted = methods.open(buffer.slice(12, end), nonce, secretKey);
-		if (!decrypted) return;
-		return Buffer.from(decrypted);
+		// The unencrypted RTP header is used as AAD (authenticated but not encrypted)
+		const header = buffer.subarray(0, headerSize);
+
+		// Encrypted contains the extension data, if any, the opus packet, and the auth tag
+		const encrypted = buffer.subarray(headerSize, buffer.length - AUTH_TAG_LENGTH - UNPADDED_NONCE_LENGTH);
+		const authTag = buffer.subarray(
+			buffer.length - AUTH_TAG_LENGTH - UNPADDED_NONCE_LENGTH,
+			buffer.length - UNPADDED_NONCE_LENGTH,
+		);
+
+		switch (mode) {
+			case 'aead_aes256_gcm_rtpsize': {
+				const decipheriv = crypto.createDecipheriv('aes-256-gcm', secretKey, nonce);
+				decipheriv.setAAD(header);
+				decipheriv.setAuthTag(authTag);
+
+				return Buffer.concat([decipheriv.update(encrypted), decipheriv.final()]);
+			}
+
+			case 'aead_xchacha20_poly1305_rtpsize': {
+				// Combined mode expects authtag in the encrypted message
+				return Buffer.from(
+					methods.crypto_aead_xchacha20poly1305_ietf_decrypt(
+						Buffer.concat([encrypted, authTag]),
+						header,
+						nonce,
+						secretKey,
+					),
+				);
+			}
+
+			default: {
+				throw new RangeError(`Unsupported decryption method: ${mode}`);
+			}
+		}
 	}
 
 	/**
 	 * Parses an audio packet, decrypting it to yield an Opus packet.
 	 *
-	 * @param buffer - The buffer to parse
+	 * @param rtp - The incoming RTP packet buffer to be parsed
 	 * @param mode - The encryption mode
 	 * @param nonce - The nonce buffer used by the connection for encryption
 	 * @param secretKey - The secret key used by the connection for encryption
-	 * @returns The parsed Opus packet
+	 * @param userId - The user id that sent the packet
+	 * @param ssrc - already-parsed SSRC (Synchronization Source Identifier) from the RTP Header
+	 * @returns Decrypted Opus payload and RTP header information, or null if DAVE decrypt failed in a way that should be ignored
 	 */
-	private parsePacket(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array) {
-		let packet = this.decrypt(buffer, mode, nonce, secretKey);
-		if (!packet) return;
+	private parsePacket(
+		rtp: Buffer,
+		mode: string,
+		nonce: Buffer,
+		secretKey: Uint8Array,
+		userId: string,
+		ssrc: number,
+	): AudioPacket | null {
+		// Parse key RTP Header fields
+		const first = rtp.readUint8();
+		const hasHeaderExtension = Boolean((first >> 4) & 0x01); // X field
+		const cc = first & 0x0f; // CSRC Count field
+		const sequence = rtp.readUInt16BE(2);
+		const timestamp = rtp.readUInt32BE(4);
 
-		// Strip RTP Header Extensions (one-byte only)
-		if (packet[0] === 0xbe && packet[1] === 0xde) {
-			const headerExtensionLength = packet.readUInt16BE(2);
-			packet = packet.subarray(4 + 4 * headerExtensionLength);
+		// Compute unencrypted header size: fixed header + CSRC Identifiers + extension header if present
+		let headerSize = 12 + 4 * cc;
+		const extensionHeaderOffset = headerSize; // where the extension header starts, if present
+		if (hasHeaderExtension) headerSize += 4; // extension header (profile ID + length)
+
+		// Decrypt the RTP Payload
+		let payload: Buffer = this.decrypt(rtp, mode, nonce, secretKey, headerSize);
+		if (!payload) throw new Error('Failed to parse packet');
+
+		// Strip padding (RFC3550 5.1)
+		const hasPadding = rtp[0] && Boolean(rtp[0] & 0b100000);
+		if (hasPadding) {
+			const paddingAmount = payload[payload.length - 1]!;
+			if (paddingAmount < payload.length) {
+				payload = payload.subarray(0, payload.length - paddingAmount);
+			}
 		}
 
-		return packet;
+		// Skip the decrypted RTP Header Extension data if present
+		if (hasHeaderExtension) {
+			// Extension Header Length field
+			const headerExtensionLength = rtp.readUInt16BE(extensionHeaderOffset + 2);
+			payload = payload.subarray(4 * headerExtensionLength);
+		}
+
+		// Decrypt payload if in a DAVE session.
+		if (
+			this.voiceConnection.state.status === VoiceConnectionStatus.Ready &&
+			(this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Ready ||
+				this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Resuming)
+		) {
+			const daveSession = this.voiceConnection.state.networking.state.dave;
+			if (daveSession) {
+				payload = daveSession.decrypt(payload, userId)!;
+
+				if (!payload) return null; // decryption failed but should be ignored
+			}
+		}
+
+		// Construct AudioPacket with Opus payload and RTP header information
+		return new AudioPacket(payload, sequence, timestamp, ssrc);
 	}
 
 	/**
@@ -134,7 +206,7 @@ export class VoiceReceiver {
 	 * @internal
 	 */
 	public onUdpMessage(msg: Buffer) {
-		if (msg.length <= 8) return;
+		if (msg.length <= 12) return;
 		const ssrc = msg.readUInt32BE(8);
 
 		const userData = this.ssrcMap.get(ssrc);
@@ -146,16 +218,25 @@ export class VoiceReceiver {
 		if (!stream) return;
 
 		if (this.connectionData.encryptionMode && this.connectionData.nonceBuffer && this.connectionData.secretKey) {
-			const packet = this.parsePacket(
-				msg,
-				this.connectionData.encryptionMode,
-				this.connectionData.nonceBuffer,
-				this.connectionData.secretKey,
-			);
-			if (packet) {
-				stream.push(packet);
-			} else {
-				stream.destroy(new Error('Failed to parse packet'));
+			// As a guard, we shouldn't parse packets that (1) aren't voice packets and (2) are not in the right RTP version
+			if ((msg[1]! & 0x7f) !== RTP_OPUS_PAYLOAD_TYPE) return;
+
+			// Ignore packets not in RTP version 2
+			const rtpVersion = msg[0]! >> 6;
+			if (rtpVersion !== 2) return;
+
+			try {
+				const packet = this.parsePacket(
+					msg,
+					this.connectionData.encryptionMode,
+					this.connectionData.nonceBuffer,
+					this.connectionData.secretKey,
+					userData.userId,
+					ssrc,
+				);
+				if (packet) stream.push(packet);
+			} catch (error) {
+				stream.destroy(error as Error);
 			}
 		}
 	}

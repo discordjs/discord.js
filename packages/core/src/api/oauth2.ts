@@ -1,6 +1,5 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { URL } from 'node:url';
 import { type RequestData, type REST, makeURLSearchParams } from '@discordjs/rest';
 import {
 	Routes,
@@ -14,6 +13,8 @@ import {
 	type RESTGetAPIOAuth2CurrentApplicationResult,
 	type RESTPostOAuth2AccessTokenURLEncodedData,
 	type RESTPostOAuth2AccessTokenResult,
+	type RESTPostOAuth2TokenRevocationQuery,
+	type Snowflake,
 } from 'discord-api-types/v10';
 
 export class OAuth2API {
@@ -43,11 +44,12 @@ export class OAuth2API {
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
-			body: makeURLSearchParams(body),
+			body: makeURLSearchParams<RESTPostOAuth2AccessTokenURLEncodedData>(body),
 			passThroughBody: true,
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
+			auth: false,
 			signal,
 		}) as Promise<RESTPostOAuth2AccessTokenResult>;
 	}
@@ -64,11 +66,12 @@ export class OAuth2API {
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
-			body: makeURLSearchParams(body),
+			body: makeURLSearchParams<RESTPostOAuth2RefreshTokenURLEncodedData>(body),
 			passThroughBody: true,
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
+			auth: false,
 			signal,
 		}) as Promise<RESTPostOAuth2RefreshTokenResult>;
 	}
@@ -92,6 +95,7 @@ export class OAuth2API {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
+			auth: false,
 			signal,
 		}) as Promise<RESTPostOAuth2ClientCredentialsResult>;
 	}
@@ -102,8 +106,9 @@ export class OAuth2API {
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#get-current-bot-application-information}
 	 * @param options - The options for the current bot application information request
 	 */
-	public async getCurrentBotApplicationInformation({ signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getCurrentBotApplicationInformation({ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
 		return this.rest.get(Routes.oauth2CurrentApplication(), {
+			auth,
 			signal,
 		}) as Promise<RESTGetAPIOAuth2CurrentApplicationResult>;
 	}
@@ -114,9 +119,37 @@ export class OAuth2API {
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#get-current-authorization-information}
 	 * @param options - The options for the current authorization information request
 	 */
-	public async getCurrentAuthorizationInformation({ signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getCurrentAuthorizationInformation({ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
 		return this.rest.get(Routes.oauth2CurrentAuthorization(), {
+			auth,
 			signal,
 		}) as Promise<RESTGetAPIOAuth2CurrentAuthorizationResult>;
+	}
+
+	/**
+	 * Revokes an OAuth2 token
+	 *
+	 * @see {@link https://discord.com/developers/docs/topics/oauth2#authorization-code-grant-token-revocation-example}
+	 * @param applicationId - The application id
+	 * @param applicationSecret - The application secret
+	 * @param body - The body of the token revocation request
+	 * @param options - The options for the token revocation request
+	 */
+	public async revokeToken(
+		applicationId: Snowflake,
+		applicationSecret: string,
+		body: RESTPostOAuth2TokenRevocationQuery,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		await this.rest.post(Routes.oauth2TokenRevocation(), {
+			body: makeURLSearchParams(body),
+			passThroughBody: true,
+			headers: {
+				Authorization: `Basic ${btoa(`${applicationId}:${applicationSecret}`)}`,
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			auth: false,
+			signal,
+		});
 	}
 }

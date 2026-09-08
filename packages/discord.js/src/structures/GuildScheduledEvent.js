@@ -2,11 +2,12 @@
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { GuildScheduledEventStatus, GuildScheduledEventEntityType, RouteBases } = require('discord-api-types/v10');
-const Base = require('./Base');
-const { DiscordjsError, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { Base } = require('./Base.js');
 
 /**
  * Represents a scheduled event in a {@link Guild}.
+ *
  * @extends {Base}
  */
 class GuildScheduledEvent extends Base {
@@ -15,12 +16,14 @@ class GuildScheduledEvent extends Base {
 
     /**
      * The id of the guild scheduled event
+     *
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
      * The id of the guild this guild scheduled event belongs to
+     *
      * @type {Snowflake}
      */
     this.guildId = data.guild_id;
@@ -33,6 +36,7 @@ class GuildScheduledEvent extends Base {
       /**
        * The channel id in which the scheduled event will be hosted,
        * or `null` if entity type is {@link GuildScheduledEventEntityType.External}
+       *
        * @type {?Snowflake}
        */
       this.channelId = data.channel_id;
@@ -43,6 +47,7 @@ class GuildScheduledEvent extends Base {
     if ('creator_id' in data) {
       /**
        * The id of the user that created this guild scheduled event
+       *
        * @type {?Snowflake}
        */
       this.creatorId = data.creator_id;
@@ -53,6 +58,7 @@ class GuildScheduledEvent extends Base {
     if ('name' in data) {
       /**
        * The name of the guild scheduled event
+       *
        * @type {?string}
        */
       this.name = data.name;
@@ -64,6 +70,7 @@ class GuildScheduledEvent extends Base {
     if ('description' in data) {
       /**
        * The description of the guild scheduled event
+       *
        * @type {?string}
        */
       this.description = data.description;
@@ -74,6 +81,7 @@ class GuildScheduledEvent extends Base {
     if ('scheduled_start_time' in data) {
       /**
        * The timestamp the guild scheduled event will start at
+       *
        * @type {?number}
        */
       this.scheduledStartTimestamp = Date.parse(data.scheduled_start_time);
@@ -85,6 +93,7 @@ class GuildScheduledEvent extends Base {
       /**
        * The timestamp the guild scheduled event will end at
        * or `null` if the event does not have a scheduled time to end
+       *
        * @type {?number}
        */
       this.scheduledEndTimestamp = data.scheduled_end_time ? Date.parse(data.scheduled_end_time) : null;
@@ -95,6 +104,7 @@ class GuildScheduledEvent extends Base {
     if ('privacy_level' in data) {
       /**
        * The privacy level of the guild scheduled event
+       *
        * @type {?GuildScheduledEventPrivacyLevel}
        */
       this.privacyLevel = data.privacy_level;
@@ -106,6 +116,7 @@ class GuildScheduledEvent extends Base {
     if ('status' in data) {
       /**
        * The status of the guild scheduled event
+       *
        * @type {?GuildScheduledEventStatus}
        */
       this.status = data.status;
@@ -117,6 +128,7 @@ class GuildScheduledEvent extends Base {
     if ('entity_type' in data) {
       /**
        * The type of hosting entity associated with the scheduled event
+       *
        * @type {?GuildScheduledEventEntityType}
        */
       this.entityType = data.entity_type;
@@ -128,6 +140,7 @@ class GuildScheduledEvent extends Base {
     if ('entity_id' in data) {
       /**
        * The id of the hosting entity associated with the scheduled event
+       *
        * @type {?Snowflake}
        */
       this.entityId = data.entity_id;
@@ -138,6 +151,7 @@ class GuildScheduledEvent extends Base {
     if ('user_count' in data) {
       /**
        * The number of users who are subscribed to this guild scheduled event
+       *
        * @type {?number}
        */
       this.userCount = data.user_count;
@@ -148,6 +162,7 @@ class GuildScheduledEvent extends Base {
     if ('creator' in data) {
       /**
        * The user that created this guild scheduled event
+       *
        * @type {?User}
        */
       this.creator = this.client.users._add(data.creator);
@@ -155,19 +170,19 @@ class GuildScheduledEvent extends Base {
       this.creator ??= this.client.users.resolve(this.creatorId);
     }
 
-    /* eslint-disable max-len */
     /**
      * Represents the additional metadata for a {@link GuildScheduledEvent}
+     *
      * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-entity-metadata}
      * @typedef {Object} GuildScheduledEventEntityMetadata
      * @property {?string} location The location of the guild scheduled event
      */
-    /* eslint-enable max-len */
 
     if ('entity_metadata' in data) {
       if (data.entity_metadata) {
         /**
          * Additional metadata
+         *
          * @type {?GuildScheduledEventEntityMetadata}
          */
         this.entityMetadata = {
@@ -183,16 +198,70 @@ class GuildScheduledEvent extends Base {
     if ('image' in data) {
       /**
        * The cover image hash for this scheduled event
+       *
        * @type {?string}
        */
       this.image = data.image;
     } else {
       this.image ??= null;
     }
+
+    /**
+     * Represents the recurrence rule for a {@link GuildScheduledEvent}.
+     *
+     * @typedef {Object} GuildScheduledEventRecurrenceRule
+     * @property {number} startTimestamp The timestamp the recurrence rule interval starts at
+     * @property {Date} startAt The time the recurrence rule interval starts at
+     * @property {?number} endTimestamp The timestamp the recurrence rule interval ends at
+     * @property {?Date} endAt The time the recurrence rule interval ends at
+     * @property {GuildScheduledEventRecurrenceRuleFrequency} frequency How often the event occurs
+     * @property {number} interval The spacing between the events
+     * @property {?GuildScheduledEventRecurrenceRuleWeekday[]} byWeekday The days within a week to recur on
+     * @property {?GuildScheduledEventRecurrenceRuleNWeekday[]} byNWeekday The days within a week to recur on
+     * @property {?GuildScheduledEventRecurrenceRuleMonth[]} byMonth The months to recur on
+     * @property {?number[]} byMonthDay The days within a month to recur on
+     * @property {?number[]} byYearDay The days within a year to recur on
+     * @property {?number} count The total amount of times the event is allowed to recur before stopping
+     */
+
+    /**
+     * @typedef {Object} GuildScheduledEventRecurrenceRuleNWeekday
+     * @property {number} n The week to recur on
+     * @property {GuildScheduledEventRecurrenceRuleWeekday} day The day within the week to recur on
+     */
+
+    if ('recurrence_rule' in data) {
+      /**
+       * The recurrence rule for this scheduled event
+       *
+       * @type {?GuildScheduledEventRecurrenceRule}
+       */
+      this.recurrenceRule = data.recurrence_rule && {
+        startTimestamp: Date.parse(data.recurrence_rule.start),
+        get startAt() {
+          return new Date(this.startTimestamp);
+        },
+        endTimestamp: data.recurrence_rule.end && Date.parse(data.recurrence_rule.end),
+        get endAt() {
+          return this.endTimestamp && new Date(this.endTimestamp);
+        },
+        frequency: data.recurrence_rule.frequency,
+        interval: data.recurrence_rule.interval,
+        byWeekday: data.recurrence_rule.by_weekday,
+        byNWeekday: data.recurrence_rule.by_n_weekday,
+        byMonth: data.recurrence_rule.by_month,
+        byMonthDay: data.recurrence_rule.by_month_day,
+        byYearDay: data.recurrence_rule.by_year_day,
+        count: data.recurrence_rule.count,
+      };
+    } else {
+      this.recurrenceRule ??= null;
+    }
   }
 
   /**
    * Whether this guild scheduled event is partial.
+   *
    * @type {boolean}
    * @readonly
    */
@@ -202,6 +271,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * The URL of this scheduled event's cover image
+   *
    * @param {BaseImageURLOptions} [options={}] Options for image URL
    * @returns {?string}
    */
@@ -211,6 +281,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * The timestamp the guild scheduled event was created at
+   *
    * @type {number}
    * @readonly
    */
@@ -220,6 +291,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * The time the guild scheduled event was created at
+   *
    * @type {Date}
    * @readonly
    */
@@ -229,7 +301,8 @@ class GuildScheduledEvent extends Base {
 
   /**
    * The time the guild scheduled event will start at
-   * <info>This can be potentially `null` only when it's an {@link AuditLogEntryTarget}</info>
+   * <info>This can be potentially `null` only when it's an {@link GuildAuditLogsEntry#target}</info>
+   *
    * @type {?Date}
    * @readonly
    */
@@ -240,6 +313,7 @@ class GuildScheduledEvent extends Base {
   /**
    * The time the guild scheduled event will end at,
    * or `null` if the event does not have a scheduled time to end
+   *
    * @type {?Date}
    * @readonly
    */
@@ -249,6 +323,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * The channel associated with this scheduled event
+   *
    * @type {?(VoiceChannel|StageChannel)}
    * @readonly
    */
@@ -258,6 +333,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * The guild this scheduled event belongs to
+   *
    * @type {?Guild}
    * @readonly
    */
@@ -267,6 +343,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * The URL to the guild scheduled event
+   *
    * @type {string}
    * @readonly
    */
@@ -276,6 +353,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * Options used to create an invite URL to a {@link GuildScheduledEvent}
+   *
    * @typedef {InviteCreateOptions} GuildScheduledEventInviteURLCreateOptions
    * @property {GuildInvitableChannelResolvable} [channel] The channel to create the invite in.
    * <warn>This is required when the `entityType` of `GuildScheduledEvent` is
@@ -284,6 +362,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * Creates an invite URL to this guild scheduled event.
+   *
    * @param {GuildScheduledEventInviteURLCreateOptions} [options] The options to create the invite
    * @returns {Promise<string>}
    */
@@ -294,12 +373,14 @@ class GuildScheduledEvent extends Base {
       channelId = this.guild.channels.resolveId(options.channel);
       if (!channelId) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
     }
+
     const invite = await this.guild.invites.create(channelId, options);
     return `${RouteBases.invite}/${invite.code}?event=${this.id}`;
   }
 
   /**
    * Edits this guild scheduled event.
+   *
    * @param {GuildScheduledEventEditOptions} options The options to edit the guild scheduled event
    * @returns {Promise<GuildScheduledEvent>}
    * @example
@@ -308,21 +389,23 @@ class GuildScheduledEvent extends Base {
    *  .then(guildScheduledEvent => console.log(guildScheduledEvent))
    *  .catch(console.error);
    */
-  edit(options) {
+  async edit(options) {
     return this.guild.scheduledEvents.edit(this.id, options);
   }
 
   /**
    * Fetches this guild scheduled event.
+   *
    * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<GuildScheduledEvent>}
    */
-  fetch(force = true) {
+  async fetch(force = true) {
     return this.guild.scheduledEvents.fetch({ guildScheduledEvent: this.id, force });
   }
 
   /**
    * Deletes this guild scheduled event.
+   *
    * @returns {Promise<GuildScheduledEvent>}
    * @example
    * // Delete a guild scheduled event
@@ -337,6 +420,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * Sets a new name for the guild scheduled event.
+   *
    * @param {string} name The new name of the guild scheduled event
    * @param {string} [reason] The reason for changing the name
    * @returns {Promise<GuildScheduledEvent>}
@@ -346,12 +430,13 @@ class GuildScheduledEvent extends Base {
    *  .then(guildScheduledEvent => console.log(`Set the name to: ${guildScheduledEvent.name}`))
    *  .catch(console.error);
    */
-  setName(name, reason) {
+  async setName(name, reason) {
     return this.edit({ name, reason });
   }
 
   /**
    * Sets a new time to schedule the event at.
+   *
    * @param {DateResolvable} scheduledStartTime The time to schedule the event at
    * @param {string} [reason] The reason for changing the scheduled start time
    * @returns {Promise<GuildScheduledEvent>}
@@ -361,13 +446,14 @@ class GuildScheduledEvent extends Base {
    *  .then(guildScheduledEvent => console.log(`Set the start time to: ${guildScheduledEvent.scheduledStartTime}`))
    *  .catch(console.error);
    */
-  setScheduledStartTime(scheduledStartTime, reason) {
+  async setScheduledStartTime(scheduledStartTime, reason) {
     return this.edit({ scheduledStartTime, reason });
   }
 
   // TODO: scheduledEndTime gets reset on passing null but it hasn't been documented
   /**
    * Sets a new time to end the event at.
+   *
    * @param {DateResolvable} scheduledEndTime The time to end the event at
    * @param {string} [reason] The reason for changing the scheduled end time
    * @returns {Promise<GuildScheduledEvent>}
@@ -377,12 +463,13 @@ class GuildScheduledEvent extends Base {
    *  .then(guildScheduledEvent => console.log(`Set the end time to: ${guildScheduledEvent.scheduledEndTime}`))
    *  .catch(console.error);
    */
-  setScheduledEndTime(scheduledEndTime, reason) {
+  async setScheduledEndTime(scheduledEndTime, reason) {
     return this.edit({ scheduledEndTime, reason });
   }
 
   /**
    * Sets the new description of the guild scheduled event.
+   *
    * @param {string} description The description of the guild scheduled event
    * @param {string} [reason] The reason for changing the description
    * @returns {Promise<GuildScheduledEvent>}
@@ -392,7 +479,7 @@ class GuildScheduledEvent extends Base {
    *  .then(guildScheduledEvent => console.log(`Set the description to: ${guildScheduledEvent.description}`))
    *  .catch(console.error);
    */
-  setDescription(description, reason) {
+  async setDescription(description, reason) {
     return this.edit({ description, reason });
   }
 
@@ -400,6 +487,7 @@ class GuildScheduledEvent extends Base {
    * Sets the new status of the guild scheduled event.
    * <info>If you're working with TypeScript, use this method in conjunction with status type-guards
    * like {@link GuildScheduledEvent#isScheduled} to get only valid status as suggestion</info>
+   *
    * @param {GuildScheduledEventStatus} status The status of the guild scheduled event
    * @param {string} [reason] The reason for changing the status
    * @returns {Promise<GuildScheduledEvent>}
@@ -409,12 +497,13 @@ class GuildScheduledEvent extends Base {
    *  .then(guildScheduledEvent => console.log(`Set the status to: ${guildScheduledEvent.status}`))
    *  .catch(console.error);
    */
-  setStatus(status, reason) {
+  async setStatus(status, reason) {
     return this.edit({ status, reason });
   }
 
   /**
    * Sets the new location of the guild scheduled event.
+   *
    * @param {string} location The location of the guild scheduled event
    * @param {string} [reason] The reason for changing the location
    * @returns {Promise<GuildScheduledEvent>}
@@ -424,21 +513,23 @@ class GuildScheduledEvent extends Base {
    *  .then(guildScheduledEvent => console.log(`Set the location to: ${guildScheduledEvent.entityMetadata.location}`))
    *  .catch(console.error);
    */
-  setLocation(location, reason) {
+  async setLocation(location, reason) {
     return this.edit({ entityMetadata: { location }, reason });
   }
 
   /**
    * Fetches subscribers of this guild scheduled event.
+   *
    * @param {FetchGuildScheduledEventSubscribersOptions} [options] Options for fetching the subscribers
    * @returns {Promise<Collection<Snowflake, GuildScheduledEventUser>>}
    */
-  fetchSubscribers(options) {
+  async fetchSubscribers(options) {
     return this.guild.scheduledEvents.fetchSubscribers(this.id, options);
   }
 
   /**
    * When concatenated with a string, this automatically concatenates the event's URL instead of the object.
+   *
    * @returns {string}
    * @example
    * // Logs: Event: https://discord.com/events/412345678901234567/499876543211234567
@@ -450,6 +541,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * Indicates whether this guild scheduled event has an {@link GuildScheduledEventStatus.Active} status.
+   *
    * @returns {boolean}
    */
   isActive() {
@@ -458,6 +550,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * Indicates whether this guild scheduled event has a {@link GuildScheduledEventStatus.Canceled} status.
+   *
    * @returns {boolean}
    */
   isCanceled() {
@@ -466,6 +559,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * Indicates whether this guild scheduled event has a {@link GuildScheduledEventStatus.Completed} status.
+   *
    * @returns {boolean}
    */
   isCompleted() {
@@ -474,6 +568,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * Indicates whether this guild scheduled event has a {@link GuildScheduledEventStatus.Scheduled} status.
+   *
    * @returns {boolean}
    */
   isScheduled() {

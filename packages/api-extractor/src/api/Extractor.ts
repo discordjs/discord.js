@@ -6,12 +6,13 @@ import type { ApiPackage } from '@discordjs/api-extractor-model';
 import { TSDocConfigFile } from '@microsoft/tsdoc-config';
 import {
 	FileSystem,
-	type NewlineKind,
+	NewlineKind,
 	PackageJsonLookup,
 	type IPackageJson,
 	type INodePackageJson,
 	Path,
 } from '@rushstack/node-core-library';
+import { structuredPatch, formatPatch, type StructuredPatch } from 'diff';
 import * as resolve from 'resolve';
 import * as semver from 'semver';
 import * as ts from 'typescript';
@@ -26,7 +27,7 @@ import { ApiReportGenerator } from '../generators/ApiReportGenerator.js';
 import { DtsRollupGenerator, DtsRollupKind } from '../generators/DtsRollupGenerator.js';
 import { CompilerState } from './CompilerState.js';
 import { ConsoleMessageId } from './ConsoleMessageId.js';
-import { ExtractorConfig } from './ExtractorConfig.js';
+import { ExtractorConfig, type IExtractorConfigApiReport } from './ExtractorConfig.js';
 import type { ExtractorMessage } from './ExtractorMessage.js';
 
 /**
@@ -40,6 +41,11 @@ export interface IExtractorInvokeOptions {
 	 * can reuse the same TypeScript compiler analysis.
 	 */
 	compilerState?: CompilerState;
+
+	/**
+	 * Whether to minify the resulting doc model JSON, i.e. without any indentation or newlines.
+	 */
+	docModelMinify?: boolean;
 
 	/**
 	 * Indicates that API Extractor is running as part of a local build, e.g. on developer's
@@ -62,6 +68,15 @@ export interface IExtractorInvokeOptions {
 	 * the STDERR/STDOUT console.
 	 */
 	messageCallback?(this: void, message: ExtractorMessage): void;
+
+	/**
+	 * If true, then any differences between the actual and expected API reports will be
+	 * printed on the console.
+	 *
+	 * @remarks
+	 * The diff is not printed if the expected API report file has not been created yet.
+	 */
+	printApiReportDiff?: boolean;
 
 	/**
 	 * If true, API Extractor will print diagnostic information used for troubleshooting problems.
@@ -143,12 +158,13 @@ export class ExtractorResult {
 	 * @internal
 	 */
 	public constructor(properties: ExtractorResult) {
-		this.compilerState = properties.compilerState;
-		this.extractorConfig = properties.extractorConfig;
-		this.succeeded = properties.succeeded;
-		this.apiReportChanged = properties.apiReportChanged;
-		this.errorCount = properties.errorCount;
-		this.warningCount = properties.warningCount;
+		const { compilerState, extractorConfig, succeeded, apiReportChanged, errorCount, warningCount } = properties;
+		this.compilerState = compilerState;
+		this.extractorConfig = extractorConfig;
+		this.succeeded = succeeded;
+		this.apiReportChanged = apiReportChanged;
+		this.errorCount = errorCount;
+		this.warningCount = warningCount;
 	}
 }
 
@@ -189,37 +205,56 @@ export class Extractor {
 	 * Invoke API Extractor using an already prepared `ExtractorConfig` object.
 	 */
 	public static invoke(extractorConfig: ExtractorConfig, options?: IExtractorInvokeOptions): ExtractorResult {
-		const ioptions = options ?? {};
-
-		const localBuild: boolean = ioptions.localBuild ?? false;
-
-		let compilerState: CompilerState | undefined;
-		if (ioptions.compilerState) {
-			compilerState = ioptions.compilerState;
-		} else {
-			compilerState = CompilerState.create(extractorConfig, ioptions);
-		}
+		const {
+			packageFolder,
+			messages,
+			tsdocConfiguration,
+			tsdocConfigFile: { filePath: tsdocConfigFilePath, fileNotFound: tsdocConfigFileNotFound },
+			apiJsonFilePath,
+			newlineKind,
+			reportTempFolder,
+			reportFolder,
+			apiReportEnabled,
+			reportConfigs,
+			testMode,
+			rollupEnabled,
+			publicTrimmedFilePath,
+			alphaTrimmedFilePath,
+			betaTrimmedFilePath,
+			untrimmedFilePath,
+			tsdocMetadataEnabled,
+			tsdocMetadataFilePath,
+		} = extractorConfig;
+		const {
+			localBuild = false,
+			compilerState = CompilerState.create(extractorConfig, options),
+			docModelMinify = false,
+			messageCallback,
+			showVerboseMessages = false,
+			showDiagnostics = false,
+			printApiReportDiff = false,
+		} = options ?? {};
 
 		const sourceMapper: SourceMapper = new SourceMapper();
 
 		const messageRouter: MessageRouter = new MessageRouter({
-			workingPackageFolder: extractorConfig.packageFolder,
-			messageCallback: ioptions.messageCallback,
-			messagesConfig: extractorConfig.messages || {},
-			showVerboseMessages: Boolean(ioptions.showVerboseMessages),
-			showDiagnostics: Boolean(ioptions.showDiagnostics),
-			tsdocConfiguration: extractorConfig.tsdocConfiguration,
+			workingPackageFolder: packageFolder,
+			messageCallback,
+			messagesConfig: messages || {},
+			showVerboseMessages,
+			showDiagnostics,
+			tsdocConfiguration,
 			sourceMapper,
 		});
 
 		if (
-			extractorConfig.tsdocConfigFile.filePath &&
-			!extractorConfig.tsdocConfigFile.fileNotFound &&
-			!Path.isEqual(extractorConfig.tsdocConfigFile.filePath, ExtractorConfig._tsdocBaseFilePath)
+			tsdocConfigFilePath &&
+			!tsdocConfigFileNotFound &&
+			!Path.isEqual(tsdocConfigFilePath, ExtractorConfig._tsdocBaseFilePath)
 		) {
 			messageRouter.logVerbose(
 				ConsoleMessageId.UsingCustomTSDocConfig,
-				'Using custom TSDoc config from ' + extractorConfig.tsdocConfigFile.filePath,
+				`Using custom TSDoc config from ${tsdocConfigFilePath}`,
 			);
 		}
 
@@ -240,7 +275,7 @@ export class Extractor {
 
 			messageRouter.logDiagnosticHeader('TSDoc configuration');
 			// Convert the TSDocConfiguration into a tsdoc.json representation
-			const combinedConfigFile: TSDocConfigFile = TSDocConfigFile.loadFromParser(extractorConfig.tsdocConfiguration);
+			const combinedConfigFile: TSDocConfigFile = TSDocConfigFile.loadFromParser(tsdocConfiguration);
 			const serializedTSDocConfig: object = MessageRouter.buildJsonDumpObject(combinedConfigFile.saveToObject());
 			messageRouter.logDiagnostic(JSON.stringify(serializedTSDocConfig, undefined, 2));
 			messageRouter.logDiagnosticFooter();
@@ -258,145 +293,55 @@ export class Extractor {
 		DocCommentEnhancer.analyze(collector);
 		ValidationEnhancer.analyze(collector);
 
-		const modelBuilder: ApiModelGenerator = new ApiModelGenerator(collector);
+		const modelBuilder: ApiModelGenerator = new ApiModelGenerator(collector, extractorConfig);
 		const apiPackage: ApiPackage = modelBuilder.buildApiPackage();
 
 		if (messageRouter.showDiagnostics) {
 			messageRouter.logDiagnostic(''); // skip a line after any diagnostic messages
 		}
 
-		if (extractorConfig.docModelEnabled) {
-			messageRouter.logVerbose(ConsoleMessageId.WritingDocModelFile, 'Writing: ' + extractorConfig.apiJsonFilePath);
-			apiPackage.saveToJsonFile(extractorConfig.apiJsonFilePath, {
+		if (modelBuilder.docModelEnabled) {
+			messageRouter.logVerbose(ConsoleMessageId.WritingDocModelFile, `Writing: ${apiJsonFilePath}`);
+			apiPackage.saveToJsonFile(apiJsonFilePath, {
 				toolPackage: Extractor.packageName,
 				toolVersion: Extractor.version,
-
-				newlineConversion: extractorConfig.newlineKind,
+				minify: docModelMinify,
+				newlineConversion: newlineKind,
 				ensureFolderExists: true,
-				testMode: extractorConfig.testMode,
+				testMode,
 			});
 		}
 
-		let apiReportChanged = false;
+		function writeApiReport(reportConfig: IExtractorConfigApiReport): boolean {
+			return Extractor._writeApiReport(
+				collector,
+				extractorConfig,
+				messageRouter,
+				reportTempFolder,
+				reportFolder,
+				reportConfig,
+				localBuild,
+				printApiReportDiff,
+			);
+		}
 
-		if (extractorConfig.apiReportEnabled) {
-			const actualApiReportPath: string = extractorConfig.reportTempFilePath;
-			const actualApiReportShortPath: string = extractorConfig._getShortFilePath(extractorConfig.reportTempFilePath);
-
-			const expectedApiReportPath: string = extractorConfig.reportFilePath;
-			const expectedApiReportShortPath: string = extractorConfig._getShortFilePath(extractorConfig.reportFilePath);
-
-			const actualApiReportContent: string = ApiReportGenerator.generateReviewFileContent(collector);
-
-			// Write the actual file
-			FileSystem.writeFile(actualApiReportPath, actualApiReportContent, {
-				ensureFolderExists: true,
-				convertLineEndings: extractorConfig.newlineKind,
-			});
-
-			// Compare it against the expected file
-			if (FileSystem.exists(expectedApiReportPath)) {
-				const expectedApiReportContent: string = FileSystem.readFile(expectedApiReportPath);
-
-				if (ApiReportGenerator.areEquivalentApiFileContents(actualApiReportContent, expectedApiReportContent)) {
-					messageRouter.logVerbose(
-						ConsoleMessageId.ApiReportUnchanged,
-						`The API report is up to date: ${actualApiReportShortPath}`,
-					);
-				} else {
-					apiReportChanged = true;
-
-					if (localBuild) {
-						// For a local build, just copy the file automatically.
-						messageRouter.logWarning(
-							ConsoleMessageId.ApiReportCopied,
-							`You have changed the public API signature for this project. Updating ${expectedApiReportShortPath}`,
-						);
-
-						FileSystem.writeFile(expectedApiReportPath, actualApiReportContent, {
-							ensureFolderExists: true,
-							convertLineEndings: extractorConfig.newlineKind,
-						});
-					} else {
-						// For a production build, issue a warning that will break the CI build.
-						messageRouter.logWarning(
-							ConsoleMessageId.ApiReportNotCopied,
-							'You have changed the public API signature for this project.' +
-								` Please copy the file "${actualApiReportShortPath}" to "${expectedApiReportShortPath}",` +
-								` or perform a local build (which does this automatically).` +
-								` See the Git repo documentation for more info.`,
-						);
-					}
-				}
-			} else {
-				// The target file does not exist, so we are setting up the API review file for the first time.
-				//
-				// NOTE: People sometimes make a mistake where they move a project and forget to update the "reportFolder"
-				// setting, which causes a new file to silently get written to the wrong place.  This can be confusing.
-				// Thus we treat the initial creation of the file specially.
-				apiReportChanged = true;
-
-				if (localBuild) {
-					const expectedApiReportFolder: string = path.dirname(expectedApiReportPath);
-					if (FileSystem.exists(expectedApiReportFolder)) {
-						FileSystem.writeFile(expectedApiReportPath, actualApiReportContent, {
-							convertLineEndings: extractorConfig.newlineKind,
-						});
-						messageRouter.logWarning(
-							ConsoleMessageId.ApiReportCreated,
-							'The API report file was missing, so a new file was created. Please add this file to Git:\n' +
-								expectedApiReportPath,
-						);
-					} else {
-						messageRouter.logError(
-							ConsoleMessageId.ApiReportFolderMissing,
-							'Unable to create the API report file. Please make sure the target folder exists:\n' +
-								expectedApiReportFolder,
-						);
-					}
-				} else {
-					// For a production build, issue a warning that will break the CI build.
-					messageRouter.logWarning(
-						ConsoleMessageId.ApiReportNotCopied,
-						'The API report file is missing.' +
-							` Please copy the file "${actualApiReportShortPath}" to "${expectedApiReportShortPath}",` +
-							` or perform a local build (which does this automatically).` +
-							` See the Git repo documentation for more info.`,
-					);
-				}
+		let anyReportChanged = false;
+		if (apiReportEnabled) {
+			for (const reportConfig of reportConfigs) {
+				anyReportChanged = writeApiReport(reportConfig) || anyReportChanged;
 			}
 		}
 
-		if (extractorConfig.rollupEnabled) {
-			Extractor._generateRollupDtsFile(
-				collector,
-				extractorConfig.publicTrimmedFilePath,
-				DtsRollupKind.PublicRelease,
-				extractorConfig.newlineKind,
-			);
-			Extractor._generateRollupDtsFile(
-				collector,
-				extractorConfig.alphaTrimmedFilePath,
-				DtsRollupKind.AlphaRelease,
-				extractorConfig.newlineKind,
-			);
-			Extractor._generateRollupDtsFile(
-				collector,
-				extractorConfig.betaTrimmedFilePath,
-				DtsRollupKind.BetaRelease,
-				extractorConfig.newlineKind,
-			);
-			Extractor._generateRollupDtsFile(
-				collector,
-				extractorConfig.untrimmedFilePath,
-				DtsRollupKind.InternalRelease,
-				extractorConfig.newlineKind,
-			);
+		if (rollupEnabled) {
+			Extractor._generateRollupDtsFile(collector, publicTrimmedFilePath, DtsRollupKind.PublicRelease, newlineKind);
+			Extractor._generateRollupDtsFile(collector, alphaTrimmedFilePath, DtsRollupKind.AlphaRelease, newlineKind);
+			Extractor._generateRollupDtsFile(collector, betaTrimmedFilePath, DtsRollupKind.BetaRelease, newlineKind);
+			Extractor._generateRollupDtsFile(collector, untrimmedFilePath, DtsRollupKind.InternalRelease, newlineKind);
 		}
 
-		if (extractorConfig.tsdocMetadataEnabled) {
+		if (tsdocMetadataEnabled) {
 			// Write the tsdoc-metadata.json file for this project
-			PackageMetadataManager.writeTsdocMetadataFile(extractorConfig.tsdocMetadataFilePath, extractorConfig.newlineKind);
+			PackageMetadataManager.writeTsdocMetadataFile(tsdocMetadataFilePath, newlineKind);
 		}
 
 		// Show all the messages that we collected during analysis
@@ -416,10 +361,169 @@ export class Extractor {
 			compilerState,
 			extractorConfig,
 			succeeded,
-			apiReportChanged,
+			apiReportChanged: anyReportChanged,
 			errorCount: messageRouter.errorCount,
 			warningCount: messageRouter.warningCount,
 		});
+	}
+
+	/**
+	 * Generates the API report at the specified release level, writes it to the specified file path, and compares
+	 * the output to the existing report (if one exists).
+	 *
+	 * @param collector - The collector to get the entities from.
+	 * @param extractorConfig - The configuration for extracting.
+	 * @param messageRouter - The message router to use.
+	 * @param reportTempDirectoryPath - The path to the directory under which the temp report file will be written prior
+	 * to comparison with an existing report.
+	 * @param reportDirectoryPath - The path to the directory under which the existing report file is located, and to
+	 * which the new report will be written post-comparison.
+	 * @param reportConfig - API report configuration, including its file name and {@link ApiReportVariant}.
+	 * @param localBuild - Whether the report is made locally.
+	 * @param printApiReportDiff - {@link IExtractorInvokeOptions.printApiReportDiff}
+	 * @returns Whether or not the newly generated report differs from the existing report (if one exists).
+	 */
+	private static _writeApiReport(
+		collector: Collector,
+		extractorConfig: ExtractorConfig,
+		messageRouter: MessageRouter,
+		reportTempDirectoryPath: string,
+		reportDirectoryPath: string,
+		reportConfig: IExtractorConfigApiReport,
+		localBuild: boolean,
+		printApiReportDiff: boolean,
+	): boolean {
+		let apiReportChanged = false;
+
+		const actualApiReportPathWithoutExtension: string = path
+			.resolve(reportTempDirectoryPath, reportConfig.fileName)
+			.replace(/\.api\.md$/, '');
+
+		const expectedApiReportPathWithoutExtension: string = path
+			.resolve(reportDirectoryPath, reportConfig.fileName)
+			.replace(/\.api\.md$/, '');
+
+		const actualApiReportContentMap: Map<string, string> = ApiReportGenerator.generateReviewFileContent(
+			collector,
+			reportConfig.variant,
+		);
+
+		for (const [modulePath, actualApiReportContent] of actualApiReportContentMap) {
+			const actualEntryPointApiReportPath = `${actualApiReportPathWithoutExtension}${
+				modulePath ? '.' : ''
+			}${modulePath}.api.md`;
+			const actualEntryPointApiReportShortPath: string =
+				extractorConfig._getShortFilePath(actualEntryPointApiReportPath);
+			const expectedEntryPointApiReportPath = `${expectedApiReportPathWithoutExtension}${
+				modulePath ? '.' : ''
+			}${modulePath}.api.md`;
+			const expectedEntryPointApiReportShortPath: string = extractorConfig._getShortFilePath(
+				expectedEntryPointApiReportPath,
+			);
+
+			collector.messageRouter.logVerbose(
+				ConsoleMessageId.WritingApiReport,
+				`Generating ${reportConfig.variant} API report: ${expectedEntryPointApiReportPath}`,
+			);
+
+			// Write the actual file
+			FileSystem.writeFile(actualEntryPointApiReportPath, actualApiReportContent, {
+				ensureFolderExists: true,
+				convertLineEndings: extractorConfig.newlineKind,
+			});
+
+			// Compare it against the expected file
+			if (FileSystem.exists(expectedEntryPointApiReportPath)) {
+				const expectedApiReportContent: string = FileSystem.readFile(expectedEntryPointApiReportPath, {
+					convertLineEndings: NewlineKind.Lf,
+				});
+
+				if (ApiReportGenerator.areEquivalentApiFileContents(actualApiReportContent, expectedApiReportContent)) {
+					messageRouter.logVerbose(
+						ConsoleMessageId.ApiReportUnchanged,
+						`The API report is up to date: ${actualEntryPointApiReportShortPath}`,
+					);
+				} else {
+					apiReportChanged = true;
+
+					if (localBuild) {
+						// For a local build, just copy the file automatically.
+						messageRouter.logWarning(
+							ConsoleMessageId.ApiReportCopied,
+							`You have changed the API signature for this project. Updating ${actualEntryPointApiReportShortPath}`,
+						);
+
+						FileSystem.writeFile(actualEntryPointApiReportPath, actualApiReportContent, {
+							ensureFolderExists: true,
+							convertLineEndings: extractorConfig.newlineKind,
+						});
+					} else {
+						// For a production build, issue a warning that will break the CI build.
+						messageRouter.logWarning(
+							ConsoleMessageId.ApiReportNotCopied,
+							'You have changed the API signature for this project.' +
+								` Please copy the file "${actualEntryPointApiReportShortPath}" to "${expectedEntryPointApiReportShortPath}",` +
+								` or perform a local build (which does this automatically).` +
+								` See the Git repo documentation for more info.`,
+						);
+					}
+
+					if (messageRouter.showVerboseMessages || printApiReportDiff) {
+						const patch: StructuredPatch = structuredPatch(
+							expectedEntryPointApiReportShortPath,
+							actualEntryPointApiReportShortPath,
+							expectedApiReportContent,
+							actualApiReportContent,
+						);
+						const logFunction:
+							| (typeof MessageRouter.prototype)['logVerbose']
+							| (typeof MessageRouter.prototype)['logWarning'] = printApiReportDiff
+							? messageRouter.logWarning.bind(messageRouter)
+							: messageRouter.logVerbose.bind(messageRouter);
+
+						logFunction(ConsoleMessageId.ApiReportDiff, 'Changes to the API report:\n\n' + formatPatch(patch));
+					}
+				}
+			} else {
+				// The target file does not exist, so we are setting up the API review file for the first time.
+				//
+				// NOTE: People sometimes make a mistake where they move a project and forget to update the "reportFolder"
+				// setting, which causes a new file to silently get written to the wrong place.  This can be confusing.
+				// Thus we treat the initial creation of the file specially.
+				apiReportChanged = true;
+
+				if (localBuild) {
+					const expectedApiReportFolder: string = path.dirname(expectedEntryPointApiReportPath);
+					if (FileSystem.exists(expectedApiReportFolder)) {
+						FileSystem.writeFile(expectedEntryPointApiReportPath, actualApiReportContent, {
+							convertLineEndings: extractorConfig.newlineKind,
+						});
+						messageRouter.logWarning(
+							ConsoleMessageId.ApiReportCreated,
+							'The API report file was missing, so a new file was created. Please add this file to Git:\n' +
+								expectedEntryPointApiReportPath,
+						);
+					} else {
+						messageRouter.logError(
+							ConsoleMessageId.ApiReportFolderMissing,
+							'Unable to create the API report file. Please make sure the target folder exists:\n' +
+								expectedApiReportFolder,
+						);
+					}
+				} else {
+					// For a production build, issue a warning that will break the CI build.
+					messageRouter.logWarning(
+						ConsoleMessageId.ApiReportNotCopied,
+						'The API report file is missing.' +
+							` Please copy the file "${actualEntryPointApiReportShortPath}" to "${expectedEntryPointApiReportShortPath}",` +
+							` or perform a local build (which does this automatically).` +
+							` See the Git repo documentation for more info.`,
+					);
+				}
+			}
+		}
+
+		return apiReportChanged;
 	}
 
 	private static _checkCompilerCompatibility(extractorConfig: ExtractorConfig, messageRouter: MessageRouter): void {

@@ -1,110 +1,104 @@
 'use client';
 
-import type { ApiItemKind } from '@discordjs/api-extractor-model';
-import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
-import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
-import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
-import { VscSymbolEvent } from '@react-icons/all-files/vsc/VscSymbolEvent';
-import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
-import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
-import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty';
-import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable';
-import { Dialog } from 'ariakit/dialog';
 import { Command } from 'cmdk';
+import { useAtom, useSetAtom } from 'jotai';
+import { ArrowRight } from 'lucide-react';
+import { Meilisearch } from 'meilisearch';
+import dynamic from 'next/dynamic';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
-import { useKey } from 'react-use';
-import { useCmdK } from '~/contexts/cmdK';
-import { client } from '~/util/search';
+import { useEffect, useState } from 'react';
+import { useDebounceValue, useMediaQuery } from 'usehooks-ts';
+import { Scrollbars } from '@/components/OverlayScrollbars';
+import { isCmdKOpenAtom } from '@/stores/cmdk';
+import { isDrawerOpenAtom } from '@/stores/drawer';
+import { cx } from '@/styles/cva';
+import { resolveKind } from '@/util/resolveNodeKind';
 
-function resolveIcon(item: keyof typeof ApiItemKind) {
-	switch (item) {
-		case 'Class':
-			return <VscSymbolClass className="shrink-0" size={25} />;
-		case 'Enum':
-			return <VscSymbolEnum className="shrink-0" size={25} />;
-		case 'Interface':
-			return <VscSymbolInterface className="shrink-0" size={25} />;
-		case 'Property':
-			return <VscSymbolProperty className="shrink-0" size={25} />;
-		case 'TypeAlias':
-			return <VscSymbolVariable className="shrink-0" size={25} />;
-		case 'Variable':
-			return <VscSymbolVariable className="shrink-0" size={25} />;
-		case 'Event':
-			return <VscSymbolEvent className="shrink-0" size={25} />;
-		default:
-			return <VscSymbolMethod className="shrink-0" size={25} />;
-	}
-}
+const client = new Meilisearch({
+	host: 'https://search.discordjs.dev',
+	apiKey: 'f3482b8e976a8b1092394aafbfb91f391242f40b0a6f45a008a5a72b354fb07e',
+});
 
-export function CmdKDialog() {
+export function CmdK({ dependencies }: { readonly dependencies: string[] }) {
 	const pathname = usePathname();
 	const router = useRouter();
-	const dialog = useCmdK();
-	const [search, setSearch] = useState('');
+	const [open, setOpen] = useAtom(isCmdKOpenAtom);
+	const setDrawerOpen = useSetAtom(isDrawerOpenAtom);
+	const [search, setSearch] = useDebounceValue('', 250);
 	const [searchResults, setSearchResults] = useState<any[]>([]);
+	const isMobile = useMediaQuery('(max-width: 600px)');
 
 	const packageName = pathname?.split('/').slice(3, 4)[0];
 	const branchName = pathname?.split('/').slice(4, 5)[0];
 
-	const searchResultItems = useMemo(
-		() =>
-			searchResults?.map((item, idx) => (
-				<Command.Item
-					className="my-1 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-none active:translate-y-px dark:border-dark-100 active:bg-neutral-200 hover:bg-neutral-100 dark:text-white [&[aria-selected]]:ring [&[aria-selected]]:ring-width-2 [&[aria-selected]]:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
-					key={`${item.id}-${idx}`}
-					onSelect={() => {
-						router.push(item.path);
-						dialog!.setOpen(false);
-					}}
-				>
-					<div className="flex grow flex-row place-content-between place-items-center gap-4">
-						<div className="flex flex-row place-items-center gap-4">
-							{resolveIcon(item.kind)}
-							<div className="w-50 flex flex-col sm:w-100">
-								<h2 className="font-semibold">{item.name}</h2>
-								<div className="line-clamp-1 text-sm font-normal">{item.summary}</div>
-								<div className="line-clamp-1 hidden text-xs font-light opacity-75 sm:block dark:opacity-50">
-									{item.path}
-								</div>
-							</div>
-						</div>
-						<VscArrowRight className="shrink-0" size={20} />
-					</div>
-				</Command.Item>
-			)) ?? [],
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[searchResults],
-	);
+	const searchResultItems =
+		searchResults?.map((item, idx) => (
+			<Command.Item
+				className="flex cursor-pointer place-items-center gap-2 rounded-md p-2 data-[selected='true']:bg-neutral-200 dark:data-[selected='true']:bg-neutral-800"
+				key={`${item.id}-${idx}`}
+				onSelect={() => {
+					router.push(item.path);
+					setOpen(false);
+				}}
+				value={item.id}
+			>
+				{resolveKind(item.kind)}
+				<div className="flex grow flex-col">
+					<span className="font-semibold wrap-anywhere">{item.name}</span>
+					<span className={cx('truncate text-sm', isMobile ? 'max-w-[30ch]' : 'max-w-[40ch]')}>{item.summary}</span>
+					<span className={cx('truncate text-xs', isMobile ? 'max-w-[30ch]' : 'max-w-[40ch]')}>{item.path}</span>
+				</div>
+				<ArrowRight aria-hidden className="shrink-0" />
+			</Command.Item>
+		)) ?? [];
 
-	useKey(
-		(event) => {
+	// Toggle the menu when ⌘K is pressed
+	useEffect(() => {
+		const down = (event: KeyboardEvent) => {
 			if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
 				event.preventDefault();
-				return true;
+				setOpen((open) => !open);
 			}
+		};
 
-			return false;
-		},
-		dialog!.toggle,
-		{ event: 'keydown', options: {} },
-		[],
-	);
+		document.addEventListener('keydown', down);
+		return () => {
+			document.removeEventListener('keydown', down);
+		};
+	}, [setOpen]);
 
 	useEffect(() => {
-		if (!dialog!.open) {
+		if (open) {
+			setDrawerOpen(false);
 			setSearch('');
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [dialog!.open]);
+
+		return () => {
+			document.body.style.pointerEvents = 'auto';
+		};
+	}, [open, setDrawerOpen, setSearch]);
 
 	useEffect(() => {
+		// const searchDoc = async (searchString: string, version: string) => {
+		// 	console.log(dependencies);
+		// 	const res = await client
+		// 		.index(`${packageName?.replaceAll('.', '-')}-${version}`)
+		// 		.search(searchString, { limit: 25 });
+		// 	setSearchResults(res.hits);
+		// };
+
 		const searchDoc = async (searchString: string, version: string) => {
-			const res = await client
-				.index(`${packageName?.replaceAll('.', '-')}-${version}`)
-				.search(searchString, { limit: 5 });
-			setSearchResults(res.hits);
+			const result = await client.multiSearch({
+				queries: [`${packageName?.replaceAll('.', '-')}-${version}`, ...dependencies].map((dep) => ({
+					indexUid: dep,
+					// eslint-disable-next-line id-length
+					q: searchString,
+					limit: 25,
+					attributesToSearchOn: ['name'],
+					sort: ['type:asc'],
+				})),
+			});
+			setSearchResults(result.results.flatMap((res) => res.hits));
 		};
 
 		if (search && packageName) {
@@ -112,27 +106,46 @@ export function CmdKDialog() {
 		} else {
 			setSearchResults([]);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [search]);
+	}, [branchName, dependencies, packageName, search]);
 
 	return (
-		<Dialog className="fixed left-1/2 top-1/4 z-50 -translate-x-1/2" state={dialog!}>
-			<Command
-				className="max-w-xs min-w-xs border border-light-900 rounded bg-white/50 shadow backdrop-blur-md sm:max-w-lg sm:min-w-lg dark:border-dark-100 dark:bg-dark/50"
-				label="Command Menu"
-				shouldFilter={false}
+		<Command.Dialog
+			className="w-full rounded-md border border-neutral-300 bg-neutral-100 p-2 shadow-md dark:border-neutral-700 dark:bg-neutral-900"
+			label="Command Menu"
+			onOpenChange={setOpen}
+			open={open}
+			shouldFilter={false}
+		>
+			<Command.Input
+				className="mb-4 w-full border-b border-neutral-300 bg-transparent px-2 pt-2 pb-4 outline-none dark:border-neutral-700"
+				onValueChange={setSearch}
+				placeholder="Quick search..."
+			/>
+			<Scrollbars
+				className="max-h-96 pr-3"
+				defer
+				options={{
+					overflow: { x: 'hidden' },
+					scrollbars: {
+						autoHide: 'scroll',
+						autoHideDelay: 500,
+						autoHideSuspend: true,
+						clickScroll: true,
+					},
+				}}
 			>
-				<Command.Input
-					className="w-full border-0 border-b border-light-900 rounded rounded-b-0 bg-white/50 p-4 text-lg caret-blurple outline-none dark:border-dark-100 dark:bg-dark/50 placeholder:text-dark-300/75 dark:placeholder:text-white/75"
-					onValueChange={setSearch}
-					placeholder="Quick search..."
-					value={search}
-				/>
-				<Command.List className="pt-0">
-					<Command.Empty className="p-4 text-center">No results found</Command.Empty>
-					{search ? searchResultItems : null}
+				<Command.List>
+					{search && searchResultItems.length ? (
+						searchResultItems
+					) : (
+						<div className="flex h-12 place-content-center place-items-center text-sm" role="presentation">
+							No results found.
+						</div>
+					)}
 				</Command.List>
-			</Command>
-		</Dialog>
+			</Scrollbars>
+		</Command.Dialog>
 	);
 }
+
+export const CmdKNoSRR = dynamic(async () => CmdK, { ssr: false });

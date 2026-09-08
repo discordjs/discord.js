@@ -1,11 +1,6 @@
 'use strict';
 
-/* eslint-env jest */
+const { strictEqual } = require('node:assert/strict');
+const { resolveGuildTemplateCode } = require('../src/index.js');
 
-const { DataResolver } = require('../src');
-
-describe('resolveGuildTemplateCode', () => {
-  test('basic', () => {
-    expect(DataResolver.resolveGuildTemplateCode('https://discord.new/abc')).toEqual('abc');
-  });
-});
+strictEqual(resolveGuildTemplateCode('https://discord.new/abc'), 'abc');

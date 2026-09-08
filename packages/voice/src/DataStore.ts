@@ -136,7 +136,7 @@ function prepareNextAudioFrame(players: AudioPlayer[]) {
 
 	if (!nextPlayer) {
 		if (nextTime !== -1) {
-			audioCycleInterval = setTimeout(() => audioCycleStep(), nextTime - Date.now());
+			audioCycleInterval = setTimeout(() => audioCycleStep(), Math.max(1, nextTime - Date.now()));
 		}
 
 		return;

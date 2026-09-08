@@ -1,0 +1,40 @@
+---
+title: Action Rows
+---
+
+Action rows are a layout component with five "slots" that can be filled with other components. At the time of writing this guide, buttons take up one slot and select menus take up five "slots". Accordingly, each `ActionRow` can hold up to 5 buttons or a single select menu. A message can have up to five rows without providing the `IsComponentsV2` message flag. If you want to place buttons or action rows into the message body, they have to be wrapped inside rows.
+
+<Callout>
+	Read our guide section on [display components](../popular-topics/display-components) if you want to learn more about
+	those.
+</Callout>
+
+## Building action rows
+
+To create an action row, use the `ActionRowBuilder` class and the `ActionRowBuilder#addComponents` method to add buttons or a select menu.
+
+```js
+const row = new ActionRowBuilder().addComponents(component);
+```
+
+<Callout>
+If you're using TypeScript, you'll need to specify the type of components your action row holds. This can be done by specifying the component builder you will add to it using a generic parameter in `ActionRowBuilder`.
+
+```js
+new ActionRowBuilder() // [!code --]
+new ActionRowBuilder<ButtonBuilder>() // [!code ++]
+```
+
+</Callout>
+
+## Sending action rows
+
+Once one or many components are inside your row(s), send them in the `components` property of your `InteractionReplyOptions` (extends `BaseMessageOptions`).
+
+```js
+const row = new ActionRowBuilder().addComponents(component);
+
+await interaction.reply({ components: [row] });
+```
+
+To learn how to create the buttons and select menus that will go inside your row, including more detailed examples on how you might use them, continue on to the other pages in this section.

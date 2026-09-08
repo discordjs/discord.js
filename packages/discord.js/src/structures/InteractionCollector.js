@@ -1,8 +1,8 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const Collector = require('./interfaces/Collector');
-const Events = require('../util/Events');
+const { Events } = require('../util/Events.js');
+const { Collector } = require('./interfaces/Collector.js');
 
 /**
  * @typedef {CollectorOptions} InteractionCollectorOptions
@@ -14,8 +14,6 @@ const Events = require('../util/Events');
  * @property {number} [maxComponents] The maximum number of components to collect
  * @property {number} [maxUsers] The maximum number of users to interact
  * @property {Message|APIMessage} [message] The message to listen to interactions from
- * @property {InteractionResponse} [interactionResponse] The interaction response to listen
- * to message component interactions from
  */
 
 /**
@@ -26,6 +24,7 @@ const Events = require('../util/Events');
  * guild ({@link Client#event:guildDelete guildDelete}) is deleted.
  * <info>Interaction collectors that do not specify `time` or `idle` may be prone to always running.
  * Ensure your interaction collectors end via either of these options or manual cancellation.</info>
+ *
  * @extends {Collector}
  */
 class InteractionCollector extends Collector {
@@ -38,32 +37,25 @@ class InteractionCollector extends Collector {
 
     /**
      * The message from which to collect interactions, if provided
+     *
      * @type {?Snowflake}
      */
-    this.messageId = options.message?.id ?? options.interactionResponse?.interaction.message?.id ?? null;
-
-    /**
-     * The message interaction id from which to collect interactions, if provided
-     * @type {?Snowflake}
-     */
-    this.messageInteractionId = options.interactionResponse?.id ?? null;
+    this.messageId = options.message?.id ?? null;
 
     /**
      * The channel from which to collect interactions, if provided
+     *
      * @type {?Snowflake}
      */
     this.channelId =
-      options.interactionResponse?.interaction.channelId ??
-      options.message?.channelId ??
-      options.message?.channel_id ??
-      this.client.channels.resolveId(options.channel);
+      options.message?.channelId ?? options.message?.channel_id ?? this.client.channels.resolveId(options.channel);
 
     /**
      * The guild from which to collect interactions, if provided
+     *
      * @type {?Snowflake}
      */
     this.guildId =
-      options.interactionResponse?.interaction.guildId ??
       options.message?.guildId ??
       options.message?.guild_id ??
       this.client.guilds.resolveId(options.channel?.guild) ??
@@ -71,24 +63,28 @@ class InteractionCollector extends Collector {
 
     /**
      * The type of interaction to collect
+     *
      * @type {?InteractionType}
      */
     this.interactionType = options.interactionType ?? null;
 
     /**
      * The type of component to collect
+     *
      * @type {?ComponentType}
      */
     this.componentType = options.componentType ?? null;
 
     /**
      * The users that have interacted with this collector
+     *
      * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();
 
     /**
      * The total number of interactions collected
+     *
      * @type {number}
      */
     this.total = 0;
@@ -99,7 +95,7 @@ class InteractionCollector extends Collector {
       if (messages.has(this.messageId)) this.stop('messageDelete');
     };
 
-    if (this.messageId || this.messageInteractionId) {
+    if (this.messageId) {
       this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
       this.client.on(Events.MessageDelete, this._handleMessageDeletion);
       this.client.on(Events.MessageBulkDelete, bulkDeleteListener);
@@ -137,6 +133,7 @@ class InteractionCollector extends Collector {
 
   /**
    * Handles an incoming interaction for possible collection.
+   *
    * @param {BaseInteraction} interaction The interaction to possibly collect
    * @returns {?Snowflake}
    * @private
@@ -144,6 +141,7 @@ class InteractionCollector extends Collector {
   collect(interaction) {
     /**
      * Emitted whenever an interaction is collected.
+     *
      * @event InteractionCollector#collect
      * @param {BaseInteraction} interaction The interaction that was collected
      */
@@ -151,13 +149,6 @@ class InteractionCollector extends Collector {
     if (this.interactionType && interaction.type !== this.interactionType) return null;
     if (this.componentType && interaction.componentType !== this.componentType) return null;
     if (this.messageId && interaction.message?.id !== this.messageId) return null;
-    if (
-      this.messageInteractionId &&
-      interaction.message?.interaction?.id &&
-      interaction.message.interaction.id !== this.messageInteractionId
-    ) {
-      return null;
-    }
     if (this.channelId && interaction.channelId !== this.channelId) return null;
     if (this.guildId && interaction.guildId !== this.guildId) return null;
 
@@ -166,25 +157,20 @@ class InteractionCollector extends Collector {
 
   /**
    * Handles an interaction for possible disposal.
+   *
    * @param {BaseInteraction} interaction The interaction that could be disposed of
    * @returns {?Snowflake}
    */
   dispose(interaction) {
     /**
      * Emitted whenever an interaction is disposed of.
+     *
      * @event InteractionCollector#dispose
      * @param {BaseInteraction} interaction The interaction that was disposed of
      */
     if (this.type && interaction.type !== this.type) return null;
     if (this.componentType && interaction.componentType !== this.componentType) return null;
     if (this.messageId && interaction.message?.id !== this.messageId) return null;
-    if (
-      this.messageInteractionId &&
-      interaction.message?.interaction?.id &&
-      interaction.message.interaction.id !== this.messageInteractionId
-    ) {
-      return null;
-    }
     if (this.channelId && interaction.channelId !== this.channelId) return null;
     if (this.guildId && interaction.guildId !== this.guildId) return null;
 
@@ -203,6 +189,7 @@ class InteractionCollector extends Collector {
 
   /**
    * The reason this collector has ended with, or null if it hasn't ended yet
+   *
    * @type {?string}
    * @readonly
    */
@@ -215,6 +202,7 @@ class InteractionCollector extends Collector {
 
   /**
    * Handles checking if the message has been deleted, and if so, stops the collector with the reason 'messageDelete'.
+   *
    * @private
    * @param {Message} message The message that was deleted
    * @returns {void}
@@ -223,14 +211,11 @@ class InteractionCollector extends Collector {
     if (message.id === this.messageId) {
       this.stop('messageDelete');
     }
-
-    if (message.interaction?.id === this.messageInteractionId) {
-      this.stop('messageDelete');
-    }
   }
 
   /**
    * Handles checking if the channel has been deleted, and if so, stops the collector with the reason 'channelDelete'.
+   *
    * @private
    * @param {GuildChannel} channel The channel that was deleted
    * @returns {void}
@@ -243,6 +228,7 @@ class InteractionCollector extends Collector {
 
   /**
    * Handles checking if the thread has been deleted, and if so, stops the collector with the reason 'threadDelete'.
+   *
    * @private
    * @param {ThreadChannel} thread The thread that was deleted
    * @returns {void}
@@ -255,6 +241,7 @@ class InteractionCollector extends Collector {
 
   /**
    * Handles checking if the guild has been deleted, and if so, stops the collector with the reason 'guildDelete'.
+   *
    * @private
    * @param {Guild} guild The guild that was deleted
    * @returns {void}
@@ -266,4 +253,4 @@ class InteractionCollector extends Collector {
   }
 }
 
-module.exports = InteractionCollector;
+exports.InteractionCollector = InteractionCollector;

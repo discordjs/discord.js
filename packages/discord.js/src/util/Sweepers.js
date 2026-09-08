@@ -1,14 +1,14 @@
 'use strict';
 
 const { setInterval, clearInterval } = require('node:timers');
-const { ThreadChannelTypes, SweeperKeys } = require('./Constants');
-const Events = require('./Events');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { ThreadChannelTypes, SweeperKeys } = require('./Constants.js');
+const { Events } = require('./Events.js');
 
 /**
  * @typedef {Function} GlobalSweepFilter
- * @returns {Function|null} Return `null` to skip sweeping, otherwise a function passed to `sweep()`,
- * See {@link [Collection#sweep](https://discord.js.org/docs/packages/collection/stable/Collection:Class#sweep)}
+ * @returns {?Function} Return `null` to skip sweeping, otherwise a function passed to `sweep()`,
+ * See {@link https://discord.js.org/docs/packages/collection/stable/Collection:Class#sweep Collection#sweep}
  * for the definition of this function.
  */
 
@@ -19,6 +19,7 @@ class Sweepers {
   constructor(client, options) {
     /**
      * The client that instantiated this
+     *
      * @type {Client}
      * @readonly
      */
@@ -26,12 +27,14 @@ class Sweepers {
 
     /**
      * The options the sweepers were instantiated with
+     *
      * @type {SweeperOptions}
      */
     this.options = options;
 
     /**
      * A record of interval timeout that is used to sweep the indicated items, or null if not being swept
+     *
      * @type {Object<SweeperKey, ?Timeout>}
      */
     this.intervals = Object.fromEntries(SweeperKeys.map(key => [key, null]));
@@ -54,6 +57,9 @@ class Sweepers {
             break;
           case 'threads':
             clonedOptions.filter = this.constructor.archivedThreadSweepFilter(clonedOptions.lifetime);
+            break;
+          default:
+            break;
         }
       }
 
@@ -63,6 +69,7 @@ class Sweepers {
 
   /**
    * Sweeps all guild and global application commands and removes the ones which are indicated by the filter.
+   *
    * @param {Function} filter The function used to determine which commands will be removed from the caches.
    * @returns {number} Amount of commands that were removed from the caches
    */
@@ -80,6 +87,7 @@ class Sweepers {
 
   /**
    * Sweeps all auto moderation rules and removes the ones which are indicated by the filter.
+   *
    * @param {Function} filter The function used to determine
    * which auto moderation rules will be removed from the caches
    * @returns {number} Amount of auto moderation rules that were removed from the caches
@@ -90,6 +98,7 @@ class Sweepers {
 
   /**
    * Sweeps all guild bans and removes the ones which are indicated by the filter.
+   *
    * @param {Function} filter The function used to determine which bans will be removed from the caches.
    * @returns {number} Amount of bans that were removed from the caches
    */
@@ -99,6 +108,7 @@ class Sweepers {
 
   /**
    * Sweeps all guild emojis and removes the ones which are indicated by the filter.
+   *
    * @param {Function} filter The function used to determine which emojis will be removed from the caches.
    * @returns {number} Amount of emojis that were removed from the caches
    */
@@ -107,7 +117,26 @@ class Sweepers {
   }
 
   /**
+   * Sweeps all client application entitlements and removes the ones which are indicated by the filter.
+   *
+   * @param {Function} filter The function used to determine which entitlements will be removed from the caches.
+   * @returns {number} Amount of entitlements that were removed from the caches
+   */
+  sweepEntitlements(filter) {
+    if (typeof filter !== 'function') {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'filter', 'function');
+    }
+
+    const entitlements = this.client.application.entitlements.cache.sweep(filter);
+
+    this.client.emit(Events.CacheSweep, `Swept ${entitlements} entitlements.`);
+
+    return entitlements;
+  }
+
+  /**
    * Sweeps all guild invites and removes the ones which are indicated by the filter.
+   *
    * @param {Function} filter The function used to determine which invites will be removed from the caches.
    * @returns {number} Amount of invites that were removed from the caches
    */
@@ -118,6 +147,7 @@ class Sweepers {
   /**
    * Sweeps all guild members and removes the ones which are indicated by the filter.
    * <info>It is highly recommended to keep the client guild member cached</info>
+   *
    * @param {Function} filter The function used to determine which guild members will be removed from the caches.
    * @returns {number} Amount of guild members that were removed from the caches
    */
@@ -127,6 +157,7 @@ class Sweepers {
 
   /**
    * Sweeps all text-based channels' messages and removes the ones which are indicated by the filter.
+   *
    * @param {Function} filter The function used to determine which messages will be removed from the caches.
    * @returns {number} Amount of messages that were removed from the caches
    * @example
@@ -143,6 +174,7 @@ class Sweepers {
     if (typeof filter !== 'function') {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'filter', 'function');
     }
+
     let channels = 0;
     let messages = 0;
 
@@ -152,12 +184,14 @@ class Sweepers {
       channels++;
       messages += channel.messages.cache.sweep(filter);
     }
+
     this.client.emit(Events.CacheSweep, `Swept ${messages} messages in ${channels} text-based channels.`);
     return messages;
   }
 
   /**
    * Sweeps all presences and removes the ones which are indicated by the filter.
+   *
    * @param {Function} filter The function used to determine which presences will be removed from the caches.
    * @returns {number} Amount of presences that were removed from the caches
    */
@@ -167,6 +201,7 @@ class Sweepers {
 
   /**
    * Sweeps all message reactions and removes the ones which are indicated by the filter.
+   *
    * @param {Function} filter The function used to determine which reactions will be removed from the caches.
    * @returns {number} Amount of reactions that were removed from the caches
    */
@@ -174,6 +209,7 @@ class Sweepers {
     if (typeof filter !== 'function') {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'filter', 'function');
     }
+
     let channels = 0;
     let messages = 0;
     let reactions = 0;
@@ -187,6 +223,7 @@ class Sweepers {
         reactions += message.reactions.cache.sweep(filter);
       }
     }
+
     this.client.emit(
       Events.CacheSweep,
       `Swept ${reactions} reactions on ${messages} messages in ${channels} text-based channels.`,
@@ -196,6 +233,7 @@ class Sweepers {
 
   /**
    * Sweeps all guild stage instances and removes the ones which are indicated by the filter.
+   *
    * @param {Function} filter The function used to determine which stage instances will be removed from the caches.
    * @returns {number} Amount of stage instances that were removed from the caches
    */
@@ -205,6 +243,7 @@ class Sweepers {
 
   /**
    * Sweeps all guild stickers and removes the ones which are indicated by the filter.
+   *
    * @param {Function} filter The function used to determine which stickers will be removed from the caches.
    * @returns {number} Amount of stickers that were removed from the caches
    */
@@ -215,6 +254,7 @@ class Sweepers {
   /**
    * Sweeps all thread members and removes the ones which are indicated by the filter.
    * <info>It is highly recommended to keep the client thread member cached</info>
+   *
    * @param {Function} filter The function used to determine which thread members will be removed from the caches.
    * @returns {number} Amount of thread members that were removed from the caches
    */
@@ -230,12 +270,14 @@ class Sweepers {
       threads++;
       members += channel.members.cache.sweep(filter);
     }
+
     this.client.emit(Events.CacheSweep, `Swept ${members} thread members in ${threads} threads.`);
     return members;
   }
 
   /**
    * Sweeps all threads and removes the ones which are indicated by the filter.
+   *
    * @param {Function} filter The function used to determine which threads will be removed from the caches.
    * @returns {number} filter Amount of threads that were removed from the caches
    * @example
@@ -261,12 +303,14 @@ class Sweepers {
         this.client.channels._remove(key);
       }
     }
+
     this.client.emit(Events.CacheSweep, `Swept ${threads} threads.`);
     return threads;
   }
 
   /**
    * Sweeps all users and removes the ones which are indicated by the filter.
+   *
    * @param {Function} filter The function used to determine which users will be removed from the caches.
    * @returns {number} Amount of users that were removed from the caches
    */
@@ -284,6 +328,7 @@ class Sweepers {
 
   /**
    * Sweeps all guild voice states and removes the ones which are indicated by the filter.
+   *
    * @param {Function} filter The function used to determine which voice states will be removed from the caches.
    * @returns {number} Amount of voice states that were removed from the caches
    */
@@ -293,6 +338,7 @@ class Sweepers {
 
   /**
    * Cancels all sweeping intervals
+   *
    * @returns {void}
    */
   destroy() {
@@ -303,6 +349,7 @@ class Sweepers {
 
   /**
    * Options for generating a filter function based on lifetime
+   *
    * @typedef {Object} LifetimeFilterOptions
    * @property {number} [lifetime=14400] How long, in seconds, an entry should stay in the collection
    * before it is considered sweepable.
@@ -314,23 +361,27 @@ class Sweepers {
 
   /**
    * Create a sweepFilter function that uses a lifetime to determine sweepability.
+   *
    * @param {LifetimeFilterOptions} [options={}] The options used to generate the filter function
    * @returns {GlobalSweepFilter}
    */
   static filterByLifetime({
-    lifetime = 14400,
-    getComparisonTimestamp = e => e?.createdTimestamp,
+    lifetime = 14_400,
+    getComparisonTimestamp = item => item?.createdTimestamp,
     excludeFromSweep = () => false,
   } = {}) {
     if (typeof lifetime !== 'number') {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'lifetime', 'number');
     }
+
     if (typeof getComparisonTimestamp !== 'function') {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'getComparisonTimestamp', 'function');
     }
+
     if (typeof excludeFromSweep !== 'function') {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'excludeFromSweep', 'function');
     }
+
     return () => {
       if (lifetime <= 0) return null;
       const lifetimeMs = lifetime * 1_000;
@@ -339,6 +390,7 @@ class Sweepers {
         if (excludeFromSweep(entry, key, coll)) {
           return false;
         }
+
         const comparisonTimestamp = getComparisonTimestamp(entry, key, coll);
         if (!comparisonTimestamp || typeof comparisonTimestamp !== 'number') return false;
         return now - comparisonTimestamp > lifetimeMs;
@@ -348,43 +400,47 @@ class Sweepers {
 
   /**
    * Creates a sweep filter that sweeps archived threads
+   *
    * @param {number} [lifetime=14400] How long a thread has to be archived to be valid for sweeping
    * @returns {GlobalSweepFilter}
    */
-  static archivedThreadSweepFilter(lifetime = 14400) {
+  static archivedThreadSweepFilter(lifetime = 14_400) {
     return this.filterByLifetime({
       lifetime,
-      getComparisonTimestamp: e => e.archiveTimestamp,
-      excludeFromSweep: e => !e.archived,
+      getComparisonTimestamp: thread => thread.archiveTimestamp,
+      excludeFromSweep: thread => !thread.archived,
     });
   }
 
   /**
    * Creates a sweep filter that sweeps expired invites
+   *
    * @param {number} [lifetime=14400] How long ago an invite has to have expired to be valid for sweeping
    * @returns {GlobalSweepFilter}
    */
-  static expiredInviteSweepFilter(lifetime = 14400) {
+  static expiredInviteSweepFilter(lifetime = 14_400) {
     return this.filterByLifetime({
       lifetime,
-      getComparisonTimestamp: i => i.expiresTimestamp,
+      getComparisonTimestamp: invite => invite.expiresTimestamp,
     });
   }
 
   /**
    * Creates a sweep filter that sweeps outdated messages (edits taken into account)
+   *
    * @param {number} [lifetime=3600] How long ago a message has to have been sent or edited to be valid for sweeping
    * @returns {GlobalSweepFilter}
    */
-  static outdatedMessageSweepFilter(lifetime = 3600) {
+  static outdatedMessageSweepFilter(lifetime = 3_600) {
     return this.filterByLifetime({
       lifetime,
-      getComparisonTimestamp: m => m.editedTimestamp ?? m.createdTimestamp,
+      getComparisonTimestamp: message => message.editedTimestamp ?? message.createdTimestamp,
     });
   }
 
   /**
    * Configuration options for emitting the cache sweep client event
+   *
    * @typedef {Object} SweepEventOptions
    * @property {boolean} [emit=true] Whether to emit the client event in this method
    * @property {string} [outputName] A name to output in the client event if it should differ from the key
@@ -393,6 +449,7 @@ class Sweepers {
 
   /**
    * Sweep a direct sub property of all guilds
+   *
    * @param {string} key The name of the property
    * @param {Function} filter Filter function passed to sweep
    * @param {SweepEventOptions} [eventOptions={}] Options for the Client event emitted here
@@ -408,6 +465,9 @@ class Sweepers {
     let items = 0;
 
     for (const guild of this.client.guilds.cache.values()) {
+      // We may be unable to sweep the cache if the guild is unavailable and was never patched
+      if (!guild.available) continue;
+
       const { cache } = guild[key];
 
       guilds++;
@@ -423,6 +483,7 @@ class Sweepers {
 
   /**
    * Validates a set of properties
+   *
    * @param {string} key Key of the options object to check
    * @private
    */
@@ -431,16 +492,20 @@ class Sweepers {
     if (typeof props !== 'object') {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, `sweepers.${key}`, 'object', true);
     }
+
     if (typeof props.interval !== 'number') {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, `sweepers.${key}.interval`, 'number');
     }
+
     // Invites, Messages, and Threads can be provided a lifetime parameter, which we use to generate the filter
     if (['invites', 'messages', 'threads'].includes(key) && !('filter' in props)) {
       if (typeof props.lifetime !== 'number') {
         throw new DiscordjsTypeError(ErrorCodes.InvalidType, `sweepers.${key}.lifetime`, 'number');
       }
+
       return;
     }
+
     if (typeof props.filter !== 'function') {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, `sweepers.${key}.filter`, 'function');
     }
@@ -448,6 +513,7 @@ class Sweepers {
 
   /**
    * Initialize an interval for sweeping
+   *
    * @param {string} intervalKey The name of the property that stores the interval for this sweeper
    * @param {string} sweepKey The name of the function that sweeps the desired caches
    * @param {Object} opts Validated options for a sweep
@@ -464,4 +530,4 @@ class Sweepers {
   }
 }
 
-module.exports = Sweepers;
+exports.Sweepers = Sweepers;

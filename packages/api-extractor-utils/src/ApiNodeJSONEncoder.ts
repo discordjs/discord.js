@@ -77,10 +77,7 @@ export interface ApiParameterListJSON {
 }
 
 export interface ApiMethodSignatureJSON
-	extends ApiItemJSON,
-		ApiTypeParameterListJSON,
-		ApiParameterListJSON,
-		ApiInheritableJSON {
+	extends ApiItemJSON, ApiTypeParameterListJSON, ApiParameterListJSON, ApiInheritableJSON {
 	mergedSiblings: ApiMethodSignatureJSON[];
 	optional: boolean;
 	overloadIndex: number;
@@ -252,7 +249,7 @@ export class ApiNodeJSONEncoder {
 							parentKey: item.parent.containerKey,
 							parentName: item.parent.displayName,
 							path: generatePath(item.parent.getHierarchy(), version),
-					  }
+						}
 					: null,
 		};
 	}

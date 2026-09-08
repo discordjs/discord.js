@@ -1,0 +1,165 @@
+---
+title: Advanced Sharding
+---
+
+<Callout type="warn">
+	This page is a follow-up and bases its code on [the previous page](./additional-information), which assumes knowledge
+	of arguments and passing functions.
+</Callout>
+
+## Sending messages across shards
+
+Let's start with the basic usage of shards. At some point in bot development, you might have wanted to send a message to another channel, which may or may not necessarily be on the same guild, which means it may or may not be on the same shard. To achieve this, you will need to go back to your friend `.broadcastEval()` and try every shard for the desired channel. Suppose you have the following code in your `interactionCreate` event:
+
+```js title="bot.js"
+client.on(Events.InteractionCreate, (interaction) => {
+	// ...
+	// [!code focus:9]
+	if (commandName === 'send') {
+		const id = interaction.options.getString('destination');
+		const channel = client.channels.cache.get(id);
+
+		if (!channel) return interaction.reply('I could not find such a channel.');
+
+		channel.send('Hello!');
+		return interaction.reply(`I have sent a message to channel: \`${id}\`!`);
+	}
+});
+```
+
+This will never work for a channel that lies on another shard. So, let's remedy this.
+
+<Callout>
+	`ShardClientUtil#ids` can hold multiple ids. If you use the default sharding manager, the `.ids` array will only have
+	one entry.
+</Callout>
+
+```js title="bot.js"
+if (commandName === 'send') {
+	const id = interaction.options.getString('destination');
+	return client.shard
+		.broadcastEval(
+			async (c, { channelId }) => {
+				const channel = c.channels.cache.get(channelId);
+				if (channel) {
+					await channel.send(`This is a message from shard ${c.shard.ids.join(',')}!`);
+					return true;
+				}
+				return false;
+			},
+			{ context: { channelId: id } },
+		)
+		.then(console.log);
+}
+```
+
+If all is well, you should notice an output like `[false, true, false, false]`. If it is not clear why `true` and `false` are hanging around, the last expression of the eval statement will be returned. You will want this if you want any feedback from the results. Now that you have observed said results, you can adjust the command to give yourself proper feedback, like so:
+
+```js title="bot.js"
+return client.shard
+	.broadcastEval((c) => {
+		// ...
+	})
+	.then((sentArray) => {
+		// Search for a non falsy value before providing feedback
+		if (!sentArray.includes(true)) {
+			return message.reply('I could not find such a channel.');
+		}
+		return message.reply(`I have sent a message to channel: \`${id}\`!`);
+	});
+```
+
+And that's it for this section! You have successfully communicated across all of your shards.
+
+## Using functions continued
+
+If you remember, there was a brief mention of passing functions through `.broadcastEval()`, but no super clear description of exactly how to go about it. Well, fret not, for this section will cover it! Suppose you have the following code in your `interactionCreate` event:
+
+```js title="bot.js"
+client.on(Events.InteractionCreate, (interaction) => {
+	// ...
+	// [!code focus:5]
+	if (commandName === 'emoji') {
+		const emojiId = interaction.options.getString('emoji');
+		const emoji = client.emojis.cache.get(emojiId);
+
+		return interaction.reply(`I have found an emoji ${emoji}!`);
+	}
+});
+```
+
+The aforementioned code will essentially search through `client.emojis.cache` for the provided id, which will be given provided by the `emoji` option. However, with sharding, you might notice it doesn't search through all the client's emojis. As mentioned in an earlier section of this guide, the different shards partition the client and its cache. Emojis derive from guilds meaning each shard will have the emojis from all guilds for that shard. The solution is to use `.broadcastEval()` to search all the shards for the desired emoji.
+
+Let's start with a basic function, which will try to grab an emoji from the current client and return it.
+
+```js
+function findEmoji(c, { nameOrId }) {
+	return c.emojis.cache.get(nameOrId) || c.emojis.cache.find((e) => e.name.toLowerCase() === nameOrId.toLowerCase());
+}
+```
+
+Next, you need to call the function in your command properly. If you recall from [this section](./additional-information#eval-arguments), it is shown there how to pass a function and arguments correctly.
+
+```js
+client.on(Events.InteractionCreate, (interaction) => {
+	// ...
+	// [!code :5]
+	if (commandName === 'emoji') {
+		const emojiNameOrId = interaction.options.getString('emoji');
+
+		return client.shard.broadcastEval(findEmoji, { context: { nameOrId: emojiNameOrId } }).then(console.log);
+	}
+});
+```
+
+Now, run this code, and you will surely get a result that looks like the following:
+
+```js
+[
+	{
+		guild: {
+			members: {},
+			// ...
+			id: '222078108977594368',
+			name: 'discord.js Official',
+			icon: '6e4b4d1a0c7187f9fd5d4976c50ac96e',
+			// ...
+			emojis: {},
+		},
+		id: '383735055509356544',
+		name: 'duckSmug',
+		requiresColons: true,
+		managed: false,
+		animated: false,
+		_roles: [],
+	},
+];
+```
+
+While this result isn't _necessarily_ bad or incorrect, it's simply a raw object that got `JSON.parse()`'d and `JSON.stringify()`'d over, so all of the circular references are gone. More importantly, The object is no longer a true `GuildEmoji` object as provided by discord.js. _This means none of the convenience methods usually provided to you are available._ If this is a problem for you, you will want to handle the item _inside_ the `broadcastEval`. Conveniently, the `findEmoji` function will be run, so you should execute your relevant methods there, before the object leaves the context.
+
+```js
+function findEmoji(c, { nameOrId }) {
+	const emoji =
+		c.emojis.cache.get(nameOrId) || c.emojis.cache.find((e) => e.name.toLowerCase() === nameOrId.toLowerCase());
+	if (!emoji) return null;
+	// If you wanted to delete the emoji with discord.js, this is where you would do it. Otherwise, don't include this code.
+	emoji.delete();
+	return emoji;
+}
+```
+
+With all that said and done, usually you'll want to display the result, so here is how you can go about doing that:
+
+```js
+return client.shard.broadcastEval(findEmoji, { context: { nameOrId: emojiNameOrId } }).then((emojiArray) => {
+	// Locate a non falsy result, which will be the emoji in question
+	const foundEmoji = emojiArray.find((emoji) => emoji);
+	if (!foundEmoji) return message.reply('I could not find such an emoji.');
+	return message.reply(
+		`I have found the ${foundEmoji.animated ? `<${foundEmoji.identifier}>` : `<:${foundEmoji.identifier}> emoji!`}!`,
+	);
+});
+```
+
+And that's all! The emoji should have pretty-printed in a message, as you'd expect.

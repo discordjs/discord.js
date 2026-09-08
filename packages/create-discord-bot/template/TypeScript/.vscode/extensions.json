@@ -2,7 +2,6 @@
 	"recommendations": [
 		"esbenp.prettier-vscode",
 		"dbaeumer.vscode-eslint",
-		"tamasfe.even-better-toml",
 		"codezombiech.gitignore",
 		"christian-kohler.npm-intellisense",
 		"christian-kohler.path-intellisense"

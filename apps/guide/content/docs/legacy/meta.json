@@ -1,0 +1,32 @@
+{
+	"pages": [
+		"[MessageCircleQuestion][FAQ](/legacy/popular-topics/faq)",
+		"[ArrowDownToLine][Updating to v14](/legacy/additional-info/changes-in-v14)",
+		"external:[LibraryBig][Documentation](https://discord.js.org/docs)",
+		"[Info][Introduction](/legacy)",
+		"---Setup---",
+		"preparations",
+		"---Your App---",
+		"app-creation",
+		"additional-features",
+		"slash-commands",
+		"interactions",
+		"interactive-components",
+		"popular-topics/display-components",
+		"---More To Know---",
+		"popular-topics",
+		"improving-dev-environment",
+		"additional-info",
+		"miscellaneous",
+		"---Persisting Data---",
+		"...keyv",
+		"sequelize",
+		"---Advanced Concepts---",
+		"...oauth2",
+		"sharding"
+	],
+	"title": "discord.js",
+	"description": "The discord.js guide",
+	"icon": "Book",
+	"root": true
+}

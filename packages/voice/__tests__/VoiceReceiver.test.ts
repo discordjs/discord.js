@@ -1,41 +1,38 @@
 /* eslint-disable id-length */
 /* eslint-disable @typescript-eslint/dot-notation */
-// @ts-nocheck
 import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import process from 'node:process';
-import { VoiceOpcodes } from 'discord-api-types/voice/v4';
-import { RTP_PACKET_DESKTOP, RTP_PACKET_CHROME, RTP_PACKET_ANDROID } from '../__mocks__/rtp';
-import { VoiceConnection as _VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
+import { VoiceOpcodes } from 'discord-api-types/voice/v8';
+import { describe, test, expect, vitest, beforeEach } from 'vitest';
+import {
+	RTP_PACKET_DESKTOP,
+	RTP_PACKET_CHROME,
+	RTP_PACKET_ANDROID,
+	XCHACHA20_SAMPLE,
+	AES256GCM_SAMPLE,
+} from '../__mocks__/rtp';
+import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
 import { VoiceReceiver } from '../src/receive/VoiceReceiver';
-import { methods } from '../src/util/Secretbox';
 
-jest.mock('../src/VoiceConnection');
-jest.mock('../src/receive/SSRCMap');
+vitest.mock('../src/VoiceConnection', async (importOriginal) => {
+	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+	const actual = await importOriginal<typeof import('../src/VoiceConnection')>();
+	return {
+		...actual,
+		VoiceConnection: vitest.fn(),
+	};
+});
 
-const openSpy = jest.spyOn(methods, 'open');
-
-openSpy.mockImplementation((buffer) => buffer);
-
-const VoiceConnection = _VoiceConnection as unknown as jest.Mocked<typeof _VoiceConnection>;
+vitest.mock('../src/receive/SSRCMap');
 
 async function nextTick() {
 	// eslint-disable-next-line no-promise-executor-return
 	return new Promise((resolve) => process.nextTick(resolve));
 }
 
-function* rangeIter(start: number, end: number) {
-	for (let i = start; i <= end; i++) {
-		yield i;
-	}
-}
-
-function range(start: number, end: number) {
-	return Buffer.from([...rangeIter(start, end)]);
-}
-
 describe('VoiceReceiver', () => {
-	let voiceConnection: _VoiceConnection;
+	let voiceConnection: VoiceConnection;
 	let receiver: VoiceReceiver;
 
 	beforeEach(() => {
@@ -55,10 +52,10 @@ describe('VoiceReceiver', () => {
 		['RTP Packet Desktop', RTP_PACKET_DESKTOP],
 		['RTP Packet Chrome', RTP_PACKET_CHROME],
 		['RTP Packet Android', RTP_PACKET_ANDROID],
-	])('onUdpMessage: %s', async (testName, RTP_PACKET) => {
-		receiver['decrypt'] = jest.fn().mockImplementationOnce(() => RTP_PACKET.decrypted);
+	])('onUdpMessage: decrypt from %s', async (_testName, RTP_PACKET) => {
+		receiver['decrypt'] = vitest.fn().mockImplementationOnce(() => RTP_PACKET.decrypted);
 
-		const spy = jest.spyOn(receiver.ssrcMap, 'get');
+		const spy = vitest.spyOn(receiver.ssrcMap, 'get');
 		spy.mockImplementation(() => ({
 			audioSSRC: RTP_PACKET.ssrc,
 			userId: '123',
@@ -68,7 +65,52 @@ describe('VoiceReceiver', () => {
 
 		receiver['onUdpMessage'](RTP_PACKET.packet);
 		await nextTick();
-		expect(stream.read()).toEqual(RTP_PACKET.opusFrame);
+		const packet = stream.read();
+		expect(packet.payload).toEqual(RTP_PACKET.opusFrame);
+	});
+
+	test.each([
+		['Desktop', RTP_PACKET_DESKTOP, 10_217, 4_157_324_497],
+		['Chrome', RTP_PACKET_CHROME, 18_143, 660_155_095],
+		['Android', RTP_PACKET_ANDROID, 14_800, 3_763_991_879],
+	])('onUdpMessage: RTP header metadata from %s', async (_testName, RTP_PACKET, expectedSeq, expectedTs) => {
+		receiver['decrypt'] = vitest.fn().mockImplementationOnce(() => RTP_PACKET.decrypted);
+
+		const spy = vitest.spyOn(receiver.ssrcMap, 'get');
+		spy.mockImplementation(() => ({
+			audioSSRC: RTP_PACKET.ssrc,
+			userId: '123',
+		}));
+
+		const stream = receiver.subscribe('123');
+
+		receiver['onUdpMessage'](RTP_PACKET.packet);
+		await nextTick();
+		const packet = stream.read();
+		expect(packet.sequence).toEqual(expectedSeq);
+		expect(packet.timestamp).toEqual(expectedTs);
+		expect(packet.ssrc).toEqual(RTP_PACKET.ssrc);
+	});
+
+	test('onUdpMessage: AudioPacket has payload and header fields', async () => {
+		receiver['decrypt'] = vitest.fn().mockImplementationOnce(() => RTP_PACKET_DESKTOP.decrypted);
+
+		const spy = vitest.spyOn(receiver.ssrcMap, 'get');
+		spy.mockImplementation(() => ({
+			audioSSRC: RTP_PACKET_DESKTOP.ssrc,
+			userId: '123',
+		}));
+
+		const stream = receiver.subscribe('123');
+
+		receiver['onUdpMessage'](RTP_PACKET_DESKTOP.packet);
+		await nextTick();
+		const packet = stream.read();
+		expect(Buffer.isBuffer(packet.payload)).toBe(true);
+		expect(packet.payload).toEqual(RTP_PACKET_DESKTOP.opusFrame);
+		expect(typeof packet.sequence).toBe('number');
+		expect(typeof packet.timestamp).toBe('number');
+		expect(typeof packet.ssrc).toBe('number');
 	});
 
 	test('onUdpMessage: <8 bytes packet', () => {
@@ -76,9 +118,9 @@ describe('VoiceReceiver', () => {
 	});
 
 	test('onUdpMessage: destroys stream on decrypt failure', async () => {
-		receiver['decrypt'] = jest.fn().mockImplementationOnce(() => null);
+		receiver['decrypt'] = vitest.fn().mockImplementationOnce(() => null);
 
-		const spy = jest.spyOn(receiver.ssrcMap, 'get');
+		const spy = vitest.spyOn(receiver.ssrcMap, 'get');
 		spy.mockImplementation(() => ({
 			audioSSRC: RTP_PACKET_DESKTOP.ssrc,
 			userId: '123',
@@ -95,7 +137,7 @@ describe('VoiceReceiver', () => {
 	});
 
 	test('subscribe: only allows one subscribe stream per SSRC', () => {
-		const spy = jest.spyOn(receiver.ssrcMap, 'get');
+		const spy = vitest.spyOn(receiver.ssrcMap, 'get');
 		spy.mockImplementation(() => ({
 			audioSSRC: RTP_PACKET_DESKTOP.ssrc,
 			userId: '123',
@@ -107,7 +149,7 @@ describe('VoiceReceiver', () => {
 
 	describe('onWsPacket', () => {
 		test('CLIENT_DISCONNECT packet', () => {
-			const spy = jest.spyOn(receiver.ssrcMap, 'delete');
+			const spy = vitest.spyOn(receiver.ssrcMap, 'delete');
 			receiver['onWsPacket']({
 				op: VoiceOpcodes.ClientDisconnect,
 				d: {
@@ -118,7 +160,7 @@ describe('VoiceReceiver', () => {
 		});
 
 		test('SPEAKING packet', () => {
-			const spy = jest.spyOn(receiver.ssrcMap, 'update');
+			const spy = vitest.spyOn(receiver.ssrcMap, 'update');
 			receiver['onWsPacket']({
 				op: VoiceOpcodes.Speaking,
 				d: {
@@ -132,82 +174,58 @@ describe('VoiceReceiver', () => {
 				userId: '123abc',
 			});
 		});
-
-		test('CLIENT_CONNECT packet', () => {
-			const spy = jest.spyOn(receiver.ssrcMap, 'update');
-			receiver['onWsPacket']({
-				op: VoiceOpcodes.ClientConnect,
-				d: {
-					audio_ssrc: 123,
-					video_ssrc: 43,
-					user_id: '123abc',
-				},
-			});
-			expect(spy).toHaveBeenCalledWith({
-				audioSSRC: 123,
-				videoSSRC: 43,
-				userId: '123abc',
-			});
-			receiver['onWsPacket']({
-				op: VoiceOpcodes.ClientConnect,
-				d: {
-					audio_ssrc: 123,
-					video_ssrc: 0,
-					user_id: '123abc',
-				},
-			});
-			expect(spy).toHaveBeenCalledWith({
-				audioSSRC: 123,
-				videoSSRC: undefined,
-				userId: '123abc',
-			});
-		});
 	});
 
-	describe('decrypt', () => {
-		const secretKey = new Uint8Array([1, 2, 3, 4]);
+	describe('parsePacket', () => {
+		test('parsePacket: aead_xchacha20_poly1305_rtpsize', () => {
+			const nonceSpace = Buffer.alloc(24);
 
-		beforeEach(() => {
-			openSpy.mockClear();
+			const packet = receiver['parsePacket'](
+				XCHACHA20_SAMPLE.encrypted,
+				'aead_xchacha20_poly1305_rtpsize',
+				nonceSpace,
+				XCHACHA20_SAMPLE.key,
+				'123',
+				48_921,
+			);
+
+			const expectedNonce = Buffer.concat([
+				XCHACHA20_SAMPLE.encrypted.subarray(XCHACHA20_SAMPLE.encrypted.length - 4),
+				Buffer.alloc(20),
+			]);
+
+			expect(nonceSpace.equals(expectedNonce)).toEqual(true);
+			// Extension data (8 bytes) should be stripped from the 61-byte decrypted payload
+			expect(packet!.payload).toHaveLength(53);
+			expect(packet!.payload.equals(XCHACHA20_SAMPLE.decrypted.subarray(8))).toEqual(true);
+			expect(packet!.sequence).toEqual(22_118);
+			expect(packet!.timestamp).toEqual(3_220_386_864);
+			expect(packet!.ssrc).toEqual(48_921);
 		});
 
-		test('decrypt: xsalsa20_poly1305_lite', () => {
-			// Arrange
-			const buffer = range(1, 32);
-			const nonce = Buffer.alloc(4);
+		test('parsePacket: aead_aes256gcm_rtpsize', () => {
+			const nonceSpace = Buffer.alloc(12);
 
-			// Act
-			const decrypted = receiver['decrypt'](buffer, 'xsalsa20_poly1305_lite', nonce, secretKey);
+			const packet = receiver['parsePacket'](
+				AES256GCM_SAMPLE.encrypted,
+				'aead_aes256_gcm_rtpsize',
+				nonceSpace,
+				AES256GCM_SAMPLE.key,
+				'123',
+				50_615,
+			);
 
-			// Assert
-			expect(nonce.equals(range(29, 32))).toEqual(true);
-			expect(decrypted!.equals(range(13, 28))).toEqual(true);
-		});
+			const expectedNonce = Buffer.concat([
+				AES256GCM_SAMPLE.encrypted.subarray(AES256GCM_SAMPLE.encrypted.length - 4),
+				Buffer.alloc(8),
+			]);
 
-		test('decrypt: xsalsa20_poly1305_suffix', () => {
-			// Arrange
-			const buffer = range(1, 64);
-			const nonce = Buffer.alloc(24);
-
-			// Act
-			const decrypted = receiver['decrypt'](buffer, 'xsalsa20_poly1305_suffix', nonce, secretKey);
-
-			// Assert
-			expect(nonce.equals(range(41, 64))).toEqual(true);
-			expect(decrypted!.equals(range(13, 40))).toEqual(true);
-		});
-
-		test('decrypt: xsalsa20_poly1305', () => {
-			// Arrange
-			const buffer = range(1, 64);
-			const nonce = Buffer.alloc(12);
-
-			// Act
-			const decrypted = receiver['decrypt'](buffer, 'xsalsa20_poly1305', nonce, secretKey);
-
-			// Assert
-			expect(nonce.equals(range(1, 12))).toEqual(true);
-			expect(decrypted!.equals(range(13, 64))).toEqual(true);
+			expect(nonceSpace.equals(expectedNonce)).toEqual(true);
+			// No extension (X=0), so decrypted payload is the opus frame directly
+			expect(packet!.payload.equals(AES256GCM_SAMPLE.decrypted)).toEqual(true);
+			expect(packet!.sequence).toEqual(41_884);
+			expect(packet!.timestamp).toEqual(2_668_332_016);
+			expect(packet!.ssrc).toEqual(50_615);
 		});
 	});
 });

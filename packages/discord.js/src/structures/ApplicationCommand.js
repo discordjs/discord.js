@@ -3,12 +3,13 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ApplicationCommandOptionType } = require('discord-api-types/v10');
 const isEqual = require('fast-deep-equal');
-const Base = require('./Base');
-const ApplicationCommandPermissionsManager = require('../managers/ApplicationCommandPermissionsManager');
-const PermissionsBitField = require('../util/PermissionsBitField');
+const { ApplicationCommandPermissionsManager } = require('../managers/ApplicationCommandPermissionsManager.js');
+const { PermissionsBitField } = require('../util/PermissionsBitField.js');
+const { Base } = require('./Base.js');
 
 /**
  * Represents an application command.
+ *
  * @extends {Base}
  */
 class ApplicationCommand extends Base {
@@ -17,18 +18,21 @@ class ApplicationCommand extends Base {
 
     /**
      * The command's id
+     *
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
      * The parent application's id
+     *
      * @type {Snowflake}
      */
     this.applicationId = data.application_id;
 
     /**
      * The guild this command is part of
+     *
      * @type {?Guild}
      */
     this.guild = guild ?? null;
@@ -36,24 +40,28 @@ class ApplicationCommand extends Base {
     /**
      * The guild's id this command is part of, this may be non-null when `guild` is `null` if the command
      * was fetched from the `ApplicationCommandManager`
+     *
      * @type {?Snowflake}
      */
     this.guildId = guild?.id ?? guildId ?? null;
 
     /**
      * The manager for permissions of this command on its guild or arbitrary guilds when the command is global
+     *
      * @type {ApplicationCommandPermissionsManager}
      */
     this.permissions = new ApplicationCommandPermissionsManager(this);
 
     /**
      * The type of this application command
+     *
      * @type {ApplicationCommandType}
      */
     this.type = data.type;
 
     /**
      * Whether this command is age-restricted (18+)
+     *
      * @type {boolean}
      */
     this.nsfw = data.nsfw ?? false;
@@ -65,6 +73,7 @@ class ApplicationCommand extends Base {
     if ('name' in data) {
       /**
        * The name of this command
+       *
        * @type {string}
        */
       this.name = data.name;
@@ -73,7 +82,8 @@ class ApplicationCommand extends Base {
     if ('name_localizations' in data) {
       /**
        * The name localizations for this command
-       * @type {?Object<Locale, string>}
+       *
+       * @type {?LocalizationMap}
        */
       this.nameLocalizations = data.name_localizations;
     } else {
@@ -83,6 +93,7 @@ class ApplicationCommand extends Base {
     if ('name_localized' in data) {
       /**
        * The localized name for this command
+       *
        * @type {?string}
        */
       this.nameLocalized = data.name_localized;
@@ -93,6 +104,7 @@ class ApplicationCommand extends Base {
     if ('description' in data) {
       /**
        * The description of this command
+       *
        * @type {string}
        */
       this.description = data.description;
@@ -101,7 +113,8 @@ class ApplicationCommand extends Base {
     if ('description_localizations' in data) {
       /**
        * The description localizations for this command
-       * @type {?Object<Locale, string>}
+       *
+       * @type {?LocalizationMap}
        */
       this.descriptionLocalizations = data.description_localizations;
     } else {
@@ -111,6 +124,7 @@ class ApplicationCommand extends Base {
     if ('description_localized' in data) {
       /**
        * The localized description for this command
+       *
        * @type {?string}
        */
       this.descriptionLocalized = data.description_localized;
@@ -121,16 +135,18 @@ class ApplicationCommand extends Base {
     if ('options' in data) {
       /**
        * The options of this command
-       * @type {ApplicationCommandOption[]}
+       *
+       * @type {?ApplicationCommandOption[]}
        */
       this.options = data.options.map(option => this.constructor.transformOption(option, true));
     } else {
-      this.options ??= [];
+      this.options ??= null;
     }
 
     if ('default_member_permissions' in data) {
       /**
        * The default bitfield used to determine whether this command be used in a guild
+       *
        * @type {?Readonly<PermissionsBitField>}
        */
       this.defaultMemberPermissions = data.default_member_permissions
@@ -140,20 +156,47 @@ class ApplicationCommand extends Base {
       this.defaultMemberPermissions ??= null;
     }
 
-    if ('dm_permission' in data) {
+    if ('integration_types' in data) {
       /**
-       * Whether the command can be used in DMs
-       * <info>This property is always `null` on guild commands</info>
-       * @type {boolean|null}
+       * Installation context(s) where the command is available
+       * <info>Only for globally-scoped commands</info>
+       *
+       * @type {?ApplicationIntegrationType[]}
        */
-      this.dmPermission = data.dm_permission;
+      this.integrationTypes = data.integration_types;
     } else {
-      this.dmPermission ??= null;
+      this.integrationTypes ??= null;
+    }
+
+    if ('contexts' in data) {
+      /**
+       * Interaction context(s) where the command can be used
+       * <info>Only for globally-scoped commands</info>
+       *
+       * @type {?InteractionContextType[]}
+       */
+      this.contexts = data.contexts;
+    } else {
+      this.contexts ??= null;
+    }
+
+    if ('handler' in data) {
+      /**
+       * Determines whether the interaction is handled by the app's interactions handler or by Discord.
+       * <info>Only available for {@link ApplicationCommandType.PrimaryEntryPoint} commands on
+       * applications with the {@link ApplicationFlags.Embedded} flag (i.e, those that have an Activity)</info>
+       *
+       * @type {?EntryPointCommandHandlerType}
+       */
+      this.handler = data.handler;
+    } else {
+      this.handler ??= null;
     }
 
     if ('version' in data) {
       /**
        * Autoincrementing version identifier updated during substantial record changes
+       *
        * @type {Snowflake}
        */
       this.version = data.version;
@@ -162,6 +205,7 @@ class ApplicationCommand extends Base {
 
   /**
    * The timestamp the command was created at
+   *
    * @type {number}
    * @readonly
    */
@@ -171,6 +215,7 @@ class ApplicationCommand extends Base {
 
   /**
    * The time the command was created at
+   *
    * @type {Date}
    * @readonly
    */
@@ -180,6 +225,7 @@ class ApplicationCommand extends Base {
 
   /**
    * The manager that this command belongs to
+   *
    * @type {ApplicationCommandManager}
    * @readonly
    */
@@ -189,19 +235,24 @@ class ApplicationCommand extends Base {
 
   /**
    * Data for creating or editing an application command.
+   *
    * @typedef {Object} ApplicationCommandData
    * @property {string} name The name of the command, must be in all lowercase if type is
    * {@link ApplicationCommandType.ChatInput}
-   * @property {Object<Locale, string>} [nameLocalizations] The localizations for the command name
-   * @property {string} description The description of the command, if type is {@link ApplicationCommandType.ChatInput}
+   * @property {LocalizationMap} [nameLocalizations] The localizations for the command name
+   * @property {string} description The description of the command,
+   * if type is {@link ApplicationCommandType.ChatInput} or {@link ApplicationCommandType.PrimaryEntryPoint}
    * @property {boolean} [nsfw] Whether the command is age-restricted
-   * @property {Object<Locale, string>} [descriptionLocalizations] The localizations for the command description,
-   * if type is {@link ApplicationCommandType.ChatInput}
+   * @property {LocalizationMap} [descriptionLocalizations] The localizations for the command description,
+   * if type is {@link ApplicationCommandType.ChatInput} or {@link ApplicationCommandType.PrimaryEntryPoint}
    * @property {ApplicationCommandType} [type=ApplicationCommandType.ChatInput] The type of the command
    * @property {ApplicationCommandOptionData[]} [options] Options for the command
    * @property {?PermissionResolvable} [defaultMemberPermissions] The bitfield used to determine the default permissions
    * a member needs in order to run the command
-   * @property {boolean} [dmPermission] Whether the command is enabled in DMs
+   * @property {ApplicationIntegrationType[]} [integrationTypes] Installation contexts where the command is available
+   * @property {InteractionContextType[]} [contexts] Interaction contexts where the command can be used
+   * @property {EntryPointCommandHandlerType} [handler] Whether the interaction is handled by the app's
+   * interactions handler or by Discord.
    */
 
   /**
@@ -210,12 +261,13 @@ class ApplicationCommand extends Base {
    * API style `snake_case` properties can be used for compatibility with generators like `@discordjs/builders`.</info>
    * <warn>Note that providing a value for the `camelCase` counterpart for any `snake_case` property
    * will discard the provided `snake_case` property.</warn>
+   *
    * @typedef {Object} ApplicationCommandOptionData
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string} name The name of the option
-   * @property {Object<Locale, string>} [nameLocalizations] The name localizations for the option
+   * @property {LocalizationMap} [nameLocalizations] The name localizations for the option
    * @property {string} description The description of the option
-   * @property {Object<Locale, string>} [descriptionLocalizations] The description localizations for the option
+   * @property {LocalizationMap} [descriptionLocalizations] The description localizations for the option
    * @property {boolean} [autocomplete] Whether the autocomplete interaction is enabled for a
    * {@link ApplicationCommandOptionType.String}, {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
@@ -224,6 +276,9 @@ class ApplicationCommand extends Base {
    * @property {ApplicationCommandOptionData[]} [options] Additional options if this option is a subcommand (group)
    * @property {ChannelType[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
+   * @property {FileUploadType[]} [fileTypes] When the option type is attachment,
+   * the allowed types of files that can be uploaded. When only using extensions, include `.jpg`
+   * for images and both `.mp4` and `.mov` for videos for mobile compatibility
    * @property {number} [minValue] The minimum value for an {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
    * @property {number} [maxValue] The maximum value for an {@link ApplicationCommandOptionType.Integer} or
@@ -237,12 +292,13 @@ class ApplicationCommand extends Base {
   /**
    * @typedef {Object} ApplicationCommandOptionChoiceData
    * @property {string} name The name of the choice
-   * @property {Object<Locale, string>} [nameLocalizations] The localized names for this choice
+   * @property {LocalizationMap} [nameLocalizations] The localized names for this choice
    * @property {string|number} value The value of the choice
    */
 
   /**
    * Edits this application command.
+   *
    * @param {Partial<ApplicationCommandData>} data The data to update the command with
    * @returns {Promise<ApplicationCommand>}
    * @example
@@ -253,48 +309,52 @@ class ApplicationCommand extends Base {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  edit(data) {
+  async edit(data) {
     return this.manager.edit(this, data, this.guildId);
   }
 
   /**
    * Edits the name of this ApplicationCommand
+   *
    * @param {string} name The new name of the command
    * @returns {Promise<ApplicationCommand>}
    */
-  setName(name) {
+  async setName(name) {
     return this.edit({ name });
   }
 
   /**
    * Edits the localized names of this ApplicationCommand
-   * @param {Object<Locale, string>} nameLocalizations The new localized names for the command
+   *
+   * @param {LocalizationMap} nameLocalizations The new localized names for the command
    * @returns {Promise<ApplicationCommand>}
    * @example
    * // Edit the name localizations of this command
-   * command.setLocalizedNames({
+   * command.setNameLocalizations({
    *   'en-GB': 'test',
    *   'pt-BR': 'teste',
    * })
    *   .then(console.log)
    *   .catch(console.error)
    */
-  setNameLocalizations(nameLocalizations) {
+  async setNameLocalizations(nameLocalizations) {
     return this.edit({ nameLocalizations });
   }
 
   /**
    * Edits the description of this ApplicationCommand
+   *
    * @param {string} description The new description of the command
    * @returns {Promise<ApplicationCommand>}
    */
-  setDescription(description) {
+  async setDescription(description) {
     return this.edit({ description });
   }
 
   /**
    * Edits the localized descriptions of this ApplicationCommand
-   * @param {Object<Locale, string>} descriptionLocalizations The new localized descriptions for the command
+   *
+   * @param {LocalizationMap} descriptionLocalizations The new localized descriptions for the command
    * @returns {Promise<ApplicationCommand>}
    * @example
    * // Edit the description localizations of this command
@@ -305,39 +365,33 @@ class ApplicationCommand extends Base {
    *   .then(console.log)
    *   .catch(console.error)
    */
-  setDescriptionLocalizations(descriptionLocalizations) {
+  async setDescriptionLocalizations(descriptionLocalizations) {
     return this.edit({ descriptionLocalizations });
   }
 
   /**
    * Edits the default member permissions of this ApplicationCommand
+   *
    * @param {?PermissionResolvable} defaultMemberPermissions The default member permissions required to run this command
    * @returns {Promise<ApplicationCommand>}
    */
-  setDefaultMemberPermissions(defaultMemberPermissions) {
+  async setDefaultMemberPermissions(defaultMemberPermissions) {
     return this.edit({ defaultMemberPermissions });
   }
 
   /**
-   * Edits the DM permission of this ApplicationCommand
-   * @param {boolean} [dmPermission=true] Whether the command can be used in DMs
-   * @returns {Promise<ApplicationCommand>}
-   */
-  setDMPermission(dmPermission = true) {
-    return this.edit({ dmPermission });
-  }
-
-  /**
    * Edits the options of this ApplicationCommand
+   *
    * @param {ApplicationCommandOptionData[]} options The options to set for this command
    * @returns {Promise<ApplicationCommand>}
    */
-  setOptions(options) {
+  async setOptions(options) {
     return this.edit({ options });
   }
 
   /**
    * Deletes this command.
+   *
    * @returns {Promise<ApplicationCommand>}
    * @example
    * // Delete this command
@@ -345,7 +399,7 @@ class ApplicationCommand extends Base {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  delete() {
+  async delete() {
     return this.manager.delete(this, this.guildId);
   }
 
@@ -353,6 +407,7 @@ class ApplicationCommand extends Base {
    * Whether this command equals another command. It compares all properties, so for most operations
    * it is advisable to just compare `command.id === command2.id` as it is much faster and is often
    * what most users need.
+   *
    * @param {ApplicationCommand|ApplicationCommandData|APIApplicationCommand} command The command to compare with
    * @param {boolean} [enforceOptionOrder=false] Whether to strictly check that options and choices are in the same
    * order in the array <info>The client may not always respect this ordering!</info>
@@ -363,7 +418,6 @@ class ApplicationCommand extends Base {
     if (command.id && this.id !== command.id) return false;
 
     let defaultMemberPermissions = null;
-    let dmPermission = command.dmPermission ?? command.dm_permission;
 
     if ('default_member_permissions' in command) {
       defaultMemberPermissions = command.default_member_permissions
@@ -373,9 +427,9 @@ class ApplicationCommand extends Base {
 
     if ('defaultMemberPermissions' in command) {
       defaultMemberPermissions =
-        command.defaultMemberPermissions !== null
-          ? new PermissionsBitField(command.defaultMemberPermissions).bitfield
-          : null;
+        command.defaultMemberPermissions === null
+          ? null
+          : new PermissionsBitField(command.defaultMemberPermissions).bitfield;
     }
 
     // Check top level parameters
@@ -385,29 +439,32 @@ class ApplicationCommand extends Base {
       ('version' in command && command.version !== this.version) ||
       (command.type && command.type !== this.type) ||
       ('nsfw' in command && command.nsfw !== this.nsfw) ||
-      // Future proof for options being nullable
-      // TODO: remove ?? 0 on each when nullable
-      (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
+      command.options?.length !== this.options?.length ||
       defaultMemberPermissions !== (this.defaultMemberPermissions?.bitfield ?? null) ||
-      (dmPermission !== undefined && dmPermission !== this.dmPermission) ||
       !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||
       !isEqual(
         command.descriptionLocalizations ?? command.description_localizations ?? {},
         this.descriptionLocalizations ?? {},
-      )
+      ) ||
+      !isEqual(command.integrationTypes ?? command.integration_types ?? [], this.integrationTypes ?? []) ||
+      !isEqual(command.contexts ?? [], this.contexts ?? []) ||
+      ('handler' in command && command.handler !== this.handler)
     ) {
       return false;
     }
 
+    // Don't need to check both because we already checked the lengths above
     if (command.options) {
       return this.constructor.optionsEqual(this.options, command.options, enforceOptionOrder);
     }
+
     return true;
   }
 
   /**
    * Recursively checks that all options for an {@link ApplicationCommand} are equal to the provided options.
    * In most cases it is better to compare using {@link ApplicationCommand#equals}
+   *
    * @param {ApplicationCommandOptionData[]} existing The options on the existing command,
    * should be {@link ApplicationCommand#options}
    * @param {ApplicationCommandOptionData[]|APIApplicationCommandOption[]} options The options to compare against
@@ -420,17 +477,20 @@ class ApplicationCommand extends Base {
     if (enforceOptionOrder) {
       return existing.every((option, index) => this._optionEquals(option, options[index], enforceOptionOrder));
     }
+
     const newOptions = new Map(options.map(option => [option.name, option]));
     for (const option of existing) {
       const foundOption = newOptions.get(option.name);
       if (!foundOption || !this._optionEquals(option, foundOption)) return false;
     }
+
     return true;
   }
 
   /**
    * Checks that an option for an {@link ApplicationCommand} is equal to the provided option
    * In most cases it is better to compare using {@link ApplicationCommand#equals}
+   *
    * @param {ApplicationCommandOptionData} existing The option on the existing command,
    * should be from {@link ApplicationCommand#options}
    * @param {ApplicationCommandOptionData|APIApplicationCommandOption} option The option to compare against
@@ -452,6 +512,7 @@ class ApplicationCommand extends Base {
       option.choices?.length !== existing.choices?.length ||
       option.options?.length !== existing.options?.length ||
       (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length ||
+      (option.fileTypes ?? option.file_types)?.length !== existing.fileTypes?.length ||
       (option.minValue ?? option.min_value) !== existing.minValue ||
       (option.maxValue ?? option.max_value) !== existing.maxValue ||
       (option.minLength ?? option.min_length) !== existing.minLength ||
@@ -480,6 +541,7 @@ class ApplicationCommand extends Base {
       ) {
         return false;
       }
+
       if (!enforceOptionOrder) {
         const newChoices = new Map(option.choices.map(choice => [choice.name, choice]));
         for (const choice of existing.choices) {
@@ -496,21 +558,30 @@ class ApplicationCommand extends Base {
       }
     }
 
+    if (existing.fileTypes) {
+      const newTypes = option.fileTypes ?? option.file_types;
+      for (const type of existing.fileTypes) {
+        if (!newTypes.includes(type)) return false;
+      }
+    }
+
     if (existing.options) {
       return this.optionsEqual(existing.options, option.options, enforceOptionOrder);
     }
+
     return true;
   }
 
   /**
    * An option for an application command or subcommand.
+   *
    * @typedef {Object} ApplicationCommandOption
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string} name The name of the option
-   * @property {Object<Locale, string>} [nameLocalizations] The localizations for the option name
+   * @property {LocalizationMap} [nameLocalizations] The localizations for the option name
    * @property {string} [nameLocalized] The localized name for this option
    * @property {string} description The description of the option
-   * @property {Object<Locale, string>} [descriptionLocalizations] The localizations for the option description
+   * @property {LocalizationMap} [descriptionLocalizations] The localizations for the option description
    * @property {string} [descriptionLocalized] The localized description for this option
    * @property {boolean} [required] Whether the option is required
    * @property {boolean} [autocomplete] Whether the autocomplete interaction is enabled for a
@@ -518,8 +589,11 @@ class ApplicationCommand extends Base {
    * {@link ApplicationCommandOptionType.Number} option
    * @property {ApplicationCommandOptionChoice[]} [choices] The choices of the option for the user to pick from
    * @property {ApplicationCommandOption[]} [options] Additional options if this option is a subcommand (group)
-   * @property {ApplicationCommandOptionAllowedChannelTypes[]} [channelTypes] When the option type is channel,
+   * @property {ApplicationCommandOptionAllowedChannelType[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
+   * @property {FileUploadType[]} [fileTypes] When the option type is attachment,
+   * the allowed types of files that can be uploaded. When only using extensions, include `.jpg`
+   * for images and both `.mp4` and `.mov` for videos for mobile compatibility
    * @property {number} [minValue] The minimum value for an {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
    * @property {number} [maxValue] The maximum value for an {@link ApplicationCommandOptionType.Integer} or
@@ -532,15 +606,17 @@ class ApplicationCommand extends Base {
 
   /**
    * A choice for an application command option.
+   *
    * @typedef {Object} ApplicationCommandOptionChoice
    * @property {string} name The name of the choice
    * @property {?string} nameLocalized The localized name of the choice in the provided locale, if any
-   * @property {?Object<string, string>} [nameLocalizations] The localized names for this choice
+   * @property {?LocalizationMap} [nameLocalizations] The localized names for this choice
    * @property {string|number} value The value of the choice
    */
 
   /**
    * Transforms an {@link ApplicationCommandOptionData} object into something that can be used with the API.
+   *
    * @param {ApplicationCommandOptionData|ApplicationCommandOption} option The option to transform
    * @param {boolean} [received] Whether this option has been received from Discord
    * @returns {APIApplicationCommandOption}
@@ -548,6 +624,7 @@ class ApplicationCommand extends Base {
    */
   static transformOption(option, received) {
     const channelTypesKey = received ? 'channelTypes' : 'channel_types';
+    const fileTypesKey = received ? 'fileTypes' : 'file_types';
     const minValueKey = received ? 'minValue' : 'min_value';
     const maxValueKey = received ? 'maxValue' : 'max_value';
     const minLengthKey = received ? 'minLength' : 'min_length';
@@ -579,6 +656,7 @@ class ApplicationCommand extends Base {
       })),
       options: option.options?.map(opt => this.transformOption(opt, received)),
       [channelTypesKey]: option.channelTypes ?? option.channel_types,
+      [fileTypesKey]: option.fileTypes ?? option.file_types,
       [minValueKey]: option.minValue ?? option.min_value,
       [maxValueKey]: option.maxValue ?? option.max_value,
       [minLengthKey]: option.minLength ?? option.min_length,
@@ -587,10 +665,9 @@ class ApplicationCommand extends Base {
   }
 }
 
-module.exports = ApplicationCommand;
+exports.ApplicationCommand = ApplicationCommand;
 
-/* eslint-disable max-len */
 /**
- * @external ApplicationCommandOptionAllowedChannelTypes
- * @see {@link https://discord.js.org/docs/packages/builders/stable/ApplicationCommandOptionAllowedChannelTypes:TypeAlias}
+ * @external ApplicationCommandOptionAllowedChannelType
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/ApplicationCommandOptionAllowedChannelType:TypeAlias}
  */

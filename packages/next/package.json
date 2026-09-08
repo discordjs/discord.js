@@ -4,12 +4,12 @@
 	"version": "0.1.0",
 	"description": "A powerful TypeScript library for interacting with the Discord API",
 	"scripts": {
-		"test": "vitest run",
+		"test": "vitest run --config ../../vitest.config.ts",
 		"build": "tsc --noEmit && tsup",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
-		"docs": "pnpm run build:docs && api-extractor run --local",
+		"docs": "pnpm run build:docs && api-extractor run --local --minify && generate-split-documentation",
 		"prepack": "pnpm run build && pnpm run lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/next/*'",
 		"release": "cliff-jumper"
@@ -49,7 +49,7 @@
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
-		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Vlad Frangu <me@vladfrangu.dev>",
 		"Aura Román <kyradiscord@gmail.com>"
 	],
 	"license": "Apache-2.0",
@@ -63,6 +63,7 @@
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@discordjs/builders": "workspace:^",
 		"@discordjs/collection": "workspace:^",
@@ -71,28 +72,31 @@
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"@discordjs/ws": "workspace:^",
-		"discord-api-types": "0.37.61"
+		"discord-api-types": "^0.38.54"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^2.2.1",
 		"@discordjs/api-extractor": "workspace:^",
-		"@types/node": "18.18.8",
-		"@vitest/coverage-v8": "^0.34.6",
-		"cross-env": "^7.0.3",
+		"@discordjs/scripts": "workspace:^",
+		"@favware/cliff-jumper": "^6.1.0",
+		"@types/node": "^24.13.3",
+		"@vitest/coverage-v8": "^4.1.11",
+		"cross-env": "^10.1.0",
 		"esbuild-plugin-version-injector": "^1.2.1",
-		"eslint": "^8.53.0",
-		"eslint-config-neon": "^0.1.57",
-		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^3.0.3",
-		"tsup": "^7.2.0",
-		"turbo": "^1.10.17-canary.0",
-		"typescript": "^5.2.2",
-		"vitest": "^0.34.6"
+		"eslint": "^9.39.5",
+		"eslint-config-neon": "^0.3.2",
+		"eslint-formatter-compact": "^9.0.1",
+		"eslint-formatter-pretty": "^7.1.0",
+		"prettier": "~3.8.1",
+		"tsup": "^8.5.1",
+		"turbo": "^2.10.12",
+		"typescript": "~5.9.3",
+		"vitest": "^4.1.11"
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=24.17.0"
 	},
 	"publishConfig": {
-		"access": "public"
+		"access": "public",
+		"provenance": true
 	}
 }

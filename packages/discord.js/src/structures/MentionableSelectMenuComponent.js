@@ -1,11 +1,12 @@
 'use strict';
 
-const BaseSelectMenuComponent = require('./BaseSelectMenuComponent');
+const { BaseSelectMenuComponent } = require('./BaseSelectMenuComponent.js');
 
 /**
  * Represents a mentionable select menu component
+ *
  * @extends {BaseSelectMenuComponent}
  */
 class MentionableSelectMenuComponent extends BaseSelectMenuComponent {}
 
-module.exports = MentionableSelectMenuComponent;
+exports.MentionableSelectMenuComponent = MentionableSelectMenuComponent;

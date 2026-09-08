@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig.json",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true
+  },
+  "include": [
+    "*.ts",
+    "src/**/*.ts",
+    "typings/**/*.d.ts",
+    "typings/**/*.d.mts",
+    "typings/**/*.test-d.ts",
+    "typings/**/*.test-d.mts",
+    "bin",
+    "scripts",
+    "__tests__",
+    "__mocks__"
+  ],
+  "exclude": ["node_modules"]
+}

@@ -1,16 +1,13 @@
-import { Buffer, File as NativeFile } from 'node:buffer';
-import { URLSearchParams } from 'node:url';
+import { Buffer } from 'node:buffer';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { Snowflake } from 'discord-api-types/v10';
 import { Routes } from 'discord-api-types/v10';
 import { type FormData, fetch } from 'undici';
-import { File as UndiciFile, MockAgent, setGlobalDispatcher } from 'undici';
+import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor.js';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
 import { REST } from '../src/index.js';
 import { genPath } from './util.js';
-
-const File = NativeFile ?? UndiciFile;
 
 const newSnowflake: Snowflake = DiscordSnowflake.generate().toString();
 
@@ -37,6 +34,8 @@ beforeEach(() => {
 	setGlobalDispatcher(mockAgent); // enabled the mock client to intercept requests
 
 	mockPool = mockAgent.get('https://discord.com');
+	api.setAgent(mockAgent);
+	fetchApi.setAgent(mockAgent);
 });
 
 afterEach(async () => {
@@ -184,7 +183,7 @@ test('getAuth', async () => {
 			(from) => ({ auth: (from.headers as unknown as Record<string, string | undefined>).Authorization ?? null }),
 			responseOptions,
 		)
-		.times(3);
+		.times(5);
 
 	// default
 	expect(await api.get('/getAuth')).toStrictEqual({ auth: 'Bot A-Very-Fake-Token' });
@@ -202,6 +201,20 @@ test('getAuth', async () => {
 			auth: true,
 		}),
 	).toStrictEqual({ auth: 'Bot A-Very-Fake-Token' });
+
+	// Custom Bot Auth
+	expect(
+		await api.get('/getAuth', {
+			auth: { token: 'A-Very-Different-Fake-Token' },
+		}),
+	).toStrictEqual({ auth: 'Bot A-Very-Different-Fake-Token' });
+
+	// Custom Bearer Auth
+	expect(
+		await api.get('/getAuth', {
+			auth: { token: 'A-Bearer-Fake-Token', prefix: 'Bearer' },
+		}),
+	).toStrictEqual({ auth: 'Bearer A-Bearer-Fake-Token' });
 });
 
 test('getReason', async () => {

@@ -1,16 +1,16 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/brokers",
-	"version": "0.2.2",
+	"version": "1.0.0",
 	"description": "Powerful set of message brokers",
 	"scripts": {
-		"test": "vitest run",
+		"test": "vitest run --config ../../vitest.config.ts",
 		"build": "tsc --noEmit --lib ESNext,DOM && tsup",
 		"build:docs": "tsc -p tsconfig.docs.json --lib ESNext,DOM",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
 		"fmt": "pnpm run format",
-		"docs": "pnpm run build:docs && api-extractor run --local",
+		"docs": "pnpm run build:docs && api-extractor run --local --minify && generate-split-documentation",
 		"prepack": "pnpm run lint && pnpm run test && pnpm run build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/brokers/*'",
 		"release": "cliff-jumper"
@@ -42,7 +42,7 @@
 		"Crawl <icrawltogo@gmail.com>",
 		"Amish Shah <amishshah.2k@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
-		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Vlad Frangu <me@vladfrangu.dev>",
 		"Aura Roman <kyradiscord@gmail.com>",
 		"DD <didinele.dev@gmail.com>"
 	],
@@ -65,30 +65,37 @@
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"@msgpack/msgpack": "^3.0.0-beta2",
-		"@vladfrangu/async_event_emitter": "^2.2.2",
-		"ioredis": "^5.3.2"
+		"@discordjs/core": "workspace:^",
+		"@discordjs/ws": "workspace:^",
+		"@msgpack/msgpack": "^3.1.3",
+		"@vladfrangu/async_event_emitter": "^2.4.7",
+		"ioredis": "^5.11.1"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^2.2.1",
 		"@discordjs/api-extractor": "workspace:^",
-		"@types/node": "18.18.8",
-		"@vitest/coverage-v8": "^0.34.6",
-		"cross-env": "^7.0.3",
-		"eslint": "^8.53.0",
-		"eslint-config-neon": "^0.1.57",
-		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^3.0.3",
-		"tsup": "^7.2.0",
-		"turbo": "^1.10.17-canary.0",
-		"typescript": "^5.2.2",
-		"vitest": "^0.34.6"
+		"@discordjs/scripts": "workspace:^",
+		"@favware/cliff-jumper": "^6.1.0",
+		"@types/node": "^24.13.3",
+		"@vitest/coverage-v8": "^4.1.11",
+		"cross-env": "^10.1.0",
+		"esbuild-plugin-version-injector": "^1.2.1",
+		"eslint": "^9.39.5",
+		"eslint-config-neon": "^0.3.2",
+		"eslint-formatter-compact": "^9.0.1",
+		"eslint-formatter-pretty": "^7.1.0",
+		"prettier": "~3.8.1",
+		"tsup": "^8.5.1",
+		"turbo": "^2.10.12",
+		"typescript": "~5.9.3",
+		"vitest": "^4.1.11"
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=24.17.0"
 	},
 	"publishConfig": {
-		"access": "public"
+		"access": "public",
+		"provenance": true
 	}
 }

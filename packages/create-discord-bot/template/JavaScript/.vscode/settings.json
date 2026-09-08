@@ -9,5 +9,5 @@
 	"editor.trimAutoWhitespace": false,
 	"files.insertFinalNewline": true,
 	"files.eol": "\n",
-	"npm.packageManager": "[REPLACE_ME]"
+	"npm.packageManager": "[REPLACE_PACKAGE_MANAGER]"
 }

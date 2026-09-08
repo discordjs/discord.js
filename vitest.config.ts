@@ -4,9 +4,12 @@ export default defineConfig({
 	test: {
 		exclude: ['**/node_modules', '**/dist', '.idea', '.git', '.cache'],
 		passWithNoTests: true,
+		typecheck: {
+			enabled: true,
+			tsconfig: './tsconfig.test.json',
+		},
 		coverage: {
 			enabled: true,
-			all: true,
 			reporter: ['text', 'lcov', 'cobertura'],
 			provider: 'v8',
 			include: ['src'],
@@ -18,6 +21,8 @@ export default defineConfig({
 				'**/index.{js,ts}',
 				// All exports files that make subpackages available as submodules
 				'**/exports/*.{js,ts}',
+				// Actions
+				'**/*.yml',
 			],
 		},
 	},

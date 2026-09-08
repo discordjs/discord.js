@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const Events = require('../../../util/Events');
+const { Events } = require('../../../util/Events.js');
 
 module.exports = (client, { d: data }) => {
   const guild = client.guilds.cache.get(data.guild_id);
@@ -15,6 +15,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Represents the properties of a guild members chunk
+   *
    * @typedef {Object} GuildMembersChunk
    * @property {number} index Index of the received chunk
    * @property {number} count Number of chunks the client should receive
@@ -25,6 +26,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted whenever a chunk of guild members is received (all members come from the same guild).
+   *
    * @event Client#guildMembersChunk
    * @param {Collection<Snowflake, GuildMember>} members The members in the chunk
    * @param {Guild} guild The guild related to the member chunk

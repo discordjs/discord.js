@@ -2,6 +2,126 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/voice@0.19.2](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.19.1...@discordjs/voice@0.19.2) - (2026-03-13)
+
+## Bug Fixes
+
+- **voice:** Strip padding from packets and add guards (#11449) ([c486fb8](https://github.com/discordjs/discord.js/commit/c486fb81274a33baa22bcbd18bb5ff1dd6b58875)) by @Snazzah
+
+# [@discordjs/voice@0.19.1](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.19.0...@discordjs/voice@0.19.1) - (2026-03-09)
+
+## Bug Fixes
+
+- **voice:** Always install Davey as DAVE is becoming required (#11385) ([323d8e7](https://github.com/discordjs/discord.js/commit/323d8e757129fe1a885cf5a7887212d5e0941f8d)) by @vladfrangu
+- **voice:** Handle negative timeouts (#11362) ([5f93fbd](https://github.com/discordjs/discord.js/commit/5f93fbd0f21d1556c5ee6cb9f7c2e4d67ede19ca)) by @markokajzer
+- **voice:** Handle multiple transitions simultaneously (#11100) ([c4fc79a](https://github.com/discordjs/discord.js/commit/c4fc79a3cd2d271b75651d95a06c2e26709025d0)) by @Snazzah
+- Replace usages of `Buffer#slice()` with `Buffer#subarray()` (#11326) ([87b359e](https://github.com/discordjs/discord.js/commit/87b359e44d9965fcaf61e75df6c5c48d5a892155)) by @almeidx
+- **guide:** Miscellaneous fixes (#11147) ([a97ac82](https://github.com/discordjs/discord.js/commit/a97ac82619f0a807a7b816afa0140ba9161aa50d)) by @Jiralite
+- Adjust types for typescript upgrade (#11132) ([612c49b](https://github.com/discordjs/discord.js/commit/612c49b54618824b815278129765e308fe1da76c)) by @almeidx
+
+## Documentation
+
+- **voice:** Add DAVE dependency section (#11061) ([4db1092](https://github.com/discordjs/discord.js/commit/4db1092f8f5d7ba50f4bdc3f5e1bac4581e22a1c)) by @jNullj
+
+## Refactor
+
+- Remove builders and formatters re-export (#11361) ([84b85f4](https://github.com/discordjs/discord.js/commit/84b85f4c91e83b40eb2bd74d61304fcfdcabf6d5)) by @didinele
+
+## Testing
+
+- Fix type errors (#11325) ([5888663](https://github.com/discordjs/discord.js/commit/5888663392485d35b2538f042c48efea3b93cd54)) by @almeidx
+
+# [@discordjs/voice@0.19.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.18.0...@discordjs/voice@0.19.0) - (2025-08-17)
+
+## Bug Fixes
+
+- **voice:** Mark stream as ended (#10455) ([bc3a0c8](https://github.com/discordjs/discord.js/commit/bc3a0c83890cdc9b8ca6abd1fde59053d3c6d905)) by @nyapat
+
+## Documentation
+
+- Replace Discord API with Discord Developers (#10968) ([3a060f7](https://github.com/discordjs/discord.js/commit/3a060f74945da78535440890be0a5df8bd0ee36b)) by @Jiralite
+- Add missing, fix existing (#10842) ([e094faf](https://github.com/discordjs/discord.js/commit/e094faf225e53e7e5ad94f9f62ecb5d3a225a56b)) by @almeidx
+- Export all visible symbols (#10760) ([78d512c](https://github.com/discordjs/discord.js/commit/78d512c347320e5d4bf97f7f0c89d3469d923af8)) by @almeidx
+- Guide setup (#10862) ([2184085](https://github.com/discordjs/discord.js/commit/2184085fdaf00c982130212eb27ab878df2c3e1e)) by @iCrawl
+- Fix close tags (#10756) ([5c49b6d](https://github.com/discordjs/discord.js/commit/5c49b6d9af9b0e69c4792ef4be831607675d418c)) by @Jiralite
+- Typos (#10628) ([a696005](https://github.com/discordjs/discord.js/commit/a69600546a33b1599fbf6c8cc44caaf307a12a7e)) by @Jiralite
+
+## Features
+
+- Implement DAVE end-to-end encryption (#10921) ([8bdea62](https://github.com/discordjs/discord.js/commit/8bdea6232b1db20c615614a8f8baea2347c4466b)) by @Snazzah
+- **voice:** Use voice gateway v8 (#10918) ([d40ceed](https://github.com/discordjs/discord.js/commit/d40ceedad40a8a0b64c173706fc6eea780a5477c)) by @Snazzah
+- Print out support for aes-256-gcm in native node:crypto (#10764) ([19d48f6](https://github.com/discordjs/discord.js/commit/19d48f6d6cb8218b896ddf69be313ebe05a96996)) by @vladfrangu
+
+## Build
+
+- Bump Node.js to 22.12.0 (#10726) ([3db8ce7](https://github.com/discordjs/discord.js/commit/3db8ce70a2d20bd2def70a2c839b015bc24195eb)) by @Jiralite
+  - **BREAKING CHANGE:** Node.js 22.12.0 or above is required.
+- Bump Node.js to 20 (#10616) ([e89c6b6](https://github.com/discordjs/discord.js/commit/e89c6b66ac6503c2f120539f4820e72589be3f94)) by @Jiralite
+  - **BREAKING CHANGE:** Node.js 20 or above is required.
+
+### New Contributors
+
+* @Snazzah made their first contribution in #10921
+* @nsgpriyanshu made their first contribution in #10428
+
+# [@discordjs/voice@0.18.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.17.0...@discordjs/voice@0.18.0) - (2024-11-17)
+
+## Features
+
+- **voice:** Add new encryption methods, remove old methods (#10451) ([9f8b9b1](https://github.com/discordjs/discord.js/commit/9f8b9b1d66edcc84ecf396d807dee7cf39f760c8)) by @nyapat
+  - **BREAKING CHANGE:** This library no longer supports using `tweetnacl` as an encryption library due to Discord deprecating the algorithms that `tweetnacl` helped us support (read more [here](https://discord.com/developers/docs/change-log#voice-encryption-modes)). Please migrate to one of: `sodium-native`, `sodium`, `@stablelib/xchacha20poly1305`, `@noble/ciphers` or `libsodium-wrappers` unless your system supports `aes-256-gcm` (verify by running `require('node:crypto').getCiphers().includes('aes-256-gcm')`).
+
+## Testing
+
+- Replace jest with vitest (#10472) ([24128a3](https://github.com/discordjs/discord.js/commit/24128a3c459ed0c3eb0932308f03ecc55e3c60f1)) by @nyapat
+
+### New Contributors
+
+* @Yareaj made their first contribution in #10575
+
+# [@discordjs/voice@0.17.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.16.0...@discordjs/voice@0.17.0) - (2024-05-04)
+
+## Bug Fixes
+
+- Minify mainlib docs json (#9963) ([4b88306](https://github.com/discordjs/discord.js/commit/4b88306dcb2b16b840ec61e9e33047af3a31c45d))
+- **TransformerGraph:** Explicitly include input args for readable input cases instead of just for string input cases (#9793) ([788888a](https://github.com/discordjs/discord.js/commit/788888ab9ad17f1c8d85d68656c617334feb4361))
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Documentation
+
+- Split docs.api.json into multiple json files ([597340f](https://github.com/discordjs/discord.js/commit/597340f288437c35da8c703d9b621274de60d880))
+- **create-discord-bot:** Support bun in create-discord-bot (#9798) ([7157748](https://github.com/discordjs/discord.js/commit/7157748fe3a69265896adf0450cd3f37acbcf97b))
+- Update Node.js requirement to 16.11.0 (#9764) ([188877c](https://github.com/discordjs/discord.js/commit/188877c50af70f0d5cffb246620fa277435c6ce6))
+- Include StreamType enum description in new docs (#9457) ([36216c0](https://github.com/discordjs/discord.js/commit/36216c0e1a0c99e5200de97f08d054e278fd3f0f))
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+
+## Features
+
+- Local and preview detection ([79fbda3](https://github.com/discordjs/discord.js/commit/79fbda3aac6d4f0f8bfb193e797d09cbe331d315))
+
+## Refactor
+
+- Docs (#10126) ([18cce83](https://github.com/discordjs/discord.js/commit/18cce83d80598c430218775c53441b6b2ecdc776))
+- Move `getNode`/`canEnableFFmpegOptimizations` into a lazy loaded call (#9918) ([637e1a4](https://github.com/discordjs/discord.js/commit/637e1a4ddb6d5810deb31c5b90400ca277218270))
+
+# [@discordjs/voice@0.16.1](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.16.0...@discordjs/voice@0.16.1) - (2023-11-12)
+
+## Bug Fixes
+
+- **TransformerGraph:** Explicitly include input args for readable input cases instead of just for string input cases (#9793) ([788888a](https://github.com/discordjs/discord.js/commit/788888ab9ad17f1c8d85d68656c617334feb4361))
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Documentation
+
+- **create-discord-bot:** Support bun in create-discord-bot (#9798) ([7157748](https://github.com/discordjs/discord.js/commit/7157748fe3a69265896adf0450cd3f37acbcf97b))
+- Update Node.js requirement to 16.11.0 (#9764) ([188877c](https://github.com/discordjs/discord.js/commit/188877c50af70f0d5cffb246620fa277435c6ce6))
+- Include StreamType enum description in new docs (#9457) ([36216c0](https://github.com/discordjs/discord.js/commit/36216c0e1a0c99e5200de97f08d054e278fd3f0f))
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+
+## Refactor
+
+- Move `getNode`/`canEnableFFmpegOptimizations` into a lazy loaded call (#9918) ([637e1a4](https://github.com/discordjs/discord.js/commit/637e1a4ddb6d5810deb31c5b90400ca277218270))
+
 # [@discordjs/voice@0.16.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.15.0...@discordjs/voice@0.16.0) - (2023-04-01)
 
 ## Bug Fixes
@@ -97,18 +217,7 @@ All notable changes to this project will be documented in this file.
 
 - **voice:** Bring back typed events (#8109) ([70b42bb](https://github.com/discordjs/discord.js/commit/70b42bb64a4f83da0da242569b9c7921c8d1e26f))
 
-# [@discordjs/voice@0.10.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.8.0...@discordjs/voice@0.10.0) - (2022-06-04)
-
-## Bug Fixes
-
-- Fix some typos (#7393) ([92a04f4](https://github.com/discordjs/discord.js/commit/92a04f4d98f6c6760214034cc8f5a1eaa78893c7))
-
-## Features
-
-- Support sodium-native lib for voice (#7698) ([f0d0242](https://github.com/discordjs/discord.js/commit/f0d0242c76a455bb7a5ea7bd95ca62907c7e9d62))
-- Add API v10 support (#7477) ([72577c4](https://github.com/discordjs/discord.js/commit/72577c4bfd02524a27afb6ff4aebba9301a690d3))
-- Add support for module: NodeNext in TS and ESM (#7598) ([8f1986a](https://github.com/discordjs/discord.js/commit/8f1986a6aa98365e09b00e84ad5f9f354ab61f3d))
-- **builders:** Add attachment command option type (#7203) ([ae0f35f](https://github.com/discordjs/discord.js/commit/ae0f35f51d68dfa5a7dc43d161ef9365171debdb))
+# [@discordjs/voice@0.10.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.16.1...@discordjs/voice@0.10.0) - (2022-06-04)
 
 ## Styling
 

@@ -1,7 +1,7 @@
 'use strict';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Events } = require('../../util/Events.js');
+const { Action } = require('./Action.js');
 
 class ChannelCreateAction extends Action {
   handle(data) {
@@ -11,13 +11,15 @@ class ChannelCreateAction extends Action {
     if (!existing && channel) {
       /**
        * Emitted whenever a guild channel is created.
+       *
        * @event Client#channelCreate
        * @param {GuildChannel} channel The channel that was created
        */
       client.emit(Events.ChannelCreate, channel);
     }
+
     return { channel };
   }
 }
 
-module.exports = ChannelCreateAction;
+exports.ChannelCreateAction = ChannelCreateAction;

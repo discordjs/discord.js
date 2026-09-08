@@ -3,13 +3,13 @@
 import { describe, test, expect } from 'vitest';
 import { Collection } from '../src/index.js';
 
-type TestCollection<V> = Collection<string, V>;
+type TestCollection<Value> = Collection<string, Value>;
 
-function createCollection<V = number>(): TestCollection<V> {
+function createCollection<Value = number>(): TestCollection<Value> {
 	return new Collection();
 }
 
-function createCollectionFrom<V = number>(...entries: [key: string, value: V][]): TestCollection<V> {
+function createCollectionFrom<Value = number>(...entries: [key: string, value: Value][]): TestCollection<Value> {
 	return new Collection(entries);
 }
 
@@ -70,12 +70,20 @@ describe('at() tests', () => {
 		expect(coll.at(0)).toStrictEqual(1);
 	});
 
+	test('positive non-integer index', () => {
+		expect(coll.at(1.5)).toStrictEqual(2);
+	});
+
 	test('negative index', () => {
 		expect(coll.at(-1)).toStrictEqual(3);
 	});
 
+	test('negative non-integer index', () => {
+		expect(coll.at(-2.5)).toStrictEqual(2);
+	});
+
 	test('invalid positive index', () => {
-		expect(coll.at(4)).toBeUndefined();
+		expect(coll.at(3)).toBeUndefined();
 	});
 
 	test('invalid negative index', () => {
@@ -138,6 +146,12 @@ describe('each() tests', () => {
 		expectInvalidFunctionError(() => coll.each(123), 123);
 	});
 
+	test('binds the thisArg', () => {
+		coll.each(function each() {
+			expect(this).toBeNull();
+		}, null);
+	});
+
 	test('iterate over each item', () => {
 		const coll = createTestCollection();
 		const a: [string, number][] = [];
@@ -192,6 +206,23 @@ describe('equals() tests', () => {
 	test('collections with the same size but differing items should not be equal', () => {
 		const coll3 = createCollectionFrom(['a', 2], ['b', 3], ['c', 3]);
 		expect(coll2.equals(coll3)).toBeFalsy();
+	});
+
+	test('collections with undefined values should be compared correctly', () => {
+		const collWithUndefined1 = new Collection<string, number | undefined>([
+			['a', 1],
+			['b', undefined],
+		]);
+		const collWithUndefined2 = new Collection<string, number | undefined>([
+			['a', 1],
+			['b', undefined],
+		]);
+		const collWithDifferentKeys = new Collection<string, number | undefined>([
+			['a', 1],
+			['c', undefined],
+		]);
+		expect(collWithUndefined1.equals(collWithUndefined2)).toBeTruthy();
+		expect(collWithUndefined1.equals(collWithDifferentKeys)).toBeFalsy();
 	});
 });
 
@@ -426,12 +457,20 @@ describe('keyAt() tests', () => {
 		expect(coll.keyAt(0)).toStrictEqual('a');
 	});
 
+	test('positive non-integer index', () => {
+		expect(coll.keyAt(1.5)).toStrictEqual('b');
+	});
+
 	test('negative index', () => {
 		expect(coll.keyAt(-1)).toStrictEqual('c');
 	});
 
+	test('negative non-integer index', () => {
+		expect(coll.keyAt(-2.5)).toStrictEqual('b');
+	});
+
 	test('invalid positive index', () => {
-		expect(coll.keyAt(4)).toBeUndefined();
+		expect(coll.keyAt(3)).toBeUndefined();
 	});
 
 	test('invalid negative index', () => {
@@ -707,14 +746,57 @@ describe('reduce() tests', () => {
 		expect<number>(sum).toStrictEqual(6);
 	});
 
+	test('reduce collection into a single value with different accumulator type', () => {
+		const str = coll.reduce((a, x) => a.concat(x.toString()), '');
+		expect<string>(str).toStrictEqual('123');
+	});
+
 	test('reduce empty collection with initial value', () => {
 		const coll = createCollection();
-		expect(coll.reduce((a, x) => a + x, 0)).toStrictEqual(0);
+		expect<number>(coll.reduce((a, x) => a + x, 0)).toStrictEqual(0);
 	});
 
 	test('reduce empty collection without initial value', () => {
 		const coll = createCollection();
-		expect(() => coll.reduce((a: number, x) => a + x)).toThrowError(
+		expect(() => coll.reduce((a, x) => a + x)).toThrowError(
+			new TypeError('Reduce of empty collection with no initial value'),
+		);
+	});
+});
+
+describe('reduceRight() tests', () => {
+	const coll = createTestCollection();
+
+	test('throws if fn is not a function', () => {
+		// @ts-expect-error: Invalid function
+		expectInvalidFunctionError(() => coll.reduceRight());
+		// @ts-expect-error: Invalid function
+		expectInvalidFunctionError(() => coll.reduceRight(123), 123);
+	});
+
+	test('reduce collection into a single value with initial value', () => {
+		const sum = coll.reduceRight((a, x) => a + x, 0);
+		expect<number>(sum).toStrictEqual(6);
+	});
+
+	test('reduce collection into a single value without initial value', () => {
+		const sum = coll.reduceRight((a, x) => a + x);
+		expect<number>(sum).toStrictEqual(6);
+	});
+
+	test('reduce collection into a single value with different accumulator type', () => {
+		const str = coll.reduceRight((a, x) => a.concat(x.toString()), '');
+		expect<string>(str).toStrictEqual('321');
+	});
+
+	test('reduce empty collection with initial value', () => {
+		const coll = createCollection();
+		expect<number>(coll.reduceRight((a, x) => a + x, 0)).toStrictEqual(0);
+	});
+
+	test('reduce empty collection without initial value', () => {
+		const coll = createCollection();
+		expect(() => coll.reduceRight((a, x) => a + x)).toThrowError(
 			new TypeError('Reduce of empty collection with no initial value'),
 		);
 	});
@@ -763,6 +845,33 @@ describe('sort() tests', () => {
 		test('stays the same if it is already sorted', () => {
 			const coll = createCollectionFrom(['a', 5], ['b', 3], ['c', 1]);
 			expect(coll.sort()).toStrictEqual(createCollectionFrom(['c', 1], ['b', 3], ['a', 5]));
+		});
+
+		describe('returns correct sort order for test values', () => {
+			const defaultSort = Collection['defaultSort']; // eslint-disable-line @typescript-eslint/dot-notation
+			const testDefaultSortOrder = (firstValue: any, secondValue: any, result: number) => {
+				expect(defaultSort(firstValue, secondValue)).toStrictEqual(result);
+				expect(defaultSort(secondValue, firstValue)).toStrictEqual(result ? result * -1 : 0);
+			};
+
+			test('correctly evaluates sort order of undefined', () => {
+				testDefaultSortOrder(undefined, undefined, 0);
+				testDefaultSortOrder(0, undefined, -1);
+			});
+
+			test('correctly evaluates numeric values stringwise', () => {
+				testDefaultSortOrder(-1, -2, -1); // "-1" before "-2"
+				testDefaultSortOrder(1, '1', 0); // "1" equal to "1"
+				testDefaultSortOrder(1, '1.0', -1); // "1" before "1.0"
+				testDefaultSortOrder(1.1, '1.1', 0); // "1.1" equal to "1.1"
+				testDefaultSortOrder('01', 1, -1); // "01" before "1"
+				testDefaultSortOrder(1, 1n, 0); // "1" equal to "1"
+				testDefaultSortOrder(Number.NaN, 'NaN', 0); // "NaN" equal to "NaN"
+			});
+
+			test('evaluates object literals as equal', () => {
+				testDefaultSortOrder({ a: 1 }, { b: 2 }, 0);
+			});
 		});
 	});
 });
@@ -849,6 +958,29 @@ describe('union() tests', () => {
 		expect(c.size).toStrictEqual(3);
 
 		expect(c).toStrictEqual(createCollectionFrom(['a', 1], ['b', 2], ['c', 3]));
+	});
+});
+
+describe('groupBy() tests', () => {
+	test('returns a collection of grouped items', () => {
+		const items = [
+			{ name: 'Alice', age: 20 },
+			{ name: 'Bob', age: 20 },
+			{ name: 'Charlie', age: 30 },
+		];
+
+		expect<Collection<number, typeof items>>(Collection.groupBy(items, (item) => item.age)).toStrictEqual(
+			new Collection<number, typeof items>([
+				[
+					20,
+					[
+						{ name: 'Alice', age: 20 },
+						{ name: 'Bob', age: 20 },
+					],
+				],
+				[30, [{ name: 'Charlie', age: 30 }]],
+			]),
+		);
 	});
 });
 
@@ -964,6 +1096,10 @@ describe('findLast() tests', () => {
 		expect(coll.findLast((value) => value % 2 === 1)).toStrictEqual(3);
 	});
 
+	test('returns undefined if no item matches', () => {
+		expect(coll.findLast((value) => value === 10)).toBeUndefined();
+	});
+
 	test('throws if fn is not a function', () => {
 		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => createCollection().findLast());
@@ -985,6 +1121,10 @@ describe('findLastKey() tests', () => {
 		expect(coll.findLastKey((value) => value % 2 === 1)).toStrictEqual('c');
 	});
 
+	test('returns undefined if no item matches', () => {
+		expect(coll.findLastKey((value) => value === 10)).toBeUndefined();
+	});
+
 	test('throws if fn is not a function', () => {
 		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => createCollection().findLastKey());
@@ -1000,30 +1140,60 @@ describe('findLastKey() tests', () => {
 	});
 });
 
-describe('reduceRight() tests', () => {
-	const coll = createTestCollection();
+describe('subclassing tests', () => {
+	class DerivedCollection<Key, Value> extends Collection<Key, Value> {}
 
-	test('throws if fn is not a function', () => {
-		// @ts-expect-error: Invalid function
-		expectInvalidFunctionError(() => coll.reduceRight());
-		// @ts-expect-error: Invalid function
-		expectInvalidFunctionError(() => coll.reduceRight(123), 123);
+	test('constructor[Symbol.species]', () => {
+		expect(DerivedCollection[Symbol.species]).toStrictEqual(DerivedCollection);
 	});
 
-	test('reduce collection into a single value with initial value', () => {
-		const sum = coll.reduceRight((a, x) => a + x, 0);
-		expect(sum).toStrictEqual(6);
-	});
+	describe('methods that construct new collections return subclassed objects', () => {
+		const coll = new DerivedCollection();
 
-	test('reduce collection into a single value without initial value', () => {
-		const sum = coll.reduceRight<number>((a, x) => a + x);
-		expect(sum).toStrictEqual(6);
-	});
-
-	test('reduce empty collection without initial value', () => {
-		const coll = createCollection();
-		expect(() => coll.reduceRight((a: number, x) => a + x)).toThrowError(
-			new TypeError('Reduce of empty collection with no initial value'),
-		);
+		test('filter()', () => {
+			expect(coll.filter(Boolean)).toBeInstanceOf(DerivedCollection);
+		});
+		test('partition()', () => {
+			for (const partition of coll.partition(Boolean)) {
+				expect(partition).toBeInstanceOf(DerivedCollection);
+			}
+		});
+		test('flatMap()', () => {
+			expect(coll.flatMap(() => new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('mapValues()', () => {
+			expect(coll.mapValues(Object)).toBeInstanceOf(DerivedCollection);
+		});
+		test('clone()', () => {
+			expect(coll.clone()).toBeInstanceOf(DerivedCollection);
+		});
+		test('intersection()', () => {
+			expect(coll.intersection(new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('union()', () => {
+			expect(coll.union(new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('difference()', () => {
+			expect(coll.difference(new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('symmetricDifference()', () => {
+			expect(coll.symmetricDifference(new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('merge()', () => {
+			const fn = () => ({ keep: false }) as const; // eslint-disable-line unicorn/consistent-function-scoping
+			expect(coll.merge(new Collection(), fn, fn, fn)).toBeInstanceOf(DerivedCollection);
+		});
+		test('toReversed()', () => {
+			expect(coll.toReversed()).toBeInstanceOf(DerivedCollection);
+		});
+		test('toSorted()', () => {
+			expect(coll.toSorted()).toBeInstanceOf(DerivedCollection);
+		});
+		test('Collection.combineEntries()', () => {
+			expect(DerivedCollection.combineEntries([], Object)).toBeInstanceOf(DerivedCollection);
+		});
+		test('Collection.groupBy()', () => {
+			expect(DerivedCollection.groupBy([], Object)).toBeInstanceOf(DerivedCollection);
+		});
 	});
 });

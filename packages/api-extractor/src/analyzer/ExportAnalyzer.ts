@@ -5,7 +5,8 @@ import { InternalError } from '@rushstack/node-core-library';
 import * as ts from 'typescript';
 import type { AstEntity } from './AstEntity.js';
 import { AstImport, type IAstImportOptions, AstImportKind } from './AstImport.js';
-import { AstModule, AstModuleExportInfo } from './AstModule.js';
+import { AstModule, type IAstModuleExportInfo } from './AstModule.js';
+import { AstNamespaceExport } from './AstNamespaceExport.js';
 import { AstNamespaceImport } from './AstNamespaceImport.js';
 import { AstSymbol } from './AstSymbol.js';
 import type { IFetchAstSymbolOptions } from './AstSymbolTable.js';
@@ -197,9 +198,8 @@ export class ExportAnalyzer {
 			(moduleReference.moduleSpecifierSymbol.flags & ts.SymbolFlags.Alias) !== 0
 		) {
 			// Follow the import/export declaration to one hop the exported item inside the target module
-			let followedSymbol: ts.Symbol | undefined = TypeScriptInternals.getImmediateAliasedSymbol(
+			let followedSymbol: ts.Symbol | undefined = this._typeChecker.getImmediateAliasedSymbol(
 				moduleReference.moduleSpecifierSymbol,
-				this._typeChecker,
 			);
 
 			if (followedSymbol === undefined) {
@@ -227,15 +227,19 @@ export class ExportAnalyzer {
 	/**
 	 * Implementation of {@link AstSymbolTable.fetchAstModuleExportInfo}.
 	 */
-	public fetchAstModuleExportInfo(entryPointAstModule: AstModule): AstModuleExportInfo {
+	public fetchAstModuleExportInfo(entryPointAstModule: AstModule): IAstModuleExportInfo {
 		if (entryPointAstModule.isExternal) {
 			throw new Error('fetchAstModuleExportInfo() is not supported for external modules');
 		}
 
 		if (entryPointAstModule.astModuleExportInfo === undefined) {
-			const astModuleExportInfo: AstModuleExportInfo = new AstModuleExportInfo();
+			const astModuleExportInfo: IAstModuleExportInfo = {
+				visitedAstModules: new Set<AstModule>(),
+				exportedLocalEntities: new Map<string, AstEntity>(),
+				starExportedExternalModules: new Set<AstModule>(),
+			};
 
-			this._collectAllExportsRecursive(astModuleExportInfo, entryPointAstModule, new Set<AstModule>());
+			this._collectAllExportsRecursive(astModuleExportInfo, entryPointAstModule);
 
 			entryPointAstModule.astModuleExportInfo = astModuleExportInfo;
 		}
@@ -251,15 +255,20 @@ export class ExportAnalyzer {
 		importOrExportDeclaration: ts.ExportDeclaration | ts.ImportDeclaration | ts.ImportTypeNode,
 		moduleSpecifier: string,
 	): boolean {
-		const specifier: ts.Expression | ts.TypeNode | undefined = ts.isImportTypeNode(importOrExportDeclaration)
+		let specifier: ts.Expression | ts.TypeNode | undefined = ts.isImportTypeNode(importOrExportDeclaration)
 			? importOrExportDeclaration.argument
 			: importOrExportDeclaration.moduleSpecifier;
+		if (specifier && ts.isLiteralTypeNode(specifier)) {
+			specifier = specifier.literal;
+		}
+
 		const mode: ts.ModuleKind.CommonJS | ts.ModuleKind.ESNext | undefined =
 			specifier && ts.isStringLiteralLike(specifier)
-				? TypeScriptInternals.getModeForUsageLocation(importOrExportDeclaration.getSourceFile(), specifier)
+				? this._program.getModeForUsageLocation(importOrExportDeclaration.getSourceFile(), specifier)
 				: undefined;
 
 		const resolvedModule: ts.ResolvedModuleFull | undefined = TypeScriptInternals.getResolvedModule(
+			this._program,
 			importOrExportDeclaration.getSourceFile(),
 			moduleSpecifier,
 			mode,
@@ -300,11 +309,8 @@ export class ExportAnalyzer {
 		return this._importableAmbientSourceFiles.has(sourceFile);
 	}
 
-	private _collectAllExportsRecursive(
-		astModuleExportInfo: AstModuleExportInfo,
-		astModule: AstModule,
-		visitedAstModules: Set<AstModule>,
-	): void {
+	private _collectAllExportsRecursive(astModuleExportInfo: IAstModuleExportInfo, astModule: AstModule): void {
+		const { visitedAstModules, starExportedExternalModules, exportedLocalEntities } = astModuleExportInfo;
 		if (visitedAstModules.has(astModule)) {
 			return;
 		}
@@ -312,7 +318,7 @@ export class ExportAnalyzer {
 		visitedAstModules.add(astModule);
 
 		if (astModule.isExternal) {
-			astModuleExportInfo.starExportedExternalModules.add(astModule);
+			starExportedExternalModules.add(astModule);
 		} else {
 			// Fetch each of the explicit exports for this module
 			if (astModule.moduleSymbol.exports) {
@@ -325,7 +331,7 @@ export class ExportAnalyzer {
 							// Don't collect the "export default" symbol unless this is the entry point module
 							if (
 								(exportName !== ts.InternalSymbolName.Default || visitedAstModules.size === 1) &&
-								!astModuleExportInfo.exportedLocalEntities.has(exportSymbol.name)
+								!exportedLocalEntities.has(exportSymbol.name)
 							) {
 								const astEntity: AstEntity = this._getExportOfAstModule(exportSymbol.name, astModule);
 
@@ -337,7 +343,7 @@ export class ExportAnalyzer {
 									this._astSymbolTable.analyze(astEntity);
 								}
 
-								astModuleExportInfo.exportedLocalEntities.set(exportSymbol.name, astEntity);
+								exportedLocalEntities.set(exportSymbol.name, astEntity);
 							}
 
 							break;
@@ -346,7 +352,7 @@ export class ExportAnalyzer {
 			}
 
 			for (const starExportedModule of astModule.starExportedModules) {
-				this._collectAllExportsRecursive(astModuleExportInfo, starExportedModule, visitedAstModules);
+				this._collectAllExportsRecursive(astModuleExportInfo, starExportedModule);
 			}
 		}
 	}
@@ -391,7 +397,7 @@ export class ExportAnalyzer {
 					break;
 				}
 
-				const currentAlias: ts.Symbol = TypeScriptInternals.getImmediateAliasedSymbol(current, this._typeChecker);
+				const currentAlias: ts.Symbol | undefined = this._typeChecker.getImmediateAliasedSymbol(current);
 				// Stop if we reach the end of the chain
 				if (!currentAlias || currentAlias === current) {
 					break;
@@ -474,7 +480,7 @@ export class ExportAnalyzer {
 			const followedSymbolNode: ts.ImportTypeNode | ts.Node | undefined =
 				followedSymbol.declarations && (followedSymbol.declarations[0] as ts.Node | undefined);
 
-			if (followedSymbolNode && followedSymbolNode.kind === ts.SyntaxKind.ImportType) {
+			if (followedSymbolNode?.kind === ts.SyntaxKind.ImportType) {
 				return this.fetchReferencedAstEntityFromImportTypeNode(
 					followedSymbolNode as ts.ImportTypeNode,
 					referringModuleIsExternal,
@@ -546,11 +552,13 @@ export class ExportAnalyzer {
 				//   SemicolonToken:  pre=[;]
 
 				// Issue tracking this feature: https://github.com/microsoft/rushstack/issues/2780
-				throw new Error(
-					`The "export * as ___" syntax is not supported yet; as a workaround,` +
-						` use "import * as ___" with a separate "export { ___ }" declaration\n` +
-						SourceFileLocationFormatter.formatDeclaration(declaration),
-				);
+				const astModule: AstModule = this._fetchSpecifierAstModule(exportDeclaration, declarationSymbol);
+				return this._getAstNamespaceExport(astModule, declarationSymbol, declaration);
+				// throw new Error(
+				// 	`The "export * as ___" syntax is not supported yet; as a workaround,` +
+				// 		` use "import * as ___" with a separate "export { ___ }" declaration\n` +
+				// 		SourceFileLocationFormatter.formatDeclaration(declaration),
+				// );
 			} else {
 				throw new InternalError(
 					`Unimplemented export declaration kind: ${declaration.getText()}\n` +
@@ -561,6 +569,33 @@ export class ExportAnalyzer {
 			// Ignore "export { A }" without a module specifier
 			if (exportDeclaration.moduleSpecifier) {
 				const externalModulePath: string | undefined = this._tryGetExternalModulePath(exportDeclaration);
+
+				// if (declaration.kind === ts.SyntaxKind.NamespaceExport) {
+				// 	if (externalModulePath === undefined) {
+				// 		const astModule: AstModule = this._fetchSpecifierAstModule(exportDeclaration, declarationSymbol);
+				// 		let namespaceImport: AstNamespaceImport | undefined = this._astNamespaceImportByModule.get(astModule);
+				// 		if (namespaceImport === undefined) {
+				// 			namespaceImport = new AstNamespaceImport({
+				// 				namespaceName: declarationSymbol.name,
+				// 				astModule,
+				// 				declaration,
+				// 				symbol: declarationSymbol,
+				// 			});
+				// 			this._astNamespaceImportByModule.set(astModule, namespaceImport);
+				// 		}
+
+				// 		return namespaceImport;
+				// 	}
+
+				// 	// Here importSymbol=undefined because {@inheritDoc} and such are not going to work correctly for
+				// 	// a package or source file.
+				// 	return this._fetchAstImport(undefined, {
+				// 		importKind: AstImportKind.StarImport,
+				// 		exportName,
+				// 		modulePath: externalModulePath,
+				// 		isTypeOnly: exportDeclaration.isTypeOnly,
+				// 	});
+				// }
 
 				if (externalModulePath !== undefined) {
 					return this._fetchAstImport(declarationSymbol, {
@@ -576,6 +611,21 @@ export class ExportAnalyzer {
 		}
 
 		return undefined;
+	}
+
+	private _getAstNamespaceExport(
+		astModule: AstModule,
+		declarationSymbol: ts.Symbol,
+		declaration: ts.Declaration,
+	): AstNamespaceExport {
+		const imoprtNamespace: AstNamespaceImport = this._getAstNamespaceImport(astModule, declarationSymbol, declaration);
+
+		return new AstNamespaceExport({
+			namespaceName: imoprtNamespace.localName,
+			astModule,
+			declaration,
+			symbol: declarationSymbol,
+		});
 	}
 
 	private _tryMatchImportDeclaration(declaration: ts.Declaration, declarationSymbol: ts.Symbol): AstEntity | undefined {
@@ -604,18 +654,7 @@ export class ExportAnalyzer {
 
 				if (externalModulePath === undefined) {
 					const astModule: AstModule = this._fetchSpecifierAstModule(importDeclaration, declarationSymbol);
-					let namespaceImport: AstNamespaceImport | undefined = this._astNamespaceImportByModule.get(astModule);
-					if (namespaceImport === undefined) {
-						namespaceImport = new AstNamespaceImport({
-							namespaceName: declarationSymbol.name,
-							astModule,
-							declaration,
-							symbol: declarationSymbol,
-						});
-						this._astNamespaceImportByModule.set(astModule, namespaceImport);
-					}
-
-					return namespaceImport;
+					return this._getAstNamespaceImport(astModule, declarationSymbol, declaration);
 				}
 
 				// Here importSymbol=undefined because {@inheritDoc} and such are not going to work correctly for
@@ -737,6 +776,25 @@ export class ExportAnalyzer {
 		return undefined;
 	}
 
+	private _getAstNamespaceImport(
+		astModule: AstModule,
+		declarationSymbol: ts.Symbol,
+		declaration: ts.Declaration,
+	): AstNamespaceImport {
+		let namespaceImport: AstNamespaceImport | undefined = this._astNamespaceImportByModule.get(astModule);
+		if (namespaceImport === undefined) {
+			namespaceImport = new AstNamespaceImport({
+				namespaceName: declarationSymbol.name,
+				astModule,
+				declaration,
+				symbol: declarationSymbol,
+			});
+			this._astNamespaceImportByModule.set(astModule, namespaceImport);
+		}
+
+		return namespaceImport;
+	}
+
 	private static _getIsTypeOnly(importDeclaration: ts.ImportDeclaration): boolean {
 		if (importDeclaration.importClause) {
 			return Boolean(importDeclaration.importClause.isTypeOnly);
@@ -850,12 +908,13 @@ export class ExportAnalyzer {
 		const moduleSpecifier: string = this._getModuleSpecifier(importOrExportDeclaration);
 		const mode: ts.ModuleKind.CommonJS | ts.ModuleKind.ESNext | undefined =
 			importOrExportDeclaration.moduleSpecifier && ts.isStringLiteralLike(importOrExportDeclaration.moduleSpecifier)
-				? TypeScriptInternals.getModeForUsageLocation(
+				? this._program.getModeForUsageLocation(
 						importOrExportDeclaration.getSourceFile(),
 						importOrExportDeclaration.moduleSpecifier,
-				  )
+					)
 				: undefined;
 		const resolvedModule: ts.ResolvedModuleFull | undefined = TypeScriptInternals.getResolvedModule(
+			this._program,
 			importOrExportDeclaration.getSourceFile(),
 			moduleSpecifier,
 			mode,

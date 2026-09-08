@@ -20,7 +20,7 @@ export interface SocketConfig {
 export function parseLocalPacket(message: Buffer): SocketConfig {
 	const packet = Buffer.from(message);
 
-	const ip = packet.slice(8, packet.indexOf(0, 8)).toString('utf8');
+	const ip = packet.subarray(8, packet.indexOf(0, 8)).toString('utf8');
 
 	if (!isIPv4(ip)) {
 		throw new Error('Malformed IP address');

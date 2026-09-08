@@ -1,124 +1,74 @@
 'use client';
 
-import type { ApiItemKind } from '@discordjs/api-extractor-model';
-import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
-import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
-import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
-import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
-import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable';
-import { useSelectedLayoutSegment } from 'next/navigation';
-import { useMemo } from 'react';
-import { useNav } from '~/contexts/nav';
-import { ItemLink } from './ItemLink';
-import { Section } from './Section';
+import { VscGithubInverted } from '@react-icons/all-files/vsc/VscGithubInverted';
+import { useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { EntryPointSelect } from '@/components/EntrypointSelect';
+import { PackageSelect } from '@/components/PackageSelect';
+import { SearchButton } from '@/components/SearchButton';
+import { ThemeSwitchNoSRR } from '@/components/ThemeSwitch';
+import { VersionSelect } from '@/components/VersionSelect';
+import { SidebarHeader as BasSidebarHeader } from '@/components/ui/Sidebar';
+import { buttonStyles } from '@/styles/ui/button';
+import { PACKAGES_WITH_ENTRY_POINTS } from '@/util/constants';
+import type { EntryPoint } from '@/util/fetchEntryPoints';
 
-export interface SidebarSectionItemData {
-	href: string;
-	kind: ApiItemKind;
-	name: string;
-	overloadIndex?: number | undefined;
-}
+export function SidebarHeader() {
+	const params = useParams<{
+		packageName: string;
+		version: string;
+	}>();
 
-interface GroupedMembers {
-	Classes: SidebarSectionItemData[];
-	Enums: SidebarSectionItemData[];
-	Functions: SidebarSectionItemData[];
-	Interfaces: SidebarSectionItemData[];
-	Types: SidebarSectionItemData[];
-	Variables: SidebarSectionItemData[];
-}
+	const hasEntryPoints = PACKAGES_WITH_ENTRY_POINTS.includes(params.packageName);
 
-function groupMembers(members: readonly SidebarSectionItemData[]): GroupedMembers {
-	const Classes: SidebarSectionItemData[] = [];
-	const Enums: SidebarSectionItemData[] = [];
-	const Interfaces: SidebarSectionItemData[] = [];
-	const Types: SidebarSectionItemData[] = [];
-	const Variables: SidebarSectionItemData[] = [];
-	const Functions: SidebarSectionItemData[] = [];
+	const { data: entryPoints, isLoading: isLoadingEntryPoints } = useQuery<EntryPoint[]>({
+		queryKey: ['entryPoints', params.packageName, params.version],
+		queryFn: async () => {
+			const response = await fetch(`/api/docs/entrypoints?packageName=${params.packageName}&version=${params.version}`);
 
-	for (const member of members) {
-		switch (member.kind) {
-			case 'Class':
-				Classes.push(member);
-				break;
-			case 'Enum':
-				Enums.push(member);
-				break;
-			case 'Interface':
-				Interfaces.push(member);
-				break;
-			case 'TypeAlias':
-				Types.push(member);
-				break;
-			case 'Variable':
-				Variables.push(member);
-				break;
-			case 'Function':
-				Functions.push(member);
-				break;
-			default:
-				break;
-		}
-	}
+			return response.json();
+		},
+	});
 
-	return { Classes, Functions, Enums, Interfaces, Types, Variables };
-}
+	const { data: versions, isLoading: isLoadingVersions } = useQuery({
+		queryKey: ['versions', params.packageName],
+		queryFn: async () => {
+			const response = await fetch(`/api/docs/versions?packageName=${params.packageName}`);
 
-function resolveIcon(item: string) {
-	switch (item) {
-		case 'Classes':
-			return <VscSymbolClass size={20} />;
-		case 'Enums':
-			return <VscSymbolEnum size={20} />;
-		case 'Interfaces':
-			return <VscSymbolInterface size={20} />;
-		case 'Types':
-		case 'Variables':
-			return <VscSymbolVariable size={20} />;
-		default:
-			return <VscSymbolMethod size={20} />;
-	}
-}
-
-export function Sidebar({ members }: { readonly members: SidebarSectionItemData[] }) {
-	const segment = useSelectedLayoutSegment();
-	const { setOpened } = useNav();
-
-	const groupItems = useMemo(() => groupMembers(members), [members]);
+			return response.json();
+		},
+	});
 
 	return (
-		<div className="flex flex-col gap-3 p-3">
-			{(Object.keys(groupItems) as (keyof GroupedMembers)[])
-				.filter((group) => groupItems[group].length)
-				.map((group, idx) => (
-					<Section
-						buttonClassName="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-400 dark:hover:bg-dark-300 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-none focus:ring z-10"
-						icon={resolveIcon(group)}
-						key={`${group}-${idx}`}
-						title={group}
+		<BasSidebarHeader className="bg-[#f3f3f4] p-4 dark:bg-[#121214]">
+			<div className="flex flex-col gap-2">
+				<div className="flex place-content-between place-items-center p-1">
+					<Link
+						className="text-xl font-bold"
+						href={`/docs/packages/${params.packageName}/${params.version}${hasEntryPoints ? `/${entryPoints?.[0]?.entryPoint ?? ''}` : ''}`}
 					>
-						{groupItems[group].map((member, index) => (
-							<ItemLink
-								className={`dark:border-dark-100 border-light-800 focus:ring-width-2 focus:ring-blurple ml-5 flex flex-col border-l p-[5px] pl-6 outline-none focus:rounded focus:border-0 focus:ring ${
-									decodeURIComponent(segment ?? '') === member.href
-										? 'bg-blurple text-white'
-										: 'dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800'
-								}`}
-								itemURI={member.href}
-								key={`${member.name}-${index}`}
-								onClick={() => setOpened(false)}
-								title={member.name}
-							>
-								<div className="flex flex-row place-items-center gap-2 lg:text-sm">
-									<span className="truncate">{member.name}</span>
-									{member.overloadIndex && member.overloadIndex > 1 ? (
-										<span className="text-xs">{member.overloadIndex}</span>
-									) : null}
-								</div>
-							</ItemLink>
-						))}
-					</Section>
-				))}
-		</div>
+						{params.packageName}
+					</Link>
+					<div className="flex place-items-center gap-2">
+						<Link
+							aria-label="GitHub"
+							className={buttonStyles({ variant: 'filled', size: 'icon-sm' })}
+							href="https://github.com/discordjs/discord.js"
+							rel="external noopener noreferrer"
+							target="_blank"
+						>
+							<VscGithubInverted aria-hidden data-slot="icon" size={18} />
+						</Link>
+						<ThemeSwitchNoSRR />
+					</div>
+				</div>
+				<PackageSelect />
+				{/* <h3 className="p-1 text-lg font-semibold">{version}</h3> */}
+				<VersionSelect isLoading={isLoadingVersions} versions={versions ?? []} />
+				{hasEntryPoints ? <EntryPointSelect entryPoints={entryPoints ?? []} isLoading={isLoadingEntryPoints} /> : null}
+				<SearchButton />
+			</div>
+		</BasSidebarHeader>
 	);
 }

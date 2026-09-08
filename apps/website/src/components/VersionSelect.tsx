@@ -1,60 +1,56 @@
 'use client';
 
-import { VscChevronDown } from '@react-icons/all-files/vsc/VscChevronDown';
-import { VscVersions } from '@react-icons/all-files/vsc/VscVersions';
-import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit/menu';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useMemo } from 'react';
+import { Loader2Icon } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import { Select, SelectList, SelectOption, SelectTrigger } from '@/components/ui/Select';
+import { DEFAULT_ENTRY_POINT, PACKAGES_WITH_ENTRY_POINTS } from '@/util/constants';
 
-const isDev = process.env.NEXT_PUBLIC_LOCAL_DEV ?? process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview';
+export function VersionSelect({
+	versions,
+	isLoading,
+}: {
+	readonly isLoading: boolean;
+	readonly versions: { readonly version: string }[];
+}) {
+	const router = useRouter();
+	const params = useParams<{ packageName: string; version: string }>();
 
-export default function VersionSelect({ versions }: { readonly versions: string[] }) {
-	const pathname = usePathname();
-	const packageName = pathname?.split('/').slice(3, 4)[0];
-	const branchName = pathname?.split('/').slice(4, 5)[0];
-
-	const versionMenu = useMenuState({ gutter: 8, sameWidth: true, fitViewport: true });
-
-	const versionMenuItems = useMemo(
-		() =>
-			versions?.map((item, idx) => (
-				<Link href={`/docs/packages/${packageName}/${isDev ? 'main' : item}`} key={`${item}-${idx}`}>
-					<MenuItem
-						className="my-0.5 rounded bg-white p-3 text-sm outline-none active:bg-light-800 dark:bg-dark-600 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-500"
-						onClick={() => versionMenu.setOpen(false)}
-						state={versionMenu}
-					>
-						{item}
-					</MenuItem>
-				</Link>
-			)) ?? [],
-		[versions, packageName, versionMenu],
-	);
+	const hasEntryPoints = PACKAGES_WITH_ENTRY_POINTS.includes(params.packageName);
 
 	return (
-		<>
-			<MenuButton
-				className="rounded bg-light-600 p-3 outline-none active:bg-light-800 dark:bg-dark-400 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-300"
-				state={versionMenu}
-			>
-				<div className="flex flex-row place-content-between place-items-center">
-					<div className="flex flex-row place-items-center gap-3">
-						<VscVersions size={20} />
-						<span className="font-semibold">{branchName}</span>
-					</div>
-					<VscChevronDown
-						className={`transform transition duration-150 ease-in-out ${versionMenu.open ? 'rotate-180' : 'rotate-0'}`}
-						size={20}
-					/>
-				</div>
-			</MenuButton>
-			<Menu
-				className="z-20 flex flex-col border border-light-800 rounded bg-white p-1 outline-none dark:border-dark-100 dark:bg-dark-600 focus:ring focus:ring-width-2 focus:ring-blurple"
-				state={versionMenu}
-			>
-				{versionMenuItems}
-			</Menu>
-		</>
+		<Select
+			aria-label={isLoading ? 'Loading versions...' : 'Select a version'}
+			defaultSelectedKey={params.version}
+			key={`${params.packageName}-${params.version}`}
+			placeholder={isLoading ? 'Loading versions...' : 'Select a version'}
+		>
+			<SelectTrigger
+				className="bg-[#f3f3f4] dark:bg-[#121214]"
+				suffix={
+					isLoading ? (
+						<Loader2Icon
+							aria-hidden
+							className="size-6 shrink-0 animate-spin duration-200 forced-colors:text-[ButtonText] forced-colors:group-disabled:text-[GrayText]"
+							size={24}
+							strokeWidth={1.5}
+						/>
+					) : null
+				}
+			/>
+			<SelectList classNames={{ popover: 'bg-[#f3f3f4] dark:bg-[#28282d]' }} items={versions}>
+				{(item) => (
+					<SelectOption
+						className="dark:pressed:bg-[#313135] bg-[#f3f3f4] dark:bg-[#28282d] dark:hover:bg-[#313135]"
+						href={`/docs/packages/${params.packageName}/${item.version}${hasEntryPoints ? ['', ...DEFAULT_ENTRY_POINT].join('/') : ''}`}
+						id={item.version}
+						key={item.version}
+						onHoverStart={() => router.prefetch(`/docs/packages/${params.packageName}/${item.version}`)}
+						textValue={item.version}
+					>
+						{item.version}
+					</SelectOption>
+				)}
+			</SelectList>
+		</Select>
 	);
 }

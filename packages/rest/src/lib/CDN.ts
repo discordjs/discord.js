@@ -1,4 +1,5 @@
 /* eslint-disable jsdoc/check-param-names */
+import { CDNRoutes } from 'discord-api-types/v10';
 import {
 	ALLOWED_EXTENSIONS,
 	ALLOWED_SIZES,
@@ -8,32 +9,46 @@ import {
 	type ImageSize,
 	type StickerExtension,
 } from './utils/constants.js';
-import { deprecationWarning } from './utils/utils.js';
-
-let deprecationEmittedForEmoji = false;
 
 /**
- * The options used for image URLs
+ * The options used for image URLs.
  */
 export interface BaseImageURLOptions {
 	/**
-	 * The extension to use for the image URL
+	 * The extension to use for the image URL.
 	 *
 	 * @defaultValue `'webp'`
 	 */
 	extension?: ImageExtension;
 	/**
-	 * The size specified in the image URL
+	 * The size specified in the image URL.
 	 */
 	size?: ImageSize;
 }
 
+export interface EmojiURLOptionsWebp extends BaseImageURLOptions {
+	/**
+	 * Whether to use the `animated` query parameter.
+	 */
+	animated?: boolean;
+	extension?: 'webp';
+}
+
+export interface EmojiURLOptionsNotWebp extends BaseImageURLOptions {
+	extension: Exclude<ImageExtension, 'webp'>;
+}
+
 /**
- * The options used for image URLs with animated content
+ * The options used for emoji URLs.
+ */
+export type EmojiURLOptions = EmojiURLOptionsNotWebp | EmojiURLOptionsWebp;
+
+/**
+ * The options used for image URLs that may be animated.
  */
 export interface ImageURLOptions extends BaseImageURLOptions {
 	/**
-	 * Whether or not to prefer the static version of an image asset.
+	 * Whether to prefer the static asset.
 	 */
 	forceStatic?: boolean;
 }
@@ -41,11 +56,21 @@ export interface ImageURLOptions extends BaseImageURLOptions {
 /**
  * The options to use when making a CDN URL
  */
-export interface MakeURLOptions {
+interface MakeURLOptions {
 	/**
 	 * The allowed extensions that can be used
 	 */
 	allowedExtensions?: readonly string[];
+	/**
+	 * Whether to use the `animated` query parameter
+	 */
+	animated?: boolean;
+	/**
+	 * The base URL.
+	 *
+	 * @defaultValue `DefaultRestOptions.cdn`
+	 */
+	base?: string;
 	/**
 	 * The extension to use for the image URL
 	 *
@@ -59,10 +84,35 @@ export interface MakeURLOptions {
 }
 
 /**
+ * Options for initializing the {@link CDN} class.
+ */
+export interface CDNOptions {
+	/**
+	 * The base URL for the CDN.
+	 *
+	 * @defaultValue `DefaultRestOptions.cdn`
+	 */
+	cdn?: string | undefined;
+	/**
+	 * The base URL for the media proxy.
+	 *
+	 * @defaultValue `DefaultRestOptions.mediaProxy`
+	 */
+	mediaProxy?: string | undefined;
+}
+
+/**
  * The CDN link builder
  */
 export class CDN {
-	public constructor(private readonly base: string = DefaultRestOptions.cdn) {}
+	private readonly cdn: string;
+
+	private readonly mediaProxy: string;
+
+	public constructor({ cdn, mediaProxy }: CDNOptions = {}) {
+		this.cdn = cdn ?? DefaultRestOptions.cdn;
+		this.mediaProxy = mediaProxy ?? DefaultRestOptions.mediaProxy;
+	}
 
 	/**
 	 * Generates an app asset URL for a client's asset.
@@ -98,18 +148,12 @@ export class CDN {
 	}
 
 	/**
-	 * Generates a user avatar decoration URL.
+	 * Generates a user avatar decoration preset URL.
 	 *
-	 * @param userId - The id of the user
-	 * @param userAvatarDecoration - The hash provided by Discord for this avatar decoration
-	 * @param options - Optional options for the avatar decoration
+	 * @param asset - The avatar decoration hash
 	 */
-	public avatarDecoration(
-		userId: string,
-		userAvatarDecoration: string,
-		options?: Readonly<BaseImageURLOptions>,
-	): string {
-		return this.makeURL(`/avatar-decorations/${userId}/${userAvatarDecoration}`, options);
+	public avatarDecoration(asset: string): string {
+		return this.makeURL(`/avatar-decoration-presets/${asset}`, { extension: 'png' });
 	}
 
 	/**
@@ -158,41 +202,13 @@ export class CDN {
 	}
 
 	/**
-	 * Generates an emoji's URL for an emoji.
+	 * Generates an emoji's URL.
 	 *
 	 * @param emojiId - The emoji id
 	 * @param options - Optional options for the emoji
 	 */
-	public emoji(emojiId: string, options?: Readonly<BaseImageURLOptions>): string;
-
-	/**
-	 * Generates an emoji's URL for an emoji.
-	 *
-	 * @param emojiId - The emoji id
-	 * @param extension - The extension of the emoji
-	 * @deprecated This overload is deprecated. Pass an object containing the extension instead.
-	 */
-	// eslint-disable-next-line @typescript-eslint/unified-signatures
-	public emoji(emojiId: string, extension?: ImageExtension): string;
-
-	public emoji(emojiId: string, options?: ImageExtension | Readonly<BaseImageURLOptions>): string {
-		let resolvedOptions;
-
-		if (typeof options === 'string') {
-			if (!deprecationEmittedForEmoji) {
-				deprecationWarning(
-					'Passing a string for the second parameter of CDN#emoji() is deprecated. Use an object instead.',
-				);
-
-				deprecationEmittedForEmoji = true;
-			}
-
-			resolvedOptions = { extension: options };
-		} else {
-			resolvedOptions = options;
-		}
-
-		return this.makeURL(`/emojis/${emojiId}`, resolvedOptions);
+	public emoji(emojiId: string, options?: Readonly<EmojiURLOptions>): string {
+		return this.makeURL(`/emojis/${emojiId}`, options);
 	}
 
 	/**
@@ -226,7 +242,7 @@ export class CDN {
 		bannerHash: string,
 		options?: Readonly<ImageURLOptions>,
 	): string {
-		return this.dynamicMakeURL(`/guilds/${guildId}/users/${userId}/banner`, bannerHash, options);
+		return this.dynamicMakeURL(`/guilds/${guildId}/users/${userId}/banners/${bannerHash}`, bannerHash, options);
 	}
 
 	/**
@@ -268,10 +284,15 @@ export class CDN {
 	 * @param stickerId - The sticker id
 	 * @param extension - The extension of the sticker
 	 * @privateRemarks
-	 * Stickers cannot have a `.webp` extension, so we default to a `.png`
+	 * Stickers cannot have a `.webp` extension, so we default to a `.png`.
+	 * Sticker GIFs do not use the CDN base URL.
 	 */
 	public sticker(stickerId: string, extension: StickerExtension = 'png'): string {
-		return this.makeURL(`/stickers/${stickerId}`, { allowedExtensions: ALLOWED_STICKER_EXTENSIONS, extension });
+		return this.makeURL(`/stickers/${stickerId}`, {
+			allowedExtensions: ALLOWED_STICKER_EXTENSIONS,
+			base: extension === 'gif' ? this.mediaProxy : this.cdn,
+			extension,
+		});
 	}
 
 	/**
@@ -311,6 +332,26 @@ export class CDN {
 	}
 
 	/**
+	 * Generates a URL for a soundboard sound.
+	 *
+	 * @param soundId - The soundboard sound id
+	 */
+	public soundboardSound(soundId: string): string {
+		return `${this.cdn}${CDNRoutes.soundboardSound(soundId)}`;
+	}
+
+	/**
+	 * Generates a URL for a guild tag badge.
+	 *
+	 * @param guildId - The guild id
+	 * @param badgeHash - The hash of the badge
+	 * @param options - Optional options for the badge
+	 */
+	public guildTagBadge(guildId: string, badgeHash: string, options?: Readonly<BaseImageURLOptions>): string {
+		return this.makeURL(`/guild-tag-badges/${guildId}/${badgeHash}`, options);
+	}
+
+	/**
 	 * Constructs the URL for the resource, checking whether or not `hash` starts with `a_` if `dynamic` is set to `true`.
 	 *
 	 * @param route - The base cdn route
@@ -322,7 +363,7 @@ export class CDN {
 		hash: string,
 		{ forceStatic = false, ...options }: Readonly<ImageURLOptions> = {},
 	): string {
-		return this.makeURL(route, !forceStatic && hash.startsWith('a_') ? { ...options, extension: 'gif' } : options);
+		return this.makeURL(route, !forceStatic && hash.startsWith('a_') ? { ...options, animated: true } : options);
 	}
 
 	/**
@@ -333,7 +374,13 @@ export class CDN {
 	 */
 	private makeURL(
 		route: string,
-		{ allowedExtensions = ALLOWED_EXTENSIONS, extension = 'webp', size }: Readonly<MakeURLOptions> = {},
+		{
+			allowedExtensions = ALLOWED_EXTENSIONS,
+			base = this.cdn,
+			extension = 'webp',
+			size,
+			animated,
+		}: Readonly<MakeURLOptions> = {},
 	): string {
 		// eslint-disable-next-line no-param-reassign
 		extension = String(extension).toLowerCase();
@@ -346,7 +393,11 @@ export class CDN {
 			throw new RangeError(`Invalid size provided: ${size}\nMust be one of: ${ALLOWED_SIZES.join(', ')}`);
 		}
 
-		const url = new URL(`${this.base}${route}.${extension}`);
+		const url = new URL(`${base}${route}.${extension}`);
+
+		if (animated !== undefined) {
+			url.searchParams.set('animated', String(animated));
+		}
 
 		if (size) {
 			url.searchParams.set('size', String(size));

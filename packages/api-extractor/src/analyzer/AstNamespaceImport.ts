@@ -4,7 +4,7 @@
 import type * as ts from 'typescript';
 import type { Collector } from '../collector/Collector.js';
 import { AstSyntheticEntity } from './AstEntity.js';
-import type { AstModule, AstModuleExportInfo } from './AstModule.js';
+import type { AstModule, IAstModuleExportInfo } from './AstModule.js';
 
 export interface IAstNamespaceImportOptions {
 	readonly astModule: AstModule;
@@ -81,15 +81,15 @@ export class AstNamespaceImport extends AstSyntheticEntity {
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * {@inheritdoc AstEntity.localName}
 	 */
 	public get localName(): string {
 		// abstract
 		return this.namespaceName;
 	}
 
-	public fetchAstModuleExportInfo(collector: Collector): AstModuleExportInfo {
-		const astModuleExportInfo: AstModuleExportInfo = collector.astSymbolTable.fetchAstModuleExportInfo(this.astModule);
+	public fetchAstModuleExportInfo(collector: Collector): IAstModuleExportInfo {
+		const astModuleExportInfo: IAstModuleExportInfo = collector.astSymbolTable.fetchAstModuleExportInfo(this.astModule);
 		return astModuleExportInfo;
 	}
 }
