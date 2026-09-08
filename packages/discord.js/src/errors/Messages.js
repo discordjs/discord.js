@@ -66,6 +66,7 @@ const Messages = {
   [ErrorCodes.GuildChannelUnowned]: "The fetched channel does not belong to this manager's guild.",
   [ErrorCodes.GuildMembersTimeout]: "Members didn't arrive in time.",
   [ErrorCodes.GuildSoundboardSoundsTimeout]: "Soundboard sounds didn't arrive in time.",
+  [ErrorCodes.GuildChannelInfoTimeout]: "Channel info didn't arrive in time.",
   [ErrorCodes.GuildUncachedMe]: 'The client user as a member of this guild is uncached.',
   [ErrorCodes.ChannelNotCached]: 'Could not find the channel where this message came from in the cache!',
   [ErrorCodes.StageChannelResolve]: 'Could not resolve channel to a stage channel.',

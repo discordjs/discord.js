@@ -11,6 +11,7 @@ import {
 	type RESTPatchAPIGuildVoiceStateCurrentMemberResult,
 	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
 	type RESTPatchAPIGuildVoiceStateUserResult,
+	type RESTPutAPIChannelVoiceStatusJSONBody,
 } from 'discord-api-types/v10';
 
 export class VoiceAPI {
@@ -97,5 +98,26 @@ export class VoiceAPI {
 			body,
 			signal,
 		}) as Promise<RESTPatchAPIGuildVoiceStateCurrentMemberResult>;
+	}
+
+	/**
+	 * Sets a voice channel's status
+	 *
+	 * @see {@link https://docs.discord.com/developers/resources/channel#set-voice-channel-status}
+	 * @param channelId - The id of the voice channel
+	 * @param body - The data for setting the voice channel status
+	 * @param options - The options for setting the voice channel status
+	 */
+	public async setVoiceChannelStatus(
+		channelId: Snowflake,
+		body: RESTPutAPIChannelVoiceStatusJSONBody,
+		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
+	) {
+		await this.rest.put(Routes.channelVoiceStatus(channelId), {
+			auth,
+			reason,
+			body,
+			signal,
+		});
 	}
 }
