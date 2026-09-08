@@ -50,14 +50,14 @@ class ApplicationCommandManager extends CachedManager {
    */
   commandPath({ id, guildId } = {}) {
     if (this.guild ?? guildId) {
-      if (id) {
+      if (id !== undefined) {
         return Routes.applicationGuildCommand(this.client.application.id, this.guild?.id ?? guildId, id);
       }
 
       return Routes.applicationGuildCommands(this.client.application.id, this.guild?.id ?? guildId);
     }
 
-    if (id) {
+    if (id !== undefined) {
       return Routes.applicationCommand(this.client.application.id, id);
     }
 
@@ -123,13 +123,19 @@ class ApplicationCommandManager extends CachedManager {
    *   .catch(console.error)
    */
   async fetch(options) {
-    if (!options) return this._fetchMany();
+    if (options === undefined) {
+      return this._fetchMany();
+    }
 
-    if (typeof options === 'string') return this._fetchSingle({ id: options });
+    if (typeof options === 'string') {
+      return this._fetchSingle({ id: options });
+    }
 
     const { cache, force, guildId, id, locale, withLocalizations } = options;
 
-    if (id) return this._fetchSingle({ cache, force, guildId, id });
+    if (id !== undefined) {
+      return this._fetchSingle({ cache, force, guildId, id });
+    }
 
     return this._fetchMany({ cache, guildId, locale, withLocalizations });
   }

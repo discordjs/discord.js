@@ -91,7 +91,10 @@ class ThreadMemberManager extends CachedManager {
    */
   resolveId(member) {
     const memberResolvable = super.resolveId(member);
-    if (memberResolvable) return memberResolvable;
+    if (memberResolvable !== null) {
+      return memberResolvable;
+    }
+
     const userResolvable = this.client.users.resolveId(member);
     return this.cache.has(userResolvable) ? userResolvable : null;
   }
@@ -165,10 +168,16 @@ class ThreadMemberManager extends CachedManager {
    * @returns {Promise<ThreadMember|Collection<Snowflake, ThreadMember>>}
    */
   async fetch(options) {
-    if (!options) return this._fetchMany();
+    if (options === undefined) {
+      return this._fetchMany();
+    }
+
     const { member, withMember, cache, force } = options;
     const resolvedMember = this.resolveId(member ?? options);
-    if (resolvedMember) return this._fetchSingle({ member: resolvedMember, withMember, cache, force });
+    if (resolvedMember !== null) {
+      return this._fetchSingle({ member: resolvedMember, withMember, cache, force });
+    }
+
     return this._fetchMany(options);
   }
 
