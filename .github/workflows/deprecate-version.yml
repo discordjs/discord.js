@@ -18,6 +18,7 @@ on:
           - '@discordjs/next'
           - '@discordjs/proxy'
           - '@discordjs/rest'
+          - '@discordjs/rpc'
           - '@discordjs/structures'
           - '@discordjs/util'
           - '@discordjs/voice'
@@ -36,10 +37,10 @@ jobs:
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install Node.js v24
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           package-manager-cache: false
