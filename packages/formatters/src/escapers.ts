@@ -54,6 +54,13 @@ export interface EscapeMarkdownOptions {
 	heading?: boolean;
 
 	/**
+	 * Whether to escape "hide link embed" sequences (e.g. `<https://example.com>`).
+	 *
+	 * @defaultValue `true`
+	 */
+	hideLinkEmbed?: boolean;
+
+	/**
 	 * Whether to escape inline code.
 	 *
 	 * @defaultValue `true`
@@ -140,6 +147,7 @@ export function escapeMarkdown(text: string, options: EscapeMarkdownOptions = {}
 		maskedLink = true,
 		blockQuote = true,
 		quote = true,
+		hideLinkEmbed = true,
 	} = options;
 
 	if (!codeBlockContent) {
@@ -162,6 +170,7 @@ export function escapeMarkdown(text: string, options: EscapeMarkdownOptions = {}
 					maskedLink,
 					blockQuote,
 					quote,
+					hideLinkEmbed,
 				});
 			})
 			.join(codeBlock ? '\\`\\`\\`' : '```');
@@ -186,6 +195,7 @@ export function escapeMarkdown(text: string, options: EscapeMarkdownOptions = {}
 					maskedLink,
 					blockQuote,
 					quote,
+					hideLinkEmbed,
 				});
 			})
 			.join(inlineCode ? '\\`' : '`');
@@ -206,6 +216,7 @@ export function escapeMarkdown(text: string, options: EscapeMarkdownOptions = {}
 	if (maskedLink) res = escapeMaskedLink(res);
 	if (quote) res = escapeQuote(res);
 	if (blockQuote) res = escapeBlockQuote(res);
+	if (hideLinkEmbed) res = escapeHideLinkEmbed(res);
 	return res;
 }
 
@@ -356,4 +367,23 @@ export function escapeQuote(text: string): string {
  */
 export function escapeBlockQuote(text: string): string {
 	return text.replaceAll(/^(\s*)>>>(\s+)/gm, '$1\\>>>$2');
+}
+
+/**
+ * Escapes "hide link embed" markdown sequences in a string.
+ *
+ * @remarks
+ * Discord interprets a `<scheme:/path>` sequence (for example `<https://example.com>` or
+ * `<a:/b>`) as a directive to suppress embeds or otherwise consume the surrounding
+ * angle brackets. This escaper prepends a backslash to the leading `<`, so the sequence
+ * renders as literal text in the client.
+ *
+ * Note that escaping the leading `<` drops the embed-suppression directive. To display
+ * literal angle brackets while still suppressing the embed, wrap the escaped output in
+ * another pair of angle brackets at the call site, e.g.
+ * `` `<${escapeHideLinkEmbed(text)}>` ``.
+ * @param text - Content to escape
+ */
+export function escapeHideLinkEmbed(text: string): string {
+	return text.replaceAll(/<([^\s:<>]+:\/[^\s<>]+)>/g, '\\<$1>');
 }
