@@ -1,9 +1,9 @@
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
 import { describe, expect, test } from 'vitest';
-import { PrimaryButtonBuilder } from '../../../src/components/button/CustomIdButton';
-import { SectionBuilder } from '../../../src/components/v2/Section';
-import { TextDisplayBuilder } from '../../../src/components/v2/TextDisplay';
-import { ThumbnailBuilder } from '../../../src/components/v2/Thumbnail';
+import { PrimaryButtonBuilder } from '../../../src/components/button/CustomIdButton.js';
+import { SectionBuilder } from '../../../src/components/v2/Section.js';
+import { TextDisplayBuilder } from '../../../src/components/v2/TextDisplay.js';
+import { ThumbnailBuilder } from '../../../src/components/v2/Thumbnail.js';
 
 describe('Section', () => {
 	describe('Validation', () => {

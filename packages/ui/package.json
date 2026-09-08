@@ -75,17 +75,18 @@
 		"chromatic": "^18.7.2",
 		"cross-env": "^10.1.0",
 		"eslint": "^9.39.5",
-		"eslint-config-neon": "^0.3.2",
+		"eslint-config-neon": "^0.5.4",
 		"eslint-formatter-compact": "^9.0.1",
 		"eslint-formatter-pretty": "^7.1.0",
 		"prettier": "~3.8.1",
 		"prop-types": "^15.8.1",
 		"storybook": "^10.5.10",
 		"turbo": "^2.10.12",
-		"typescript": "~5.9.3",
+		"typescript": "npm:@typescript/typescript6@~6.0.2",
+		"typescript-native": "npm:typescript@~7.0.2",
 		"unocss": "^66.9.2",
-		"vite": "^8.2.2",
-		"vite-plugin-dts": "^5.1.0"
+		"unplugin-dts": "^1.0.3",
+		"vite": "^8.2.2"
 	},
 	"engines": {
 		"node": ">=24.17.0"

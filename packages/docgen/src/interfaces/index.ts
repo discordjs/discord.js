@@ -1,5 +1,5 @@
 export type * from './access.type.js';
-export type * from './childTypes.type';
+export type * from './childTypes.type.js';
 export type * from './class.interface.js';
 export type * from './config.interface.js';
 export type * from './constructor.interface.js';
@@ -18,4 +18,4 @@ export type * from './rootTypes.type.js';
 export type * from './scope.type.js';
 export type * from './type.interface.js';
 export type * from './typedef.interface.js';
-export type * from './var-type.interface';
+export type * from './var-type.interface.js';

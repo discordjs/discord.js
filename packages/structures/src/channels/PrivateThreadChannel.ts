@@ -1,6 +1,5 @@
 import type { APIPrivateThreadChannel, ChannelType } from 'discord-api-types/v10';
-import { Mixin } from '../Mixin.js';
-import type { MixinTypes } from '../MixinTypes.d.ts';
+import { Mixin, type MixinTypes } from '../Mixin.js';
 import type { Partialize } from '../utils/types.js';
 import { Channel } from './Channel.js';
 import { ChannelOwnerMixin } from './mixins/ChannelOwnerMixin.js';

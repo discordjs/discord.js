@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/dot-notation */
 import { EventEmitter } from 'node:events';
 import type { Mocked } from 'vitest';

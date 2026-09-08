@@ -4,18 +4,18 @@ import { Buffer } from 'node:buffer';
 import crypto from 'node:crypto';
 import type { VoiceReceivePayload } from 'discord-api-types/voice/v8';
 import { VoiceOpcodes } from 'discord-api-types/voice/v8';
-import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
-import { NetworkingStatusCode, type ConnectionData } from '../networking/Networking';
-import { methods } from '../util/Secretbox';
-import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants';
+import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection.js';
+import { NetworkingStatusCode, type ConnectionData } from '../networking/Networking.js';
+import { methods } from '../util/Secretbox.js';
+import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants.js';
 import {
 	AudioReceiveStream,
 	createDefaultAudioReceiveStreamOptions,
 	AudioPacket,
 	type AudioReceiveStreamOptions,
-} from './AudioReceiveStream';
-import { SSRCMap } from './SSRCMap';
-import { SpeakingMap } from './SpeakingMap';
+} from './AudioReceiveStream.js';
+import { SSRCMap } from './SSRCMap.js';
+import { SpeakingMap } from './SpeakingMap.js';
 
 const UNPADDED_NONCE_LENGTH = 4;
 const AUTH_TAG_LENGTH = 16;

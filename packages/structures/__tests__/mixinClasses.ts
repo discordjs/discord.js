@@ -1,5 +1,4 @@
-import { Mixin } from '../src/Mixin.js';
-import type { MixinTypes } from '../src/MixinTypes.d.ts';
+import { Mixin, type MixinTypes } from '../src/Mixin.js';
 import { Structure } from '../src/Structure.js';
 import { kData, kMixinConstruct, kMixinToJSON, kPatch } from '../src/utils/symbols.js';
 

@@ -1,5 +1,5 @@
 import { expectTypeOf } from 'vitest';
-import type { MixinTypes } from '../../src/MixinTypes.d.ts';
+import type { MixinTypes } from '../../src/Mixin.js';
 import type { kMixinConstruct } from '../../src/utils/symbols.js';
 import type { MixinProperty1, Base, MixinProperty2 } from '../mixinClasses.js';
 

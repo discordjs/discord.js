@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
-import { AstNamespaceImport, type IAstNamespaceImportOptions } from './AstNamespaceImport';
+import { AstNamespaceImport, type IAstNamespaceImportOptions } from './AstNamespaceImport.js';
 
 export interface IAstNamespaceExportOptions extends IAstNamespaceImportOptions {}
 

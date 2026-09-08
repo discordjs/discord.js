@@ -7,13 +7,13 @@ import { EventEmitter } from 'node:events';
 import type { VoiceReceivePayload, VoiceSpeakingFlags } from 'discord-api-types/voice/v8';
 import { VoiceEncryptionMode, VoiceOpcodes } from 'discord-api-types/voice/v8';
 import type { CloseEvent } from 'ws';
-import * as secretbox from '../util/Secretbox';
-import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants';
-import { noop } from '../util/util';
-import { DAVESession, getMaxProtocolVersion } from './DAVESession';
-import { VoiceUDPSocket } from './VoiceUDPSocket';
-import type { BinaryWebSocketMessage } from './VoiceWebSocket';
-import { VoiceWebSocket } from './VoiceWebSocket';
+import * as secretbox from '../util/Secretbox.js';
+import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants.js';
+import { noop } from '../util/util.js';
+import { DAVESession, getMaxProtocolVersion } from './DAVESession.js';
+import { VoiceUDPSocket } from './VoiceUDPSocket.js';
+import type { BinaryWebSocketMessage } from './VoiceWebSocket.js';
+import { VoiceWebSocket } from './VoiceWebSocket.js';
 
 // The number of audio channels required by Discord
 const CHANNELS = 2;

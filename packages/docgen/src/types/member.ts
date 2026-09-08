@@ -1,4 +1,5 @@
-import type { DeclarationReflection } from 'typedoc';
+import { ReflectionKind } from 'typedoc';
+import type { DeclarationReflection } from '../index.js';
 import type { Member } from '../interfaces/index.js';
 import { parseType } from '../util/parseType.js';
 import { DocumentedItemMeta } from './item-meta.js';
@@ -59,7 +60,7 @@ export class DocumentedMember extends DocumentedItem<DeclarationReflection | Mem
 				meta,
 			};
 
-			if (data.kindString === 'Accessor') {
+			if (data.kind === ReflectionKind.Accessor) {
 				const getter = data.getSignature;
 				const hasSetter = data.setSignature;
 

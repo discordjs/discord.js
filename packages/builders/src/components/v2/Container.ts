@@ -10,18 +10,18 @@ import {
 	type APISectionComponent,
 	ComponentType,
 } from 'discord-api-types/v10';
-import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
-import { resolveBuilder } from '../../util/resolveBuilder';
-import { validate } from '../../util/validation';
+import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
+import { resolveBuilder } from '../../util/resolveBuilder.js';
+import { validate } from '../../util/validation.js';
 import { ActionRowBuilder } from '../ActionRow.js';
 import { ComponentBuilder } from '../Component.js';
-import { createComponentBuilder } from '../Components';
-import { containerPredicate } from './Assertions';
+import { createComponentBuilder } from '../Components.js';
+import { containerPredicate } from './Assertions.js';
 import { FileBuilder } from './File.js';
-import { MediaGalleryBuilder } from './MediaGallery';
-import { SectionBuilder } from './Section';
+import { MediaGalleryBuilder } from './MediaGallery.js';
+import { SectionBuilder } from './Section.js';
 import { SeparatorBuilder } from './Separator.js';
-import { TextDisplayBuilder } from './TextDisplay';
+import { TextDisplayBuilder } from './TextDisplay.js';
 
 export type ContainerComponentBuilders =
 	| ActionRowBuilder
