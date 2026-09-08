@@ -361,10 +361,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		// Clear session state if applicable
 		if (
-			!(
-				(options.recover === WebSocketShardDestroyRecovery.Resume || options.code === CloseCodes.Resuming) &&
-				options.code !== CloseCodes.Normal
-			)
+			(options.recover !== WebSocketShardDestroyRecovery.Resume && options.code !== CloseCodes.Resuming) ||
+			options.code === CloseCodes.Normal
 		) {
 			await this.strategy.updateSessionInfo(this.id, null);
 		}
