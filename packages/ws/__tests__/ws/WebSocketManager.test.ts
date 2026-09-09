@@ -1,5 +1,5 @@
 import type { GatewaySendPayload } from 'discord-api-types/v10';
-import { GatewayOpcodes } from 'discord-api-types/v10';
+import { GatewayCapabilityBits, GatewayOpcodes } from 'discord-api-types/v10';
 import { describe, expect, test, vi } from 'vitest';
 import { WebSocketManager, type IShardingStrategy } from '../../src/index.js';
 import { mockGatewayInformation } from '../gateway.mock.js';
@@ -119,6 +119,33 @@ test('it handles passing in both shardIds and shardCount', async () => {
 
 	expect(await manager.getShardCount()).toBe(4);
 	expect(await manager.getShardIds()).toStrictEqual([2, 3]);
+});
+
+describe('gateway capabilities', () => {
+	test('defaults to none', async () => {
+		const manager = new WebSocketManager({
+			token: 'A-Very-Fake-Token',
+			intents: 0,
+			async fetchGatewayInformation() {
+				return mockGatewayInformation;
+			},
+		});
+
+		expect(manager.options.capabilities).toBe(0);
+	});
+
+	test('with a provided bitfield', async () => {
+		const manager = new WebSocketManager({
+			token: 'A-Very-Fake-Token',
+			intents: 0,
+			capabilities: GatewayCapabilityBits.ChannelObfuscation,
+			async fetchGatewayInformation() {
+				return mockGatewayInformation;
+			},
+		});
+
+		expect(manager.options.capabilities).toBe(GatewayCapabilityBits.ChannelObfuscation);
+	});
 });
 
 test('strategies', async () => {
