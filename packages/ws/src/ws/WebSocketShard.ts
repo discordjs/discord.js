@@ -552,6 +552,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			`shard id: ${this.id.toString()}`,
 			`shard count: ${this.strategy.options.shardCount}`,
 			`intents: ${this.strategy.options.intents}`,
+			`capabilities: ${this.strategy.options.capabilities}`,
 			`compression: ${this.transportCompressionEnabled ? CompressionParameterMap[this.strategy.options.compression!] : this.identifyCompressionEnabled ? 'identify' : 'none'}`,
 		]);
 
@@ -565,6 +566,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		if (this.strategy.options.largeThreshold) {
 			data.large_threshold = this.strategy.options.largeThreshold;
+		}
+
+		if (this.strategy.options.capabilities) {
+			data.capabilities = this.strategy.options.capabilities;
 		}
 
 		if (this.strategy.options.initialPresence) {
