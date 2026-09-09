@@ -61,7 +61,12 @@ class GuildEmoji extends BaseGuildEmoji {
    */
   get deletable() {
     if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
-    return !this.managed && this.guild.members.me.permissions.has(PermissionFlagsBits.ManageGuildExpressions);
+    if (this.managed) return false;
+
+    const { permissions } = this.guild.members.me;
+    if (permissions.has(PermissionFlagsBits.ManageGuildExpressions)) return true;
+
+    return permissions.has(PermissionFlagsBits.CreateGuildExpressions) && this.author?.id === this.client.user.id;
   }
 
   /**
