@@ -1796,6 +1796,11 @@ declare const guildChannelManager: GuildChannelManager;
     expectType<Guild>(message.guild);
     expectType<Snowflake>(message.guildId);
     expectType<GuildTextBasedChannel>(message.channel.messages.channel);
+
+    if (message.interactionMetadata) {
+      expectType<User | null>(message.interactionMetadata.targetUser);
+      expectType<Snowflake | null>(message.interactionMetadata.targetMessageId);
+    }
   }
 }
 
