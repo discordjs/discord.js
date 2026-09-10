@@ -72,7 +72,9 @@ import { OAuth2Scopes, RPCEvents } from 'discord-api-types/v10';
 
 const client = new RPCClient({ scopes: [OAuth2Scopes.MessagesRead] });
 
-client.subscribe(RPCEvents.MessageCreate, { channel_id: process.env.CHANNEL_ID });
+client.on(RPCEvents.Ready, async () => {
+	await client.subscribe(RPCEvents.MessageCreate, { channel_id: process.env.CHANNEL_ID });
+});
 
 client.on(RPCEvents.MessageCreate, async ({ channel_id: channelId, message }) => {
 	if (message.content.startsWith('IMPORTANT!'))
