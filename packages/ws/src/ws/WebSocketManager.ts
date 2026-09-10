@@ -3,6 +3,7 @@ import { range, type Awaitable } from '@discordjs/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type {
 	APIGatewayBotInfo,
+	GatewayCapabilityBits,
 	GatewayIdentifyProperties,
 	GatewayPresenceUpdateData,
 	RESTGetAPIGatewayBotResult,
@@ -101,6 +102,13 @@ export interface OptionalWebSocketManagerOptions {
 	 * ```
 	 */
 	buildStrategy(manager: WebSocketManager): IShardingStrategy;
+	/**
+	 * The gateway capabilities to opt into
+	 *
+	 * @defaultValue `0`
+	 * @see {@link https://discord.com/developers/docs/events/gateway-events#identify-gateway-capabilities}
+	 */
+	capabilities: GatewayCapabilityBits | 0;
 	/**
 	 * The transport compression method to use - mutually exclusive with `useIdentifyCompression`
 	 *
