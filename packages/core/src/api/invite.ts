@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { makeURLSearchParams, type RawFile, type RequestData, type REST } from '@discordjs/rest';
+import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
 import {
 	Routes,
 	type RESTGetAPIInviteTargetUsersResult,
@@ -10,6 +10,7 @@ import {
 	type RESTPutAPIInviteTargetUsersResult,
 	type RESTGetAPIInviteTargetUsersJobStatusResult,
 } from 'discord-api-types/v10';
+import type { RequestOptions, RequestOptionsWithReason } from '../util/types.js';
 
 export class InvitesAPI {
 	public constructor(private readonly rest: REST) {}
@@ -25,11 +26,14 @@ export class InvitesAPI {
 	public async get(
 		code: string,
 		query: RESTGetAPIInviteQuery = {},
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.invite(code), {
 			auth,
 			query: makeURLSearchParams(query),
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTGetAPIInviteResult>;
 	}
@@ -41,8 +45,18 @@ export class InvitesAPI {
 	 * @param code - The invite code
 	 * @param options - The options for deleting the invite
 	 */
-	public async delete(code: string, { auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {}) {
-		return this.rest.delete(Routes.invite(code), { auth, reason, signal }) as Promise<RESTDeleteAPIInviteResult>;
+	public async delete(
+		code: string,
+		{ auth, dispatcher, headers, reason, rejectOnRateLimit, signal }: RequestOptionsWithReason = {},
+	) {
+		return this.rest.delete(Routes.invite(code), {
+			auth,
+			dispatcher,
+			headers,
+			reason,
+			rejectOnRateLimit,
+			signal,
+		}) as Promise<RESTDeleteAPIInviteResult>;
 	}
 
 	/**
@@ -53,10 +67,16 @@ export class InvitesAPI {
 	 * @param options - The options for fetching the invite target users
 	 * @returns
 	 */
-	public async getTargetUsers(code: string, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
+	public async getTargetUsers(
+		code: string,
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
+	) {
 		return this.rest.get(Routes.inviteTargetUsers(code), {
-			signal,
 			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
+			signal,
 		}) as Promise<RESTGetAPIInviteTargetUsersResult>;
 	}
 
@@ -73,12 +93,15 @@ export class InvitesAPI {
 	public async updateTargetUsers(
 		code: string,
 		targetUsersFile: RawFile,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.put(Routes.inviteTargetUsers(code), {
-			files: [{ key: 'target_users_file', contentType: 'text/csv', ...targetUsersFile }],
-			signal,
 			auth,
+			files: [{ key: 'target_users_file', contentType: 'text/csv', ...targetUsersFile }],
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
+			signal,
 		}) as Promise<RESTPutAPIInviteTargetUsersResult>;
 	}
 
@@ -90,10 +113,16 @@ export class InvitesAPI {
 	 * @param options - The options for fetching the invite target users job status
 	 * @returns
 	 */
-	public async getTargetUsersJobStatus(code: string, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
+	public async getTargetUsersJobStatus(
+		code: string,
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
+	) {
 		return this.rest.get(Routes.inviteTargetUsersJobStatus(code), {
-			signal,
 			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
+			signal,
 		}) as Promise<RESTGetAPIInviteTargetUsersJobStatusResult>;
 	}
 }

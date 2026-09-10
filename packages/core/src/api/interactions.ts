@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { makeURLSearchParams, type RawFile, type RequestData, type REST } from '@discordjs/rest';
+import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
 import {
 	InteractionResponseType,
 	Routes,
@@ -13,6 +13,7 @@ import {
 	type RESTPostAPIInteractionCallbackWithResponseResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
+import type { BaseRequestOptions } from '../util/types.js';
 import type { WebhooksAPI } from './webhook.js';
 
 export interface CreateInteractionResponseOptions
@@ -53,7 +54,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		body: CreateInteractionResponseOptions & { with_response: true },
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
@@ -69,7 +70,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		body: CreateInteractionResponseOptions & { with_response?: false },
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<undefined>;
 
 	/**
@@ -85,14 +86,14 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		body: CreateInteractionResponseOptions,
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
 
 	public async reply(
 		interactionId: Snowflake,
 		interactionToken: string,
 		{ files, with_response, ...data }: CreateInteractionResponseOptions,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			query: makeURLSearchParams({ with_response }),
@@ -102,6 +103,9 @@ export class InteractionsAPI {
 				type: InteractionResponseType.ChannelMessageWithSource,
 				data,
 			},
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		});
 
@@ -121,7 +125,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		body: CreateInteractionDeferResponseOptions & { with_response: true },
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
@@ -137,7 +141,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		body?: CreateInteractionDeferResponseOptions & { with_response?: false },
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<undefined>;
 
 	/**
@@ -153,14 +157,14 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		body?: CreateInteractionDeferResponseOptions,
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
 
 	public async defer(
 		interactionId: Snowflake,
 		interactionToken: string,
 		{ with_response, ...data }: CreateInteractionDeferResponseOptions = {},
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			query: makeURLSearchParams({ with_response }),
@@ -169,6 +173,9 @@ export class InteractionsAPI {
 				type: InteractionResponseType.DeferredChannelMessageWithSource,
 				data,
 			},
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		});
 
@@ -188,7 +195,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		body: RESTPostAPIInteractionCallbackQuery & { with_response: true },
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
@@ -204,7 +211,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		body?: RESTPostAPIInteractionCallbackQuery & { with_response?: false },
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<undefined>;
 
 	/**
@@ -220,14 +227,14 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		body?: RESTPostAPIInteractionCallbackQuery,
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
 
 	public async deferMessageUpdate(
 		interactionId: Snowflake,
 		interactionToken: string,
 		{ with_response }: RESTPostAPIInteractionCallbackQuery = {},
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			query: makeURLSearchParams({ with_response }),
@@ -235,6 +242,9 @@ export class InteractionsAPI {
 			body: {
 				type: InteractionResponseType.DeferredMessageUpdate,
 			},
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		});
 
@@ -254,9 +264,14 @@ export class InteractionsAPI {
 		applicationId: Snowflake,
 		interactionToken: string,
 		body: CreateInteractionFollowUpResponseOptions,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
 	) {
-		return this.webhooks.execute(applicationId, interactionToken, { ...body, wait: true }, { signal });
+		return this.webhooks.execute(
+			applicationId,
+			interactionToken,
+			{ ...body, wait: true },
+			{ dispatcher, headers, rejectOnRateLimit, signal },
+		);
 	}
 
 	/**
@@ -275,9 +290,12 @@ export class InteractionsAPI {
 		interactionToken: string,
 		callbackData: EditInteractionResponseOptions,
 		messageId?: Snowflake | '@original',
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
 	) {
 		return this.webhooks.editMessage(applicationId, interactionToken, messageId ?? '@original', callbackData, {
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		});
 	}
@@ -293,14 +311,14 @@ export class InteractionsAPI {
 	public async getOriginalReply(
 		applicationId: Snowflake,
 		interactionToken: string,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
 	) {
 		return this.webhooks.getMessage(
 			applicationId,
 			interactionToken,
 			'@original',
 			{},
-			{ signal },
+			{ dispatcher, headers, rejectOnRateLimit, signal },
 		) as Promise<RESTGetAPIWebhookWithTokenMessageResult>;
 	}
 
@@ -318,9 +336,15 @@ export class InteractionsAPI {
 		applicationId: Snowflake,
 		interactionToken: string,
 		messageId?: Snowflake | '@original',
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
 	) {
-		await this.webhooks.deleteMessage(applicationId, interactionToken, messageId ?? '@original', {}, { signal });
+		await this.webhooks.deleteMessage(
+			applicationId,
+			interactionToken,
+			messageId ?? '@original',
+			{},
+			{ dispatcher, headers, rejectOnRateLimit, signal },
+		);
 	}
 
 	/**
@@ -336,7 +360,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		callbackData: CreateInteractionUpdateMessageResponseOptions & { with_response: true },
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
@@ -352,7 +376,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		callbackData: CreateInteractionUpdateMessageResponseOptions & { with_response?: false },
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<undefined>;
 
 	/**
@@ -368,14 +392,14 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		callbackData: CreateInteractionUpdateMessageResponseOptions,
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
 
 	public async updateMessage(
 		interactionId: Snowflake,
 		interactionToken: string,
 		{ files, with_response, ...data }: CreateInteractionUpdateMessageResponseOptions,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			query: makeURLSearchParams({ with_response }),
@@ -385,6 +409,9 @@ export class InteractionsAPI {
 				type: InteractionResponseType.UpdateMessage,
 				data,
 			},
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		});
 
@@ -404,7 +431,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		callbackData: CreateAutocompleteResponseOptions & { with_response: true },
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
@@ -420,7 +447,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		callbackData: CreateAutocompleteResponseOptions & { with_response?: false },
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<undefined>;
 
 	/**
@@ -436,14 +463,14 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		callbackData: CreateAutocompleteResponseOptions,
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
 
 	public async createAutocompleteResponse(
 		interactionId: Snowflake,
 		interactionToken: string,
 		{ with_response, ...data }: CreateAutocompleteResponseOptions,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			query: makeURLSearchParams({ with_response }),
@@ -452,6 +479,9 @@ export class InteractionsAPI {
 				type: InteractionResponseType.ApplicationCommandAutocompleteResult,
 				data,
 			},
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		});
 
@@ -471,7 +501,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		callbackData: CreateModalResponseOptions & { with_response: true },
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
@@ -487,7 +517,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		callbackData: CreateModalResponseOptions & { with_response?: false },
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<undefined>;
 
 	/**
@@ -503,14 +533,14 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		callbackData: CreateModalResponseOptions,
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
 
 	public async createModal(
 		interactionId: Snowflake,
 		interactionToken: string,
 		{ with_response, ...data }: CreateModalResponseOptions,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			query: makeURLSearchParams({ with_response }),
@@ -519,6 +549,9 @@ export class InteractionsAPI {
 				type: InteractionResponseType.Modal,
 				data,
 			},
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		});
 
@@ -538,7 +571,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		body: RESTPostAPIInteractionCallbackQuery & { with_response: true },
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
@@ -554,7 +587,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		body?: RESTPostAPIInteractionCallbackQuery & { with_response?: false },
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<undefined>;
 
 	/**
@@ -570,14 +603,14 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		body?: RESTPostAPIInteractionCallbackQuery,
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
 
 	public async launchActivity(
 		interactionId: Snowflake,
 		interactionToken: string,
 		{ with_response }: RESTPostAPIInteractionCallbackQuery = {},
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			query: makeURLSearchParams({ with_response }),
@@ -585,6 +618,9 @@ export class InteractionsAPI {
 			body: {
 				type: InteractionResponseType.LaunchActivity,
 			},
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		});
 

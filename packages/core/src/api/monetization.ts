@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/rest';
+import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import {
 	Routes,
 	type RESTGetAPIEntitlementsQuery,
@@ -14,6 +14,7 @@ import {
 	type RESTPostAPIEntitlementResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
+import type { RequestOptions } from '../util/types.js';
 
 export class MonetizationAPI {
 	public constructor(private readonly rest: REST) {}
@@ -25,8 +26,17 @@ export class MonetizationAPI {
 	 * @param applicationId - The application id to fetch SKUs for
 	 * @param options - The options for fetching the SKUs.
 	 */
-	public async getSKUs(applicationId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.get(Routes.skus(applicationId), { auth, signal }) as Promise<RESTGetAPISKUsResult>;
+	public async getSKUs(
+		applicationId: Snowflake,
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
+	) {
+		return this.rest.get(Routes.skus(applicationId), {
+			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
+			signal,
+		}) as Promise<RESTGetAPISKUsResult>;
 	}
 
 	/**
@@ -40,10 +50,13 @@ export class MonetizationAPI {
 	public async getSKUSubscriptions(
 		skuId: Snowflake,
 		query: RESTGetAPISKUSubscriptionsQuery = {},
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.skuSubscriptions(skuId), {
 			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 			query: makeURLSearchParams(query),
 		}) as Promise<RESTGetAPISKUSubscriptionsResult>;
@@ -60,10 +73,13 @@ export class MonetizationAPI {
 	public async getSKUSubscription(
 		skuId: Snowflake,
 		subscriptionId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.skuSubscription(skuId, subscriptionId), {
 			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTGetAPISKUSubscriptionResult>;
 	}
@@ -79,10 +95,13 @@ export class MonetizationAPI {
 	public async getEntitlements(
 		applicationId: Snowflake,
 		query: RESTGetAPIEntitlementsQuery = {},
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.entitlements(applicationId), {
 			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 			query: makeURLSearchParams(query),
 		}) as Promise<RESTGetAPIEntitlementsResult>;
@@ -99,10 +118,13 @@ export class MonetizationAPI {
 	public async getEntitlement(
 		applicationId: Snowflake,
 		entitlementId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.entitlement(applicationId, entitlementId), {
 			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTGetAPIEntitlementResult>;
 	}
@@ -118,11 +140,14 @@ export class MonetizationAPI {
 	public async createTestEntitlement(
 		applicationId: Snowflake,
 		body: RESTPostAPIEntitlementJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.post(Routes.entitlements(applicationId), {
 			auth,
 			body,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTPostAPIEntitlementResult>;
 	}
@@ -138,9 +163,15 @@ export class MonetizationAPI {
 	public async deleteTestEntitlement(
 		applicationId: Snowflake,
 		entitlementId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
-		await this.rest.delete(Routes.entitlement(applicationId, entitlementId), { auth, signal });
+		await this.rest.delete(Routes.entitlement(applicationId, entitlementId), {
+			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
+			signal,
+		});
 	}
 
 	/**
@@ -154,8 +185,14 @@ export class MonetizationAPI {
 	public async consumeEntitlement(
 		applicationId: Snowflake,
 		entitlementId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
-		await this.rest.post(Routes.consumeEntitlement(applicationId, entitlementId), { auth, signal });
+		await this.rest.post(Routes.consumeEntitlement(applicationId, entitlementId), {
+			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
+			signal,
+		});
 	}
 }
