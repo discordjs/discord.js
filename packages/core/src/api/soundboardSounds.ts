@@ -1,7 +1,8 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import type { RequestData, REST } from '@discordjs/rest';
+import type { REST } from '@discordjs/rest';
 import { Routes, type RESTGetAPISoundboardDefaultSoundsResult } from 'discord-api-types/v10';
+import type { RequestOptions } from '../util/types.js';
 
 export class SoundboardSoundsAPI {
 	public constructor(private readonly rest: REST) {}
@@ -12,9 +13,18 @@ export class SoundboardSoundsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/soundboard#list-default-soundboard-sounds}
 	 * @param options - The options for fetching the soundboard default sounds.
 	 */
-	public async getSoundboardDefaultSounds({ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
+	public async getSoundboardDefaultSounds({
+		auth,
+		dispatcher,
+		headers,
+		rejectOnRateLimit,
+		signal,
+	}: RequestOptions = {}) {
 		return this.rest.get(Routes.soundboardDefaultSounds(), {
 			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTGetAPISoundboardDefaultSoundsResult>;
 	}

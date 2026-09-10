@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import type { RequestData, REST } from '@discordjs/rest';
+import type { REST } from '@discordjs/rest';
 import {
 	Routes,
 	type RESTGetAPIApplicationRoleConnectionMetadataResult,
@@ -8,6 +8,7 @@ import {
 	type RESTPutAPIApplicationRoleConnectionMetadataJSONBody,
 	type Snowflake,
 } from 'discord-api-types/v10';
+import type { RequestOptions } from '../util/types.js';
 
 export class RoleConnectionsAPI {
 	public constructor(private readonly rest: REST) {}
@@ -21,10 +22,13 @@ export class RoleConnectionsAPI {
 	 */
 	public async getMetadataRecords(
 		applicationId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.applicationRoleConnectionMetadata(applicationId), {
 			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTGetAPIApplicationRoleConnectionMetadataResult>;
 	}
@@ -40,11 +44,14 @@ export class RoleConnectionsAPI {
 	public async updateMetadataRecords(
 		applicationId: Snowflake,
 		body: RESTPutAPIApplicationRoleConnectionMetadataJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.put(Routes.applicationRoleConnectionMetadata(applicationId), {
 			auth,
 			body,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTPutAPIApplicationRoleConnectionMetadataResult>;
 	}

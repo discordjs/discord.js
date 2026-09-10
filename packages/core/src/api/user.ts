@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/rest';
+import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import {
 	Routes,
 	type RESTGetAPICurrentUserApplicationRoleConnectionResult,
@@ -19,6 +19,7 @@ import {
 	type RESTPutAPICurrentUserApplicationRoleConnectionResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
+import type { RequestOptions, RequestOptionsWithReason } from '../util/types.js';
 
 export class UsersAPI {
 	public constructor(private readonly rest: REST) {}
@@ -30,8 +31,14 @@ export class UsersAPI {
 	 * @param userId - The id of the user to fetch
 	 * @param options - The options for fetching the user
 	 */
-	public async get(userId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.get(Routes.user(userId), { auth, signal }) as Promise<RESTGetAPIUserResult>;
+	public async get(userId: Snowflake, { auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {}) {
+		return this.rest.get(Routes.user(userId), {
+			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
+			signal,
+		}) as Promise<RESTGetAPIUserResult>;
 	}
 
 	/**
@@ -40,8 +47,14 @@ export class UsersAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/user#get-current-user}
 	 * @param options - The options for fetching the current user
 	 */
-	public async getCurrent({ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.get(Routes.user('@me'), { auth, signal }) as Promise<RESTGetAPICurrentUserResult>;
+	public async getCurrent({ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {}) {
+		return this.rest.get(Routes.user('@me'), {
+			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
+			signal,
+		}) as Promise<RESTGetAPICurrentUserResult>;
 	}
 
 	/**
@@ -53,11 +66,14 @@ export class UsersAPI {
 	 */
 	public async getGuilds(
 		query: RESTGetAPICurrentUserGuildsQuery = {},
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.userGuilds(), {
 			auth,
 			query: makeURLSearchParams(query),
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTGetAPICurrentUserGuildsResult>;
 	}
@@ -69,8 +85,11 @@ export class UsersAPI {
 	 * @param guildId - The id of the guild
 	 * @param options - The options for leaving the guild
 	 */
-	public async leaveGuild(guildId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		await this.rest.delete(Routes.userGuild(guildId), { auth, signal });
+	public async leaveGuild(
+		guildId: Snowflake,
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
+	) {
+		await this.rest.delete(Routes.userGuild(guildId), { auth, dispatcher, headers, rejectOnRateLimit, signal });
 	}
 
 	/**
@@ -82,9 +101,16 @@ export class UsersAPI {
 	 */
 	public async edit(
 		body: RESTPatchAPICurrentUserJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
-		return this.rest.patch(Routes.user('@me'), { auth, body, signal }) as Promise<RESTPatchAPICurrentUserResult>;
+		return this.rest.patch(Routes.user('@me'), {
+			auth,
+			body,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
+			signal,
+		}) as Promise<RESTPatchAPICurrentUserResult>;
 	}
 
 	/**
@@ -94,9 +120,15 @@ export class UsersAPI {
 	 * @param guildId - The id of the guild
 	 * @param options - The options for fetching the guild member
 	 */
-	public async getGuildMember(guildId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
+	public async getGuildMember(
+		guildId: Snowflake,
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
+	) {
 		return this.rest.get(Routes.userGuildMember(guildId), {
 			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTGetCurrentUserGuildMemberResult>;
 	}
@@ -112,12 +144,15 @@ export class UsersAPI {
 	public async editCurrentGuildMember(
 		guildId: Snowflake,
 		body: RESTPatchAPICurrentGuildMemberJSONBody = {},
-		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
+		{ auth, dispatcher, headers, reason, rejectOnRateLimit, signal }: RequestOptionsWithReason = {},
 	) {
 		return this.rest.patch(Routes.guildMember(guildId, '@me'), {
 			auth,
 			reason,
 			body,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTPatchAPIGuildMemberResult>;
 	}
@@ -129,10 +164,16 @@ export class UsersAPI {
 	 * @param userId - The id of the user to open a DM channel with
 	 * @param options - The options for opening the DM
 	 */
-	public async createDM(userId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
+	public async createDM(
+		userId: Snowflake,
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
+	) {
 		return this.rest.post(Routes.userChannels(), {
 			auth,
 			body: { recipient_id: userId },
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTPostAPICurrentUserCreateDMChannelResult>;
 	}
@@ -143,8 +184,14 @@ export class UsersAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/user#get-user-connections}
 	 * @param options - The options for fetching the user's connections
 	 */
-	public async getConnections({ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.get(Routes.userConnections(), { auth, signal }) as Promise<RESTGetAPICurrentUserConnectionsResult>;
+	public async getConnections({ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {}) {
+		return this.rest.get(Routes.userConnections(), {
+			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
+			signal,
+		}) as Promise<RESTGetAPICurrentUserConnectionsResult>;
 	}
 
 	/**
@@ -156,10 +203,13 @@ export class UsersAPI {
 	 */
 	public async getApplicationRoleConnection(
 		applicationId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.userApplicationRoleConnection(applicationId), {
 			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTGetAPICurrentUserApplicationRoleConnectionResult>;
 	}
@@ -175,11 +225,14 @@ export class UsersAPI {
 	public async updateApplicationRoleConnection(
 		applicationId: Snowflake,
 		body: RESTPutAPICurrentUserApplicationRoleConnectionJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.put(Routes.userApplicationRoleConnection(applicationId), {
 			auth,
 			body,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTPutAPICurrentUserApplicationRoleConnectionResult>;
 	}
@@ -193,10 +246,13 @@ export class UsersAPI {
 	 */
 	public async deleteApplicationRoleConnection(
 		applicationId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		await this.rest.delete(Routes.userApplicationRoleConnection(applicationId), {
 			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		});
 	}
