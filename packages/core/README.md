@@ -55,7 +55,6 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 const gateway = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: GatewayIntentBits.GuildMessages | GatewayIntentBits.MessageContent,
-	fetchGatewayInformation: () => rest.get('/gateway/bot') as Promise<RESTGetAPIGatewayBotResult>,
 });
 
 // Create a client to emit relevant events.
@@ -75,7 +74,9 @@ client.on(GatewayDispatchEvents.InteractionCreate, async ({ data: interaction, a
 client.once(GatewayDispatchEvents.Ready, () => console.log('Ready!'));
 
 // Start the WebSocket connection.
-gateway.connect();
+await gateway.connect({
+	gatewayInformation: (await rest.get('/gateway/bot')) as RESTGetAPIGatewayBotResult,
+});
 ```
 
 ## Independent REST API Usage

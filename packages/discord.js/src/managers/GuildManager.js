@@ -137,7 +137,7 @@ class GuildManager extends CachedManager {
       const innerData = await this.client.rest.get(Routes.guild(id), {
         query: makeURLSearchParams({ with_counts: options.withCounts ?? true }),
       });
-      innerData.shardId = ShardClientUtil.shardIdForGuildId(id, await this.client.ws.fetchShardCount());
+      innerData.shardId = ShardClientUtil.shardIdForGuildId(id, this.client.ws.getShardCount());
       return this._add(innerData, options.cache);
     }
 
@@ -165,7 +165,7 @@ class GuildManager extends CachedManager {
    * console.log(soundboardSounds.get('123456789012345678'));
    */
   async fetchSoundboardSounds({ guildIds, time = 10_000 }) {
-    const shardCount = await this.client.ws.getShardCount();
+    const shardCount = this.client.ws.getShardCount();
     const shardIds = Map.groupBy(guildIds, guildId => ShardClientUtil.shardIdForGuildId(guildId, shardCount));
 
     for (const [shardId, shardGuildIds] of shardIds) {
