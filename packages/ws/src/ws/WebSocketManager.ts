@@ -379,6 +379,12 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 		this.#token = token;
 	}
 
+	/**
+	 * Destroys all shards
+	 *
+	 * @remarks
+	 * To keep the shard(s) resumable, use the {@link CloseCodes.Resuming} code.
+	 */
 	public destroy(options?: Omit<WebSocketShardDestroyOptions, 'recover'>) {
 		return this.strategy.destroy(options);
 	}
