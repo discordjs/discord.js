@@ -321,7 +321,7 @@ export interface RequestData {
 	/**
 	 * The {@link https://undici.nodejs.org/#/docs/api/Agent | Agent} to use for the request.
 	 */
-	dispatcher?: Agent;
+	dispatcher?: Agent | undefined;
 	/**
 	 * Files to be attached to this request
 	 */
@@ -329,7 +329,7 @@ export interface RequestData {
 	/**
 	 * Additional headers to add to this request
 	 */
-	headers?: Record<string, string>;
+	headers?: Record<string, string> | undefined;
 	/**
 	 * Whether to pass-through the body property directly to `fetch()`.
 	 * <warn>This only applies when files is NOT present</warn>
