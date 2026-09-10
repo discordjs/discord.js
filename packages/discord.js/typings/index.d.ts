@@ -4625,12 +4625,12 @@ export class GuildScheduledEventManager extends CachedManager<
 
 export interface GuildSoundboardSoundCreateOptions {
   contentType?: string;
-  emojiId?: Snowflake;
-  emojiName?: string;
+  emojiId?: Snowflake | null;
+  emojiName?: string | null;
   file: BufferResolvable | Stream;
   name: string;
   reason?: string;
-  volume?: number;
+  volume?: number | null;
 }
 
 export interface GuildSoundboardSoundEditOptions {
