@@ -55,13 +55,15 @@ class GuildEmoji extends BaseGuildEmoji {
 
   /**
    * Whether the emoji is deletable by the client user
+   * <info>This may be `false` if the client user has the `CreateGuildExpressions` permission
+   * but the emoji's author is not cached.</info>
    *
    * @type {boolean}
    * @readonly
    */
   get deletable() {
-    if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
     if (this.managed) return false;
+    if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
 
     const { permissions } = this.guild.members.me;
     if (permissions.has(PermissionFlagsBits.ManageGuildExpressions)) return true;
