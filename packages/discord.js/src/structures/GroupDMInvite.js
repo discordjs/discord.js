@@ -32,6 +32,10 @@ class GroupDMInvite extends BaseInvite {
       this.channelId ??= data.channel.id;
     }
   }
+
+  toJSON() {
+    return super.toJSON();
+  }
 }
 
 exports.GroupDMInvite = GroupDMInvite;
