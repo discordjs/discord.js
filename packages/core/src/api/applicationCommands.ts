@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/rest';
+import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import {
 	Routes,
 	type Locale,
@@ -28,6 +28,7 @@ import {
 	type RESTPutAPIApplicationGuildCommandsResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
+import type { BaseRequestOptions, RequestOptions } from '../util/types.js';
 
 export class ApplicationCommandsAPI {
 	public constructor(private readonly rest: REST) {}
@@ -43,12 +44,14 @@ export class ApplicationCommandsAPI {
 	public async getGlobalCommands(
 		applicationId: Snowflake,
 		query: RESTGetAPIApplicationCommandsQuery = {},
-		{ auth, locale, signal }: Pick<RequestData, 'auth' | 'signal'> & { locale?: Locale } = {},
+		{ auth, dispatcher, headers, locale, rejectOnRateLimit, signal }: RequestOptions & { locale?: Locale } = {},
 	) {
 		return this.rest.get(Routes.applicationCommands(applicationId), {
 			auth,
-			headers: locale ? { 'X-Discord-Locale': locale } : {},
+			headers: locale ? { ...headers, 'X-Discord-Locale': locale } : headers,
 			query: makeURLSearchParams(query),
+			dispatcher,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTGetAPIApplicationCommandsResult>;
 	}
@@ -64,11 +67,14 @@ export class ApplicationCommandsAPI {
 	public async createGlobalCommand(
 		applicationId: Snowflake,
 		body: RESTPostAPIApplicationCommandsJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.post(Routes.applicationCommands(applicationId), {
 			auth,
 			body,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTPostAPIApplicationCommandsResult>;
 	}
@@ -84,10 +90,13 @@ export class ApplicationCommandsAPI {
 	public async getGlobalCommand(
 		applicationId: Snowflake,
 		commandId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.applicationCommand(applicationId, commandId), {
 			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTGetAPIApplicationCommandResult>;
 	}
@@ -105,11 +114,14 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		commandId: Snowflake,
 		body: RESTPatchAPIApplicationCommandJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.patch(Routes.applicationCommand(applicationId, commandId), {
 			auth,
 			body,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTPatchAPIApplicationCommandResult>;
 	}
@@ -125,9 +137,15 @@ export class ApplicationCommandsAPI {
 	public async deleteGlobalCommand(
 		applicationId: Snowflake,
 		commandId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
-		await this.rest.delete(Routes.applicationCommand(applicationId, commandId), { auth, signal });
+		await this.rest.delete(Routes.applicationCommand(applicationId, commandId), {
+			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
+			signal,
+		});
 	}
 
 	/**
@@ -141,11 +159,14 @@ export class ApplicationCommandsAPI {
 	public async bulkOverwriteGlobalCommands(
 		applicationId: Snowflake,
 		body: RESTPutAPIApplicationCommandsJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.put(Routes.applicationCommands(applicationId), {
 			auth,
 			body,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTPutAPIApplicationCommandsResult>;
 	}
@@ -163,12 +184,14 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		query: RESTGetAPIApplicationGuildCommandsQuery = {},
-		{ auth, locale, signal }: Pick<RequestData, 'auth' | 'signal'> & { locale?: Locale } = {},
+		{ auth, dispatcher, headers, locale, rejectOnRateLimit, signal }: RequestOptions & { locale?: Locale } = {},
 	) {
 		return this.rest.get(Routes.applicationGuildCommands(applicationId, guildId), {
 			auth,
-			headers: locale ? { 'X-Discord-Locale': locale } : {},
+			headers: locale ? { ...headers, 'X-Discord-Locale': locale } : headers,
 			query: makeURLSearchParams(query),
+			dispatcher,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTGetAPIApplicationGuildCommandsResult>;
 	}
@@ -186,11 +209,14 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		body: RESTPostAPIApplicationGuildCommandsJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.post(Routes.applicationGuildCommands(applicationId, guildId), {
 			auth,
 			body,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTPostAPIApplicationGuildCommandsResult>;
 	}
@@ -208,10 +234,13 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		commandId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.applicationGuildCommand(applicationId, guildId, commandId), {
 			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTGetAPIApplicationGuildCommandResult>;
 	}
@@ -231,11 +260,14 @@ export class ApplicationCommandsAPI {
 		guildId: Snowflake,
 		commandId: Snowflake,
 		body: RESTPatchAPIApplicationGuildCommandJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.patch(Routes.applicationGuildCommand(applicationId, guildId, commandId), {
 			auth,
 			body,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTPatchAPIApplicationGuildCommandResult>;
 	}
@@ -253,9 +285,15 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		commandId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
-		await this.rest.delete(Routes.applicationGuildCommand(applicationId, guildId, commandId), { auth, signal });
+		await this.rest.delete(Routes.applicationGuildCommand(applicationId, guildId, commandId), {
+			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
+			signal,
+		});
 	}
 
 	/**
@@ -271,11 +309,14 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		body: RESTPutAPIApplicationGuildCommandsJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.put(Routes.applicationGuildCommands(applicationId, guildId), {
 			auth,
 			body,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTPutAPIApplicationGuildCommandsResult>;
 	}
@@ -293,10 +334,13 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		commandId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.applicationCommandPermissions(applicationId, guildId, commandId), {
 			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTGetAPIApplicationCommandPermissionsResult>;
 	}
@@ -312,10 +356,13 @@ export class ApplicationCommandsAPI {
 	public async getGuildCommandsPermissions(
 		applicationId: Snowflake,
 		guildId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.guildApplicationCommandsPermissions(applicationId, guildId), {
 			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTGetAPIGuildApplicationCommandsPermissionsResult>;
 	}
@@ -337,12 +384,14 @@ export class ApplicationCommandsAPI {
 		guildId: Snowflake,
 		commandId: Snowflake,
 		body: RESTPutAPIApplicationCommandPermissionsJSONBody,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
 	) {
 		return this.rest.put(Routes.applicationCommandPermissions(applicationId, guildId, commandId), {
-			headers: { Authorization: `Bearer ${userToken.replace('Bearer ', '')}` },
+			headers: { ...headers, Authorization: `Bearer ${userToken.replace('Bearer ', '')}` },
 			auth: false,
 			body,
+			dispatcher,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTPutAPIApplicationCommandPermissionsResult>;
 	}

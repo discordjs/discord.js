@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import type { RequestData, REST } from '@discordjs/rest';
+import type { REST } from '@discordjs/rest';
 import {
 	type Snowflake,
 	type RESTGetAPIStageInstanceResult,
@@ -10,6 +10,7 @@ import {
 	type RESTPostAPIStageInstanceResult,
 	Routes,
 } from 'discord-api-types/v10';
+import type { RequestOptions, RequestOptionsWithReason } from '../util/types.js';
 
 export class StageInstancesAPI {
 	public constructor(private readonly rest: REST) {}
@@ -23,12 +24,15 @@ export class StageInstancesAPI {
 	 */
 	public async create(
 		body: RESTPostAPIStageInstanceJSONBody,
-		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
+		{ auth, dispatcher, headers, reason, rejectOnRateLimit, signal }: RequestOptionsWithReason = {},
 	) {
 		return this.rest.post(Routes.stageInstances(), {
 			auth,
 			body,
 			reason,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTPostAPIStageInstanceResult>;
 	}
@@ -40,8 +44,17 @@ export class StageInstancesAPI {
 	 * @param channelId - The id of the channel
 	 * @param options - The options for fetching the stage instance
 	 */
-	public async get(channelId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.get(Routes.stageInstance(channelId), { auth, signal }) as Promise<RESTGetAPIStageInstanceResult>;
+	public async get(
+		channelId: Snowflake,
+		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
+	) {
+		return this.rest.get(Routes.stageInstance(channelId), {
+			auth,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
+			signal,
+		}) as Promise<RESTGetAPIStageInstanceResult>;
 	}
 
 	/**
@@ -55,12 +68,15 @@ export class StageInstancesAPI {
 	public async edit(
 		channelId: Snowflake,
 		body: RESTPatchAPIStageInstanceJSONBody,
-		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
+		{ auth, dispatcher, headers, reason, rejectOnRateLimit, signal }: RequestOptionsWithReason = {},
 	) {
 		return this.rest.patch(Routes.stageInstance(channelId), {
 			auth,
 			body,
 			reason,
+			dispatcher,
+			headers,
+			rejectOnRateLimit,
 			signal,
 		}) as Promise<RESTPatchAPIStageInstanceResult>;
 	}
@@ -74,8 +90,15 @@ export class StageInstancesAPI {
 	 */
 	public async delete(
 		channelId: Snowflake,
-		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
+		{ auth, dispatcher, headers, reason, rejectOnRateLimit, signal }: RequestOptionsWithReason = {},
 	) {
-		await this.rest.delete(Routes.stageInstance(channelId), { auth, reason, signal });
+		await this.rest.delete(Routes.stageInstance(channelId), {
+			auth,
+			dispatcher,
+			headers,
+			reason,
+			rejectOnRateLimit,
+			signal,
+		});
 	}
 }
