@@ -1,5 +1,5 @@
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { PrimaryButtonBuilder } from '../../../src/components/button/CustomIdButton';
 import { SectionBuilder } from '../../../src/components/v2/Section';
 import { TextDisplayBuilder } from '../../../src/components/v2/TextDisplay';
@@ -7,6 +7,34 @@ import { ThumbnailBuilder } from '../../../src/components/v2/Thumbnail';
 
 describe('Section', () => {
 	describe('Validation', () => {
+		test('GIVEN a section accessory THEN serializes it without nested validation', () => {
+			const thumbnail = new ThumbnailBuilder().setURL('https://example.com/image.png');
+			const toJSON = vi.spyOn(thumbnail, 'toJSON');
+			const section = new SectionBuilder()
+				.addTextDisplayComponents(new TextDisplayBuilder().setContent('Hello world'))
+				.setThumbnailAccessory(thumbnail);
+
+			section.toJSON();
+
+			expect(toJSON).toHaveBeenCalledWith(false);
+		});
+
+		test('GIVEN an invalid thumbnail accessory THEN the section rejects it', () => {
+			const section = new SectionBuilder()
+				.addTextDisplayComponents(new TextDisplayBuilder().setContent('Hello world'))
+				.setThumbnailAccessory(new ThumbnailBuilder());
+
+			expect(() => section.toJSON()).toThrowError();
+		});
+
+		test('GIVEN an invalid button accessory THEN the section rejects it', () => {
+			const section = new SectionBuilder()
+				.addTextDisplayComponents(new TextDisplayBuilder().setContent('Hello world'))
+				.setPrimaryButtonAccessory(new PrimaryButtonBuilder().setCustomId('click_me'));
+
+			expect(() => section.toJSON()).toThrowError();
+		});
+
 		test('GIVEN empty section builder THEN throws error on toJSON', () => {
 			const section = new SectionBuilder();
 			expect(() => section.toJSON()).toThrowError();
