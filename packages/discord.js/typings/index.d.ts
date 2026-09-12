@@ -1816,7 +1816,10 @@ export class GuildScheduledEvent<Status extends GuildScheduledEventStatus = Guil
     scheduledStartTime: DateResolvable,
     reason?: string,
   ): Promise<GuildScheduledEvent<Status>>;
-  public setScheduledEndTime(scheduledEndTime: DateResolvable, reason?: string): Promise<GuildScheduledEvent<Status>>;
+  public setScheduledEndTime(
+    scheduledEndTime: DateResolvable | null,
+    reason?: string,
+  ): Promise<GuildScheduledEvent<Status>>;
   public setDescription(description: string, reason?: string): Promise<GuildScheduledEvent<Status>>;
   public setStatus<AcceptableStatus extends GuildScheduledEventSetStatusArg<Status>>(
     status: AcceptableStatus,
@@ -6461,7 +6464,7 @@ export interface BaseGuildScheduledEventOptions {
   privacyLevel?: GuildScheduledEventPrivacyLevel;
   reason?: string;
   recurrenceRule?: GuildScheduledEventRecurrenceRuleOptions | null;
-  scheduledEndTime?: DateResolvable;
+  scheduledEndTime?: DateResolvable | null;
   scheduledStartTime?: DateResolvable;
 }
 
@@ -6472,6 +6475,7 @@ export interface GuildScheduledEventCreateOptions extends BaseGuildScheduledEven
   name: string;
   privacyLevel: GuildScheduledEventPrivacyLevel;
   recurrenceRule?: GuildScheduledEventRecurrenceRuleOptions;
+  scheduledEndTime?: DateResolvable;
   scheduledStartTime: DateResolvable;
 }
 
