@@ -433,7 +433,7 @@ class GuildChannel extends BaseChannel {
       this.id === channel.id &&
       this.type === channel.type &&
       this.topic === channel.topic &&
-      this.position === channel.position &&
+      this.rawPosition === channel.rawPosition &&
       this.name === channel.name;
 
     if (equal) {
