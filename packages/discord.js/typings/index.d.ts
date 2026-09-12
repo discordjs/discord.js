@@ -6759,6 +6759,8 @@ export interface MessageInteractionMetadata {
   id: Snowflake;
   interactedMessageId: Snowflake | null;
   originalResponseMessageId: Snowflake | null;
+  targetMessageId: Snowflake | null;
+  targetUser: User | null;
   triggeringInteractionMetadata: MessageInteractionMetadata | null;
   type: InteractionType;
   user: User;
