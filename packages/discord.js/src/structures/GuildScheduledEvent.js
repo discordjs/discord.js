@@ -470,7 +470,7 @@ class GuildScheduledEvent extends Base {
   /**
    * Sets the new description of the guild scheduled event.
    *
-   * @param {string} description The description of the guild scheduled event
+   * @param {?string} description The description of the guild scheduled event
    * @param {string} [reason] The reason for changing the description
    * @returns {Promise<GuildScheduledEvent>}
    * @example

@@ -1817,7 +1817,7 @@ export class GuildScheduledEvent<Status extends GuildScheduledEventStatus = Guil
     reason?: string,
   ): Promise<GuildScheduledEvent<Status>>;
   public setScheduledEndTime(scheduledEndTime: DateResolvable, reason?: string): Promise<GuildScheduledEvent<Status>>;
-  public setDescription(description: string, reason?: string): Promise<GuildScheduledEvent<Status>>;
+  public setDescription(description: string | null, reason?: string): Promise<GuildScheduledEvent<Status>>;
   public setStatus<AcceptableStatus extends GuildScheduledEventSetStatusArg<Status>>(
     status: AcceptableStatus,
     reason?: string,
@@ -6453,7 +6453,7 @@ export interface GuildListMembersOptions {
 
 export interface BaseGuildScheduledEventOptions {
   channel?: GuildVoiceChannelResolvable | null;
-  description?: string;
+  description?: string | null;
   entityMetadata?: GuildScheduledEventEntityMetadataOptions;
   entityType?: GuildScheduledEventEntityType;
   image?: Base64Resolvable | BufferResolvable | null;
@@ -6468,6 +6468,7 @@ export interface BaseGuildScheduledEventOptions {
 // TODO: use conditional types for better TS support
 export interface GuildScheduledEventCreateOptions extends BaseGuildScheduledEventOptions {
   channel?: GuildVoiceChannelResolvable;
+  description?: string;
   entityType: GuildScheduledEventEntityType;
   name: string;
   privacyLevel: GuildScheduledEventPrivacyLevel;
