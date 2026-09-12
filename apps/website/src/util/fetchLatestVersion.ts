@@ -45,6 +45,12 @@ export async function fetchLatestVersion(packageName: string): Promise<string> {
 
 		return `${((data.result[0]?.results ?? []) as { version: string }[])[0]?.version ?? 'main'}${hasEntryPoints ? ['', ...DEFAULT_ENTRY_POINT].join('/') : ''}`;
 	} catch {
-		return '';
+		// Fall back to 'main' so callers never produce version-less (404) doc links
+		// when the versions database is unavailable.
+		if (hasEntryPoints) {
+			return ['main', ...DEFAULT_ENTRY_POINT].join('/');
+		}
+
+		return 'main';
 	}
 }
