@@ -61,6 +61,7 @@
  * @property {'GuildChannelUnowned'} GuildChannelUnowned
  * @property {'GuildMembersTimeout'} GuildMembersTimeout
  * @property {'GuildSoundboardSoundsTimeout'} GuildSoundboardSoundsTimeout
+ * @property {'GuildChannelInfoTimeout'} GuildChannelInfoTimeout
  * @property {'GuildUncachedMe'} GuildUncachedMe
  * @property {'ChannelNotCached'} ChannelNotCached
  * @property {'StageChannelResolve'} StageChannelResolve
@@ -195,6 +196,7 @@ const keys = [
   'GuildChannelUnowned',
   'GuildMembersTimeout',
   'GuildSoundboardSoundsTimeout',
+  'GuildChannelInfoTimeout',
   'GuildUncachedMe',
   'ChannelNotCached',
   'StageChannelResolve',
