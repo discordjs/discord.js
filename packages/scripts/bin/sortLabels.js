@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-import('../dist/bin/sortLabels.mjs');
+import('../dist/bin/sortLabels.js');

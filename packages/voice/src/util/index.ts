@@ -1,5 +1,5 @@
-export * from './constants';
-export * from './generateDependencyReport';
-export * from './entersState';
-export type * from './adapter';
-export * from './demuxProbe';
+export * from './constants.js';
+export * from './generateDependencyReport.js';
+export * from './entersState.js';
+export type * from './adapter.js';
+export * from './demuxProbe.js';

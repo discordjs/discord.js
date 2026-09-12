@@ -1,4 +1,5 @@
-import type { DeclarationReflection, LiteralType } from 'typedoc';
+import { ReflectionKind } from 'typedoc';
+import type { DeclarationReflection, LiteralType } from '../index.js';
 import type { Typedef } from '../interfaces/index.js';
 import { parseType } from '../util/parseType.js';
 import { isReflectionType } from '../util/types.js';
@@ -51,9 +52,9 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 			let typeDef: DeclarationReflection | undefined;
 			if (isReflectionType(data.type)) {
 				typeDef = data.type.declaration;
-			} else if (data.kindString === 'Interface') {
+			} else if (data.kind === ReflectionKind.Interface) {
 				typeDef = data;
-			} else if (data.kindString === 'Enumeration') {
+			} else if (data.kind === ReflectionKind.Enum) {
 				return {
 					...baseReturn,
 					props: data.children?.length
@@ -98,7 +99,7 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 								undefined),
 						type: child.type
 							? new DocumentedVarType({ names: [parseType(child.type)] }, this.config).serialize()
-							: child.kindString === 'Method'
+							: child.kind === ReflectionKind.Method
 								? new DocumentedVarType(
 										{
 											names: [

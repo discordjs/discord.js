@@ -1,3 +1,2 @@
 .turbo
 dist
-tsup.config.bundled*

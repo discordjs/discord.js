@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig.json",
+  "extends": "../../tsconfig.docs.json",
+  "compilerOptions": {
+    "outDir": "dist-docs",
+    "rootDir": "./typings"
+  },
+  "include": ["typings/*.d.ts"],
+  "exclude": ["node_modules"]
+}

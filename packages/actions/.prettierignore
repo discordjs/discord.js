@@ -1,4 +1,3 @@
 .turbo
 coverage
 dist
-tsup.config.bundled*

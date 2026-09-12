@@ -1,15 +1,15 @@
 import { ComponentType } from 'discord-api-types/v10';
 import { z } from 'zod';
-import { idPredicate } from '../../Assertions';
+import { idPredicate } from '../../Assertions.js';
 import {
 	selectMenuChannelPredicate,
 	selectMenuMentionablePredicate,
 	selectMenuRolePredicate,
 	selectMenuStringPredicate,
 	selectMenuUserPredicate,
-} from '../Assertions';
-import { fileUploadPredicate } from '../fileUpload/Assertions';
-import { textInputPredicate } from '../textInput/Assertions';
+} from '../Assertions.js';
+import { fileUploadPredicate } from '../fileUpload/Assertions.js';
+import { textInputPredicate } from '../textInput/Assertions.js';
 
 export const labelPredicate = z.object({
 	id: idPredicate,
