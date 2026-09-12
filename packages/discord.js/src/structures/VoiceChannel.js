@@ -1,6 +1,7 @@
 'use strict';
 
 const { PermissionFlagsBits, Routes } = require('discord-api-types/v10');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { BaseGuildVoiceChannel } = require('./BaseGuildVoiceChannel.js');
 
 /**
@@ -32,6 +33,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
     // This flag allows speaking even if timed out
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
+    if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
     return (
       this.guild.members.me.communicationDisabledUntilTimestamp < Date.now() &&
       permissions.has(PermissionFlagsBits.Speak, false)
