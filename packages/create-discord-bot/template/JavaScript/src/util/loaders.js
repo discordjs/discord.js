@@ -1,6 +1,6 @@
 import { glob, stat } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { predicate as commandPredicate } from '../commands/index.js';
 import { predicate as eventPredicate } from '../events/index.js';
 
@@ -45,7 +45,7 @@ export async function loadStructures(dir, predicate, recursive = true) {
 		}
 
 		// Import the structure dynamically from the file
-		const { default: structure } = await import(file);
+		const { default: structure } = await import(pathToFileURL(file).href);
 
 		// If the default export is a valid structure, add it
 		if (predicate(structure)) {
