@@ -46,7 +46,7 @@ export class MessageCall<Omitted extends keyof APIMessageCall | '' = 'ended_time
 	/**
 	 * The time the call ended at, or `null` if it didn't end yet
 	 */
-	public get endedAt() {
+	public get endedDate() {
 		const endedTimestamp = this.endedTimestamp;
 		return endedTimestamp ? new Date(endedTimestamp) : null;
 	}

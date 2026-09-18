@@ -6,7 +6,7 @@ import { REST } from '@discordjs/rest';
 process.on('SIGINT', () => process.exit(0));
 
 // We want to let upstream handle retrying
-const api = new REST({ rejectOnRateLimit: () => true, retries: 0 });
+const api = new REST({ rejectOnRateLimit: true, retries: 0 });
 const server = createServer(proxyRequests(api));
 
 const port = Number.parseInt(process.env.PORT ?? '8080', 10);

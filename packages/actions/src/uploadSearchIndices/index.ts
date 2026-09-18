@@ -2,7 +2,7 @@ import process from 'node:process';
 import { setFailed } from '@actions/core';
 import { generateAllIndices } from '@discordjs/scripts';
 import Cloudflare from 'cloudflare';
-import { type EnqueuedTask, MeiliSearch } from 'meilisearch';
+import { type EnqueuedTask, Meilisearch } from 'meilisearch';
 import pLimit from 'p-limit';
 import { fetch } from 'undici';
 
@@ -25,7 +25,7 @@ const cf = new Cloudflare({
 	apiToken: process.env.CF_D1_DOCS_API_KEY,
 });
 
-const client = new MeiliSearch({
+const client = new Meilisearch({
 	host: process.env.SEARCH_API_URL,
 	apiKey: process.env.SEARCH_API_KEY,
 });

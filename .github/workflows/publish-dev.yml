@@ -27,21 +27,21 @@ jobs:
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     if: github.repository_owner == 'discordjs'
     steps:
-      - uses: actions/create-github-app-token@v2
+      - uses: actions/create-github-app-token@v3
         id: app-token
         with:
           app-id: ${{ vars.DISCORDJS_APP_ID }}
           private-key: ${{ secrets.DISCORDJS_APP_KEY_RELEASE }}
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
           ref: ${{ inputs.ref }}
 
       - name: Install Node.js v24
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           package-manager-cache: false
@@ -55,7 +55,7 @@ jobs:
 
       - name: Checkout main repository (non-main ref)
         if: ${{ inputs.ref != 'main' }}
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: 'main'
 
@@ -66,7 +66,7 @@ jobs:
         env:
           COREPACK_ENABLE_STRICT: 0
         run: |
-          pnpm self-update 10
+          pnpm self-update 11
           pnpm install --filter @discordjs/actions --frozen-lockfile --prefer-offline --loglevel error
 
       - name: Publish packages (non-main ref)

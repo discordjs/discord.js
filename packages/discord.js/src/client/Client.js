@@ -206,7 +206,6 @@ class Client extends AsyncEventEmitter {
     const wsOptions = {
       ...this.options.ws,
       intents: this.options.intents.bitfield,
-      fetchGatewayInformation: () => this.rest.get(Routes.gatewayBot()),
       // Explicitly nulled to always be set using `setToken` in `login`
       token: null,
     };
@@ -322,7 +321,7 @@ class Client extends AsyncEventEmitter {
     this.ws.setToken(this.token);
 
     try {
-      await this.ws.connect();
+      await this.ws.connect({ gatewayInformation: await this.rest.get(Routes.gatewayBot()) });
       return this.token;
     } catch (error) {
       await this.destroy();
@@ -434,7 +433,7 @@ class Client extends AsyncEventEmitter {
    * @private
    */
   async _broadcast(packet) {
-    const shardIds = await this.ws.getShardIds();
+    const shardIds = this.ws.getShardIds();
     return Promise.all(shardIds.map(shardId => this.ws.send(shardId, packet)));
   }
 

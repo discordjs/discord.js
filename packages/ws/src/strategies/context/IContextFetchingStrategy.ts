@@ -51,7 +51,7 @@ export async function managerToFetchingStrategyOptions(manager: WebSocketManager
 		useIdentifyCompression: manager.options.useIdentifyCompression,
 		version: manager.options.version,
 
-		gatewayInformation: await manager.fetchGatewayInformation(),
-		shardCount: await manager.getShardCount(),
+		gatewayInformation: manager.getGatewayInformation(),
+		shardCount: manager.getShardCount(),
 	};
 }

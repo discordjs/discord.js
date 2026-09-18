@@ -12,7 +12,8 @@ export function middleware(request: NextRequest) {
 	if (
 		!request.nextUrl.pathname.startsWith('/legacy') &&
 		!request.nextUrl.pathname.startsWith('/voice') &&
-		!request.nextUrl.pathname.startsWith('/v15')
+		!request.nextUrl.pathname.startsWith('/v15') &&
+		!request.nextUrl.pathname.startsWith('/rpc')
 	) {
 		const newUrl = request.nextUrl.clone();
 		newUrl.pathname = `/legacy${newUrl.pathname}`;
