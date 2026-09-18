@@ -6453,10 +6453,10 @@ export interface GuildSearchMembersOptions {
 export interface GuildSearchMessagesOptions {
   attachmentExtension?: readonly string[];
   attachmentFilename?: readonly string[];
-  authorId?: readonly Snowflake[];
+  authorId?: readonly UserResolvable[];
   authorType?: readonly MessageSearchAuthorType[];
   cache?: boolean;
-  channelId?: readonly Snowflake[];
+  channelId?: readonly ChannelResolvable[];
   content?: string;
   embedProvider?: readonly string[];
   embedType?: readonly MessageSearchEmbedType[];
@@ -6466,13 +6466,14 @@ export interface GuildSearchMessagesOptions {
   linkHostname?: readonly string[];
   maxId?: Snowflake;
   mentionEveryone?: boolean;
-  mentions?: readonly Snowflake[];
-  mentionsRoleId?: readonly Snowflake[];
+  mentions?: readonly UserResolvable[];
+  mentionsRoleId?: readonly RoleResolvable[];
   minId?: Snowflake;
   offset?: number;
   pinned?: boolean;
-  repliedToMessageId?: readonly Snowflake[];
-  repliedToUserId?: readonly Snowflake[];
+  repliedToMessageId?: readonly MessageResolvable[];
+  repliedToUserId?: readonly UserResolvable[];
+  retryOnMissingIndex?: boolean;
   signal?: AbortSignal;
   slop?: number;
   sortBy?: MessageSearchSortMode;
@@ -6484,7 +6485,7 @@ export interface GuildSearchMessagesResult {
   doingDeepHistoricalIndex: boolean;
   messages: ReadonlyCollection<Snowflake, Message<true>>;
   threadMembers: ReadonlyCollection<Snowflake, ReadonlyCollection<Snowflake, ThreadMember>>;
-  threads: ReadonlyCollection<Snowflake, ThreadChannel>;
+  threads: ReadonlyCollection<Snowflake, AnyThreadChannel>;
   totalResults: number;
 }
 

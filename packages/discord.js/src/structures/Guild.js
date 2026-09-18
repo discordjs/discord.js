@@ -1087,14 +1087,14 @@ class Guild extends AnonymousGuild {
    * @property {string} [content] Filter messages by given content (max 1024 characters)
    * @property {Snowflake} [maxId] Get messages before a given message ID
    * @property {Snowflake} [minId] Get messages after a given message ID
-   * @property {Snowflake[]} [channelId] Filter messages by given channel IDs (max 500)
+   * @property {ChannelResolvable[]} [channelId] Filter messages by given channel IDs (max 500)
    * @property {MessageSearchAuthorType[]} [authorType] Filter messages by author type.
-   * @property {Snowflake[]} [authorId] Filter messages by given author IDs (max 100)
-   * @property {Snowflake[]} [mentions] Filter messages that mention given user IDs (max 100)
-   * @property {Snowflake[]} [mentionsRoleId] Filter messages that mention given role IDs (max 100)
+   * @property {UserResolvable[]} [authorId] Filter messages by given author IDs (max 100)
+   * @property {UserResolvable[]} [mentions] Filter messages that mention given user IDs (max 100)
+   * @property {RoleResolvable[]} [mentionsRoleId] Filter messages that mention given role IDs (max 100)
    * @property {boolean} [mentionEveryone] Filter messages by whether they mention @everyone
-   * @property {Snowflake[]} [repliedToUserId] Filter messages that reply to given user IDs (max 100)
-   * @property {Snowflake[]} [repliedToMessageId] Filter messages that reply to given message IDs (max 100)
+   * @property {UserResolvable[]} [repliedToUserId] Filter messages that reply to given user IDs (max 100)
+   * @property {MessageResolvable[]} [repliedToMessageId] Filter messages that reply to given message IDs (max 100)
    * @property {boolean} [pinned] Filter messages by whether they are pinned
    * @property {MessageSearchHasType[]} [has] Filter messages by whether they contain specific content types.
    * @property {MessageSearchEmbedType[]} [embedType] Filter messages by embed type.
@@ -1112,6 +1112,7 @@ class Guild extends AnonymousGuild {
    * @property {boolean} [cache=true] Whether to cache the fetched messages
    * @property {AbortSignal} [signal] An {@link AbortSignal} to cancel the request, including any automatic retries
    * while the guild's messages are still being indexed
+   * @property {boolean} [retryOnMissingIndex=true] Whether to automatically retry while the guild's messages are still being indexed
    */
 
   /**
@@ -1161,6 +1162,7 @@ class Guild extends AnonymousGuild {
    */
   async searchMessages({
     cache = true,
+    retryOnMissingIndex = true,
     signal,
     content,
     maxId,
@@ -1191,14 +1193,14 @@ class Guild extends AnonymousGuild {
       content,
       max_id: maxId,
       min_id: minId,
-      channel_id: channelId,
+      channel_id: channelId?.map(channel => this.channels.resolveId(channel)),
       author_type: authorType,
       author_id: authorId,
-      mentions,
-      mentions_role_id: mentionsRoleId,
+      mentions: mentions?.map(mention => this.client.users.resolveId(mention)),
+      mentions_role_id: mentionsRoleId?.map(role => this.roles.resolveId(role)),
       mention_everyone: mentionEveryone,
-      replied_to_user_id: repliedToUserId,
-      replied_to_message_id: repliedToMessageId,
+      replied_to_user_id: repliedToUserId?.map(user => this.client.users.resolveId(user)),
+      replied_to_message_id: repliedToMessageId?.map(message => (message instanceof Message ? message.id : message)),
       pinned,
       has,
       embed_type: embedType,
@@ -1216,11 +1218,13 @@ class Guild extends AnonymousGuild {
 
     let data = await this.client.rest.get(Routes.guildMessagesSearch(this.id), { query, signal });
 
-    while (data.code === RESTJSONErrorCodes.IndexNotYetAvailable) {
-      const retryAfter = data.retry_after || 1;
+    if (retryOnMissingIndex) {
+      while (data.code === RESTJSONErrorCodes.IndexNotYetAvailable) {
+        const retryAfter = data.retry_after || 1;
 
-      await sleep(retryAfter * 1_000, undefined, { signal });
-      data = await this.client.rest.get(Routes.guildMessagesSearch(this.id), { query, signal });
+        await sleep(retryAfter * 1_000, undefined, { signal });
+        data = await this.client.rest.get(Routes.guildMessagesSearch(this.id), { query, signal });
+      }
     }
 
     const threads = (data.threads ?? []).reduce(
