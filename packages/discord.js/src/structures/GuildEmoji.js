@@ -55,7 +55,7 @@ class GuildEmoji extends BaseGuildEmoji {
 
   /**
    * Whether the emoji is deletable by the client user
-   * <info>This may be `false` if the client user has the {@link PermissionFlagsBits.CreateGuildExpressions} permission 
+   * <info>This may be `false` if the client user has the {@link PermissionFlagsBits.CreateGuildExpressions} permission
    * but the emoji's author is not cached.</info>
    *
    * @type {boolean}
