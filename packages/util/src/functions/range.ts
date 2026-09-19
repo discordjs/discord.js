@@ -41,8 +41,9 @@ export interface RangeOptions {
  * }
  * // Prints 3, 5, 7, 9
  * ```
+ * @throws RangeError when `step` is 0, or when `step` is negative while `start` is less than `end`
  */
-export function* range(range: RangeOptions | number) {
+export function range(range: RangeOptions | number) {
 	let rangeEnd: number;
 	let start = 0;
 	let step = 1;
@@ -55,7 +56,17 @@ export function* range(range: RangeOptions | number) {
 		step = range.step ?? 1;
 	}
 
-	for (let index = start; index < rangeEnd; index += step) {
-		yield index;
+	if (step === 0) {
+		throw new RangeError('The "step" option must not be 0.');
 	}
+
+	if (step < 0 && start < rangeEnd) {
+		throw new RangeError('A negative "step" must not be used when "start" is less than "end".');
+	}
+
+	return (function* iterate() {
+		for (let index = start; index < rangeEnd; index += step) {
+			yield index;
+		}
+	})();
 }
