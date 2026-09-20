@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import type { REST } from '@discordjs/rest';
 import {
 	Routes,
@@ -20,17 +18,11 @@ export class RoleConnectionsAPI {
 	 * @param applicationId - The id of the application to get role connection metadata records for
 	 * @param options - The options for fetching the role connection metadata records
 	 */
-	public async getMetadataRecords(
-		applicationId: Snowflake,
-		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
-	) {
-		return this.rest.get(Routes.applicationRoleConnectionMetadata(applicationId), {
-			auth,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
-		}) as Promise<RESTGetAPIApplicationRoleConnectionMetadataResult>;
+	public async getMetadataRecords(applicationId: Snowflake, options: RequestOptions = {}) {
+		return this.rest.get(
+			Routes.applicationRoleConnectionMetadata(applicationId),
+			options,
+		) as Promise<RESTGetAPIApplicationRoleConnectionMetadataResult>;
 	}
 
 	/**
@@ -44,15 +36,11 @@ export class RoleConnectionsAPI {
 	public async updateMetadataRecords(
 		applicationId: Snowflake,
 		body: RESTPutAPIApplicationRoleConnectionMetadataJSONBody,
-		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
+		options: RequestOptions = {},
 	) {
 		return this.rest.put(Routes.applicationRoleConnectionMetadata(applicationId), {
-			auth,
+			...options,
 			body,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 		}) as Promise<RESTPutAPIApplicationRoleConnectionMetadataResult>;
 	}
 }

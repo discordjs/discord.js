@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import {
 	Routes,
@@ -28,14 +26,10 @@ export class PollAPI {
 		messageId: Snowflake,
 		answerId: number,
 		query: RESTGetAPIPollAnswerVotersQuery = {},
-		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
+		options: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.pollAnswerVoters(channelId, messageId, answerId), {
-			auth,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
+			...options,
 			query: makeURLSearchParams(query),
 		}) as Promise<RESTGetAPIPollAnswerVotersResult>;
 	}
@@ -48,17 +42,7 @@ export class PollAPI {
 	 * @param messageId - The id of the message containing the poll
 	 * @param options - The options for expiring the poll
 	 */
-	public async expirePoll(
-		channelId: Snowflake,
-		messageId: Snowflake,
-		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
-	) {
-		return this.rest.post(Routes.expirePoll(channelId, messageId), {
-			auth,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
-		}) as Promise<RESTPostAPIPollExpireResult>;
+	public async expirePoll(channelId: Snowflake, messageId: Snowflake, options: RequestOptions = {}) {
+		return this.rest.post(Routes.expirePoll(channelId, messageId), options) as Promise<RESTPostAPIPollExpireResult>;
 	}
 }

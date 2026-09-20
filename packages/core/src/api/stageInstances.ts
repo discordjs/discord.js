@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import type { REST } from '@discordjs/rest';
 import {
 	type Snowflake,
@@ -22,18 +20,10 @@ export class StageInstancesAPI {
 	 * @param body - The data for creating the new stage instance
 	 * @param options - The options for creating the new stage instance
 	 */
-	public async create(
-		body: RESTPostAPIStageInstanceJSONBody,
-		{ auth, dispatcher, headers, reason, rejectOnRateLimit, signal }: RequestOptionsWithReason = {},
-	) {
+	public async create(body: RESTPostAPIStageInstanceJSONBody, options: RequestOptionsWithReason = {}) {
 		return this.rest.post(Routes.stageInstances(), {
-			auth,
+			...options,
 			body,
-			reason,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 		}) as Promise<RESTPostAPIStageInstanceResult>;
 	}
 
@@ -44,17 +34,8 @@ export class StageInstancesAPI {
 	 * @param channelId - The id of the channel
 	 * @param options - The options for fetching the stage instance
 	 */
-	public async get(
-		channelId: Snowflake,
-		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
-	) {
-		return this.rest.get(Routes.stageInstance(channelId), {
-			auth,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
-		}) as Promise<RESTGetAPIStageInstanceResult>;
+	public async get(channelId: Snowflake, options: RequestOptions = {}) {
+		return this.rest.get(Routes.stageInstance(channelId), options) as Promise<RESTGetAPIStageInstanceResult>;
 	}
 
 	/**
@@ -68,16 +49,11 @@ export class StageInstancesAPI {
 	public async edit(
 		channelId: Snowflake,
 		body: RESTPatchAPIStageInstanceJSONBody,
-		{ auth, dispatcher, headers, reason, rejectOnRateLimit, signal }: RequestOptionsWithReason = {},
+		options: RequestOptionsWithReason = {},
 	) {
 		return this.rest.patch(Routes.stageInstance(channelId), {
-			auth,
+			...options,
 			body,
-			reason,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 		}) as Promise<RESTPatchAPIStageInstanceResult>;
 	}
 
@@ -88,17 +64,7 @@ export class StageInstancesAPI {
 	 * @param channelId - The id of the channel
 	 * @param options - The options for deleting the stage instance
 	 */
-	public async delete(
-		channelId: Snowflake,
-		{ auth, dispatcher, headers, reason, rejectOnRateLimit, signal }: RequestOptionsWithReason = {},
-	) {
-		await this.rest.delete(Routes.stageInstance(channelId), {
-			auth,
-			dispatcher,
-			headers,
-			reason,
-			rejectOnRateLimit,
-			signal,
-		});
+	public async delete(channelId: Snowflake, options: RequestOptionsWithReason = {}) {
+		await this.rest.delete(Routes.stageInstance(channelId), options);
 	}
 }
