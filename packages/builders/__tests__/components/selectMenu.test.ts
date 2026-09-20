@@ -1,6 +1,6 @@
 import { ComponentType, type APISelectMenuComponent, type APISelectMenuOption } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import { StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from '../../src/index.js';
+import { StringSelectMenuBuilder, StringSelectMenuOptionBuilder, UserSelectMenuBuilder } from '../../src/index.js';
 
 const selectMenu = () => new StringSelectMenuBuilder();
 const selectMenuWithId = () => new StringSelectMenuBuilder({ custom_id: 'hi' });
@@ -154,6 +154,14 @@ describe('Select Menu Components', () => {
 				selectMenuWithId().setMaxValues(0).addOptions({ label: 'test', value: 'test' }).toJSON(),
 			).toThrowError();
 			expect(() => selectMenuWithId().setMinValues(-20).toJSON()).toThrowError();
+			expect(() =>
+				selectMenuWithId()
+					.setMinValues(5)
+					.setMaxValues(2)
+					.addOptions({ label: 'test', value: 'test' })
+					.toJSON(),
+			).toThrowError();
+			expect(() => new UserSelectMenuBuilder().setCustomId('foo').setMinValues(5).setMaxValues(2).toJSON()).toThrowError();
 			// @ts-expect-error: Invalid disabled value
 			expect(() => selectMenuWithId().setDisabled(0).toJSON()).toThrowError();
 			expect(() => selectMenuWithId().setPlaceholder(longStr).toJSON()).toThrowError();
