@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import {
 	Routes,
@@ -20,18 +18,10 @@ export class InvitesAPI {
 	 * @param query - The options for fetching the invite
 	 * @param options - The options for fetching the invite
 	 */
-	public async get(
-		code: string,
-		query: RESTGetAPIInviteQuery = {},
-		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
-	) {
+	public async get(code: string, query: RESTGetAPIInviteQuery = {}, options: RequestOptions = {}) {
 		return this.rest.get(Routes.invite(code), {
-			auth,
+			...options,
 			query: makeURLSearchParams(query),
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 		}) as Promise<RESTGetAPIInviteResult>;
 	}
 
@@ -42,17 +32,7 @@ export class InvitesAPI {
 	 * @param code - The invite code
 	 * @param options - The options for deleting the invite
 	 */
-	public async delete(
-		code: string,
-		{ auth, dispatcher, headers, reason, rejectOnRateLimit, signal }: RequestOptionsWithReason = {},
-	) {
-		return this.rest.delete(Routes.invite(code), {
-			auth,
-			dispatcher,
-			headers,
-			reason,
-			rejectOnRateLimit,
-			signal,
-		}) as Promise<RESTDeleteAPIInviteResult>;
+	public async delete(code: string, options: RequestOptionsWithReason = {}) {
+		return this.rest.delete(Routes.invite(code), options) as Promise<RESTDeleteAPIInviteResult>;
 	}
 }

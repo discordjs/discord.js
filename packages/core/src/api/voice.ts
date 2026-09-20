@@ -23,14 +23,8 @@ export class VoiceAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/voice#list-voice-regions}
 	 * @param options - The options for fetching the voice regions
 	 */
-	public async getVoiceRegions({ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {}) {
-		return this.rest.get(Routes.voiceRegions(), {
-			auth,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
-		}) as Promise<RESTGetAPIVoiceRegionsResult>;
+	public async getVoiceRegions(options: RequestOptions = {}) {
+		return this.rest.get(Routes.voiceRegions(), options) as Promise<RESTGetAPIVoiceRegionsResult>;
 	}
 
 	/**
@@ -39,18 +33,11 @@ export class VoiceAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/voice#get-user-voice-state}
 	 * @param options - The options for fetching user voice state
 	 */
-	public async getUserVoiceState(
-		guildId: Snowflake,
-		userId: Snowflake,
-		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
-	) {
-		return this.rest.get(Routes.guildVoiceState(guildId, userId), {
-			auth,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
-		}) as Promise<RESTGetAPIGuildVoiceStateUserResult>;
+	public async getUserVoiceState(guildId: Snowflake, userId: Snowflake, options: RequestOptions = {}) {
+		return this.rest.get(
+			Routes.guildVoiceState(guildId, userId),
+			options,
+		) as Promise<RESTGetAPIGuildVoiceStateUserResult>;
 	}
 
 	/**
@@ -59,17 +46,11 @@ export class VoiceAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/voice#get-current-user-voice-state}
 	 * @param options - The options for fetching user voice state
 	 */
-	public async getVoiceState(
-		guildId: Snowflake,
-		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
-	) {
-		return this.rest.get(Routes.guildVoiceState(guildId, '@me'), {
-			auth,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
-		}) as Promise<RESTGetAPIGuildVoiceStateCurrentMemberResult>;
+	public async getVoiceState(guildId: Snowflake, options: RequestOptions = {}) {
+		return this.rest.get(
+			Routes.guildVoiceState(guildId, '@me'),
+			options,
+		) as Promise<RESTGetAPIGuildVoiceStateCurrentMemberResult>;
 	}
 
 	/**
@@ -85,16 +66,11 @@ export class VoiceAPI {
 		guildId: Snowflake,
 		userId: Snowflake,
 		body: RESTPatchAPIGuildVoiceStateUserJSONBody,
-		{ auth, dispatcher, headers, reason, rejectOnRateLimit, signal }: RequestOptionsWithReason = {},
+		options: RequestOptionsWithReason = {},
 	) {
 		return this.rest.patch(Routes.guildVoiceState(guildId, userId), {
-			auth,
-			reason,
+			...options,
 			body,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 		}) as Promise<RESTPatchAPIGuildVoiceStateUserResult>;
 	}
 
@@ -109,15 +85,11 @@ export class VoiceAPI {
 	public async editVoiceState(
 		guildId: Snowflake,
 		body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {},
-		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
+		options: RequestOptions = {},
 	) {
 		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
-			auth,
+			...options,
 			body,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 		}) as Promise<RESTPatchAPIGuildVoiceStateCurrentMemberResult>;
 	}
 }

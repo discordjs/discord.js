@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import {
 	Routes,
@@ -21,17 +19,8 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread to join
 	 * @param options - The options for joining the thread
 	 */
-	public async join(
-		threadId: Snowflake,
-		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
-	) {
-		await this.rest.put(Routes.threadMembers(threadId, '@me'), {
-			auth,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
-		});
+	public async join(threadId: Snowflake, options: RequestOptions = {}) {
+		await this.rest.put(Routes.threadMembers(threadId, '@me'), options);
 	}
 
 	/**
@@ -42,18 +31,8 @@ export class ThreadsAPI {
 	 * @param userId - The id of the user to add to the thread
 	 * @param options - The options for adding the member to the thread
 	 */
-	public async addMember(
-		threadId: Snowflake,
-		userId: Snowflake,
-		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
-	) {
-		await this.rest.put(Routes.threadMembers(threadId, userId), {
-			auth,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
-		});
+	public async addMember(threadId: Snowflake, userId: Snowflake, options: RequestOptions = {}) {
+		await this.rest.put(Routes.threadMembers(threadId, userId), options);
 	}
 
 	/**
@@ -63,17 +42,8 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread to leave
 	 * @param options - The options for leaving the thread
 	 */
-	public async leave(
-		threadId: Snowflake,
-		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
-	) {
-		await this.rest.delete(Routes.threadMembers(threadId, '@me'), {
-			auth,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
-		});
+	public async leave(threadId: Snowflake, options: RequestOptions = {}) {
+		await this.rest.delete(Routes.threadMembers(threadId, '@me'), options);
 	}
 
 	/**
@@ -84,18 +54,8 @@ export class ThreadsAPI {
 	 * @param userId - The id of the user to remove from the thread
 	 * @param options - The options for removing the member from the thread
 	 */
-	public async removeMember(
-		threadId: Snowflake,
-		userId: Snowflake,
-		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
-	) {
-		await this.rest.delete(Routes.threadMembers(threadId, userId), {
-			auth,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
-		});
+	public async removeMember(threadId: Snowflake, userId: Snowflake, options: RequestOptions = {}) {
+		await this.rest.delete(Routes.threadMembers(threadId, userId), options);
 	}
 
 	/**
@@ -134,14 +94,10 @@ export class ThreadsAPI {
 		threadId: Snowflake,
 		userId: Snowflake,
 		query: RESTGetAPIChannelThreadMemberQuery = {},
-		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
+		options: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.threadMembers(threadId, userId), {
-			auth,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
+			...options,
 			query: makeURLSearchParams(query),
 		});
 	}
@@ -157,14 +113,10 @@ export class ThreadsAPI {
 	public async getMembers(
 		threadId: Snowflake,
 		query: RESTGetAPIChannelThreadMembersQuery = {},
-		{ auth, dispatcher, headers, rejectOnRateLimit, signal }: RequestOptions = {},
+		options: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.threadMembers(threadId), {
-			auth,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
+			...options,
 			query: makeURLSearchParams(query),
 		}) as Promise<RESTGetAPIChannelThreadMembersResult>;
 	}

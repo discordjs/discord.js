@@ -42,9 +42,10 @@ export class OAuth2API {
 	 */
 	public async tokenExchange(
 		body: RESTPostOAuth2AccessTokenURLEncodedData,
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		{ headers, ...options }: BaseRequestOptions = {},
 	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
+			...options,
 			body: makeURLSearchParams<RESTPostOAuth2AccessTokenURLEncodedData>(body),
 			passThroughBody: true,
 			headers: {
@@ -52,9 +53,6 @@ export class OAuth2API {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
 			auth: false,
-			dispatcher,
-			rejectOnRateLimit,
-			signal,
 		}) as Promise<RESTPostOAuth2AccessTokenResult>;
 	}
 
@@ -67,9 +65,10 @@ export class OAuth2API {
 	 */
 	public async refreshToken(
 		body: RESTPostOAuth2RefreshTokenURLEncodedData,
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		{ headers, ...options }: BaseRequestOptions = {},
 	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
+			...options,
 			body: makeURLSearchParams<RESTPostOAuth2RefreshTokenURLEncodedData>(body),
 			passThroughBody: true,
 			headers: {
@@ -77,9 +76,6 @@ export class OAuth2API {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
 			auth: false,
-			dispatcher,
-			rejectOnRateLimit,
-			signal,
 		}) as Promise<RESTPostOAuth2RefreshTokenResult>;
 	}
 
@@ -94,9 +90,10 @@ export class OAuth2API {
 	 */
 	public async getToken(
 		body: RESTPostOAuth2ClientCredentialsURLEncodedData,
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		{ headers, ...options }: BaseRequestOptions = {},
 	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
+			...options,
 			body: makeURLSearchParams(body),
 			passThroughBody: true,
 			headers: {
@@ -104,9 +101,6 @@ export class OAuth2API {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
 			auth: false,
-			dispatcher,
-			rejectOnRateLimit,
-			signal,
 		}) as Promise<RESTPostOAuth2ClientCredentialsResult>;
 	}
 
@@ -116,20 +110,11 @@ export class OAuth2API {
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#get-current-bot-application-information}
 	 * @param options - The options for the current bot application information request
 	 */
-	public async getCurrentBotApplicationInformation({
-		auth,
-		dispatcher,
-		headers,
-		rejectOnRateLimit,
-		signal,
-	}: RequestOptions = {}) {
-		return this.rest.get(Routes.oauth2CurrentApplication(), {
-			auth,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
-		}) as Promise<RESTGetAPIOAuth2CurrentApplicationResult>;
+	public async getCurrentBotApplicationInformation(options: RequestOptions = {}) {
+		return this.rest.get(
+			Routes.oauth2CurrentApplication(),
+			options,
+		) as Promise<RESTGetAPIOAuth2CurrentApplicationResult>;
 	}
 
 	/**
@@ -138,20 +123,11 @@ export class OAuth2API {
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#get-current-authorization-information}
 	 * @param options - The options for the current authorization information request
 	 */
-	public async getCurrentAuthorizationInformation({
-		auth,
-		dispatcher,
-		headers,
-		rejectOnRateLimit,
-		signal,
-	}: RequestOptions = {}) {
-		return this.rest.get(Routes.oauth2CurrentAuthorization(), {
-			auth,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
-		}) as Promise<RESTGetAPIOAuth2CurrentAuthorizationResult>;
+	public async getCurrentAuthorizationInformation(options: RequestOptions = {}) {
+		return this.rest.get(
+			Routes.oauth2CurrentAuthorization(),
+			options,
+		) as Promise<RESTGetAPIOAuth2CurrentAuthorizationResult>;
 	}
 
 	/**
@@ -167,9 +143,10 @@ export class OAuth2API {
 		applicationId: Snowflake,
 		applicationSecret: string,
 		body: RESTPostOAuth2TokenRevocationQuery,
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		{ headers, ...options }: BaseRequestOptions = {},
 	) {
 		await this.rest.post(Routes.oauth2TokenRevocation(), {
+			...options,
 			body: makeURLSearchParams(body),
 			passThroughBody: true,
 			headers: {
@@ -178,9 +155,6 @@ export class OAuth2API {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
 			auth: false,
-			dispatcher,
-			rejectOnRateLimit,
-			signal,
 		});
 	}
 }

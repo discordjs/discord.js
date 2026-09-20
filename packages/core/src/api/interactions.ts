@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
 import {
 	InteractionResponseType,
@@ -93,9 +91,10 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		{ files, with_response, ...data }: CreateInteractionResponseOptions,
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		options: BaseRequestOptions = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			...options,
 			query: makeURLSearchParams({ with_response }),
 			files,
 			auth: false,
@@ -103,10 +102,6 @@ export class InteractionsAPI {
 				type: InteractionResponseType.ChannelMessageWithSource,
 				data,
 			},
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 		});
 
 		return with_response ? response : undefined;
@@ -164,19 +159,16 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		{ with_response, ...data }: CreateInteractionDeferResponseOptions = {},
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		options: BaseRequestOptions = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			...options,
 			query: makeURLSearchParams({ with_response }),
 			auth: false,
 			body: {
 				type: InteractionResponseType.DeferredChannelMessageWithSource,
 				data,
 			},
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 		});
 
 		return with_response ? response : undefined;
@@ -234,18 +226,15 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		{ with_response }: RESTPostAPIInteractionCallbackQuery = {},
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		options: BaseRequestOptions = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			...options,
 			query: makeURLSearchParams({ with_response }),
 			auth: false,
 			body: {
 				type: InteractionResponseType.DeferredMessageUpdate,
 			},
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 		});
 
 		return with_response ? response : undefined;
@@ -264,14 +253,9 @@ export class InteractionsAPI {
 		applicationId: Snowflake,
 		interactionToken: string,
 		body: CreateInteractionFollowUpResponseOptions,
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		options: BaseRequestOptions = {},
 	) {
-		return this.webhooks.execute(
-			applicationId,
-			interactionToken,
-			{ ...body, wait: true },
-			{ dispatcher, headers, rejectOnRateLimit, signal },
-		);
+		return this.webhooks.execute(applicationId, interactionToken, { ...body, wait: true }, options);
 	}
 
 	/**
@@ -290,14 +274,9 @@ export class InteractionsAPI {
 		interactionToken: string,
 		callbackData: EditInteractionResponseOptions,
 		messageId?: Snowflake | '@original',
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		options: BaseRequestOptions = {},
 	) {
-		return this.webhooks.editMessage(applicationId, interactionToken, messageId ?? '@original', callbackData, {
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
-		});
+		return this.webhooks.editMessage(applicationId, interactionToken, messageId ?? '@original', callbackData, options);
 	}
 
 	/**
@@ -308,17 +287,13 @@ export class InteractionsAPI {
 	 * @param interactionToken - The token of the interaction
 	 * @param options - The options for fetching the reply
 	 */
-	public async getOriginalReply(
-		applicationId: Snowflake,
-		interactionToken: string,
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
-	) {
+	public async getOriginalReply(applicationId: Snowflake, interactionToken: string, options: BaseRequestOptions = {}) {
 		return this.webhooks.getMessage(
 			applicationId,
 			interactionToken,
 			'@original',
 			{},
-			{ dispatcher, headers, rejectOnRateLimit, signal },
+			options,
 		) as Promise<RESTGetAPIWebhookWithTokenMessageResult>;
 	}
 
@@ -336,15 +311,9 @@ export class InteractionsAPI {
 		applicationId: Snowflake,
 		interactionToken: string,
 		messageId?: Snowflake | '@original',
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		options: BaseRequestOptions = {},
 	) {
-		await this.webhooks.deleteMessage(
-			applicationId,
-			interactionToken,
-			messageId ?? '@original',
-			{},
-			{ dispatcher, headers, rejectOnRateLimit, signal },
-		);
+		await this.webhooks.deleteMessage(applicationId, interactionToken, messageId ?? '@original', {}, options);
 	}
 
 	/**
@@ -399,9 +368,10 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		{ files, with_response, ...data }: CreateInteractionUpdateMessageResponseOptions,
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		options: BaseRequestOptions = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			...options,
 			query: makeURLSearchParams({ with_response }),
 			files,
 			auth: false,
@@ -409,10 +379,6 @@ export class InteractionsAPI {
 				type: InteractionResponseType.UpdateMessage,
 				data,
 			},
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 		});
 
 		return with_response ? response : undefined;
@@ -470,19 +436,16 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		{ with_response, ...data }: CreateAutocompleteResponseOptions,
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		options: BaseRequestOptions = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			...options,
 			query: makeURLSearchParams({ with_response }),
 			auth: false,
 			body: {
 				type: InteractionResponseType.ApplicationCommandAutocompleteResult,
 				data,
 			},
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 		});
 
 		return with_response ? response : undefined;
@@ -540,19 +503,16 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		{ with_response, ...data }: CreateModalResponseOptions,
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		options: BaseRequestOptions = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			...options,
 			query: makeURLSearchParams({ with_response }),
 			auth: false,
 			body: {
 				type: InteractionResponseType.Modal,
 				data,
 			},
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 		});
 
 		return with_response ? response : undefined;
@@ -610,18 +570,15 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		{ with_response }: RESTPostAPIInteractionCallbackQuery = {},
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		options: BaseRequestOptions = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			...options,
 			query: makeURLSearchParams({ with_response }),
 			auth: false,
 			body: {
 				type: InteractionResponseType.LaunchActivity,
 			},
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 		});
 
 		return with_response ? response : undefined;

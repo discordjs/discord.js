@@ -40,15 +40,9 @@ export class WebhooksAPI {
 	 * @param id - The id of the webhook
 	 * @param options - The options for fetching the webhook
 	 */
-	public async get(
-		id: Snowflake,
-		{ token, dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions & { token?: string | undefined } = {},
-	) {
+	public async get(id: Snowflake, { token, ...options }: BaseRequestOptions & { token?: string | undefined } = {}) {
 		return this.rest.get(Routes.webhook(id, token), {
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
+			...options,
 			auth: !token,
 		}) as Promise<RESTGetAPIWebhookResult>;
 	}
@@ -65,22 +59,11 @@ export class WebhooksAPI {
 	public async edit(
 		id: Snowflake,
 		body: RESTPatchAPIWebhookJSONBody,
-		{
-			token,
-			dispatcher,
-			headers,
-			reason,
-			rejectOnRateLimit,
-			signal,
-		}: BaseRequestOptionsWithReason & { token?: string | undefined } = {},
+		{ token, ...options }: BaseRequestOptionsWithReason & { token?: string | undefined } = {},
 	) {
 		return this.rest.patch(Routes.webhook(id, token), {
-			reason,
+			...options,
 			body,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 			auth: !token,
 		}) as Promise<RESTPatchAPIWebhookResult>;
 	}
@@ -95,21 +78,10 @@ export class WebhooksAPI {
 	 */
 	public async delete(
 		id: Snowflake,
-		{
-			token,
-			dispatcher,
-			headers,
-			reason,
-			rejectOnRateLimit,
-			signal,
-		}: BaseRequestOptionsWithReason & { token?: string | undefined } = {},
+		{ token, ...options }: BaseRequestOptionsWithReason & { token?: string | undefined } = {},
 	) {
 		await this.rest.delete(Routes.webhook(id, token), {
-			reason,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
+			...options,
 			auth: !token,
 		});
 	}
@@ -159,17 +131,14 @@ export class WebhooksAPI {
 		id: Snowflake,
 		token: string,
 		{ wait, thread_id, with_components, files, ...body }: CreateWebhookMessageOptions,
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		options: BaseRequestOptions = {},
 	) {
 		return this.rest.post(Routes.webhook(id, token), {
+			...options,
 			query: makeURLSearchParams({ wait, thread_id, with_components }),
 			files,
 			body,
 			auth: false,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 		}) as Promise<RESTPostAPIWebhookWithTokenWaitResult | void>;
 	}
 
@@ -188,16 +157,13 @@ export class WebhooksAPI {
 		token: string,
 		body: unknown,
 		query: RESTPostAPIWebhookWithTokenSlackQuery = {},
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		options: BaseRequestOptions = {},
 	) {
 		await this.rest.post(Routes.webhookPlatform(id, token, 'slack'), {
+			...options,
 			query: makeURLSearchParams(query),
 			body,
 			auth: false,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 		});
 	}
 
@@ -216,15 +182,12 @@ export class WebhooksAPI {
 		token: string,
 		body: unknown,
 		query: RESTPostAPIWebhookWithTokenGitHubQuery = {},
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		options: BaseRequestOptions = {},
 	) {
 		await this.rest.post(Routes.webhookPlatform(id, token, 'github'), {
+			...options,
 			query: makeURLSearchParams(query),
 			body,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 			auth: false,
 		});
 	}
@@ -244,15 +207,12 @@ export class WebhooksAPI {
 		token: string,
 		messageId: Snowflake,
 		query: RESTGetAPIWebhookWithTokenMessageQuery = {},
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		options: BaseRequestOptions = {},
 	) {
 		return this.rest.get(Routes.webhookMessage(id, token, messageId), {
+			...options,
 			query: makeURLSearchParams(query),
 			auth: false,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 		}) as Promise<RESTGetAPIWebhookWithTokenMessageResult>;
 	}
 
@@ -271,16 +231,13 @@ export class WebhooksAPI {
 		token: string,
 		messageId: Snowflake,
 		{ thread_id, with_components, files, ...body }: EditWebhookMessageOptions,
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		options: BaseRequestOptions = {},
 	) {
 		return this.rest.patch(Routes.webhookMessage(id, token, messageId), {
+			...options,
 			query: makeURLSearchParams({ thread_id, with_components }),
 			auth: false,
 			body,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 			files,
 		}) as Promise<RESTPatchAPIWebhookWithTokenMessageResult>;
 	}
@@ -300,15 +257,12 @@ export class WebhooksAPI {
 		token: string,
 		messageId: Snowflake,
 		query: RESTDeleteAPIWebhookWithTokenMessageQuery = {},
-		{ dispatcher, headers, rejectOnRateLimit, signal }: BaseRequestOptions = {},
+		options: BaseRequestOptions = {},
 	) {
 		await this.rest.delete(Routes.webhookMessage(id, token, messageId), {
+			...options,
 			query: makeURLSearchParams(query),
 			auth: false,
-			dispatcher,
-			headers,
-			rejectOnRateLimit,
-			signal,
 		});
 	}
 }
