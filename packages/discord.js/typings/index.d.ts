@@ -2684,10 +2684,14 @@ export interface TextDisplayModalData extends BaseModalData<ComponentType.TextDi
 export interface ModalSelectedMentionables<Cached extends CacheType = CacheType>
   extends ModalSelectedRoles<Cached>, ModalSelectedUsers<Cached> {}
 export class ModalComponentResolver<Cached extends CacheType = CacheType> {
-  private constructor(client: Client<true>, components: readonly ModalData[], resolved: BaseInteractionResolvedData);
+  private constructor(
+    client: Client<true>,
+    components: readonly ModalData[],
+    resolved: BaseInteractionResolvedData<Cached>,
+  );
   public readonly client: Client<true>;
   public readonly data: readonly (ActionRowModalData | LabelModalData | TextDisplayModalData)[];
-  public readonly resolved: Readonly<BaseInteractionResolvedData<Cached>> | null;
+  public readonly resolved: Readonly<BaseInteractionResolvedData<Cached>>;
   public readonly hoistedComponents: ReadonlyCollection<string, ModalData>;
   public getComponent(customId: string): ModalData;
   private _getTypedComponent(

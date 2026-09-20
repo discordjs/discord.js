@@ -85,6 +85,7 @@ import type {
   AutoModerationRule,
   AutoModerationRuleManager,
   Awaitable,
+  BaseInteractionResolvedData,
   ButtonComponent,
   ButtonComponentData,
   ButtonInteraction,
@@ -163,6 +164,7 @@ import type {
   MessageManager,
   MessageMentions,
   MessageReaction,
+  ModalComponentResolver,
   ModalData,
   ModalSelectedMentionables,
   ModalSubmitInteraction,
@@ -3167,4 +3169,9 @@ declare const cachedMentionables: ModalSelectedMentionables<'cached'>;
   expectType<ReadonlyCollection<Snowflake, User>>(cachedMentionables.users);
   expectType<ReadonlyCollection<Snowflake, GuildMember>>(cachedMentionables.members);
   expectType<ReadonlyCollection<Snowflake, Role>>(cachedMentionables.roles);
+}
+
+declare const cachedModalComponents: ModalComponentResolver<'cached'>;
+{
+  expectType<Readonly<BaseInteractionResolvedData<'cached'>>>(cachedModalComponents.resolved);
 }

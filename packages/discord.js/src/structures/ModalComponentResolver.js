@@ -41,9 +41,9 @@ class ModalComponentResolver {
      * The interaction resolved data
      *
      * @name ModalComponentResolver#resolved
-     * @type {?Readonly<BaseInteractionResolvedData>}
+     * @type {Readonly<BaseInteractionResolvedData>}
      */
-    Object.defineProperty(this, 'resolved', { value: resolved ? Object.freeze(resolved) : null });
+    Object.defineProperty(this, 'resolved', { value: Object.freeze(resolved) });
 
     /**
      * The components within the modal
