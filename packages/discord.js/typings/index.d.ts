@@ -4139,6 +4139,8 @@ export enum DiscordjsErrorCodes {
   NotGuildSoundboardSound = 'NotGuildSoundboardSound',
   NotGuildSticker = 'NotGuildSticker',
 
+  SearchIndexNotYetAvailable = 'SearchIndexNotYetAvailable',
+
   ReactionResolveUser = 'ReactionResolveUser',
 
   InviteResolveCode = 'InviteResolveCode',

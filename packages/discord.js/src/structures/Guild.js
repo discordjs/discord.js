@@ -1195,7 +1195,7 @@ class Guild extends AnonymousGuild {
       min_id: minId,
       channel_id: channelId?.map(channel => this.channels.resolveId(channel)),
       author_type: authorType,
-      author_id: authorId,
+      author_id: authorId?.map(author => this.client.users.resolveId(author)),
       mentions: mentions?.map(mention => this.client.users.resolveId(mention)),
       mentions_role_id: mentionsRoleId?.map(role => this.roles.resolveId(role)),
       mention_everyone: mentionEveryone,
@@ -1218,13 +1218,14 @@ class Guild extends AnonymousGuild {
 
     let data = await this.client.rest.get(Routes.guildMessagesSearch(this.id), { query, signal });
 
-    if (retryOnMissingIndex) {
-      while (data.code === RESTJSONErrorCodes.IndexNotYetAvailable) {
+    if (data.code === RESTJSONErrorCodes.IndexNotYetAvailable) {
+      if (!retryOnMissingIndex) throw new DiscordjsError(ErrorCodes.SearchIndexNotYetAvailable);
+      do {
         const retryAfter = data.retry_after || 1;
 
         await sleep(retryAfter * 1_000, undefined, { signal });
         data = await this.client.rest.get(Routes.guildMessagesSearch(this.id), { query, signal });
-      }
+      } while (data.code === RESTJSONErrorCodes.IndexNotYetAvailable);
     }
 
     const threads = (data.threads ?? []).reduce(
