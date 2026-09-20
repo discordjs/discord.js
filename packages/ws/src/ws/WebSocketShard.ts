@@ -560,16 +560,13 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			token: this.strategy.options.token,
 			properties: this.strategy.options.identifyProperties,
 			intents: this.strategy.options.intents,
+			capabilities: this.strategy.options.capabilities,
 			compress: this.identifyCompressionEnabled,
 			shard: [this.id, this.strategy.options.shardCount],
 		};
 
 		if (this.strategy.options.largeThreshold) {
 			data.large_threshold = this.strategy.options.largeThreshold;
-		}
-
-		if (this.strategy.options.capabilities) {
-			data.capabilities = this.strategy.options.capabilities;
 		}
 
 		if (this.strategy.options.initialPresence) {
