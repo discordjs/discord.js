@@ -19,8 +19,8 @@ allowBuilds:
 
 autoInstallPeers: false
 
-patchedDependencies:
-  '@microsoft/tsdoc-config@0.17.1': patches/@microsoft__tsdoc-config@0.17.1.patch
+minimumReleaseAgeExclude:
+  - tstyche@7.2.4
 
 peerDependencyRules:
   allowAny:

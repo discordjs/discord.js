@@ -1,11 +1,16 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, extname, basename, relative } from 'node:path';
 import jsdoc2md from 'jsdoc-to-markdown';
-import { type DeclarationReflection, Application, TSConfigReader } from 'typedoc';
+import { type JSONOutput, Application, TSConfigReader } from 'typedoc';
 import type { CLIOptions } from '../bin/index.js';
 import { Documentation } from './documentation.js';
 import type { RootTypes, ChildTypes, CustomDocs } from './interfaces/index.js';
 
+export type DeclarationReflection = JSONOutput.DeclarationReflection;
+export type SignatureReflection = JSONOutput.SignatureReflection;
+export type SourceReference = JSONOutput.SourceReference;
+export type ParameterReflection = JSONOutput.ParameterReflection;
+export type LiteralType = JSONOutput.LiteralType;
 interface CustomFiles {
 	files: {
 		id?: string;
@@ -24,7 +29,6 @@ export async function build({ input, custom: customDocs, root, output, newOutput
 		const app = await Application.bootstrap({ entryPoints: input }, [new TSConfigReader()]);
 		const project = await app.convert();
 		if (project) {
-			// @ts-expect-error: Types are lost with this method
 			data = app.serializer.toObject(project).children!;
 			console.log(`${data.length} items parsed.`);
 		}

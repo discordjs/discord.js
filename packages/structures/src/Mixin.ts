@@ -1,10 +1,31 @@
 import { DataTemplatePropertyName, OptimizeDataPropertyName, type Structure } from './Structure.js';
+import type { kData } from './utils/symbols.js';
 import { kMixinConstruct, kMixinToJSON } from './utils/symbols.js';
+import type { CollapseUnion, MergePrototypes } from './utils/types.js';
 
 export type Mixinable<ClassType> = new (...args: unknown[]) => ClassType;
 
 export type MixinBase<BaseClass extends Structure<{}>> =
 	BaseClass extends Structure<infer DataType, infer Omitted> ? Structure<DataType, Omitted> : never;
+
+/**
+ * Type utility to provide accurate types for the runtime effects of {@link Mixin}
+ *
+ * @typeParam BaseClass - The class that is being directly extended, must match the class that the mixins are expecting
+ * @typeParam Mixins - The mixins that will be applied to this class via a {@link Mixin} call
+ */
+export type MixinTypes<BaseClass extends Structure<{}>, Mixins extends readonly MixinBase<BaseClass>[]> = CollapseUnion<
+	BaseClass extends Structure<infer DataType, infer Omitted>
+		? Mixins[number] extends Structure<DataType, Omitted>
+			? // prettier-ignore
+				Structure<DataType, Omitted>[typeof kData] extends
+				// @ts-expect-error kData is protected
+				Mixins[number][typeof kData]
+				? Omit<MergePrototypes<Mixins>, keyof BaseClass | typeof kMixinConstruct>
+				: never
+			: never
+		: never
+>;
 
 /**
  * Copies the prototype (getters, setters, and methods) of all mixins to the destination class.

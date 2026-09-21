@@ -18,11 +18,12 @@
 		// Modules
 		"allowArbitraryExtensions": false,
 		"allowImportingTsExtensions": false,
-		"module": "ESNext",
-		"moduleResolution": "Bundler",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
 		"resolveJsonModule": true,
 		"resolvePackageJsonExports": true,
 		"resolvePackageJsonImports": true,
+		"rootDir": "${configDir}/src",
 
 		// Emit
 		"declaration": true,
@@ -30,20 +31,19 @@
 		"importHelpers": false,
 		"newLine": "lf",
 		"noEmitHelpers": true,
-		"outDir": "dist",
+		"outDir": "${configDir}/dist",
 		"removeComments": false,
 		"sourceMap": true,
 
 		// Interop Constraints
 		"allowSyntheticDefaultImports": true,
-		"esModuleInterop": false,
 		"forceConsistentCasingInFileNames": true,
 		"isolatedModules": true,
 
 		// Language and Environment
 		"experimentalDecorators": true,
 		"lib": ["ESNext", "esnext.disposable"],
-		"target": "ESNext",
+		"target": "ES2025",
 		"useDefineForClassFields": true
 	},
 	"exclude": ["node_modules"]

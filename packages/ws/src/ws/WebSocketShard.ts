@@ -18,7 +18,7 @@ import {
 } from 'discord-api-types/v10';
 import { WebSocket, type Data } from 'ws';
 import type * as ZlibSync from 'zlib-sync';
-import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
+import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy.js';
 import {
 	CompressionMethod,
 	CompressionParameterMap,
