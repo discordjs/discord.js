@@ -55,6 +55,10 @@ function _transformAPIMessageInteractionMetadata(client, messageInteractionMetad
     ),
     originalResponseMessageId: messageInteractionMetadata.original_response_message_id ?? null,
     interactedMessageId: messageInteractionMetadata.interacted_message_id ?? null,
+    targetUser: messageInteractionMetadata.target_user
+      ? client.users._add(messageInteractionMetadata.target_user)
+      : null,
+    targetMessageId: messageInteractionMetadata.target_message_id ?? null,
     triggeringInteractionMetadata: messageInteractionMetadata.triggering_interaction_metadata
       ? _transformAPIMessageInteractionMetadata(client, messageInteractionMetadata.triggering_interaction_metadata)
       : null,
