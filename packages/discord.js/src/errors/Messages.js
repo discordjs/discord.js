@@ -95,6 +95,8 @@ const Messages = {
     `Soundboard sound is a default (non-guild) soundboard sound and can't be ${action}.`,
   [ErrorCodes.NotGuildSticker]: 'Sticker is a standard (non-guild) sticker and has no author.',
 
+  [ErrorCodes.SearchIndexNotYetAvailable]: 'Search index not yet available and opted out of retrying',
+
   [ErrorCodes.ReactionResolveUser]: "Couldn't resolve the user id to remove from the reaction.",
 
   [ErrorCodes.InviteResolveCode]: 'Could not resolve the code to fetch the invite.',

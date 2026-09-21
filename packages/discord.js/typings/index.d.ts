@@ -175,6 +175,10 @@ import {
   MessageFlags,
   MessageReferenceType,
   MessageType,
+  MessageSearchAuthorType,
+  MessageSearchEmbedType,
+  MessageSearchHasType,
+  MessageSearchSortMode,
   NameplatePalette,
   OAuth2Scopes,
   OverwriteType,
@@ -1507,6 +1511,7 @@ export class Guild extends AnonymousGuild {
   public widgetImageURL(style?: GuildWidgetStyle): string;
   public leave(): Promise<Guild>;
   public disableInvites(disabled?: boolean): Promise<Guild>;
+  public searchMessages(options?: GuildSearchMessagesOptions): Promise<GuildSearchMessagesResult>;
   public setIncidentActions(incidentActions: IncidentActionsEditOptions): Promise<IncidentActions>;
   public setAFKChannel(afkChannel: VoiceChannelResolvable | null, reason?: string): Promise<Guild>;
   public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
@@ -4134,6 +4139,8 @@ export enum DiscordjsErrorCodes {
   NotGuildSoundboardSound = 'NotGuildSoundboardSound',
   NotGuildSticker = 'NotGuildSticker',
 
+  SearchIndexNotYetAvailable = 'SearchIndexNotYetAvailable',
+
   ReactionResolveUser = 'ReactionResolveUser',
 
   InviteResolveCode = 'InviteResolveCode',
@@ -6443,6 +6450,45 @@ export interface GuildSearchMembersOptions {
   cache?: boolean;
   limit?: number;
   query: string;
+}
+
+export interface GuildSearchMessagesOptions {
+  attachmentExtension?: readonly string[];
+  attachmentFilename?: readonly string[];
+  authorId?: readonly UserResolvable[];
+  authorType?: readonly MessageSearchAuthorType[];
+  cache?: boolean;
+  channelId?: readonly ChannelResolvable[];
+  content?: string;
+  embedProvider?: readonly string[];
+  embedType?: readonly MessageSearchEmbedType[];
+  has?: readonly MessageSearchHasType[];
+  includeNsfw?: boolean;
+  limit?: number;
+  linkHostname?: readonly string[];
+  maxId?: Snowflake;
+  mentionEveryone?: boolean;
+  mentions?: readonly UserResolvable[];
+  mentionsRoleId?: readonly RoleResolvable[];
+  minId?: Snowflake;
+  offset?: number;
+  pinned?: boolean;
+  repliedToMessageId?: readonly MessageResolvable[];
+  repliedToUserId?: readonly UserResolvable[];
+  retryOnMissingIndex?: boolean;
+  signal?: AbortSignal;
+  slop?: number;
+  sortBy?: MessageSearchSortMode;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface GuildSearchMessagesResult {
+  documentsIndexed?: number;
+  doingDeepHistoricalIndex: boolean;
+  messages: ReadonlyCollection<Snowflake, Message<true>>;
+  threadMembers: ReadonlyCollection<Snowflake, ReadonlyCollection<Snowflake, ThreadMember>>;
+  threads: ReadonlyCollection<Snowflake, AnyThreadChannel>;
+  totalResults: number;
 }
 
 export interface GuildListMembersOptions {
