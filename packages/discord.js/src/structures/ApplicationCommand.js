@@ -438,7 +438,7 @@ class ApplicationCommand extends Base {
       ('description' in command && command.description !== this.description) ||
       ('version' in command && command.version !== this.version) ||
       (command.type && command.type !== this.type) ||
-      ('nsfw' in command && command.nsfw !== this.nsfw) ||
+      (command.nsfw ?? false) !== (this.nsfw ?? false) ||
       command.options?.length !== this.options?.length ||
       defaultMemberPermissions !== (this.defaultMemberPermissions?.bitfield ?? null) ||
       !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||
@@ -636,18 +636,18 @@ class ApplicationCommand extends Base {
     return {
       type: option.type,
       name: option.name,
-      [nameLocalizationsKey]: option.nameLocalizations ?? option.name_localizations,
-      [nameLocalizedKey]: option.nameLocalized ?? option.name_localized,
+      ...((('nameLocalizations' in option) || ('name_localizations' in option)) && { [nameLocalizationsKey]: option.nameLocalizations ?? option.name_localizations }),
+      ...((('nameLocalized' in option) || ('name_localized' in option)) && { [nameLocalizedKey]: option.nameLocalized ?? option.name_localized }),
       description: option.description,
-      [descriptionLocalizationsKey]: option.descriptionLocalizations ?? option.description_localizations,
-      [descriptionLocalizedKey]: option.descriptionLocalized ?? option.description_localized,
+      ...((('descriptionLocalizations' in option) || ('description_localizations' in option)) && { [descriptionLocalizationsKey]: option.descriptionLocalizations ?? option.description_localizations }),
+      ...((('descriptionLocalized' in option) || ('description_localized' in option)) && { [descriptionLocalizedKey]: option.descriptionLocalized ?? option.description_localized }),
       required:
         option.required ??
         (option.type === ApplicationCommandOptionType.Subcommand ||
         option.type === ApplicationCommandOptionType.SubcommandGroup
           ? undefined
           : false),
-      autocomplete: option.autocomplete,
+      ...('autocomplete' in option && { autocomplete: option.autocomplete }),
       choices: option.choices?.map(choice => ({
         name: choice.name,
         [nameLocalizedKey]: choice.nameLocalized ?? choice.name_localized,
@@ -657,10 +657,10 @@ class ApplicationCommand extends Base {
       options: option.options?.map(opt => this.transformOption(opt, received)),
       [channelTypesKey]: option.channelTypes ?? option.channel_types,
       [fileTypesKey]: option.fileTypes ?? option.file_types,
-      [minValueKey]: option.minValue ?? option.min_value,
-      [maxValueKey]: option.maxValue ?? option.max_value,
-      [minLengthKey]: option.minLength ?? option.min_length,
-      [maxLengthKey]: option.maxLength ?? option.max_length,
+      ...(('minValue' in option || 'min_value' in option) && { [minValueKey]: option.minValue ?? option.min_value }),
+      ...(('maxValue' in option || 'max_value' in option) && { [maxValueKey]: option.maxValue ?? option.max_value }),
+      ...(('minLength' in option || 'min_length' in option) && { [minLengthKey]: option.minLength ?? option.min_length }),
+      ...(('maxLength' in option || 'max_length' in option) && { [maxLengthKey]: option.maxLength ?? option.max_length }),
     };
   }
 }
@@ -671,3 +671,4 @@ exports.ApplicationCommand = ApplicationCommand;
  * @external ApplicationCommandOptionAllowedChannelType
  * @see {@link https://discord.js.org/docs/packages/builders/stable/ApplicationCommandOptionAllowedChannelType:TypeAlias}
  */
+
