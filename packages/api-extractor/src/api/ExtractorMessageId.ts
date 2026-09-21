@@ -22,6 +22,16 @@ export const enum ExtractorMessageId {
 	DifferentReleaseTags = 'ae-different-release-tags',
 
 	/**
+	 * "The symbol ___ has no matching jsdoc equivalent in the JavaScript source files."
+	 */
+	DjsMissingJSDoc = 'ae-djs-missing-jsdoc',
+
+	/**
+	 * "The JSDoc comment for___ has no matching type equivalent in the TypeScript declaration file."
+	 */
+	DjsMissingTypeScriptType = 'ae-djs-missing-types',
+
+	/**
 	 * "The doc comment should not contain more than one release tag."
 	 */
 	ExtraReleaseTag = 'ae-extra-release-tag',
@@ -127,6 +137,8 @@ export const allExtractorMessageIds: Set<string> = new Set<string>([
 	'ae-extra-release-tag',
 	'ae-undocumented',
 	'ae-different-release-tags',
+	'ae-djs-missing-jsdoc',
+	'ae-djs-missing-types',
 	'ae-incompatible-release-tags',
 	'ae-missing-release-tag',
 	'ae-misplaced-package-tag',
