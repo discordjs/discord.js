@@ -55,6 +55,10 @@ export function* range(range: RangeOptions | number) {
 		step = range.step ?? 1;
 	}
 
+	if (step === 0) {
+		throw new RangeError('The "step" option must not be 0.');
+	}
+
 	for (let index = start; index < rangeEnd; index += step) {
 		yield index;
 	}
