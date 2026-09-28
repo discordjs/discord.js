@@ -40,6 +40,7 @@ export const DefaultWebSocketManagerOptions = {
 	buildIdentifyThrottler: (manager: WebSocketManager) =>
 		new SimpleIdentifyThrottler(manager.getGatewayInformation().session_start_limit.max_concurrency),
 	buildStrategy: (manager) => new SimpleShardingStrategy(manager),
+	capabilities: 0,
 	shardCount: null,
 	shardIds: null,
 	largeThreshold: null,
