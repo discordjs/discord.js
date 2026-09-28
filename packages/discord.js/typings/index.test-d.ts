@@ -139,6 +139,7 @@ import type {
   GuildMessageManager,
   GuildOnboarding,
   GuildResolvable,
+  GuildScheduledEventCreateOptions,
   GuildScheduledEventManager,
   GuildScheduledEventRecurrenceRuleOptions,
   GuildTextBasedChannel,
@@ -832,6 +833,14 @@ client.on('presenceUpdate', (oldPresence, { client }) => {
 declare const slashCommandBuilder: ChatInputCommandBuilder;
 declare const contextMenuCommandBuilder: ContextMenuCommandBuilder;
 declare const guild: Guild;
+
+await guild.soundboardSounds.create({
+  file: './sound.mp3',
+  name: 'sound',
+  emojiId: null,
+  emojiName: null,
+  volume: null,
+});
 
 client.on('clientReady', async client => {
   expectType<Client<true>>(client);
@@ -3004,6 +3013,14 @@ client.on('interactionCreate', async interaction => {
 
 declare const guildScheduledEventManager: GuildScheduledEventManager;
 await guildScheduledEventManager.edit(snowflake, { recurrenceRule: null });
+await guildScheduledEventManager.edit(snowflake, { description: null });
+
+{
+  const event = await guildScheduledEventManager.fetch(snowflake);
+  await event.setDescription(null);
+  await event.edit({ description: null });
+  expectNotAssignable<GuildScheduledEventCreateOptions['description']>(null);
+}
 
 {
   expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
