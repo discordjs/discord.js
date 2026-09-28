@@ -1,0 +1,7 @@
+{
+	"pages": ["app-setup", "index"],
+	"title": "RPC",
+	"description": "The discord.js RPC guide",
+	"icon": "Book",
+	"root": true
+}

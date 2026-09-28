@@ -146,7 +146,7 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	 * @returns A {@link @discordjs/util#RawFile} object, or `undefined` if no file data is set
 	 */
 	public getRawFile(): Partial<RawFile> | undefined {
-		if (!this.fileData?.data) {
+		if (this.fileData.data === undefined) {
 			return;
 		}
 

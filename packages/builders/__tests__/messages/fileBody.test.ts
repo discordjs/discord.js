@@ -35,6 +35,25 @@ test('AttachmentBuilder handles 0 as a valid id', () => {
 	});
 });
 
+test('AttachmentBuilder preserves zero-byte string files', () => {
+	const attachment = new AttachmentBuilder().setId(0).setFilename('empty.txt').setFileData('');
+
+	expect(attachment.getRawFile()).toStrictEqual({
+		data: '',
+		key: 'files[0]',
+		name: 'empty.txt',
+	});
+
+	const message = new MessageBuilder().setContent('empty attachment').addAttachments(attachment);
+	expect(message.toFileBody().files).toStrictEqual([
+		{
+			data: '',
+			key: 'files[0]',
+			name: 'empty.txt',
+		},
+	]);
+});
+
 test('MessageBuilder.toFileBody returns JSON body and files', () => {
 	const msg = new MessageBuilder().setContent('here is a file').addAttachments(
 		new AttachmentBuilder()
