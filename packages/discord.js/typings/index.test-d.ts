@@ -72,6 +72,7 @@ import {
   GuildEmojiManager,
   GuildMember,
   GuildResolvable,
+  GuildScheduledEventCreateOptions,
   IntentsBitField,
   Interaction,
   InteractionCollector,
@@ -3044,6 +3045,14 @@ client.on('interactionCreate', interaction => {
 
 declare const guildScheduledEventManager: GuildScheduledEventManager;
 await guildScheduledEventManager.edit(snowflake, { recurrenceRule: null });
+await guildScheduledEventManager.edit(snowflake, { description: null });
+
+{
+  const event = await guildScheduledEventManager.fetch(snowflake);
+  await event.setDescription(null);
+  await event.edit({ description: null });
+  expectNotAssignable<GuildScheduledEventCreateOptions['description']>(null);
+}
 
 {
   expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({

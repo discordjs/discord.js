@@ -2035,7 +2035,7 @@ export class GuildScheduledEvent<Status extends GuildScheduledEventStatus = Guil
     reason?: string,
   ): Promise<GuildScheduledEvent<Status>>;
   public setScheduledEndTime(scheduledEndTime: DateResolvable, reason?: string): Promise<GuildScheduledEvent<Status>>;
-  public setDescription(description: string, reason?: string): Promise<GuildScheduledEvent<Status>>;
+  public setDescription(description: string | null, reason?: string): Promise<GuildScheduledEvent<Status>>;
   public setStatus<AcceptableStatus extends GuildScheduledEventSetStatusArg<Status>>(
     status: AcceptableStatus,
     reason?: string,
@@ -7119,8 +7119,9 @@ type BaseGuildScheduledEventRecurrenceRuleOptions<
 export interface GuildScheduledEventEditOptions<
   Status extends GuildScheduledEventStatus,
   AcceptableStatus extends GuildScheduledEventSetStatusArg<Status>,
-> extends Omit<Partial<GuildScheduledEventCreateOptions>, 'channel' | 'recurrenceRule'> {
+> extends Omit<Partial<GuildScheduledEventCreateOptions>, 'channel' | 'description' | 'recurrenceRule'> {
   channel?: GuildVoiceChannelResolvable | null;
+  description?: string | null;
   status?: AcceptableStatus;
   recurrenceRule?: GuildScheduledEventRecurrenceRuleOptions | null;
 }
