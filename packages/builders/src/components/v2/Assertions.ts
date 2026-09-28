@@ -1,7 +1,7 @@
 import { ComponentType, SeparatorSpacingSize } from 'discord-api-types/v10';
 import { z } from 'zod';
 import { idPredicate } from '../../Assertions.js';
-import { actionRowPredicate } from '../Assertions.js';
+import { actionRowPredicate, buttonPredicate } from '../Assertions.js';
 
 const unfurledMediaItemPredicate = z.object({
 	url: z.url({ protocol: /^(?:https?|attachment)$/ }),
@@ -56,10 +56,7 @@ export const sectionPredicate = z.object({
 	type: z.literal(ComponentType.Section),
 	id: idPredicate,
 	components: z.array(textDisplayPredicate).min(1).max(3),
-	accessory: z.union([
-		z.object({ type: z.literal(ComponentType.Button) }),
-		z.object({ type: z.literal(ComponentType.Thumbnail) }),
-	]),
+	accessory: z.union([buttonPredicate, thumbnailPredicate]),
 });
 
 export const containerPredicate = z.object({
