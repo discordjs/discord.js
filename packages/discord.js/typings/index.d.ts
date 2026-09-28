@@ -5221,9 +5221,9 @@ export interface GuildSoundboardSoundCreateOptions {
   file: BufferResolvable | Stream;
   name: string;
   contentType?: string;
-  volume?: number;
-  emojiId?: Snowflake;
-  emojiName?: string;
+  volume?: number | null;
+  emojiId?: Snowflake | null;
+  emojiName?: string | null;
   reason?: string;
 }
 

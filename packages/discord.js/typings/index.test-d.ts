@@ -809,6 +809,14 @@ client.on('presenceUpdate', (oldPresence, { client }) => {
 declare const slashCommandBuilder: SlashCommandBuilder;
 declare const contextMenuCommandBuilder: ContextMenuCommandBuilder;
 
+await guild.soundboardSounds.create({
+  file: './sound.mp3',
+  name: 'sound',
+  emojiId: null,
+  emojiName: null,
+  volume: null,
+});
+
 client.on('ready', async client => {
   expectType<Client<true>>(client);
   console.log(`Client is logged in as ${client.user.tag} and ready!`);
