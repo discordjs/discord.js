@@ -6455,10 +6455,10 @@ export interface GuildSearchMembersOptions {
 export interface GuildSearchMessagesOptions {
   attachmentExtension?: readonly string[];
   attachmentFilename?: readonly string[];
-  authorId?: readonly UserResolvable[];
+  authorIds?: readonly UserResolvable[];
   authorType?: readonly MessageSearchAuthorType[];
   cache?: boolean;
-  channelId?: readonly ChannelResolvable[];
+  channelIds?: readonly ChannelResolvable[];
   content?: string;
   embedProvider?: readonly string[];
   embedType?: readonly MessageSearchEmbedType[];
@@ -6469,12 +6469,12 @@ export interface GuildSearchMessagesOptions {
   maxId?: Snowflake;
   mentionEveryone?: boolean;
   mentions?: readonly UserResolvable[];
-  mentionsRoleId?: readonly RoleResolvable[];
+  mentionsRoleIds?: readonly RoleResolvable[];
   minId?: Snowflake;
   offset?: number;
   pinned?: boolean;
-  repliedToMessageId?: readonly MessageResolvable[];
-  repliedToUserId?: readonly UserResolvable[];
+  repliedToMessageIds?: readonly MessageResolvable[];
+  repliedToUserIds?: readonly UserResolvable[];
   retryOnMissingIndex?: boolean;
   signal?: AbortSignal;
   slop?: number;

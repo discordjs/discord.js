@@ -1087,14 +1087,14 @@ class Guild extends AnonymousGuild {
    * @property {string} [content] Filter messages by given content (max 1024 characters)
    * @property {Snowflake} [maxId] Get messages before a given message ID
    * @property {Snowflake} [minId] Get messages after a given message ID
-   * @property {ChannelResolvable[]} [channelId] Filter messages by given channel IDs (max 500)
+   * @property {ChannelResolvable[]} [channelIds] Filter messages by given channel IDs (max 500)
    * @property {MessageSearchAuthorType[]} [authorType] Filter messages by author type.
-   * @property {UserResolvable[]} [authorId] Filter messages by given author IDs (max 100)
+   * @property {UserResolvable[]} [authorIds] Filter messages by given author IDs (max 100)
    * @property {UserResolvable[]} [mentions] Filter messages that mention given user IDs (max 100)
-   * @property {RoleResolvable[]} [mentionsRoleId] Filter messages that mention given role IDs (max 100)
+   * @property {RoleResolvable[]} [mentionsRoleIds] Filter messages that mention given role IDs (max 100)
    * @property {boolean} [mentionEveryone] Filter messages by whether they mention @everyone
-   * @property {UserResolvable[]} [repliedToUserId] Filter messages that reply to given user IDs (max 100)
-   * @property {MessageResolvable[]} [repliedToMessageId] Filter messages that reply to given message IDs (max 100)
+   * @property {UserResolvable[]} [repliedToUserIds] Filter messages that reply to given user IDs (max 100)
+   * @property {MessageResolvable[]} [repliedToMessageIds] Filter messages that reply to given message IDs (max 100)
    * @property {boolean} [pinned] Filter messages by whether they are pinned
    * @property {MessageSearchHasType[]} [has] Filter messages by whether they contain specific content types.
    * @property {MessageSearchEmbedType[]} [embedType] Filter messages by embed type.
@@ -1167,14 +1167,14 @@ class Guild extends AnonymousGuild {
     content,
     maxId,
     minId,
-    channelId,
+    channelIds,
     authorType,
-    authorId,
+    authorIds,
     mentions,
-    mentionsRoleId,
+    mentionsRoleIds,
     mentionEveryone,
-    repliedToUserId,
-    repliedToMessageId,
+    repliedToUserIds,
+    repliedToMessageIds,
     pinned,
     has,
     embedType,
@@ -1193,14 +1193,14 @@ class Guild extends AnonymousGuild {
       content,
       max_id: maxId,
       min_id: minId,
-      channel_id: channelId?.map(channel => this.channels.resolveId(channel)),
+      channel_id: channelIds?.map(channel => this.channels.resolveId(channel)),
       author_type: authorType,
-      author_id: authorId?.map(author => this.client.users.resolveId(author)),
+      author_id: authorIds?.map(author => this.client.users.resolveId(author)),
       mentions: mentions?.map(mention => this.client.users.resolveId(mention)),
-      mentions_role_id: mentionsRoleId?.map(role => this.roles.resolveId(role)),
+      mentions_role_id: mentionsRoleIds?.map(role => this.roles.resolveId(role)),
       mention_everyone: mentionEveryone,
-      replied_to_user_id: repliedToUserId?.map(user => this.client.users.resolveId(user)),
-      replied_to_message_id: repliedToMessageId?.map(message => (message instanceof Message ? message.id : message)),
+      replied_to_user_id: repliedToUserIds?.map(user => this.client.users.resolveId(user)),
+      replied_to_message_id: repliedToMessageIds?.map(message => (message instanceof Message ? message.id : message)),
       pinned,
       has,
       embed_type: embedType,
