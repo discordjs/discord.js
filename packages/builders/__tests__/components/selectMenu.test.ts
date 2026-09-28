@@ -156,12 +156,14 @@ describe('Select Menu Components', () => {
 			expect(() => selectMenuWithId().setMinValues(-20).toJSON()).toThrowError();
 			expect(() =>
 				selectMenuWithId()
-					.setMinValues(5)
-					.setMaxValues(2)
-					.addOptions({ label: 'test', value: 'test' })
+					.setMinValues(2)
+					.setMaxValues(1)
+					.addOptions({ label: 'test-1', value: 'test-1' }, { label: 'test-2', value: 'test-2' })
 					.toJSON(),
 			).toThrowError();
-			expect(() => new UserSelectMenuBuilder().setCustomId('foo').setMinValues(5).setMaxValues(2).toJSON()).toThrowError();
+			expect(() =>
+				new UserSelectMenuBuilder().setCustomId('foo').setMinValues(5).setMaxValues(2).toJSON(),
+			).toThrowError();
 			// @ts-expect-error: Invalid disabled value
 			expect(() => selectMenuWithId().setDisabled(0).toJSON()).toThrowError();
 			expect(() => selectMenuWithId().setPlaceholder(longStr).toJSON()).toThrowError();
