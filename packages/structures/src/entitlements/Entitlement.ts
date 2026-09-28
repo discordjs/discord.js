@@ -98,7 +98,7 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = 'ends_at' |
 	/**
 	 * Start date at which the entitlement is valid
 	 */
-	public get startsAt() {
+	public get startsDate() {
 		const timestamp = this.startsTimestamp;
 		return timestamp ? new Date(timestamp) : null;
 	}
@@ -113,7 +113,7 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = 'ends_at' |
 	/**
 	 * End date at which the entitlement is valid
 	 */
-	public get endsAt() {
+	public get endsDate() {
 		const timestamp = this.endsTimestamp;
 		return timestamp ? new Date(timestamp) : null;
 	}
@@ -149,7 +149,7 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = 'ends_at' |
 	/**
 	 * The time the entitlement was created at
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
@@ -160,15 +160,15 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = 'ends_at' |
 	public override toJSON() {
 		const clone = super.toJSON();
 
-		const startsAtTimestamp = this[kStartsTimestamp];
-		const endsAtTimestamp = this[kEndsTimestamp];
+		const startsDateTimestamp = this[kStartsTimestamp];
+		const endsDateTimestamp = this[kEndsTimestamp];
 
-		if (startsAtTimestamp) {
-			clone.starts_at = dateToDiscordISOTimestamp(new Date(startsAtTimestamp));
+		if (startsDateTimestamp) {
+			clone.starts_at = dateToDiscordISOTimestamp(new Date(startsDateTimestamp));
 		}
 
-		if (endsAtTimestamp) {
-			clone.ends_at = dateToDiscordISOTimestamp(new Date(endsAtTimestamp));
+		if (endsDateTimestamp) {
+			clone.ends_at = dateToDiscordISOTimestamp(new Date(endsDateTimestamp));
 		}
 
 		return clone;

@@ -383,7 +383,7 @@ client.on('interactionCreate', async interaction => {
   // @ts-expect-error double nested components array
   await interaction.reply({ content: 'Hi!', components: [[button]] });
 
-  void new ActionRowBuilder({});
+  new ActionRowBuilder({});
 
   // @ts-expect-error button as top-level component
   await interaction.reply({ content: 'Hi!', components: [button] });

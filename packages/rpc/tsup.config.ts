@@ -3,4 +3,5 @@ import { createTsupConfig } from '../../tsup.config.js';
 
 export default createTsupConfig({
 	esbuildPlugins: [esbuildPluginVersionInjector()],
+	format: 'esm',
 });
