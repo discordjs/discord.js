@@ -19,6 +19,8 @@ const allowedChannelTypes = [
 	ChannelType.GuildStageVoice,
 	ChannelType.GuildForum,
 	ChannelType.GuildMedia,
+	ChannelType.DM,
+	ChannelType.GroupDM,
 ] as const;
 
 /**
