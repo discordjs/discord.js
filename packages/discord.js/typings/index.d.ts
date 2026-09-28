@@ -7400,6 +7400,8 @@ export interface MessageInteractionMetadata {
   authorizingIntegrationOwners: AuthorizingIntegrationOwners;
   originalResponseMessageId: Snowflake | null;
   interactedMessageId: Snowflake | null;
+  targetMessageId: Snowflake | null;
+  targetUser: User | null;
   triggeringInteractionMetadata: MessageInteractionMetadata | null;
 }
 
