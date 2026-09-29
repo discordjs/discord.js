@@ -103,6 +103,7 @@
 		"tailwindcss-react-aria-components": "^2.2.0",
 		"turbo": "^2.10.12",
 		"typescript": "~5.9.3",
+		"vitest": "^4.1.11",
 		"vercel": "^59.11.2",
 		"wrangler": "^4.128.0"
 	},

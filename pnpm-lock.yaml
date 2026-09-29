@@ -416,6 +416,9 @@ importers:
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
+      vitest:
+        specifier: ^4.1.11
+        version: 4.1.11(@edge-runtime/vm@3.2.0)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.0)
       vercel:
         specifier: ^59.11.2
         version: 59.11.2(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.3)(bufferutil@4.1.0)(encoding@0.1.13)(rollup@4.62.4)(supports-color@10.2.2)

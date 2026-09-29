@@ -3,7 +3,7 @@ import { PACKAGES } from '@/util/constants';
 import { fetchLatestVersion } from '@/util/fetchLatestVersion';
 
 export default async function middleware(request: NextRequest) {
-	if (request.nextUrl.pathname === '/docs') {
+	if (request.nextUrl.pathname === '/docs' || request.nextUrl.pathname === '/docs/packages/discord.js') {
 		const latestVersion = await fetchLatestVersion('discord.js');
 		return NextResponse.redirect(new URL(`/docs/packages/discord.js/${latestVersion}`, request.url));
 	}
@@ -19,5 +19,5 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-	matcher: ['/docs', '/docs/packages/:package/stable/:member*'],
+	matcher: ['/docs', '/docs/packages/:package', '/docs/packages/:package/stable/:member*'],
 };
