@@ -16,6 +16,8 @@ export const ApplicationCommandOptionAllowedChannelTypes = [
 	ChannelType.GuildStageVoice,
 	ChannelType.GuildForum,
 	ChannelType.GuildMedia,
+	ChannelType.DM,
+	ChannelType.GroupDM,
 ] as const satisfies readonly ApplicationCommandOptionAllowedChannelType[];
 
 export interface ApplicationCommandOptionChannelTypesData extends Pick<

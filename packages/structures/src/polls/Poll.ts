@@ -68,7 +68,7 @@ export class Poll<Omitted extends keyof APIPoll | '' = ''> extends Structure<API
 	/**
 	 * The time the poll will expire at
 	 */
-	public get expiresAt() {
+	public get expiresDate() {
 		const expiresTimestamp = this.expiresTimestamp;
 		return expiresTimestamp ? new Date(expiresTimestamp) : null;
 	}

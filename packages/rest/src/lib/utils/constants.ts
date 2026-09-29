@@ -23,7 +23,7 @@ export const DefaultRestOptions = {
 	invalidRequestWarningInterval: 0,
 	globalRequestsPerSecond: 50,
 	offset: 50,
-	rejectOnRateLimit: null,
+	rejectOnRateLimit: false,
 	retries: 3,
 	retryBackoff: 0,
 	timeout: 15_000,

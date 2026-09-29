@@ -101,7 +101,7 @@ export class Webhook<Omitted extends keyof APIWebhook | '' = ''> extends Structu
 	/**
 	 * The time the webhook was created at
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}

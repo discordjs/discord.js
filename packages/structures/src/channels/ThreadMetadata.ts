@@ -1,5 +1,6 @@
 import type { APIThreadMetadata } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
+import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
 import { kArchiveTimestamp, kCreatedTimestamp, kData } from '../utils/symbols.js';
 import type { Partialize } from '../utils/types.js';
 
@@ -89,7 +90,7 @@ export class ThreadMetadata<
 	/**
 	 * The time the thread was archived at
 	 */
-	public get archivedAt() {
+	public get archivedDate() {
 		const archivedTimestamp = this.archivedTimestamp;
 		return archivedTimestamp ? new Date(archivedTimestamp) : null;
 	}
@@ -97,7 +98,7 @@ export class ThreadMetadata<
 	/**
 	 * The time the thread was created at
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
@@ -108,11 +109,11 @@ export class ThreadMetadata<
 	public override toJSON() {
 		const data = super.toJSON();
 		if (this[kArchiveTimestamp]) {
-			data.archive_timestamp = new Date(this[kArchiveTimestamp]).toISOString();
+			data.archive_timestamp = dateToDiscordISOTimestamp(new Date(this[kArchiveTimestamp]));
 		}
 
 		if (this[kCreatedTimestamp]) {
-			data.create_timestamp = new Date(this[kCreatedTimestamp]).toISOString();
+			data.create_timestamp = dateToDiscordISOTimestamp(new Date(this[kCreatedTimestamp]));
 		}
 
 		return data;

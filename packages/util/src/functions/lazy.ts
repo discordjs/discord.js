@@ -13,6 +13,11 @@
 // eslint-disable-next-line promise/prefer-await-to-callbacks
 export function lazy<Value>(cb: () => Value): () => Value {
 	let defaultValue: Value;
-	// eslint-disable-next-line promise/prefer-await-to-callbacks
-	return () => (defaultValue ??= cb());
+	let called = false;
+	return () => {
+		if (called) return defaultValue;
+		called = true;
+		// eslint-disable-next-line promise/prefer-await-to-callbacks
+		return (defaultValue = cb());
+	};
 }
