@@ -633,6 +633,12 @@ class ApplicationCommand extends Base {
     const nameLocalizedKey = received ? 'nameLocalized' : 'name_localized';
     const descriptionLocalizationsKey = received ? 'descriptionLocalizations' : 'description_localizations';
     const descriptionLocalizedKey = received ? 'descriptionLocalized' : 'description_localized';
+    const extras = {};
+    if ('minValue' in option || 'min_value' in option) extras[minValueKey] = option.minValue ?? option.min_value;
+    if ('maxValue' in option || 'max_value' in option) extras[maxValueKey] = option.maxValue ?? option.max_value;
+    if ('minLength' in option || 'min_length' in option) extras[minLengthKey] = option.minLength ?? option.min_length;
+    if ('maxLength' in option || 'max_length' in option) extras[maxLengthKey] = option.maxLength ?? option.max_length;
+
     return {
       type: option.type,
       name: option.name,
@@ -657,10 +663,7 @@ class ApplicationCommand extends Base {
       options: option.options?.map(opt => this.transformOption(opt, received)),
       [channelTypesKey]: option.channelTypes ?? option.channel_types,
       [fileTypesKey]: option.fileTypes ?? option.file_types,
-      ...(('minValue' in option || 'min_value' in option) && { [minValueKey]: option.minValue ?? option.min_value }),
-      ...(('maxValue' in option || 'max_value' in option) && { [maxValueKey]: option.maxValue ?? option.max_value }),
-      ...(('minLength' in option || 'min_length' in option) && { [minLengthKey]: option.minLength ?? option.min_length }),
-      ...(('maxLength' in option || 'max_length' in option) && { [maxLengthKey]: option.maxLength ?? option.max_length }),
+      ...extras,
     };
   }
 }
