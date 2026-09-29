@@ -2483,6 +2483,7 @@ client.on('interactionCreate', async interaction => {
 // so it must be typed as optional.
 declare const fileUploadModalData: FileUploadModalData;
 expectType<ReadonlyCollection<Snowflake, Attachment> | undefined>(fileUploadModalData.attachments);
+expectAssignable<FileUploadModalData>({ id: 1, type: ComponentType.FileUpload, customId: 'a', values: [] });
 
 declare const shard: Shard;
 
