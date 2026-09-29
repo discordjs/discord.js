@@ -126,6 +126,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private readonly timeoutAbortControllers = new Collection<WebSocketShardEvents, AbortController>();
 
+	private readonly teardownAbortControllers = new WeakSet<AbortController>();
+
 	private readonly strategy: IContextFetchingStrategy;
 
 	public readonly id: number;
@@ -352,6 +354,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.lastHeartbeatAt = -1;
 
 		for (const controller of this.timeoutAbortControllers.values()) {
+			this.teardownAbortControllers.add(controller);
 			controller.abort();
 		}
 
@@ -433,6 +436,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 			return { ok: !closed };
 		} catch {
+			if (this.teardownAbortControllers.has(timeoutController)) {
+				return { ok: false };
+			}
+
 			// If we're here because of other reasons, we need to destroy the shard
 			void this.destroy({
 				code: CloseCodes.Normal,
