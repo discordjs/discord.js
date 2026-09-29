@@ -119,6 +119,7 @@ import type {
   FetchPinnedMessagesResponse,
   FileComponentData,
   FileUploadComponentData,
+  FileUploadModalData,
   ForumChannel,
   Guild,
   GuildApplicationCommandManager,
@@ -2477,6 +2478,11 @@ client.on('interactionCreate', async interaction => {
     }
   }
 });
+
+// FileUploadModalData#attachments is only populated when the resolved data contains attachments,
+// so it must be typed as optional.
+declare const fileUploadModalData: FileUploadModalData;
+expectType<ReadonlyCollection<Snowflake, Attachment> | undefined>(fileUploadModalData.attachments);
 
 declare const shard: Shard;
 
