@@ -642,11 +642,19 @@ class ApplicationCommand extends Base {
     return {
       type: option.type,
       name: option.name,
-      ...((('nameLocalizations' in option) || ('name_localizations' in option)) && { [nameLocalizationsKey]: option.nameLocalizations ?? option.name_localizations }),
-      ...((('nameLocalized' in option) || ('name_localized' in option)) && { [nameLocalizedKey]: option.nameLocalized ?? option.name_localized }),
+      ...(('nameLocalizations' in option || 'name_localizations' in option) && {
+        [nameLocalizationsKey]: option.nameLocalizations ?? option.name_localizations,
+      }),
+      ...(('nameLocalized' in option || 'name_localized' in option) && {
+        [nameLocalizedKey]: option.nameLocalized ?? option.name_localized,
+      }),
       description: option.description,
-      ...((('descriptionLocalizations' in option) || ('description_localizations' in option)) && { [descriptionLocalizationsKey]: option.descriptionLocalizations ?? option.description_localizations }),
-      ...((('descriptionLocalized' in option) || ('description_localized' in option)) && { [descriptionLocalizedKey]: option.descriptionLocalized ?? option.description_localized }),
+      ...(('descriptionLocalizations' in option || 'description_localizations' in option) && {
+        [descriptionLocalizationsKey]: option.descriptionLocalizations ?? option.description_localizations,
+      }),
+      ...(('descriptionLocalized' in option || 'description_localized' in option) && {
+        [descriptionLocalizedKey]: option.descriptionLocalized ?? option.description_localized,
+      }),
       required:
         option.required ??
         (option.type === ApplicationCommandOptionType.Subcommand ||
@@ -674,4 +682,3 @@ exports.ApplicationCommand = ApplicationCommand;
  * @external ApplicationCommandOptionAllowedChannelType
  * @see {@link https://discord.js.org/docs/packages/builders/stable/ApplicationCommandOptionAllowedChannelType:TypeAlias}
  */
-
