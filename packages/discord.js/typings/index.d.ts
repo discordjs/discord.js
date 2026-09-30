@@ -1812,6 +1812,10 @@ export class GuildScheduledEvent<Status extends GuildScheduledEventStatus = Guil
   public fetch(force?: boolean): Promise<GuildScheduledEvent<Status>>;
   public delete(): Promise<GuildScheduledEvent<Status>>;
   public setName(name: string, reason?: string): Promise<GuildScheduledEvent<Status>>;
+  public setImage(
+    image: Base64Resolvable | BufferResolvable | null,
+    reason?: string,
+  ): Promise<GuildScheduledEvent<Status>>;
   public setScheduledStartTime(
     scheduledStartTime: DateResolvable,
     reason?: string,
