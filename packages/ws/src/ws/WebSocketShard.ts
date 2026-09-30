@@ -360,7 +360,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.failedToConnectDueToNetworkError = false;
 
 		// Clear session state if applicable
-		if (options.recover !== WebSocketShardDestroyRecovery.Resume) {
+		if (
+			(options.recover !== WebSocketShardDestroyRecovery.Resume && options.code !== CloseCodes.Resuming) ||
+			options.code === CloseCodes.Normal
+		) {
 			await this.strategy.updateSessionInfo(this.id, null);
 		}
 
@@ -549,6 +552,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			`shard id: ${this.id.toString()}`,
 			`shard count: ${this.strategy.options.shardCount}`,
 			`intents: ${this.strategy.options.intents}`,
+			`capabilities: ${this.strategy.options.capabilities}`,
 			`compression: ${this.transportCompressionEnabled ? CompressionParameterMap[this.strategy.options.compression!] : this.identifyCompressionEnabled ? 'identify' : 'none'}`,
 		]);
 
@@ -556,6 +560,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			token: this.strategy.options.token,
 			properties: this.strategy.options.identifyProperties,
 			intents: this.strategy.options.intents,
+			capabilities: this.strategy.options.capabilities,
 			compress: this.identifyCompressionEnabled,
 			shard: [this.id, this.strategy.options.shardCount],
 		};

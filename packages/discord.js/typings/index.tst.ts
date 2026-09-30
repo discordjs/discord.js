@@ -140,6 +140,7 @@ import type {
   GuildOnboarding,
   GuildResolvable,
   GuildScheduledEventManager,
+  GuildScheduledEventCreateOptions,
   GuildScheduledEventRecurrenceRuleOptions,
   GuildTextBasedChannel,
   GuildTextThreadManager,
@@ -832,6 +833,14 @@ client.on('presenceUpdate', (oldPresence, { client }) => {
 declare const slashCommandBuilder: ChatInputCommandBuilder;
 declare const contextMenuCommandBuilder: ContextMenuCommandBuilder;
 declare const guild: Guild;
+
+await guild.soundboardSounds.create({
+  file: './sound.mp3',
+  name: 'sound',
+  emojiId: null,
+  emojiName: null,
+  volume: null,
+});
 
 client.on('clientReady', async client => {
   expect(client).type.toBe<Client<true>>();
@@ -1805,6 +1814,11 @@ declare const guildChannelManager: GuildChannelManager;
     expect(message.guild).type.toBe<Guild>();
     expect(message.guildId).type.toBe<Snowflake>();
     expect(message.channel.messages.channel).type.toBe<GuildTextBasedChannel>();
+
+    if (message.interactionMetadata) {
+      expect(message.interactionMetadata.targetUser).type.toBe<User | null>();
+      expect(message.interactionMetadata.targetMessageId).type.toBe<Snowflake | null>();
+    }
   }
 }
 
@@ -3079,6 +3093,14 @@ client.on('interactionCreate', async interaction => {
 
 declare const guildScheduledEventManager: GuildScheduledEventManager;
 await guildScheduledEventManager.edit(snowflake, { recurrenceRule: null });
+await guildScheduledEventManager.edit(snowflake, { description: null });
+
+{
+  const event = await guildScheduledEventManager.fetch(snowflake);
+  await event.setDescription(null);
+  await event.edit({ description: null });
+  expect(null).type.not.toBeAssignableTo<GuildScheduledEventCreateOptions['description']>();
+}
 
 {
   expect({
