@@ -67,12 +67,12 @@ client.login({ clientId: process.env.CLIENT_ID }).catch(console.error);
 ### Logging messages of importance for the current user
 
 ```ts
-import { RPCClient } from '@discordjs/rpc';
+import { RPCClient, Events } from '@discordjs/rpc';
 import { OAuth2Scopes, RPCEvents } from 'discord-api-types/v10';
 
 const client = new RPCClient({ scopes: [OAuth2Scopes.MessagesRead] });
 
-client.on(RPCEvents.Ready, async () => {
+client.on(Events.ApplicationReady, async () => {
 	await client.subscribe(RPCEvents.MessageCreate, { channel_id: process.env.CHANNEL_ID });
 });
 
