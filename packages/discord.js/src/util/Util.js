@@ -573,6 +573,18 @@ function transformResolved(
 }
 
 /**
+ * Checks whether a resolved component property is absent or holds an empty collection.
+ *
+ * @param {*} value The property to check
+ * @returns {boolean}
+ * @private
+ */
+function isEmptyComponentValue(value) {
+  if (value instanceof Collection) return value.size === 0;
+  return value === null || value === undefined;
+}
+
+/**
  * Resolves a SKU id from a SKU resolvable.
  *
  * @param {SKUResolvable} resolvable The SKU resolvable to resolve
@@ -607,3 +619,4 @@ exports.setPosition = setPosition;
 exports.basename = basename;
 exports.findName = findName;
 exports.transformResolved = transformResolved;
+exports.isEmptyComponentValue = isEmptyComponentValue;
