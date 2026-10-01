@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { PermissionFlagsBits } = require('discord-api-types/v10');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { GuildMessageManager } = require('../managers/GuildMessageManager.js');
 const { GuildChannel } = require('./GuildChannel.js');
 const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
@@ -141,6 +142,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
     // This flag allows joining even if timed out
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
+    if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
     return (
       this.guild.members.me.communicationDisabledUntilTimestamp < Date.now() &&
       permissions.has(PermissionFlagsBits.Connect, false)
