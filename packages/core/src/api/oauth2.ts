@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { type RequestData, type REST, makeURLSearchParams } from '@discordjs/rest';
+import { type REST, makeURLSearchParams } from '@discordjs/rest';
 import {
 	Routes,
 	RouteBases,
@@ -16,6 +16,7 @@ import {
 	type RESTPostOAuth2TokenRevocationQuery,
 	type Snowflake,
 } from 'discord-api-types/v10';
+import type { BaseRequestOptions, RequestOptions } from '../util/types.js';
 
 export class OAuth2API {
 	public constructor(private readonly rest: REST) {}
@@ -41,16 +42,17 @@ export class OAuth2API {
 	 */
 	public async tokenExchange(
 		body: RESTPostOAuth2AccessTokenURLEncodedData,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ headers, ...options }: BaseRequestOptions = {},
 	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
+			...options,
 			body: makeURLSearchParams<RESTPostOAuth2AccessTokenURLEncodedData>(body),
 			passThroughBody: true,
 			headers: {
+				...headers,
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
 			auth: false,
-			signal,
 		}) as Promise<RESTPostOAuth2AccessTokenResult>;
 	}
 
@@ -63,16 +65,17 @@ export class OAuth2API {
 	 */
 	public async refreshToken(
 		body: RESTPostOAuth2RefreshTokenURLEncodedData,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ headers, ...options }: BaseRequestOptions = {},
 	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
+			...options,
 			body: makeURLSearchParams<RESTPostOAuth2RefreshTokenURLEncodedData>(body),
 			passThroughBody: true,
 			headers: {
+				...headers,
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
 			auth: false,
-			signal,
 		}) as Promise<RESTPostOAuth2RefreshTokenResult>;
 	}
 
@@ -87,16 +90,17 @@ export class OAuth2API {
 	 */
 	public async getToken(
 		body: RESTPostOAuth2ClientCredentialsURLEncodedData,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ headers, ...options }: BaseRequestOptions = {},
 	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
+			...options,
 			body: makeURLSearchParams(body),
 			passThroughBody: true,
 			headers: {
+				...headers,
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
 			auth: false,
-			signal,
 		}) as Promise<RESTPostOAuth2ClientCredentialsResult>;
 	}
 
@@ -106,11 +110,11 @@ export class OAuth2API {
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#get-current-bot-application-information}
 	 * @param options - The options for the current bot application information request
 	 */
-	public async getCurrentBotApplicationInformation({ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.get(Routes.oauth2CurrentApplication(), {
-			auth,
-			signal,
-		}) as Promise<RESTGetAPIOAuth2CurrentApplicationResult>;
+	public async getCurrentBotApplicationInformation(options: RequestOptions = {}) {
+		return this.rest.get(
+			Routes.oauth2CurrentApplication(),
+			options,
+		) as Promise<RESTGetAPIOAuth2CurrentApplicationResult>;
 	}
 
 	/**
@@ -119,11 +123,11 @@ export class OAuth2API {
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#get-current-authorization-information}
 	 * @param options - The options for the current authorization information request
 	 */
-	public async getCurrentAuthorizationInformation({ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.get(Routes.oauth2CurrentAuthorization(), {
-			auth,
-			signal,
-		}) as Promise<RESTGetAPIOAuth2CurrentAuthorizationResult>;
+	public async getCurrentAuthorizationInformation(options: RequestOptions = {}) {
+		return this.rest.get(
+			Routes.oauth2CurrentAuthorization(),
+			options,
+		) as Promise<RESTGetAPIOAuth2CurrentAuthorizationResult>;
 	}
 
 	/**
@@ -139,17 +143,18 @@ export class OAuth2API {
 		applicationId: Snowflake,
 		applicationSecret: string,
 		body: RESTPostOAuth2TokenRevocationQuery,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ headers, ...options }: BaseRequestOptions = {},
 	) {
 		await this.rest.post(Routes.oauth2TokenRevocation(), {
+			...options,
 			body: makeURLSearchParams(body),
 			passThroughBody: true,
 			headers: {
+				...headers,
 				Authorization: `Basic ${btoa(`${applicationId}:${applicationSecret}`)}`,
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
 			auth: false,
-			signal,
 		});
 	}
 }

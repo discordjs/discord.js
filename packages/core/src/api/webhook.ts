@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { makeURLSearchParams, type RequestData, type RawFile, type REST } from '@discordjs/rest';
+import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
 import {
 	Routes,
 	type RESTGetAPIWebhookWithTokenMessageQuery,
@@ -19,6 +19,7 @@ import {
 	type RESTDeleteAPIWebhookWithTokenMessageQuery,
 	type Snowflake,
 } from 'discord-api-types/v10';
+import type { BaseRequestOptions, BaseRequestOptionsWithReason } from '../util/types.js';
 
 export type CreateWebhookMessageOptions = RESTPostAPIWebhookWithTokenJSONBody &
 	RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[] };
@@ -39,12 +40,9 @@ export class WebhooksAPI {
 	 * @param id - The id of the webhook
 	 * @param options - The options for fetching the webhook
 	 */
-	public async get(
-		id: Snowflake,
-		{ token, signal }: Pick<RequestData, 'signal'> & { token?: string | undefined } = {},
-	) {
+	public async get(id: Snowflake, { token, ...options }: BaseRequestOptions & { token?: string | undefined } = {}) {
 		return this.rest.get(Routes.webhook(id, token), {
-			signal,
+			...options,
 			auth: !token,
 		}) as Promise<RESTGetAPIWebhookResult>;
 	}
@@ -61,12 +59,11 @@ export class WebhooksAPI {
 	public async edit(
 		id: Snowflake,
 		body: RESTPatchAPIWebhookJSONBody,
-		{ token, reason, signal }: Pick<RequestData, 'reason' | 'signal'> & { token?: string | undefined } = {},
+		{ token, ...options }: BaseRequestOptionsWithReason & { token?: string | undefined } = {},
 	) {
 		return this.rest.patch(Routes.webhook(id, token), {
-			reason,
+			...options,
 			body,
-			signal,
 			auth: !token,
 		}) as Promise<RESTPatchAPIWebhookResult>;
 	}
@@ -81,11 +78,10 @@ export class WebhooksAPI {
 	 */
 	public async delete(
 		id: Snowflake,
-		{ token, reason, signal }: Pick<RequestData, 'reason' | 'signal'> & { token?: string | undefined } = {},
+		{ token, ...options }: BaseRequestOptionsWithReason & { token?: string | undefined } = {},
 	) {
 		await this.rest.delete(Routes.webhook(id, token), {
-			reason,
-			signal,
+			...options,
 			auth: !token,
 		});
 	}
@@ -103,7 +99,7 @@ export class WebhooksAPI {
 		id: Snowflake,
 		token: string,
 		body: CreateWebhookMessageOptions & { wait: true },
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<RESTPostAPIWebhookWithTokenWaitResult>;
 
 	/**
@@ -119,7 +115,7 @@ export class WebhooksAPI {
 		id: Snowflake,
 		token: string,
 		body: CreateWebhookMessageOptions & { wait?: false },
-		options?: Pick<RequestData, 'signal'>,
+		options?: BaseRequestOptions,
 	): Promise<void>;
 
 	/**
@@ -135,14 +131,14 @@ export class WebhooksAPI {
 		id: Snowflake,
 		token: string,
 		{ wait, thread_id, with_components, files, ...body }: CreateWebhookMessageOptions,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		options: BaseRequestOptions = {},
 	) {
 		return this.rest.post(Routes.webhook(id, token), {
+			...options,
 			query: makeURLSearchParams({ wait, thread_id, with_components }),
 			files,
 			body,
 			auth: false,
-			signal,
 		}) as Promise<RESTPostAPIWebhookWithTokenWaitResult | void>;
 	}
 
@@ -161,13 +157,13 @@ export class WebhooksAPI {
 		token: string,
 		body: unknown,
 		query: RESTPostAPIWebhookWithTokenSlackQuery = {},
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		options: BaseRequestOptions = {},
 	) {
 		await this.rest.post(Routes.webhookPlatform(id, token, 'slack'), {
+			...options,
 			query: makeURLSearchParams(query),
 			body,
 			auth: false,
-			signal,
 		});
 	}
 
@@ -186,12 +182,12 @@ export class WebhooksAPI {
 		token: string,
 		body: unknown,
 		query: RESTPostAPIWebhookWithTokenGitHubQuery = {},
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		options: BaseRequestOptions = {},
 	) {
 		await this.rest.post(Routes.webhookPlatform(id, token, 'github'), {
+			...options,
 			query: makeURLSearchParams(query),
 			body,
-			signal,
 			auth: false,
 		});
 	}
@@ -211,12 +207,12 @@ export class WebhooksAPI {
 		token: string,
 		messageId: Snowflake,
 		query: RESTGetAPIWebhookWithTokenMessageQuery = {},
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		options: BaseRequestOptions = {},
 	) {
 		return this.rest.get(Routes.webhookMessage(id, token, messageId), {
+			...options,
 			query: makeURLSearchParams(query),
 			auth: false,
-			signal,
 		}) as Promise<RESTGetAPIWebhookWithTokenMessageResult>;
 	}
 
@@ -235,13 +231,13 @@ export class WebhooksAPI {
 		token: string,
 		messageId: Snowflake,
 		{ thread_id, with_components, files, ...body }: EditWebhookMessageOptions,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		options: BaseRequestOptions = {},
 	) {
 		return this.rest.patch(Routes.webhookMessage(id, token, messageId), {
+			...options,
 			query: makeURLSearchParams({ thread_id, with_components }),
 			auth: false,
 			body,
-			signal,
 			files,
 		}) as Promise<RESTPatchAPIWebhookWithTokenMessageResult>;
 	}
@@ -261,12 +257,12 @@ export class WebhooksAPI {
 		token: string,
 		messageId: Snowflake,
 		query: RESTDeleteAPIWebhookWithTokenMessageQuery = {},
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		options: BaseRequestOptions = {},
 	) {
 		await this.rest.delete(Routes.webhookMessage(id, token, messageId), {
+			...options,
 			query: makeURLSearchParams(query),
 			auth: false,
-			signal,
 		});
 	}
 }
