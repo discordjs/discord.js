@@ -230,50 +230,68 @@ export function escapeInlineCode(text: string): string {
 /**
  * Escapes italic markdown in a string.
  *
+ * A run of `*` or `_` is only "italic" on its own when its length is odd; an even-length
+ * run is entirely made up of bold/underline pairs and is left untouched here so
+ * {@link escapeBold} / {@link escapeUnderline} can handle it. Operating on the whole run at
+ * once (instead of peeking 1-2 characters ahead per match) avoids the overlapping-match bug
+ * where `RegExp#lastIndex` skips past unescaped characters in runs of 4 or more markers.
+ *
  * @param text - Content to escape
  */
 export function escapeItalic(text: string): string {
 	let idx = 0;
-	const newText = text.replaceAll(
-		/(?<=^|[^*])(?<!(?<!<)https?:\/\/\S*|<[^\s:]+:\/[^\s>]*)\*([^*]|\*\*|$)/g,
-		(_, match) => {
-			if (match === '**') return ++idx % 2 ? `\\*${match}` : `${match}\\*`;
-			return `\\*${match}`;
-		},
-	);
+	const newText = text.replaceAll(/(?<=^|[^*])(?<!(?<!<)https?:\/\/\S*|<[^\s:]+:\/[^\s>]*)\*+/g, (run) => {
+		if (run.length % 2 === 0) return run;
+		const pairs = '*'.repeat(run.length - 1);
+		return ++idx % 2 ? `\\*${pairs}` : `${pairs}\\*`;
+	});
 	idx = 0;
-	return newText.replaceAll(
-		/(?<=^|[^_])(?<!<a?:.+|(?<!<)https?:\/\/\S*|<[^\s:]:\/[^\s>]*)_(?!:\d+>)([^_]|__|$)/g,
-		(_, match) => {
-			if (match === '__') return ++idx % 2 ? `\\_${match}` : `${match}\\_`;
-			return `\\_${match}`;
-		},
-	);
+	return newText.replaceAll(/(?<=^|[^_])(?<!<a?:.+|(?<!<)https?:\/\/\S*|<[^\s:]:\/[^\s>]*)_+(?!_)(?!:\d+>)/g, (run) => {
+		if (run.length % 2 === 0) return run;
+		const pairs = '_'.repeat(run.length - 1);
+		return ++idx % 2 ? `\\_${pairs}` : `${pairs}\\_`;
+	});
 }
 
 /**
  * Escapes bold markdown in a string.
  *
+ * Matches a run of two or more `*` as a whole (instead of `**` plus one optional lookahead
+ * character) so runs longer than 3 characters don't leave unescaped trailing asterisks. The
+ * `(?<!\\)` guard skips a `*` that {@link escapeItalic} already escaped, so it isn't folded
+ * into a new run. When {@link escapeItalic} ran first, the run passed in is always even in
+ * length; the odd-length fallback below only matters if `escapeBold` is called on its own.
+ *
  * @param text - Content to escape
  */
 export function escapeBold(text: string): string {
 	let idx = 0;
-	return text.replaceAll(/\*\*(\*)?/g, (_, match) => {
-		if (match) return ++idx % 2 ? `${match}\\*\\*` : `\\*\\*${match}`;
-		return '\\*\\*';
+	return text.replaceAll(/(?<!\\)\*{2,}/g, (run) => {
+		const pairs = Math.floor(run.length / 2);
+		const leftover = run.length % 2;
+		const escaped = '\\*\\*'.repeat(pairs);
+		if (!leftover) return escaped;
+		return ++idx % 2 ? `*${escaped}` : `${escaped}*`;
 	});
 }
 
 /**
  * Escapes underline markdown in a string.
  *
+ * See {@link escapeBold} for the reasoning behind matching the whole run at once instead of
+ * `__` plus one optional lookahead character.
+ *
  * @param text - Content to escape
  */
 export function escapeUnderline(text: string): string {
 	let idx = 0;
-	return text.replaceAll(/(?<!<a?:.+|https?:\/\/\S+)__(_)?(?!:\d+>)/g, (_, match) => {
-		if (match) return ++idx % 2 ? `${match}\\_\\_` : `\\_\\_${match}`;
-		return '\\_\\_';
+
+	return text.replaceAll(/(?<!\\)(?<!<a?:.+|https?:\/\/\S+)_{2,}(?!_)(?!:\d+>)/g, (run) => {
+		const pairs = Math.floor(run.length / 2);
+		const leftover = run.length % 2;
+		const escaped = '\\_\\_'.repeat(pairs);
+		if (!leftover) return escaped;
+		return ++idx % 2 ? `_${escaped}` : `${escaped}_`;
 	});
 }
 

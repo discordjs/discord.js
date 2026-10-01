@@ -308,6 +308,17 @@ part of it
 			);
 		});
 
+		for (const marker of ['_', '*']) {
+			for (const length of [4, 5, 6, 7, 8, 9, 10, 20, 37, 100]) {
+				test(`should escape ${length} consecutive ${marker} characters`, () => {
+					const input = marker.repeat(length);
+					const expected = `\\${marker}`.repeat(length);
+
+					expect(escapeMarkdown(input)).toBe(expected);
+				});
+			}
+		}
+
 		describe('block quotes', () => {
 			test('blockQuote', () => {
 				const testStringWithBlockQuote = `>>${testString}`;
