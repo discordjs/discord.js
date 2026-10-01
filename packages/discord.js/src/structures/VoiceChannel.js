@@ -14,7 +14,9 @@ class VoiceChannel extends BaseGuildVoiceChannel {
 
     if ('status' in data) {
       /**
-       * The voice channel status, or `null` if none is set.
+       * The voice channel status.
+       * <info>This is only set by the {@link Events.VoiceChannelStatusUpdate} event or by manually calling
+       * {@link Guild#requestChannelInfo}.</info>
        *
        * @type {?string}
        */
@@ -25,7 +27,9 @@ class VoiceChannel extends BaseGuildVoiceChannel {
 
     if ('voice_start_time' in data) {
       /**
-       * The timestamp when the current voice session started, or `null` if no session is active.
+       * The timestamp when the current voice session started.
+       * <info>This is only set by the {@link Events.VoiceChannelStartTimeUpdate} event or by manually calling
+       * {@link Guild#requestChannelInfo}.</info>
        *
        * @type {?number}
        */
