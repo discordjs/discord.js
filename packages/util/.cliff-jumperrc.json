@@ -3,5 +3,6 @@
 	"name": "util",
 	"org": "discordjs",
 	"packagePath": "packages/util",
-	"identifierBase": false
+	"identifierBase": false,
+	"skipTag": true
 }
