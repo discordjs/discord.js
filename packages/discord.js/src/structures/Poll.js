@@ -19,7 +19,7 @@ class Poll extends Base {
      *
      * @type {Snowflake}
      */
-    this.channelId = data.channel_id ?? channel.id;
+    this.channelId = data.channel_id ?? channel?.id ?? message.channelId;
 
     /**
      * The channel that this poll is in
