@@ -1,8 +1,6 @@
-'use strict';
-
-const { AttachmentFlags } = require('discord-api-types/v10');
-const { AttachmentFlagsBitField } = require('../util/AttachmentFlagsBitField.js');
-const { flatten } = require('../util/Util.js');
+import { AttachmentFlags } from 'discord-api-types/v10';
+import { AttachmentFlagsBitField } from '../util/AttachmentFlagsBitField.js';
+import { flatten } from '../util/Util.js';
 
 /**
  * @typedef {Object} AttachmentPayload
@@ -17,7 +15,7 @@ const { flatten } = require('../util/Util.js');
 /**
  * Represents an attachment
  */
-class Attachment {
+export class Attachment {
   constructor(data) {
     this.attachment = data.url;
     /**
@@ -178,5 +176,3 @@ class Attachment {
     return flatten(this);
   }
 }
-
-exports.Attachment = Attachment;

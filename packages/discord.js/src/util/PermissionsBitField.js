@@ -1,7 +1,5 @@
-'use strict';
-
-const { PermissionFlagsBits } = require('discord-api-types/v10');
-const { BitField } = require('./BitField.js');
+import { PermissionFlagsBits } from 'discord-api-types/v10';
+import { BitField } from './BitField.js';
 
 /**
  * Data structure that makes it easy to interact with a permission bitfield. All {@link GuildMember}s have a set of
@@ -10,7 +8,7 @@ const { BitField } = require('./BitField.js');
  *
  * @extends {BitField}
  */
-class PermissionsBitField extends BitField {
+export class PermissionsBitField extends BitField {
   /**
    * Numeric permission flags.
    *
@@ -113,5 +111,3 @@ class PermissionsBitField extends BitField {
     return super.toArray(false);
   }
 }
-
-exports.PermissionsBitField = PermissionsBitField;

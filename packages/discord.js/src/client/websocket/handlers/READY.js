@@ -1,11 +1,12 @@
-'use strict';
+import { createRequire } from 'node:module';
+import { ClientApplication } from '../../../structures/ClientApplication.js';
+import { Status } from '../../../util/Status.js';
 
-const { ClientApplication } = require('../../../structures/ClientApplication.js');
-const { Status } = require('../../../util/Status.js');
+const require = createRequire(import.meta.url);
 
 let ClientUser;
 
-module.exports = (client, { d: data }, shardId) => {
+export default (client, { d: data }, shardId) => {
   if (client.user) {
     client.user._patch(data.user);
   } else {

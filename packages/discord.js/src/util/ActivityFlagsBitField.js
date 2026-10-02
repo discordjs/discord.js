@@ -1,15 +1,13 @@
 /* eslint-disable jsdoc/check-values */
-'use strict';
-
-const { ActivityFlags } = require('discord-api-types/v10');
-const { BitField } = require('./BitField.js');
+import { ActivityFlags } from 'discord-api-types/v10';
+import { BitField } from './BitField.js';
 
 /**
  * Data structure that makes it easy to interact with an {@link Activity#flags} bitfield.
  *
  * @extends {BitField}
  */
-class ActivityFlagsBitField extends BitField {
+export class ActivityFlagsBitField extends BitField {
   /**
    * Numeric activity flags.
    *
@@ -25,5 +23,3 @@ class ActivityFlagsBitField extends BitField {
  * @memberof ActivityFlagsBitField
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */
-
-exports.ActivityFlagsBitField = ActivityFlagsBitField;

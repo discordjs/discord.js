@@ -1,15 +1,16 @@
 /* eslint-disable promise/prefer-await-to-callbacks, promise/prefer-await-to-then, no-use-before-define */
-'use strict';
+import { createRequire } from 'node:module';
+import path from 'node:path';
+import process from 'node:process';
+import { setTimeout, clearTimeout } from 'node:timers';
+import { setTimeout as sleep } from 'node:timers/promises';
+import { SHARE_ENV } from 'node:worker_threads';
+import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { ShardEvents } from '../util/ShardEvents.js';
+import { makeError, makePlainError } from '../util/Util.js';
 
-const path = require('node:path');
-const process = require('node:process');
-const { setTimeout, clearTimeout } = require('node:timers');
-const { setTimeout: sleep } = require('node:timers/promises');
-const { SHARE_ENV } = require('node:worker_threads');
-const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { ShardEvents } = require('../util/ShardEvents.js');
-const { makeError, makePlainError } = require('../util/Util.js');
+const require = createRequire(import.meta.url);
 
 let childProcess = null;
 let Worker = null;
@@ -21,7 +22,7 @@ let Worker = null;
  *
  * @extends {AsyncEventEmitter}
  */
-class Shard extends AsyncEventEmitter {
+export class Shard extends AsyncEventEmitter {
   constructor(manager, id) {
     super();
 
@@ -502,5 +503,3 @@ class Shard extends AsyncEventEmitter {
     }
   }
 }
-
-exports.Shard = Shard;

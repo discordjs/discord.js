@@ -1,9 +1,7 @@
-'use strict';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const { Events } = require('../../util/Events.js');
-const { Action } = require('./Action.js');
-
-class GuildSoundboardSoundDeleteAction extends Action {
+export class GuildSoundboardSoundDeleteAction extends Action {
   handle(data) {
     const guild = this.client.guilds.cache.get(data.guild_id);
 
@@ -26,5 +24,3 @@ class GuildSoundboardSoundDeleteAction extends Action {
     return { soundboardSound };
   }
 }
-
-exports.GuildSoundboardSoundDeleteAction = GuildSoundboardSoundDeleteAction;

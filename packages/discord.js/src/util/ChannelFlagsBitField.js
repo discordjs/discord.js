@@ -1,15 +1,13 @@
 /* eslint-disable jsdoc/check-values */
-'use strict';
-
-const { ChannelFlags } = require('discord-api-types/v10');
-const { BitField } = require('./BitField.js');
+import { ChannelFlags } from 'discord-api-types/v10';
+import { BitField } from './BitField.js';
 
 /**
  * Data structure that makes it easy to interact with a {@link BaseChannel#flags} bitfield.
  *
  * @extends {BitField}
  */
-class ChannelFlagsBitField extends BitField {
+export class ChannelFlagsBitField extends BitField {
   /**
    * Numeric guild channel flags.
    *
@@ -42,5 +40,3 @@ class ChannelFlagsBitField extends BitField {
  *
  * @typedef {string|number|ChannelFlagsBitField|ChannelFlagsResolvable[]} ChannelFlagsResolvable
  */
-
-exports.ChannelFlagsBitField = ChannelFlagsBitField;

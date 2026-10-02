@@ -1,19 +1,17 @@
-'use strict';
-
-const { Routes, PermissionFlagsBits, InviteType } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { InviteFlagsBitField } = require('../util/InviteFlagsBitField.js');
-const { BaseInvite } = require('./BaseInvite.js');
-const { GuildScheduledEvent } = require('./GuildScheduledEvent.js');
-const { IntegrationApplication } = require('./IntegrationApplication.js');
-const { InviteGuild } = require('./InviteGuild.js');
+import { Routes, PermissionFlagsBits, InviteType } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { InviteFlagsBitField } from '../util/InviteFlagsBitField.js';
+import { BaseInvite } from './BaseInvite.js';
+import { GuildScheduledEvent } from './GuildScheduledEvent.js';
+import { IntegrationApplication } from './IntegrationApplication.js';
+import { InviteGuild } from './InviteGuild.js';
 
 /**
  * A channel invite leading to a guild.
  *
  * @extends {BaseInvite}
  */
-class GuildInvite extends BaseInvite {
+export class GuildInvite extends BaseInvite {
   constructor(client, data) {
     super(client, data);
 
@@ -219,5 +217,3 @@ class GuildInvite extends BaseInvite {
     });
   }
 }
-
-exports.GuildInvite = GuildInvite;

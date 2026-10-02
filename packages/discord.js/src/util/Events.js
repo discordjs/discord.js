@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @typedef {Object} Events
  * @property {string} ApplicationCommandPermissionsUpdate applicationCommandPermissionsUpdate
@@ -92,7 +90,7 @@
  * @type {Events}
  * @ignore
  */
-exports.Events = {
+export const Events = {
   ApplicationCommandPermissionsUpdate: 'applicationCommandPermissionsUpdate',
   AutoModerationActionExecution: 'autoModerationActionExecution',
   AutoModerationRuleCreate: 'autoModerationRuleCreate',

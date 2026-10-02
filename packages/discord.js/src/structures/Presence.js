@@ -1,10 +1,8 @@
 /* eslint-disable no-use-before-define */
-'use strict';
-
-const { ActivityFlagsBitField } = require('../util/ActivityFlagsBitField.js');
-const { flatten } = require('../util/Util.js');
-const { Base } = require('./Base.js');
-const { Emoji } = require('./Emoji.js');
+import { ActivityFlagsBitField } from '../util/ActivityFlagsBitField.js';
+import { flatten } from '../util/Util.js';
+import { Base } from './Base.js';
+import { Emoji } from './Emoji.js';
 
 /**
  * Activity sent in a message.
@@ -38,7 +36,7 @@ const { Emoji } = require('./Emoji.js');
  *
  * @extends {Base}
  */
-class Presence extends Base {
+export class Presence extends Base {
   constructor(client, data = {}) {
     super(client);
 
@@ -156,7 +154,7 @@ class Presence extends Base {
 /**
  * Represents an activity that is part of a user's presence.
  */
-class Activity {
+export class Activity {
   constructor(presence, data) {
     /**
      * The presence of the Activity
@@ -335,7 +333,7 @@ class Activity {
 /**
  * Assets for a rich presence
  */
-class RichPresenceAssets {
+export class RichPresenceAssets {
   constructor(activity, assets) {
     /**
      * The activity of the RichPresenceAssets
@@ -423,7 +421,3 @@ class RichPresenceAssets {
     return this.activity.presence.client.rest.cdn.appAsset(this.activity.applicationId, this.largeImage, options);
   }
 }
-
-exports.Presence = Presence;
-exports.Activity = Activity;
-exports.RichPresenceAssets = RichPresenceAssets;

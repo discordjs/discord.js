@@ -1,14 +1,12 @@
-'use strict';
-
-const { createComponent } = require('../util/Components.js');
-const { Component } = require('./Component.js');
+import { createComponent } from '../util/Components.js';
+import { Component } from './Component.js';
 
 /**
  * Represents a container component
  *
  * @extends {Component}
  */
-class ContainerComponent extends Component {
+export class ContainerComponent extends Component {
   constructor({ components, ...data }) {
     super(data);
 
@@ -62,5 +60,3 @@ class ContainerComponent extends Component {
     return { ...this.data, components: this.components.map(component => component.toJSON()) };
   }
 }
-
-exports.ContainerComponent = ContainerComponent;

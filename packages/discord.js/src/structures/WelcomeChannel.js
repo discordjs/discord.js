@@ -1,14 +1,12 @@
-'use strict';
-
-const { Base } = require('./Base.js');
-const { Emoji } = require('./Emoji.js');
+import { Base } from './Base.js';
+import { Emoji } from './Emoji.js';
 
 /**
  * Represents a channel link in a guild's welcome screen.
  *
  * @extends {Base}
  */
-class WelcomeChannel extends Base {
+export class WelcomeChannel extends Base {
   constructor(guild, data) {
     super(guild.client);
 
@@ -63,5 +61,3 @@ class WelcomeChannel extends Base {
     return this.guild.emojis.cache.get(this._emoji.id) ?? new Emoji(this.client, this._emoji);
   }
 }
-
-exports.WelcomeChannel = WelcomeChannel;

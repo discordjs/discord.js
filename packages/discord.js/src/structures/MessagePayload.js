@@ -1,14 +1,14 @@
-'use strict';
-
-const { Buffer } = require('node:buffer');
-const { isJSONEncodable, isRawFileEncodable, lazy } = require('@discordjs/util');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
-const { resolveFile } = require('../util/DataResolver.js');
-const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
-const { findName, verifyString, resolvePartialEmoji } = require('../util/Util.js');
+import { Buffer } from 'node:buffer';
+import { createRequire } from 'node:module';
+import { isJSONEncodable, isRawFileEncodable, lazy } from '@discordjs/util';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { DiscordjsError, DiscordjsRangeError, ErrorCodes } from '../errors/index.js';
+import { resolveFile } from '../util/DataResolver.js';
+import { MessageFlagsBitField } from '../util/MessageFlagsBitField.js';
+import { findName, verifyString, resolvePartialEmoji } from '../util/Util.js';
 
 // Fixes circular dependencies.
+const require = createRequire(import.meta.url);
 const getWebhook = lazy(() => require('./Webhook.js').Webhook);
 const getUser = lazy(() => require('./User.js').User);
 const getGuildMember = lazy(() => require('./GuildMember.js').GuildMember);
@@ -18,7 +18,7 @@ const getMessageManager = lazy(() => require('../managers/MessageManager.js').Me
 /**
  * Represents a message to be sent to the API.
  */
-class MessagePayload {
+export class MessagePayload {
   /**
    * @param {MessageTarget} target The target for this message to be sent to
    * @param {MessagePayloadOption} options The payload of this message
@@ -323,8 +323,6 @@ class MessagePayload {
     );
   }
 }
-
-exports.MessagePayload = MessagePayload;
 
 /**
  * A target for a message.

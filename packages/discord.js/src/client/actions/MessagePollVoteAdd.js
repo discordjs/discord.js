@@ -1,9 +1,7 @@
-'use strict';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const { Events } = require('../../util/Events.js');
-const { Action } = require('./Action.js');
-
-class MessagePollVoteAddAction extends Action {
+export class MessagePollVoteAddAction extends Action {
   handle(data) {
     const channel = this.getChannel({ id: data.channel_id, ...('guild_id' in data && { guild_id: data.guild_id }) });
     if (!channel?.isTextBased()) return false;
@@ -37,5 +35,3 @@ class MessagePollVoteAddAction extends Action {
     return { poll };
   }
 }
-
-exports.MessagePollVoteAddAction = MessagePollVoteAddAction;

@@ -1,8 +1,6 @@
-'use strict';
-
-const { isJSONEncodable } = require('@discordjs/util');
-const snakeCase = require('lodash.snakecase');
-const { AuthorizingIntegrationOwners } = require('../structures/AuthorizingIntegrationOwners.js');
+import { isJSONEncodable } from '@discordjs/util';
+import snakeCase from 'lodash.snakecase';
+import { AuthorizingIntegrationOwners } from '../structures/AuthorizingIntegrationOwners.js';
 
 /**
  * Transforms camel-cased keys into snake cased keys
@@ -10,7 +8,7 @@ const { AuthorizingIntegrationOwners } = require('../structures/AuthorizingInteg
  * @param {*} obj The object to transform
  * @returns {*}
  */
-function toSnakeCase(obj) {
+export function toSnakeCase(obj) {
   if (typeof obj !== 'object' || !obj) return obj;
   if (obj instanceof Date) return obj;
   if (isJSONEncodable(obj)) return toSnakeCase(obj.toJSON());
@@ -25,7 +23,7 @@ function toSnakeCase(obj) {
  * @returns {AutoModerationAction}
  * @ignore
  */
-function _transformAPIAutoModerationAction(autoModerationAction) {
+export function _transformAPIAutoModerationAction(autoModerationAction) {
   return {
     type: autoModerationAction.type,
     metadata: {
@@ -44,7 +42,7 @@ function _transformAPIAutoModerationAction(autoModerationAction) {
  * @returns {MessageInteractionMetadata}
  * @ignore
  */
-function _transformAPIMessageInteractionMetadata(client, messageInteractionMetadata) {
+export function _transformAPIMessageInteractionMetadata(client, messageInteractionMetadata) {
   return {
     id: messageInteractionMetadata.id,
     type: messageInteractionMetadata.type,
@@ -72,7 +70,7 @@ function _transformAPIMessageInteractionMetadata(client, messageInteractionMetad
  * @returns {APIGuildScheduledEventRecurrenceRule}
  * @ignore
  */
-function _transformGuildScheduledEventRecurrenceRule(recurrenceRule) {
+export function _transformGuildScheduledEventRecurrenceRule(recurrenceRule) {
   return {
     start: new Date(recurrenceRule.startAt).toISOString(),
     frequency: recurrenceRule.frequency,
@@ -91,7 +89,7 @@ function _transformGuildScheduledEventRecurrenceRule(recurrenceRule) {
  * @returns {IncidentActions}
  * @ignore
  */
-function _transformAPIIncidentsData(data) {
+export function _transformAPIIncidentsData(data) {
   return {
     invitesDisabledUntil: data.invites_disabled_until ? new Date(data.invites_disabled_until) : null,
     dmsDisabledUntil: data.dms_disabled_until ? new Date(data.dms_disabled_until) : null,
@@ -107,7 +105,7 @@ function _transformAPIIncidentsData(data) {
  * @returns {Collectibles}
  * @ignore
  */
-function _transformCollectibles(collectibles) {
+export function _transformCollectibles(collectibles) {
   if (!collectibles.nameplate) return { nameplate: null };
 
   return {
@@ -119,10 +117,3 @@ function _transformCollectibles(collectibles) {
     },
   };
 }
-
-exports.toSnakeCase = toSnakeCase;
-exports._transformAPIAutoModerationAction = _transformAPIAutoModerationAction;
-exports._transformAPIMessageInteractionMetadata = _transformAPIMessageInteractionMetadata;
-exports._transformGuildScheduledEventRecurrenceRule = _transformGuildScheduledEventRecurrenceRule;
-exports._transformAPIIncidentsData = _transformAPIIncidentsData;
-exports._transformCollectibles = _transformCollectibles;

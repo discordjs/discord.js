@@ -1,19 +1,17 @@
-'use strict';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { lazy } from '@discordjs/util';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { Routes, WebhookType } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { resolveImage } from '../util/DataResolver.js';
+import { MessagePayload } from './MessagePayload.js';
 
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { lazy } = require('@discordjs/util');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes, WebhookType } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { resolveImage } = require('../util/DataResolver.js');
-const { MessagePayload } = require('./MessagePayload.js');
-
-const getMessage = lazy(() => require('./Message.js').Message);
+const getMessage = lazy(async () => (await import('./Message.js')).Message);
 
 /**
  * Represents a webhook.
  */
-class Webhook {
+export class Webhook {
   constructor(client, data) {
     /**
      * The client that instantiated the webhook
@@ -250,7 +248,7 @@ class Webhook {
 
     return (
       this.client.channels.cache.get(data.channel_id)?.messages._add(data, false) ??
-      new (getMessage())(this.client, data)
+      new (await getMessage())(this.client, data)
     );
   }
 
@@ -346,7 +344,7 @@ class Webhook {
 
     return (
       this.client.channels.cache.get(data.channel_id)?.messages._add(data, false) ??
-      new (getMessage())(this.client, data)
+      new (await getMessage())(this.client, data)
     );
   }
 
@@ -383,7 +381,7 @@ class Webhook {
     );
 
     const messageManager = this.client.channels.cache.get(data.channel_id)?.messages;
-    if (!messageManager) return new (getMessage())(this.client, data);
+    if (!messageManager) return new (await getMessage())(this.client, data);
 
     const existing = messageManager.cache.get(data.id);
     if (!existing) return messageManager._add(data);
@@ -516,5 +514,3 @@ class Webhook {
     }
   }
 }
-
-exports.Webhook = Webhook;

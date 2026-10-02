@@ -1,8 +1,6 @@
-'use strict';
+import { Action } from './Action.js';
 
-const { Action } = require('./Action.js');
-
-class GuildStickersUpdateAction extends Action {
+export class GuildStickersUpdateAction extends Action {
   handle(data) {
     const guild = this.client.guilds.cache.get(data.guild_id);
     if (!guild?.stickers) return;
@@ -30,5 +28,3 @@ class GuildStickersUpdateAction extends Action {
     }
   }
 }
-
-exports.GuildStickersUpdateAction = GuildStickersUpdateAction;

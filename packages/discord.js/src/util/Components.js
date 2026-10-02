@@ -1,9 +1,9 @@
-'use strict';
-
-const { lazy } = require('@discordjs/util');
-const { ComponentType } = require('discord-api-types/v10');
+import { createRequire } from 'node:module';
+import { lazy } from '@discordjs/util';
+import { ComponentType } from 'discord-api-types/v10';
 
 // Fixes circular dependencies.
+const require = createRequire(import.meta.url);
 const getActionRow = lazy(() => require('../structures/ActionRow.js').ActionRow);
 const getButtonComponent = lazy(() => require('../structures/ButtonComponent.js').ButtonComponent);
 const getChannelSelectMenuComponent = lazy(
@@ -287,7 +287,7 @@ const ComponentTypeToClass = {
  * @returns {Component}
  * @ignore
  */
-function createComponent(data) {
+export function createComponent(data) {
   return data instanceof getComponent() ? data : new (ComponentTypeToClass[data.type]?.() ?? getComponent())(data);
 }
 
@@ -319,13 +319,10 @@ function extractInteractiveComponents(component) {
  * @returns {Component|APIMessageComponent}
  * @ignore
  */
-function findComponentByCustomId(components, customId) {
+export function findComponentByCustomId(components, customId) {
   return (
     components
       .flatMap(extractInteractiveComponents)
       .find(component => (component.customId ?? component.custom_id) === customId) ?? null
   );
 }
-
-exports.createComponent = createComponent;
-exports.findComponentByCustomId = findComponentByCustomId;

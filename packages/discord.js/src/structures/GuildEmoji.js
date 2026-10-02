@@ -1,16 +1,14 @@
-'use strict';
-
-const { PermissionFlagsBits } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { GuildEmojiRoleManager } = require('../managers/GuildEmojiRoleManager.js');
-const { BaseGuildEmoji } = require('./BaseGuildEmoji.js');
+import { PermissionFlagsBits } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { GuildEmojiRoleManager } from '../managers/GuildEmojiRoleManager.js';
+import { BaseGuildEmoji } from './BaseGuildEmoji.js';
 
 /**
  * Represents a custom emoji.
  *
  * @extends {BaseGuildEmoji}
  */
-class GuildEmoji extends BaseGuildEmoji {
+export class GuildEmoji extends BaseGuildEmoji {
   constructor(client, data, guild) {
     super(client, data, guild);
 
@@ -163,5 +161,3 @@ class GuildEmoji extends BaseGuildEmoji {
     }
   }
 }
-
-exports.GuildEmoji = GuildEmoji;

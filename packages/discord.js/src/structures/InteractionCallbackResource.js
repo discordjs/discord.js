@@ -1,13 +1,13 @@
-'use strict';
+import { createRequire } from 'node:module';
+import { lazy } from '@discordjs/util';
 
-const { lazy } = require('@discordjs/util');
-
+const require = createRequire(import.meta.url);
 const getMessage = lazy(() => require('./Message.js').Message);
 
 /**
  * Represents the resource that was created by the interaction response.
  */
-class InteractionCallbackResource {
+export class InteractionCallbackResource {
   constructor(client, data) {
     /**
      * The client that instantiated this
@@ -53,5 +53,3 @@ class InteractionCallbackResource {
     }
   }
 }
-
-exports.InteractionCallbackResource = InteractionCallbackResource;

@@ -1,13 +1,11 @@
-'use strict';
-
-const { ChannelType, MessageType, ComponentType, ImageFormat, StickerFormatType } = require('discord-api-types/v10');
+import { ChannelType, MessageType, ComponentType, ImageFormat, StickerFormatType } from 'discord-api-types/v10';
 
 /**
  * Max bulk deletable message age
  *
  * @typedef {number} MaxBulkDeletableMessageAge
  */
-exports.MaxBulkDeletableMessageAge = 1_209_600_000;
+export const MaxBulkDeletableMessageAge = 1_209_600_000;
 
 /**
  * The name of an item to be swept in Sweepers
@@ -30,7 +28,7 @@ exports.MaxBulkDeletableMessageAge = 1_209_600_000;
  *
  * @typedef {string} SweeperKey
  */
-exports.SweeperKeys = [
+export const SweeperKeys = [
   'autoModerationRules',
   'applicationCommands',
   'bans',
@@ -58,7 +56,7 @@ exports.SweeperKeys = [
  *
  * @typedef {MessageType[]} NonSystemMessageTypes
  */
-exports.NonSystemMessageTypes = [
+export const NonSystemMessageTypes = [
   MessageType.Default,
   MessageType.Reply,
   MessageType.ChatInputCommand,
@@ -88,7 +86,7 @@ exports.NonSystemMessageTypes = [
  *
  * @typedef {ChannelType[]} GuildTextBasedChannelTypes
  */
-exports.GuildTextBasedChannelTypes = [
+export const GuildTextBasedChannelTypes = [
   ChannelType.GuildText,
   ChannelType.GuildAnnouncement,
   ChannelType.AnnouncementThread,
@@ -128,7 +126,7 @@ exports.GuildTextBasedChannelTypes = [
  *
  * @typedef {ChannelType[]} TextBasedChannelTypes
  */
-exports.TextBasedChannelTypes = [...exports.GuildTextBasedChannelTypes, ChannelType.DM, ChannelType.GroupDM];
+export const TextBasedChannelTypes = [...GuildTextBasedChannelTypes, ChannelType.DM, ChannelType.GroupDM];
 
 /**
  * The types of channels that are text-based and can have messages sent into. The available types are:
@@ -143,7 +141,7 @@ exports.TextBasedChannelTypes = [...exports.GuildTextBasedChannelTypes, ChannelT
  *
  * @typedef {ChannelType[]} SendableChannels
  */
-exports.SendableChannels = [...exports.GuildTextBasedChannelTypes, ChannelType.DM];
+export const SendableChannels = [...GuildTextBasedChannelTypes, ChannelType.DM];
 
 /**
  * The types of channels that are threads. The available types are:
@@ -153,7 +151,7 @@ exports.SendableChannels = [...exports.GuildTextBasedChannelTypes, ChannelType.D
  *
  * @typedef {ChannelType[]} ThreadChannelTypes
  */
-exports.ThreadChannelTypes = [ChannelType.AnnouncementThread, ChannelType.PublicThread, ChannelType.PrivateThread];
+export const ThreadChannelTypes = [ChannelType.AnnouncementThread, ChannelType.PublicThread, ChannelType.PrivateThread];
 
 /**
  * The types of channels that are voice-based. The available types are:
@@ -162,7 +160,7 @@ exports.ThreadChannelTypes = [ChannelType.AnnouncementThread, ChannelType.Public
  *
  * @typedef {ChannelType[]} VoiceBasedChannelTypes
  */
-exports.VoiceBasedChannelTypes = [ChannelType.GuildVoice, ChannelType.GuildStageVoice];
+export const VoiceBasedChannelTypes = [ChannelType.GuildVoice, ChannelType.GuildStageVoice];
 
 /**
  * The types of select menus. The available types are:
@@ -174,7 +172,7 @@ exports.VoiceBasedChannelTypes = [ChannelType.GuildVoice, ChannelType.GuildStage
  *
  * @typedef {ComponentType[]} SelectMenuTypes
  */
-exports.SelectMenuTypes = [
+export const SelectMenuTypes = [
   ComponentType.StringSelect,
   ComponentType.UserSelect,
   ComponentType.RoleSelect,
@@ -193,7 +191,7 @@ exports.SelectMenuTypes = [
  *
  * @typedef {MessageType[]} UndeletableMessageTypes
  */
-exports.UndeletableMessageTypes = [
+export const UndeletableMessageTypes = [
   MessageType.RecipientAdd,
   MessageType.RecipientRemove,
   MessageType.Call,
@@ -216,7 +214,7 @@ exports.UndeletableMessageTypes = [
  * @property {"json"} 3 Lottie
  * @property {"gif"} 4 GIF
  */
-exports.StickerFormatExtensionMap = {
+export const StickerFormatExtensionMap = {
   [StickerFormatType.PNG]: ImageFormat.PNG,
   [StickerFormatType.APNG]: ImageFormat.PNG,
   [StickerFormatType.Lottie]: ImageFormat.Lottie,
@@ -233,7 +231,7 @@ exports.StickerFormatExtensionMap = {
  * @property {number} Secondary 16759788 (0xFFCCCC)
  * @property {number} Tertiary 16761760 (0xFFE0A0)
  */
-exports.HolographicStyle = {
+export const HolographicStyle = {
   Primary: 11_127_295,
   Secondary: 16_759_788,
   Tertiary: 16_761_760,

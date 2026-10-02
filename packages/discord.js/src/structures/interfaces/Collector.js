@@ -1,10 +1,8 @@
-'use strict';
-
-const { setTimeout, clearTimeout } = require('node:timers');
-const { Collection } = require('@discordjs/collection');
-const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
-const { DiscordjsTypeError, ErrorCodes } = require('../../errors/index.js');
-const { flatten } = require('../../util/Util.js');
+import { setTimeout, clearTimeout } from 'node:timers';
+import { Collection } from '@discordjs/collection';
+import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
+import { DiscordjsTypeError, ErrorCodes } from '../../errors/index.js';
+import { flatten } from '../../util/Util.js';
 
 /**
  * Filter to be applied to the collector.
@@ -31,7 +29,7 @@ const { flatten } = require('../../util/Util.js');
  * @extends {AsyncEventEmitter}
  * @abstract
  */
-class Collector extends AsyncEventEmitter {
+export class Collector extends AsyncEventEmitter {
   constructor(client, options = {}) {
     super();
 
@@ -372,5 +370,3 @@ class Collector extends AsyncEventEmitter {
   // eslint-disable-next-line no-unused-vars
   dispose(...args) {}
 }
-
-exports.Collector = Collector;

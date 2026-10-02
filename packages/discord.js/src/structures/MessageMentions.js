@@ -1,13 +1,11 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { FormattingPatterns } = require('discord-api-types/v10');
-const { flatten } = require('../util/Util.js');
+import { Collection } from '@discordjs/collection';
+import { FormattingPatterns } from 'discord-api-types/v10';
+import { flatten } from '../util/Util.js';
 
 /**
  * Keeps track of mentions in a {@link Message}.
  */
-class MessageMentions {
+export class MessageMentions {
   /**
    * A regular expression that matches `@everyone` and `@here`.
    * The `mention` group property is present on the `exec` result of this expression.
@@ -319,5 +317,3 @@ class MessageMentions {
     });
   }
 }
-
-exports.MessageMentions = MessageMentions;

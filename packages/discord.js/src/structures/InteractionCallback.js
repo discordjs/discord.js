@@ -1,11 +1,9 @@
-'use strict';
-
-const { DiscordSnowflake } = require('@sapphire/snowflake');
+import { DiscordSnowflake } from '@sapphire/snowflake';
 
 /**
  * Represents an interaction callback response from Discord
  */
-class InteractionCallback {
+export class InteractionCallback {
   constructor(client, data) {
     /**
      * The client that instantiated this.
@@ -79,5 +77,3 @@ class InteractionCallback {
     return new Date(this.createdTimestamp);
   }
 }
-
-exports.InteractionCallback = InteractionCallback;

@@ -1,38 +1,37 @@
-'use strict';
-
-const process = require('node:process');
-const { clearTimeout, setImmediate, setTimeout } = require('node:timers');
-const { Collection } = require('@discordjs/collection');
-const { REST, RESTEvents, makeURLSearchParams } = require('@discordjs/rest');
-const { WebSocketManager, WebSocketShardEvents, WebSocketShardStatus } = require('@discordjs/ws');
-const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
-const { GatewayDispatchEvents, GatewayIntentBits, OAuth2Scopes, Routes } = require('discord-api-types/v10');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { ChannelManager } = require('../managers/ChannelManager.js');
-const { GuildManager } = require('../managers/GuildManager.js');
-const { UserManager } = require('../managers/UserManager.js');
-const { ShardClientUtil } = require('../sharding/ShardClientUtil.js');
-const { ClientPresence } = require('../structures/ClientPresence.js');
-const { GuildPreview } = require('../structures/GuildPreview.js');
-const { GuildTemplate } = require('../structures/GuildTemplate.js');
-const { SoundboardSound } = require('../structures/SoundboardSound.js');
-const { Sticker } = require('../structures/Sticker.js');
-const { StickerPack } = require('../structures/StickerPack.js');
-const { VoiceRegion } = require('../structures/VoiceRegion.js');
-const { Webhook } = require('../structures/Webhook.js');
-const { Widget } = require('../structures/Widget.js');
-const { resolveInviteCode, resolveGuildTemplateCode } = require('../util/DataResolver.js');
-const { Events } = require('../util/Events.js');
-const { IntentsBitField } = require('../util/IntentsBitField.js');
-const { createInvite } = require('../util/Invites.js');
-const { Options } = require('../util/Options.js');
-const { PermissionsBitField } = require('../util/PermissionsBitField.js');
-const { Status } = require('../util/Status.js');
-const { Sweepers } = require('../util/Sweepers.js');
-const { flatten } = require('../util/Util.js');
-const { ActionsManager } = require('./actions/ActionsManager.js');
-const { ClientVoiceManager } = require('./voice/ClientVoiceManager.js');
-const { PacketHandlers } = require('./websocket/handlers/index.js');
+import process from 'node:process';
+import { clearTimeout, setImmediate, setTimeout } from 'node:timers';
+import { workerData } from 'node:worker_threads';
+import { Collection } from '@discordjs/collection';
+import { REST, RESTEvents, makeURLSearchParams } from '@discordjs/rest';
+import { WebSocketManager, WebSocketShardEvents, WebSocketShardStatus } from '@discordjs/ws';
+import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
+import { GatewayDispatchEvents, GatewayIntentBits, OAuth2Scopes, Routes } from 'discord-api-types/v10';
+import { DiscordjsError, DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { ChannelManager } from '../managers/ChannelManager.js';
+import { GuildManager } from '../managers/GuildManager.js';
+import { UserManager } from '../managers/UserManager.js';
+import { ShardClientUtil } from '../sharding/ShardClientUtil.js';
+import { ClientPresence } from '../structures/ClientPresence.js';
+import { GuildPreview } from '../structures/GuildPreview.js';
+import { GuildTemplate } from '../structures/GuildTemplate.js';
+import { SoundboardSound } from '../structures/SoundboardSound.js';
+import { Sticker } from '../structures/Sticker.js';
+import { StickerPack } from '../structures/StickerPack.js';
+import { VoiceRegion } from '../structures/VoiceRegion.js';
+import { Webhook } from '../structures/Webhook.js';
+import { Widget } from '../structures/Widget.js';
+import { resolveInviteCode, resolveGuildTemplateCode } from '../util/DataResolver.js';
+import { Events } from '../util/Events.js';
+import { IntentsBitField } from '../util/IntentsBitField.js';
+import { createInvite } from '../util/Invites.js';
+import { Options } from '../util/Options.js';
+import { PermissionsBitField } from '../util/PermissionsBitField.js';
+import { Status } from '../util/Status.js';
+import { Sweepers } from '../util/Sweepers.js';
+import { flatten } from '../util/Util.js';
+import { ActionsManager } from './actions/ActionsManager.js';
+import { ClientVoiceManager } from './voice/ClientVoiceManager.js';
+import { PacketHandlers } from './websocket/handlers/index.js';
 
 const WaitingForGuildEvents = [GatewayDispatchEvents.GuildCreate, GatewayDispatchEvents.GuildDelete];
 const BeforeReadyWhitelist = [
@@ -50,7 +49,7 @@ const BeforeReadyWhitelist = [
  *
  * @extends {AsyncEventEmitter}
  */
-class Client extends AsyncEventEmitter {
+export class Client extends AsyncEventEmitter {
   /**
    * @param {ClientOptions} options Options for the client
    */
@@ -100,7 +99,7 @@ class Client extends AsyncEventEmitter {
 
     this.rest.on(RESTEvents.Debug, message => this.emit(Events.Debug, message));
 
-    const data = require('node:worker_threads').workerData ?? process.env;
+    const data = workerData ?? process.env;
 
     if (this.options.ws.shardIds === defaultOptions.ws.shardIds && 'SHARDS' in data) {
       const shards = JSON.parse(data.SHARDS);
@@ -577,7 +576,7 @@ class Client extends AsyncEventEmitter {
    *   .catch(console.error);
    */
   async fetchGuildTemplate(template) {
-    const code = resolveGuildTemplateCode(template);
+    const code = await resolveGuildTemplateCode(template);
     const data = await this.rest.get(Routes.template(code));
     return new GuildTemplate(this, data);
   }
@@ -878,8 +877,6 @@ class Client extends AsyncEventEmitter {
     await this.destroy();
   }
 }
-
-exports.Client = Client;
 
 /**
  * @class SnowflakeUtil

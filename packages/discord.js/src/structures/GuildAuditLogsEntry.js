@@ -1,17 +1,15 @@
-'use strict';
-
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { AuditLogOptionsType, AuditLogEvent } = require('discord-api-types/v10');
-const { Partials } = require('../util/Partials.js');
-const { flatten } = require('../util/Util.js');
-const { AutoModerationRule } = require('./AutoModerationRule.js');
-const { GuildInvite } = require('./GuildInvite.js');
-const { GuildOnboardingPrompt } = require('./GuildOnboardingPrompt.js');
-const { GuildScheduledEvent } = require('./GuildScheduledEvent.js');
-const { Integration } = require('./Integration.js');
-const { StageInstance } = require('./StageInstance.js');
-const { Sticker } = require('./Sticker.js');
-const { Webhook } = require('./Webhook.js');
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { AuditLogOptionsType, AuditLogEvent } from 'discord-api-types/v10';
+import { Partials } from '../util/Partials.js';
+import { flatten } from '../util/Util.js';
+import { AutoModerationRule } from './AutoModerationRule.js';
+import { GuildInvite } from './GuildInvite.js';
+import { GuildOnboardingPrompt } from './GuildOnboardingPrompt.js';
+import { GuildScheduledEvent } from './GuildScheduledEvent.js';
+import { Integration } from './Integration.js';
+import { StageInstance } from './StageInstance.js';
+import { Sticker } from './Sticker.js';
+import { Webhook } from './Webhook.js';
 
 const Targets = {
   Guild: 'Guild',
@@ -111,7 +109,7 @@ function changesReduce(changes, initialData = {}) {
 /**
  * Audit logs entry.
  */
-class GuildAuditLogsEntry {
+export class GuildAuditLogsEntry {
   /**
    * Key mirror of all available audit log targets.
    *
@@ -548,5 +546,3 @@ class GuildAuditLogsEntry {
     return flatten(this, { createdTimestamp: true });
   }
 }
-
-exports.GuildAuditLogsEntry = GuildAuditLogsEntry;

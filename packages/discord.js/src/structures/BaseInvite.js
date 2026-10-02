@@ -1,14 +1,12 @@
-'use strict';
-
-const { RouteBases } = require('discord-api-types/v10');
-const { Base } = require('./Base.js');
+import { RouteBases } from 'discord-api-types/v10';
+import { Base } from './Base.js';
 
 /**
  * The base invite class.
  *
  * @extends {Base}
  */
-class BaseInvite extends Base {
+export class BaseInvite extends Base {
   constructor(client, data) {
     super(client);
 
@@ -183,5 +181,3 @@ class BaseInvite extends Base {
     return this.code;
   }
 }
-
-exports.BaseInvite = BaseInvite;

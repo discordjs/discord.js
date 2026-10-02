@@ -1,14 +1,12 @@
-'use strict';
-
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Base } = require('./Base.js');
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { Base } from './Base.js';
 
 /**
  * Represents a stage instance.
  *
  * @extends {Base}
  */
-class StageInstance extends Base {
+export class StageInstance extends Base {
   constructor(client, data) {
     super(client);
 
@@ -166,5 +164,3 @@ class StageInstance extends Base {
     return new Date(this.createdTimestamp);
   }
 }
-
-exports.StageInstance = StageInstance;

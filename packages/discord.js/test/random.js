@@ -1,10 +1,8 @@
 /* eslint-disable */
 
-'use strict';
-
-const { token, owner } = require('./auth.js');
-const { Client, Events } = require('../src/index.js');
-const { ChannelType, GatewayIntentBits } = require('discord-api-types/v10');
+import { token, owner } from './auth.js';
+import { Client, Events } from '../src/index.js';
+import { ChannelType, GatewayIntentBits } from 'discord-api-types/v10';
 
 console.time('magic');
 

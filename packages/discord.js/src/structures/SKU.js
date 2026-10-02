@@ -1,14 +1,12 @@
-'use strict';
-
-const { SKUFlagsBitField } = require('../util/SKUFlagsBitField.js');
-const { Base } = require('./Base.js');
+import { SKUFlagsBitField } from '../util/SKUFlagsBitField.js';
+import { Base } from './Base.js';
 
 /**
  * Represents a premium application SKU.
  *
  * @extends {Base}
  */
-class SKU extends Base {
+export class SKU extends Base {
   constructor(client, data) {
     super(client);
 
@@ -55,5 +53,3 @@ class SKU extends Base {
     this.flags = new SKUFlagsBitField(data.flags).freeze();
   }
 }
-
-exports.SKU = SKU;

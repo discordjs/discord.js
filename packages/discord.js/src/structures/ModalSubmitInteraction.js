@@ -1,13 +1,13 @@
-'use strict';
+import { createRequire } from 'node:module';
+import { Collection } from '@discordjs/collection';
+import { lazy } from '@discordjs/util';
+import { transformResolved } from '../util/Util.js';
+import { BaseInteraction } from './BaseInteraction.js';
+import { InteractionWebhook } from './InteractionWebhook.js';
+import { ModalComponentResolver } from './ModalComponentResolver.js';
+import { InteractionResponses } from './interfaces/InteractionResponses.js';
 
-const { Collection } = require('@discordjs/collection');
-const { lazy } = require('@discordjs/util');
-const { transformResolved } = require('../util/Util.js');
-const { BaseInteraction } = require('./BaseInteraction.js');
-const { InteractionWebhook } = require('./InteractionWebhook.js');
-const { ModalComponentResolver } = require('./ModalComponentResolver.js');
-const { InteractionResponses } = require('./interfaces/InteractionResponses.js');
-
+const require = createRequire(import.meta.url);
 const getMessage = lazy(() => require('./Message.js').Message);
 const getAttachment = lazy(() => require('./Attachment.js').Attachment);
 
@@ -82,7 +82,7 @@ const getAttachment = lazy(() => require('./Attachment.js').Attachment);
  * @extends {BaseInteraction}
  * @implements {InteractionResponses}
  */
-class ModalSubmitInteraction extends BaseInteraction {
+export class ModalSubmitInteraction extends BaseInteraction {
   constructor(client, data) {
     super(client, data);
     /**
@@ -270,5 +270,3 @@ class ModalSubmitInteraction extends BaseInteraction {
 }
 
 InteractionResponses.applyToClass(ModalSubmitInteraction, 'showModal');
-
-exports.ModalSubmitInteraction = ModalSubmitInteraction;

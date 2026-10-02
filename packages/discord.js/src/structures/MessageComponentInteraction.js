@@ -1,11 +1,11 @@
-'use strict';
+import { createRequire } from 'node:module';
+import { lazy } from '@discordjs/util';
+import { findComponentByCustomId } from '../util/Components.js';
+import { BaseInteraction } from './BaseInteraction.js';
+import { InteractionWebhook } from './InteractionWebhook.js';
+import { InteractionResponses } from './interfaces/InteractionResponses.js';
 
-const { lazy } = require('@discordjs/util');
-const { findComponentByCustomId } = require('../util/Components.js');
-const { BaseInteraction } = require('./BaseInteraction.js');
-const { InteractionWebhook } = require('./InteractionWebhook.js');
-const { InteractionResponses } = require('./interfaces/InteractionResponses.js');
-
+const require = createRequire(import.meta.url);
 const getMessage = lazy(() => require('./Message.js').Message);
 
 /**
@@ -14,7 +14,7 @@ const getMessage = lazy(() => require('./Message.js').Message);
  * @extends {BaseInteraction}
  * @implements {InteractionResponses}
  */
-class MessageComponentInteraction extends BaseInteraction {
+export class MessageComponentInteraction extends BaseInteraction {
   constructor(client, data) {
     super(client, data);
 
@@ -124,5 +124,3 @@ class MessageComponentInteraction extends BaseInteraction {
 }
 
 InteractionResponses.applyToClass(MessageComponentInteraction);
-
-exports.MessageComponentInteraction = MessageComponentInteraction;

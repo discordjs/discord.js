@@ -1,18 +1,16 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { GuildInvite } = require('../structures/GuildInvite.js');
-const { resolveInviteCode } = require('../util/DataResolver.js');
-const { CachedManager } = require('./CachedManager.js');
+import { Collection } from '@discordjs/collection';
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { GuildInvite } from '../structures/GuildInvite.js';
+import { resolveInviteCode } from '../util/DataResolver.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for GuildInvites and stores their cache.
  *
  * @extends {CachedManager}
  */
-class GuildInviteManager extends CachedManager {
+export class GuildInviteManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, GuildInvite, iterable);
 
@@ -235,5 +233,3 @@ class GuildInviteManager extends CachedManager {
     await this.client.rest.delete(Routes.invite(code), { reason });
   }
 }
-
-exports.GuildInviteManager = GuildInviteManager;

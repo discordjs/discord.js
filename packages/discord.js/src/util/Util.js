@@ -1,15 +1,15 @@
-'use strict';
-
-const { parse } = require('node:path');
-const { Collection } = require('@discordjs/collection');
-const { lazy } = require('@discordjs/util');
-const { APIVersion, ChannelType, Routes } = require('discord-api-types/v10');
-const { fetch } = require('undici');
-const { Colors } = require('./Colors.js');
+import { createRequire } from 'node:module';
+import { parse } from 'node:path';
+import { Collection } from '@discordjs/collection';
+import { lazy } from '@discordjs/util';
+import { APIVersion, ChannelType, Routes } from 'discord-api-types/v10';
+import { fetch } from 'undici';
+import { Colors } from './Colors.js';
 // eslint-disable-next-line import-x/order
-const { DiscordjsError, DiscordjsRangeError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+import { DiscordjsError, DiscordjsRangeError, DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
 
 // Fixes circular dependencies.
+const require = createRequire(import.meta.url);
 const getAttachment = lazy(() => require('../structures/Attachment.js').Attachment);
 const getGuildChannel = lazy(() => require('../structures/GuildChannel.js').GuildChannel);
 const getSKU = lazy(() => require('../structures/SKU.js').SKU);
@@ -23,7 +23,7 @@ const isObject = data => typeof data === 'object' && data !== null;
  * @param {...Object<string, boolean|string>} [props] Specific properties to include/exclude.
  * @returns {Object}
  */
-function flatten(obj, ...props) {
+export function flatten(obj, ...props) {
   if (!isObject(obj)) return obj;
 
   const objProps = Object.keys(obj)
@@ -78,7 +78,7 @@ function flatten(obj, ...props) {
  * @param {FetchRecommendedShardCountOptions} [options] Options for fetching the recommended shard count
  * @returns {Promise<number>} The recommended number of shards
  */
-async function fetchRecommendedShardCount(
+export async function fetchRecommendedShardCount(
   token,
   { guildsPerShard = 1_000, multipleOf = 1, api = 'https://discord.com/api', version = APIVersion } = {},
 ) {
@@ -114,7 +114,7 @@ async function fetchRecommendedShardCount(
  * @param {string} text Emoji string to parse
  * @returns {?PartialEmoji}
  */
-function parseEmoji(text) {
+export function parseEmoji(text) {
   const decodedText = text.includes('%') ? decodeURIComponent(text) : text;
   if (!decodedText.includes(':')) return { animated: false, name: decodedText, id: undefined };
   const match = /<?(?:(?<animated>a):)?(?<name>\w{2,32}):(?<id>\d{17,19})?>?/.exec(decodedText);
@@ -134,7 +134,7 @@ function parseEmoji(text) {
  * @param {Emoji|EmojiIdentifierResolvable} emoji Emoji identifier to resolve
  * @returns {?(PartialEmoji|PartialEmojiOnlyId)} Supplying a snowflake yields `PartialEmojiOnlyId`.
  */
-function resolvePartialEmoji(emoji) {
+export function resolvePartialEmoji(emoji) {
   if (!emoji) return null;
   if (typeof emoji === 'string') return /^\d{17,19}$/.test(emoji) ? { id: emoji } : parseEmoji(emoji);
   const { id, name, animated } = emoji;
@@ -150,7 +150,7 @@ function resolvePartialEmoji(emoji) {
  * @returns {?GuildEmoji}
  * @private
  */
-function resolveGuildEmoji(client, emojiId) {
+export function resolveGuildEmoji(client, emojiId) {
   for (const guild of client.guilds.cache.values()) {
     if (!guild.available) {
       continue;
@@ -183,7 +183,7 @@ function resolveGuildEmoji(client, emojiId) {
  * @returns {Error}
  * @private
  */
-function makeError(obj) {
+export function makeError(obj) {
   const err = new Error(obj.message);
   err.name = obj.name;
   err.stack = obj.stack;
@@ -197,7 +197,7 @@ function makeError(obj) {
  * @returns {MakeErrorOptions}
  * @private
  */
-function makePlainError(err) {
+export function makePlainError(err) {
   return {
     name: err.name,
     message: err.message,
@@ -225,7 +225,7 @@ const CategorySortableGroupTypes = [ChannelType.GuildCategory];
  * @returns {ChannelType[]}
  * @private
  */
-function getSortableGroupTypes(type) {
+export function getSortableGroupTypes(type) {
   switch (type) {
     case ChannelType.GuildText:
     case ChannelType.GuildAnnouncement:
@@ -252,7 +252,7 @@ function getSortableGroupTypes(type) {
  * @returns {number}
  * @private
  */
-function moveElementInArray(array, element, newIndex, offset = false) {
+export function moveElementInArray(array, element, newIndex, offset = false) {
   const index = array.indexOf(element);
   const targetIndex = (offset ? index : 0) + newIndex;
   if (targetIndex > -1 && targetIndex < array.length) {
@@ -272,7 +272,7 @@ function moveElementInArray(array, element, newIndex, offset = false) {
  * @param {boolean} [allowEmpty=true] Whether an empty string should be allowed
  * @returns {string}
  */
-function verifyString(
+export function verifyString(
   data,
   error = Error,
   errorMessage = `Expected a string, got ${data} instead.`,
@@ -330,7 +330,7 @@ function verifyString(
  * @param {ColorResolvable} color Color to resolve
  * @returns {number} A color
  */
-function resolveColor(color) {
+export function resolveColor(color) {
   let resolvedColor;
 
   if (typeof color === 'string') {
@@ -361,7 +361,7 @@ function resolveColor(color) {
  * @param {Collection} collection Collection of objects to sort
  * @returns {Collection}
  */
-function discordSort(collection) {
+export function discordSort(collection) {
   const isGuildChannel = collection.first() instanceof getGuildChannel();
   return collection.toSorted(
     isGuildChannel
@@ -383,7 +383,7 @@ function discordSort(collection) {
  * @returns {Promise<BaseChannel[]|Role[]>} Updated item list, with `id` and `position` properties
  * @private
  */
-async function setPosition(item, position, relative, sorted, client, route, reason) {
+export async function setPosition(item, position, relative, sorted, client, route, reason) {
   let updatedItems = [...sorted.values()];
   moveElementInArray(updatedItems, item, position, relative);
   updatedItems = updatedItems.map((innerItem, index) => ({ id: innerItem.id, position: index }));
@@ -399,7 +399,7 @@ async function setPosition(item, position, relative, sorted, client, route, reas
  * @returns {string} Basename of the path
  * @private
  */
-function basename(path, ext) {
+export function basename(path, ext) {
   const res = parse(path);
   return ext && res.ext.startsWith(ext) ? res.name : res.base.split('?')[0];
 }
@@ -410,7 +410,7 @@ function basename(path, ext) {
  * @param {BufferResolvable|Stream} thing The thing to attach as attachment
  * @returns {string} filename to use
  */
-function findName(thing) {
+export function findName(thing) {
   if (typeof thing === 'string') {
     return basename(thing);
   }
@@ -429,7 +429,7 @@ function findName(thing) {
  * @param {TextBasedChannels} channel The channel the string was sent in
  * @returns {string}
  */
-function cleanContent(str, channel) {
+export function cleanContent(str, channel) {
   return str.replaceAll(
     /<(?:(?<type>@[!&]?|#)|(?:\/(?<commandName>[-_\p{L}\p{N}\p{sc=Deva}\p{sc=Thai} ]+):)|(?:a?:(?<emojiName>[\w]+):))(?<id>\d{17,19})>/gu,
     (match, type, commandName, emojiName, id) => {
@@ -474,7 +474,7 @@ function cleanContent(str, channel) {
  * @param {string} text The string to be converted
  * @returns {string}
  */
-function cleanCodeBlockContent(text) {
+export function cleanCodeBlockContent(text) {
   return text.replaceAll('```', '`\u200B``');
 }
 
@@ -492,7 +492,7 @@ function cleanCodeBlockContent(text) {
  * @param {string} url The URL to parse
  * @returns {?WebhookDataIdWithToken} `null` if the URL is invalid, otherwise the id and the token
  */
-function parseWebhookURL(url) {
+export function parseWebhookURL(url) {
   const matches =
     /https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(?<id>\d{17,19})\/(?<token>[\w-]{68})/i.exec(
       url,
@@ -519,7 +519,7 @@ function parseWebhookURL(url) {
  * @returns {CommandInteractionResolvedData}
  * @private
  */
-function transformResolved(
+export function transformResolved(
   { client, guild, channel },
   { members, users, channels, roles, messages, attachments } = {},
 ) {
@@ -578,32 +578,8 @@ function transformResolved(
  * @param {SKUResolvable} resolvable The SKU resolvable to resolve
  * @returns {?Snowflake} The resolved SKU id, or `null` if the resolvable was invalid
  */
-function resolveSKUId(resolvable) {
+export function resolveSKUId(resolvable) {
   if (typeof resolvable === 'string') return resolvable;
   if (resolvable instanceof getSKU()) return resolvable.id;
   return null;
 }
-
-// Public
-exports.cleanCodeBlockContent = cleanCodeBlockContent;
-exports.cleanContent = cleanContent;
-exports.discordSort = discordSort;
-exports.fetchRecommendedShardCount = fetchRecommendedShardCount;
-exports.flatten = flatten;
-exports.parseEmoji = parseEmoji;
-exports.parseWebhookURL = parseWebhookURL;
-exports.resolveColor = resolveColor;
-exports.resolveSKUId = resolveSKUId;
-exports.verifyString = verifyString;
-
-// Private
-exports.resolvePartialEmoji = resolvePartialEmoji;
-exports.resolveGuildEmoji = resolveGuildEmoji;
-exports.makeError = makeError;
-exports.makePlainError = makePlainError;
-exports.getSortableGroupTypes = getSortableGroupTypes;
-exports.moveElementInArray = moveElementInArray;
-exports.setPosition = setPosition;
-exports.basename = basename;
-exports.findName = findName;
-exports.transformResolved = transformResolved;
