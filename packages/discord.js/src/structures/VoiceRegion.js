@@ -1,11 +1,9 @@
-'use strict';
-
-const { flatten } = require('../util/Util.js');
+import { flatten } from '../util/Util.js';
 
 /**
  * Represents a Discord voice region for guilds.
  */
-class VoiceRegion {
+export class VoiceRegion {
   constructor(data) {
     /**
      * The region's id
@@ -47,5 +45,3 @@ class VoiceRegion {
     return flatten(this);
   }
 }
-
-exports.VoiceRegion = VoiceRegion;

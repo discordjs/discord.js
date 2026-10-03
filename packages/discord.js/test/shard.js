@@ -1,10 +1,8 @@
-'use strict';
-
-const process = require('node:process');
-const { setTimeout } = require('node:timers');
-const { GatewayIntentBits } = require('discord-api-types/v10');
-const { token } = require('./auth.json');
-const { Client, Events } = require('../src/index.js');
+import process from 'node:process';
+import { setTimeout } from 'node:timers';
+import { GatewayIntentBits } from 'discord-api-types/v10';
+import { token } from './auth.json';
+import { Client, Events } from '../src/index.js';
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],

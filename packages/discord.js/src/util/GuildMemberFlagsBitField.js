@@ -1,15 +1,13 @@
 /* eslint-disable jsdoc/check-values */
-'use strict';
-
-const { GuildMemberFlags } = require('discord-api-types/v10');
-const { BitField } = require('./BitField.js');
+import { GuildMemberFlags } from 'discord-api-types/v10';
+import { BitField } from './BitField.js';
 
 /**
  * Data structure that makes it easy to interact with a {@link GuildMember#flags} bitfield.
  *
  * @extends {BitField}
  */
-class GuildMemberFlagsBitField extends BitField {
+export class GuildMemberFlagsBitField extends BitField {
   /**
    * Numeric guild member flags.
    *
@@ -42,5 +40,3 @@ class GuildMemberFlagsBitField extends BitField {
  *
  * @typedef {string|number|GuildMemberFlagsBitField|GuildMemberFlagsResolvable[]} GuildMemberFlagsResolvable
  */
-
-exports.GuildMemberFlagsBitField = GuildMemberFlagsBitField;

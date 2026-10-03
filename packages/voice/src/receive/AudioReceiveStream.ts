@@ -1,7 +1,7 @@
 import type { Buffer } from 'node:buffer';
 import process from 'node:process';
 import { Readable, type ReadableOptions } from 'node:stream';
-import { SILENCE_FRAME } from '../audio/AudioPlayer';
+import { SILENCE_FRAME } from '../audio/AudioPlayer.js';
 
 /**
  * The different behaviors an audio receive stream can have for deciding when to end.

@@ -1,13 +1,11 @@
-'use strict';
-
-const { Component } = require('./Component.js');
+import { Component } from './Component.js';
 
 /**
  * Represents a text display component
  *
  * @extends {Component}
  */
-class TextDisplayComponent extends Component {
+export class TextDisplayComponent extends Component {
   /**
    * The content of this text display
    *
@@ -18,5 +16,3 @@ class TextDisplayComponent extends Component {
     return this.data.content;
   }
 }
-
-exports.TextDisplayComponent = TextDisplayComponent;

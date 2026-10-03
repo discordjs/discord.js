@@ -162,9 +162,9 @@ export default defineConfig(
 		},
 	},
 	{
-		files: [`packages/discord.js/**/*.{js,cjs}`],
+		files: [`packages/discord.js/**/*.{js,mjs}`],
 		languageOptions: {
-			sourceType: 'commonjs',
+			sourceType: 'module',
 			parserOptions: {
 				ecmaFeatures: {
 					impliedStrict: false,

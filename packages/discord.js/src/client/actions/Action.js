@@ -1,9 +1,7 @@
-'use strict';
-
-const { ChannelType } = require('discord-api-types/v10');
-const { Poll } = require('../../structures/Poll.js');
-const { PollAnswer } = require('../../structures/PollAnswer.js');
-const { Partials } = require('../../util/Partials.js');
+import { ChannelType } from 'discord-api-types/v10';
+import { Poll } from '../../structures/Poll.js';
+import { PollAnswer } from '../../structures/PollAnswer.js';
+import { Partials } from '../../util/Partials.js';
 
 /*
 
@@ -17,7 +15,7 @@ that WebSocket events don't clash with REST methods.
 
 */
 
-class Action {
+export class Action {
   constructor(client) {
     this.client = client;
   }
@@ -147,5 +145,3 @@ class Action {
     return Object.fromEntries(Object.getOwnPropertySymbols(data).map(symbol => [symbol, data[symbol]]));
   }
 }
-
-exports.Action = Action;

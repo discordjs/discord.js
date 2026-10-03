@@ -1,18 +1,16 @@
-'use strict';
-
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ApplicationCommandOptionType } = require('discord-api-types/v10');
-const isEqual = require('fast-deep-equal');
-const { ApplicationCommandPermissionsManager } = require('../managers/ApplicationCommandPermissionsManager.js');
-const { PermissionsBitField } = require('../util/PermissionsBitField.js');
-const { Base } = require('./Base.js');
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { ApplicationCommandOptionType } from 'discord-api-types/v10';
+import isEqual from 'fast-deep-equal';
+import { ApplicationCommandPermissionsManager } from '../managers/ApplicationCommandPermissionsManager.js';
+import { PermissionsBitField } from '../util/PermissionsBitField.js';
+import { Base } from './Base.js';
 
 /**
  * Represents an application command.
  *
  * @extends {Base}
  */
-class ApplicationCommand extends Base {
+export class ApplicationCommand extends Base {
   constructor(client, data, guild, guildId) {
     super(client);
 
@@ -664,8 +662,6 @@ class ApplicationCommand extends Base {
     };
   }
 }
-
-exports.ApplicationCommand = ApplicationCommand;
 
 /**
  * @external ApplicationCommandOptionAllowedChannelType

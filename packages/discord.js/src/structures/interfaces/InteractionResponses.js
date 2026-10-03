@@ -1,20 +1,18 @@
-'use strict';
-
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { isJSONEncodable } = require('@discordjs/util');
-const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../../errors/index.js');
-const { MessageFlagsBitField } = require('../../util/MessageFlagsBitField.js');
-const { InteractionCallbackResponse } = require('../InteractionCallbackResponse.js');
-const { InteractionCollector } = require('../InteractionCollector.js');
-const { MessagePayload } = require('../MessagePayload.js');
+import { makeURLSearchParams } from '@discordjs/rest';
+import { isJSONEncodable } from '@discordjs/util';
+import { InteractionResponseType, MessageFlags, Routes, InteractionType } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../../errors/index.js';
+import { MessageFlagsBitField } from '../../util/MessageFlagsBitField.js';
+import { InteractionCallbackResponse } from '../InteractionCallbackResponse.js';
+import { InteractionCollector } from '../InteractionCollector.js';
+import { MessagePayload } from '../MessagePayload.js';
 
 /**
  * Interface for classes that support shared interaction response types.
  *
  * @interface
  */
-class InteractionResponses {
+export class InteractionResponses {
   /**
    * Options for deferring the reply to an {@link BaseInteraction}.
    *
@@ -381,5 +379,3 @@ class InteractionResponses {
     }
   }
 }
-
-exports.InteractionResponses = InteractionResponses;

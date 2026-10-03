@@ -1,15 +1,13 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { Events } = require('../util/Events.js');
-const { MessageComponentInteraction } = require('./MessageComponentInteraction.js');
+import { Collection } from '@discordjs/collection';
+import { Events } from '../util/Events.js';
+import { MessageComponentInteraction } from './MessageComponentInteraction.js';
 
 /**
  * Represents a {@link ComponentType.MentionableSelect} select menu interaction.
  *
  * @extends {MessageComponentInteraction}
  */
-class MentionableSelectMenuInteraction extends MessageComponentInteraction {
+export class MentionableSelectMenuInteraction extends MessageComponentInteraction {
   constructor(client, data) {
     super(client, data);
     const { resolved, values } = data.data;
@@ -72,5 +70,3 @@ class MentionableSelectMenuInteraction extends MessageComponentInteraction {
     }
   }
 }
-
-exports.MentionableSelectMenuInteraction = MentionableSelectMenuInteraction;

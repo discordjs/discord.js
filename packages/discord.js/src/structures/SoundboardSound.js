@@ -1,16 +1,14 @@
-'use strict';
-
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { Base } = require('./Base.js');
-const { Emoji } = require('./Emoji.js');
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { Base } from './Base.js';
+import { Emoji } from './Emoji.js';
 
 /**
  * Represents a soundboard sound.
  *
  * @extends {Base}
  */
-class SoundboardSound extends Base {
+export class SoundboardSound extends Base {
   constructor(client, data) {
     super(client);
 
@@ -216,5 +214,3 @@ class SoundboardSound extends Base {
     );
   }
 }
-
-exports.SoundboardSound = SoundboardSound;

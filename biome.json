@@ -7,17 +7,7 @@
 		"indentWidth": 2,
 		"lineWidth": 120,
 		"lineEnding": "lf",
-		"ignore": [
-			".turbo",
-			".vercel",
-			".next",
-			"coverage",
-			"dist",
-			"dist-docs",
-			"docs",
-			"CHANGELOG.md",
-			"tsup.config.bundled*"
-		]
+		"ignore": [".turbo", ".vercel", ".next", "coverage", "dist", "dist-docs", "docs", "CHANGELOG.md"]
 	},
 	"javascript": {
 		"formatter": {

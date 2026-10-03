@@ -3,7 +3,7 @@
 
 import type * as tsdoc from '@microsoft/tsdoc';
 import { Sort, InternalError } from '@rushstack/node-core-library';
-import colors from 'colors';
+import { Colorize } from '@rushstack/terminal';
 import * as ts from 'typescript';
 import { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstSymbol } from '../analyzer/AstSymbol.js';
@@ -593,17 +593,17 @@ export class MessageRouter {
 
 		switch (message.logLevel) {
 			case ExtractorLogLevel.Error:
-				console.error(colors.red('Error: ' + messageText));
+				console.error(Colorize.red('Error: ' + messageText));
 				break;
 			case ExtractorLogLevel.Warning:
-				console.warn(colors.yellow('Warning: ' + messageText));
+				console.warn(Colorize.yellow('Warning: ' + messageText));
 				break;
 			case ExtractorLogLevel.Info:
 				console.log(messageText);
 				break;
 			case ExtractorLogLevel.Verbose:
 				if (this.showVerboseMessages) {
-					console.log(colors.cyan(messageText));
+					console.log(Colorize.cyan(messageText));
 				}
 
 				break;

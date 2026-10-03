@@ -1,14 +1,12 @@
-'use strict';
-
-const { Presence } = require('../structures/Presence.js');
-const { CachedManager } = require('./CachedManager.js');
+import { Presence } from '../structures/Presence.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for Presences and holds their cache.
  *
  * @extends {CachedManager}
  */
-class PresenceManager extends CachedManager {
+export class PresenceManager extends CachedManager {
   constructor(client, iterable) {
     super(client, Presence, iterable);
   }
@@ -59,5 +57,3 @@ class PresenceManager extends CachedManager {
     return this.cache.has(userId) ? userId : null;
   }
 }
-
-exports.PresenceManager = PresenceManager;

@@ -1,16 +1,14 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { flatten } = require('../util/Util.js');
-const { ApplicationCommand } = require('./ApplicationCommand.js');
-const { GuildAuditLogsEntry } = require('./GuildAuditLogsEntry.js');
-const { Integration } = require('./Integration.js');
-const { Webhook } = require('./Webhook.js');
+import { Collection } from '@discordjs/collection';
+import { flatten } from '../util/Util.js';
+import { ApplicationCommand } from './ApplicationCommand.js';
+import { GuildAuditLogsEntry } from './GuildAuditLogsEntry.js';
+import { Integration } from './Integration.js';
+import { Webhook } from './Webhook.js';
 
 /**
  * Audit logs entries are held in this class.
  */
-class GuildAuditLogs {
+export class GuildAuditLogs {
   constructor(guild, data) {
     if (data.users) for (const user of data.users) guild.client.users._add(user);
     if (data.threads) for (const thread of data.threads) guild.client.channels._add(thread, guild);
@@ -93,5 +91,3 @@ class GuildAuditLogs {
     return flatten(this);
   }
 }
-
-exports.GuildAuditLogs = GuildAuditLogs;

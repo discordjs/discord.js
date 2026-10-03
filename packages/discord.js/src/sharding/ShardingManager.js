@@ -1,16 +1,14 @@
-'use strict';
-
-const fs = require('node:fs');
-const path = require('node:path');
-const process = require('node:process');
-const { setTimeout: sleep } = require('node:timers/promises');
-const { Collection } = require('@discordjs/collection');
-const { range } = require('@discordjs/util');
-const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
-const { APIVersion } = require('discord-api-types/v10');
-const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
-const { fetchRecommendedShardCount } = require('../util/Util.js');
-const { Shard } = require('./Shard.js');
+import fs from 'node:fs';
+import path from 'node:path';
+import process from 'node:process';
+import { setTimeout as sleep } from 'node:timers/promises';
+import { Collection } from '@discordjs/collection';
+import { range } from '@discordjs/util';
+import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
+import { APIVersion } from 'discord-api-types/v10';
+import { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } from '../errors/index.js';
+import { fetchRecommendedShardCount } from '../util/Util.js';
+import { Shard } from './Shard.js';
 
 /**
  * This is a utility class that makes multi-process sharding of a bot an easy and painless experience.
@@ -22,7 +20,7 @@ const { Shard } = require('./Shard.js');
  *
  * @extends {AsyncEventEmitter}
  */
-class ShardingManager extends AsyncEventEmitter {
+export class ShardingManager extends AsyncEventEmitter {
   /**
    * The mode to spawn shards with for a {@link ShardingManager}. Can be either one of:
    * - 'process' to use child processes
@@ -386,5 +384,3 @@ class ShardingManager extends AsyncEventEmitter {
     return this.shards;
   }
 }
-
-exports.ShardingManager = ShardingManager;

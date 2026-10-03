@@ -1,8 +1,6 @@
-'use strict';
-
-const { Routes } = require('discord-api-types/v10');
-const { Base } = require('./Base.js');
-const { IntegrationApplication } = require('./IntegrationApplication.js');
+import { Routes } from 'discord-api-types/v10';
+import { Base } from './Base.js';
+import { IntegrationApplication } from './IntegrationApplication.js';
 
 /**
  * The information account for an integration
@@ -27,7 +25,7 @@ const { IntegrationApplication } = require('./IntegrationApplication.js');
  *
  * @extends {Base}
  */
-class Integration extends Base {
+export class Integration extends Base {
   constructor(client, data, guild) {
     super(client);
 
@@ -239,5 +237,3 @@ class Integration extends Base {
     });
   }
 }
-
-exports.Integration = Integration;

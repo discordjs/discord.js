@@ -1,9 +1,7 @@
-'use strict';
-
-const { GuildMessageManager } = require('../managers/GuildMessageManager.js');
-const { GuildTextThreadManager } = require('../managers/GuildTextThreadManager.js');
-const { GuildChannel } = require('./GuildChannel.js');
-const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
+import { GuildMessageManager } from '../managers/GuildMessageManager.js';
+import { GuildTextThreadManager } from '../managers/GuildTextThreadManager.js';
+import { GuildChannel } from './GuildChannel.js';
+import { TextBasedChannel } from './interfaces/TextBasedChannel.js';
 
 /**
  * Represents a text-based guild channel on Discord.
@@ -11,7 +9,7 @@ const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
  * @extends {GuildChannel}
  * @implements {TextBasedChannel}
  */
-class BaseGuildTextChannel extends GuildChannel {
+export class BaseGuildTextChannel extends GuildChannel {
   constructor(guild, data, client) {
     super(guild, data, client, false);
 
@@ -221,5 +219,3 @@ class BaseGuildTextChannel extends GuildChannel {
 }
 
 TextBasedChannel.applyToClass(BaseGuildTextChannel);
-
-exports.BaseGuildTextChannel = BaseGuildTextChannel;

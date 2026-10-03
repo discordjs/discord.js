@@ -1,13 +1,11 @@
-'use strict';
-
-const { BaseSelectMenuComponent } = require('./BaseSelectMenuComponent.js');
+import { BaseSelectMenuComponent } from './BaseSelectMenuComponent.js';
 
 /**
  * Represents a channel select menu component
  *
  * @extends {BaseSelectMenuComponent}
  */
-class ChannelSelectMenuComponent extends BaseSelectMenuComponent {
+export class ChannelSelectMenuComponent extends BaseSelectMenuComponent {
   /**
    * The options in this select menu
    *
@@ -18,5 +16,3 @@ class ChannelSelectMenuComponent extends BaseSelectMenuComponent {
     return this.data.channel_types ?? null;
   }
 }
-
-exports.ChannelSelectMenuComponent = ChannelSelectMenuComponent;
