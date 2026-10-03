@@ -1,8 +1,6 @@
-'use strict';
+import { Events } from '../../../util/Events.js';
 
-const { Events } = require('../../../util/Events.js');
-
-module.exports = (client, { d: data }) => {
+export default (client, { d: data }) => {
   const channel = client.channels.cache.get(data.channel_id);
   const time = data.last_pin_timestamp ? Date.parse(data.last_pin_timestamp) : null;
 

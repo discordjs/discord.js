@@ -1,14 +1,12 @@
-'use strict';
-
-const { Component } = require('./Component.js');
-const { MediaGalleryItem } = require('./MediaGalleryItem.js');
+import { Component } from './Component.js';
+import { MediaGalleryItem } from './MediaGalleryItem.js';
 
 /**
  * Represents a media gallery component
  *
  * @extends {Component}
  */
-class MediaGalleryComponent extends Component {
+export class MediaGalleryComponent extends Component {
   constructor({ items, ...data }) {
     super(data);
 
@@ -30,5 +28,3 @@ class MediaGalleryComponent extends Component {
     return { ...this.data, items: this.items.map(item => item.toJSON()) };
   }
 }
-
-exports.MediaGalleryComponent = MediaGalleryComponent;

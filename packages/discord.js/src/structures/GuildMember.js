@@ -1,20 +1,18 @@
-'use strict';
-
-const { PermissionFlagsBits } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { GuildMemberRoleManager } = require('../managers/GuildMemberRoleManager.js');
-const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField.js');
-const { PermissionsBitField } = require('../util/PermissionsBitField.js');
-const { _transformCollectibles } = require('../util/Transformers.js');
-const { Base } = require('./Base.js');
-const { VoiceState } = require('./VoiceState.js');
+import { PermissionFlagsBits } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { GuildMemberRoleManager } from '../managers/GuildMemberRoleManager.js';
+import { GuildMemberFlagsBitField } from '../util/GuildMemberFlagsBitField.js';
+import { PermissionsBitField } from '../util/PermissionsBitField.js';
+import { _transformCollectibles } from '../util/Transformers.js';
+import { Base } from './Base.js';
+import { VoiceState } from './VoiceState.js';
 
 /**
  * Represents a member of a guild on Discord.
  *
  * @extends {Base}
  */
-class GuildMember extends Base {
+export class GuildMember extends Base {
   constructor(client, data, guild) {
     super(client);
 
@@ -647,5 +645,3 @@ class GuildMember extends Base {
     return json;
   }
 }
-
-exports.GuildMember = GuildMember;

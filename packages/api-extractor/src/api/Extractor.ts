@@ -189,7 +189,7 @@ export class Extractor {
 	}
 
 	private static _getPackageJson(): IPackageJson {
-		return PackageJsonLookup.loadOwnPackageJson(__dirname);
+		return PackageJsonLookup.loadOwnPackageJson(import.meta.dirname);
 	}
 
 	/**

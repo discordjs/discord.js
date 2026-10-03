@@ -1,9 +1,8 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig.json",
-	"extends": "../../tsconfig.json",
+	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"types": ["node"],
-		"isolatedModules": false
+		"types": ["node"]
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": ["node_modules"]

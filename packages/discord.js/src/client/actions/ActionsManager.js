@@ -1,6 +1,45 @@
-'use strict';
+import { ChannelCreateAction } from './ChannelCreate.js';
+import { ChannelDeleteAction } from './ChannelDelete.js';
+import { ChannelUpdateAction } from './ChannelUpdate.js';
+import { GuildChannelsPositionUpdateAction } from './GuildChannelsPositionUpdate.js';
+import { GuildEmojiCreateAction } from './GuildEmojiCreate.js';
+import { GuildEmojiDeleteAction } from './GuildEmojiDelete.js';
+import { GuildEmojiUpdateAction } from './GuildEmojiUpdate.js';
+import { GuildEmojisUpdateAction } from './GuildEmojisUpdate.js';
+import { GuildMemberRemoveAction } from './GuildMemberRemove.js';
+import { GuildMemberUpdateAction } from './GuildMemberUpdate.js';
+import { GuildRoleCreateAction } from './GuildRoleCreate.js';
+import { GuildRoleDeleteAction } from './GuildRoleDelete.js';
+import { GuildRolesPositionUpdateAction } from './GuildRolesPositionUpdate.js';
+import { GuildScheduledEventDeleteAction } from './GuildScheduledEventDelete.js';
+import { GuildScheduledEventUserAddAction } from './GuildScheduledEventUserAdd.js';
+import { GuildScheduledEventUserRemoveAction } from './GuildScheduledEventUserRemove.js';
+import { GuildSoundboardSoundDeleteAction } from './GuildSoundboardSoundDelete.js';
+import { GuildStickerCreateAction } from './GuildStickerCreate.js';
+import { GuildStickerDeleteAction } from './GuildStickerDelete.js';
+import { GuildStickerUpdateAction } from './GuildStickerUpdate.js';
+import { GuildStickersUpdateAction } from './GuildStickersUpdate.js';
+import { GuildUpdateAction } from './GuildUpdate.js';
+import { InteractionCreateAction } from './InteractionCreate.js';
+import { MessageCreateAction } from './MessageCreate.js';
+import { MessageDeleteAction } from './MessageDelete.js';
+import { MessageDeleteBulkAction } from './MessageDeleteBulk.js';
+import { MessagePollVoteAddAction } from './MessagePollVoteAdd.js';
+import { MessagePollVoteRemoveAction } from './MessagePollVoteRemove.js';
+import { MessageReactionAddAction } from './MessageReactionAdd.js';
+import { MessageReactionRemoveAction } from './MessageReactionRemove.js';
+import { MessageReactionRemoveAllAction } from './MessageReactionRemoveAll.js';
+import { MessageReactionRemoveEmojiAction } from './MessageReactionRemoveEmoji.js';
+import { MessageUpdateAction } from './MessageUpdate.js';
+import { StageInstanceCreateAction } from './StageInstanceCreate.js';
+import { StageInstanceDeleteAction } from './StageInstanceDelete.js';
+import { StageInstanceUpdateAction } from './StageInstanceUpdate.js';
+import { ThreadCreateAction } from './ThreadCreate.js';
+import { ThreadMembersUpdateAction } from './ThreadMembersUpdate.js';
+import { TypingStartAction } from './TypingStart.js';
+import { UserUpdateAction } from './UserUpdate.js';
 
-class ActionsManager {
+export class ActionsManager {
   // These symbols represent fully built data that we inject at times when calling actions manually.
   // Action#getUser, for example, will return the injected data (which is assumed to be a built structure)
   // instead of trying to make it from provided data
@@ -13,63 +52,49 @@ class ActionsManager {
   constructor(client) {
     this.client = client;
 
-    this.ChannelCreate = this.load(require('./ChannelCreate.js').ChannelCreateAction);
-    this.ChannelDelete = this.load(require('./ChannelDelete.js').ChannelDeleteAction);
-    this.ChannelUpdate = this.load(require('./ChannelUpdate.js').ChannelUpdateAction);
-    this.GuildChannelsPositionUpdate = this.load(
-      require('./GuildChannelsPositionUpdate.js').GuildChannelsPositionUpdateAction,
-    );
-    this.GuildEmojiCreate = this.load(require('./GuildEmojiCreate.js').GuildEmojiCreateAction);
-    this.GuildEmojiDelete = this.load(require('./GuildEmojiDelete.js').GuildEmojiDeleteAction);
-    this.GuildEmojiUpdate = this.load(require('./GuildEmojiUpdate.js').GuildEmojiUpdateAction);
-    this.GuildEmojisUpdate = this.load(require('./GuildEmojisUpdate.js').GuildEmojisUpdateAction);
-    this.GuildMemberRemove = this.load(require('./GuildMemberRemove.js').GuildMemberRemoveAction);
-    this.GuildMemberUpdate = this.load(require('./GuildMemberUpdate.js').GuildMemberUpdateAction);
-    this.GuildRoleCreate = this.load(require('./GuildRoleCreate.js').GuildRoleCreateAction);
-    this.GuildRoleDelete = this.load(require('./GuildRoleDelete.js').GuildRoleDeleteAction);
-    this.GuildRolesPositionUpdate = this.load(require('./GuildRolesPositionUpdate.js').GuildRolesPositionUpdateAction);
-    this.GuildScheduledEventDelete = this.load(
-      require('./GuildScheduledEventDelete.js').GuildScheduledEventDeleteAction,
-    );
-    this.GuildScheduledEventUserAdd = this.load(
-      require('./GuildScheduledEventUserAdd.js').GuildScheduledEventUserAddAction,
-    );
-    this.GuildScheduledEventUserRemove = this.load(
-      require('./GuildScheduledEventUserRemove.js').GuildScheduledEventUserRemoveAction,
-    );
-    this.GuildSoundboardSoundDelete = this.load(
-      require('./GuildSoundboardSoundDelete.js').GuildSoundboardSoundDeleteAction,
-    );
-    this.GuildStickerCreate = this.load(require('./GuildStickerCreate.js').GuildStickerCreateAction);
-    this.GuildStickerDelete = this.load(require('./GuildStickerDelete.js').GuildStickerDeleteAction);
-    this.GuildStickerUpdate = this.load(require('./GuildStickerUpdate.js').GuildStickerUpdateAction);
-    this.GuildStickersUpdate = this.load(require('./GuildStickersUpdate.js').GuildStickersUpdateAction);
-    this.GuildUpdate = this.load(require('./GuildUpdate.js').GuildUpdateAction);
-    this.InteractionCreate = this.load(require('./InteractionCreate.js').InteractionCreateAction);
-    this.MessageCreate = this.load(require('./MessageCreate.js').MessageCreateAction);
-    this.MessageDelete = this.load(require('./MessageDelete.js').MessageDeleteAction);
-    this.MessageDeleteBulk = this.load(require('./MessageDeleteBulk.js').MessageDeleteBulkAction);
-    this.MessagePollVoteAdd = this.load(require('./MessagePollVoteAdd.js').MessagePollVoteAddAction);
-    this.MessagePollVoteRemove = this.load(require('./MessagePollVoteRemove.js').MessagePollVoteRemoveAction);
-    this.MessageReactionAdd = this.load(require('./MessageReactionAdd.js').MessageReactionAddAction);
-    this.MessageReactionRemove = this.load(require('./MessageReactionRemove.js').MessageReactionRemoveAction);
-    this.MessageReactionRemoveAll = this.load(require('./MessageReactionRemoveAll.js').MessageReactionRemoveAllAction);
-    this.MessageReactionRemoveEmoji = this.load(
-      require('./MessageReactionRemoveEmoji.js').MessageReactionRemoveEmojiAction,
-    );
-    this.MessageUpdate = this.load(require('./MessageUpdate.js').MessageUpdateAction);
-    this.StageInstanceCreate = this.load(require('./StageInstanceCreate.js').StageInstanceCreateAction);
-    this.StageInstanceDelete = this.load(require('./StageInstanceDelete.js').StageInstanceDeleteAction);
-    this.StageInstanceUpdate = this.load(require('./StageInstanceUpdate.js').StageInstanceUpdateAction);
-    this.ThreadCreate = this.load(require('./ThreadCreate.js').ThreadCreateAction);
-    this.ThreadMembersUpdate = this.load(require('./ThreadMembersUpdate.js').ThreadMembersUpdateAction);
-    this.TypingStart = this.load(require('./TypingStart.js').TypingStartAction);
-    this.UserUpdate = this.load(require('./UserUpdate.js').UserUpdateAction);
+    this.ChannelCreate = this.load(ChannelCreateAction);
+    this.ChannelDelete = this.load(ChannelDeleteAction);
+    this.ChannelUpdate = this.load(ChannelUpdateAction);
+    this.GuildChannelsPositionUpdate = this.load(GuildChannelsPositionUpdateAction);
+    this.GuildEmojiCreate = this.load(GuildEmojiCreateAction);
+    this.GuildEmojiDelete = this.load(GuildEmojiDeleteAction);
+    this.GuildEmojiUpdate = this.load(GuildEmojiUpdateAction);
+    this.GuildEmojisUpdate = this.load(GuildEmojisUpdateAction);
+    this.GuildMemberRemove = this.load(GuildMemberRemoveAction);
+    this.GuildMemberUpdate = this.load(GuildMemberUpdateAction);
+    this.GuildRoleCreate = this.load(GuildRoleCreateAction);
+    this.GuildRoleDelete = this.load(GuildRoleDeleteAction);
+    this.GuildRolesPositionUpdate = this.load(GuildRolesPositionUpdateAction);
+    this.GuildScheduledEventDelete = this.load(GuildScheduledEventDeleteAction);
+    this.GuildScheduledEventUserAdd = this.load(GuildScheduledEventUserAddAction);
+    this.GuildScheduledEventUserRemove = this.load(GuildScheduledEventUserRemoveAction);
+    this.GuildSoundboardSoundDelete = this.load(GuildSoundboardSoundDeleteAction);
+    this.GuildStickerCreate = this.load(GuildStickerCreateAction);
+    this.GuildStickerDelete = this.load(GuildStickerDeleteAction);
+    this.GuildStickerUpdate = this.load(GuildStickerUpdateAction);
+    this.GuildStickersUpdate = this.load(GuildStickersUpdateAction);
+    this.GuildUpdate = this.load(GuildUpdateAction);
+    this.InteractionCreate = this.load(InteractionCreateAction);
+    this.MessageCreate = this.load(MessageCreateAction);
+    this.MessageDelete = this.load(MessageDeleteAction);
+    this.MessageDeleteBulk = this.load(MessageDeleteBulkAction);
+    this.MessagePollVoteAdd = this.load(MessagePollVoteAddAction);
+    this.MessagePollVoteRemove = this.load(MessagePollVoteRemoveAction);
+    this.MessageReactionAdd = this.load(MessageReactionAddAction);
+    this.MessageReactionRemove = this.load(MessageReactionRemoveAction);
+    this.MessageReactionRemoveAll = this.load(MessageReactionRemoveAllAction);
+    this.MessageReactionRemoveEmoji = this.load(MessageReactionRemoveEmojiAction);
+    this.MessageUpdate = this.load(MessageUpdateAction);
+    this.StageInstanceCreate = this.load(StageInstanceCreateAction);
+    this.StageInstanceDelete = this.load(StageInstanceDeleteAction);
+    this.StageInstanceUpdate = this.load(StageInstanceUpdateAction);
+    this.ThreadCreate = this.load(ThreadCreateAction);
+    this.ThreadMembersUpdate = this.load(ThreadMembersUpdateAction);
+    this.TypingStart = this.load(TypingStartAction);
+    this.UserUpdate = this.load(UserUpdateAction);
   }
 
   load(Action) {
     return new Action(this.client);
   }
 }
-
-exports.ActionsManager = ActionsManager;

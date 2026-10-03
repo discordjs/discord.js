@@ -1,11 +1,9 @@
-'use strict';
-
-const { userMention } = require('@discordjs/formatters');
-const { ChannelType } = require('discord-api-types/v10');
-const { DMMessageManager } = require('../managers/DMMessageManager.js');
-const { Partials } = require('../util/Partials.js');
-const { BaseChannel } = require('./BaseChannel.js');
-const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
+import { userMention } from '@discordjs/formatters';
+import { ChannelType } from 'discord-api-types/v10';
+import { DMMessageManager } from '../managers/DMMessageManager.js';
+import { Partials } from '../util/Partials.js';
+import { BaseChannel } from './BaseChannel.js';
+import { TextBasedChannel } from './interfaces/TextBasedChannel.js';
 
 /**
  * Represents a direct message channel between two users.
@@ -13,7 +11,7 @@ const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
  * @extends {BaseChannel}
  * @implements {TextBasedChannel}
  */
-class DMChannel extends BaseChannel {
+export class DMChannel extends BaseChannel {
   constructor(client, data) {
     super(client, data);
 
@@ -158,5 +156,3 @@ TextBasedChannel.applyToClass(DMChannel, [
   'setRateLimitPerUser',
   'setNSFW',
 ]);
-
-exports.DMChannel = DMChannel;

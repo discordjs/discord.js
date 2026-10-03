@@ -1,16 +1,14 @@
-'use strict';
+import process from 'node:process';
+import { lazy, isFileBodyEncodable, isJSONEncodable } from '@discordjs/util';
+import { Routes } from 'discord-api-types/v10';
+import { BaseChannel } from '../structures/BaseChannel.js';
+import { MessagePayload } from '../structures/MessagePayload.js';
+import { createChannel } from '../util/Channels.js';
+import { ThreadChannelTypes } from '../util/Constants.js';
+import { Events } from '../util/Events.js';
+import { CachedManager } from './CachedManager.js';
 
-const process = require('node:process');
-const { lazy, isFileBodyEncodable, isJSONEncodable } = require('@discordjs/util');
-const { Routes } = require('discord-api-types/v10');
-const { BaseChannel } = require('../structures/BaseChannel.js');
-const { MessagePayload } = require('../structures/MessagePayload.js');
-const { createChannel } = require('../util/Channels.js');
-const { ThreadChannelTypes } = require('../util/Constants.js');
-const { Events } = require('../util/Events.js');
-const { CachedManager } = require('./CachedManager.js');
-
-const getMessage = lazy(() => require('../structures/Message.js').Message);
+const getMessage = lazy(async () => (await import('../structures/Message.js')).Message);
 
 let cacheWarningEmitted = false;
 
@@ -19,7 +17,7 @@ let cacheWarningEmitted = false;
  *
  * @extends {CachedManager}
  */
-class ChannelManager extends CachedManager {
+export class ChannelManager extends CachedManager {
   constructor(client, iterable) {
     super(client, BaseChannel, iterable);
     const defaultCaching =
@@ -190,8 +188,6 @@ class ChannelManager extends CachedManager {
     const resolvedChannel = this.resolve(channel);
     const data = await this.client.rest.post(Routes.channelMessages(resolvedChannelId), payload);
 
-    return resolvedChannel?.messages._add(data) ?? new (getMessage())(this.client, data);
+    return resolvedChannel?.messages._add(data) ?? new (await getMessage())(this.client, data);
   }
 }
-
-exports.ChannelManager = ChannelManager;

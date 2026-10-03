@@ -1,13 +1,11 @@
-'use strict';
-
-const { ContextMenuCommandInteraction } = require('./ContextMenuCommandInteraction.js');
+import { ContextMenuCommandInteraction } from './ContextMenuCommandInteraction.js';
 
 /**
  * Represents a user context menu interaction.
  *
  * @extends {ContextMenuCommandInteraction}
  */
-class UserContextMenuCommandInteraction extends ContextMenuCommandInteraction {
+export class UserContextMenuCommandInteraction extends ContextMenuCommandInteraction {
   /**
    * The target user from this interaction
    *
@@ -28,5 +26,3 @@ class UserContextMenuCommandInteraction extends ContextMenuCommandInteraction {
     return this.options.getMember('user');
   }
 }
-
-exports.UserContextMenuCommandInteraction = UserContextMenuCommandInteraction;

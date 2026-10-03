@@ -1,12 +1,8 @@
-'use strict';
-
-const { lazy } = require('@discordjs/util');
-const { findComponentByCustomId } = require('../util/Components.js');
-const { BaseInteraction } = require('./BaseInteraction.js');
-const { InteractionWebhook } = require('./InteractionWebhook.js');
-const { InteractionResponses } = require('./interfaces/InteractionResponses.js');
-
-const getMessage = lazy(() => require('./Message.js').Message);
+import { findComponentByCustomId } from '../util/Components.js';
+import { BaseInteraction } from './BaseInteraction.js';
+import { InteractionWebhook } from './InteractionWebhook.js';
+import { Message } from './Message.js';
+import { InteractionResponses } from './interfaces/InteractionResponses.js';
 
 /**
  * Represents a message component interaction.
@@ -14,7 +10,7 @@ const getMessage = lazy(() => require('./Message.js').Message);
  * @extends {BaseInteraction}
  * @implements {InteractionResponses}
  */
-class MessageComponentInteraction extends BaseInteraction {
+export class MessageComponentInteraction extends BaseInteraction {
   constructor(client, data) {
     super(client, data);
 
@@ -30,7 +26,7 @@ class MessageComponentInteraction extends BaseInteraction {
      *
      * @type {Message}
      */
-    this.message = this.channel?.messages._add(data.message) ?? new (getMessage())(client, data.message);
+    this.message = this.channel?.messages._add(data.message) ?? new Message(client, data.message);
 
     /**
      * The custom id of the component which was interacted with
@@ -124,5 +120,3 @@ class MessageComponentInteraction extends BaseInteraction {
 }
 
 InteractionResponses.applyToClass(MessageComponentInteraction);
-
-exports.MessageComponentInteraction = MessageComponentInteraction;

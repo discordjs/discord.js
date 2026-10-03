@@ -1,14 +1,12 @@
-'use strict';
-
-const { Component } = require('./Component.js');
-const { UnfurledMediaItem } = require('./UnfurledMediaItem.js');
+import { Component } from './Component.js';
+import { UnfurledMediaItem } from './UnfurledMediaItem.js';
 
 /**
  * Represents a file component
  *
  * @extends {Component}
  */
-class FileComponent extends Component {
+export class FileComponent extends Component {
   constructor({ file, ...data }) {
     super(data);
 
@@ -40,5 +38,3 @@ class FileComponent extends Component {
     return { ...this.data, file: this.file.toJSON() };
   }
 }
-
-exports.FileComponent = FileComponent;

@@ -1,20 +1,18 @@
-'use strict';
-
-const process = require('node:process');
-const { Collection } = require('@discordjs/collection');
-const { ChannelType, Routes } = require('discord-api-types/v10');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { GuildChannel } = require('../structures/GuildChannel.js');
-const { PermissionOverwrites } = require('../structures/PermissionOverwrites.js');
-const { ThreadChannel } = require('../structures/ThreadChannel.js');
-const { Webhook } = require('../structures/Webhook.js');
-const { ChannelFlagsBitField } = require('../util/ChannelFlagsBitField.js');
-const { transformGuildForumTag, transformGuildDefaultReaction } = require('../util/Channels.js');
-const { ThreadChannelTypes } = require('../util/Constants.js');
-const { resolveImage } = require('../util/DataResolver.js');
-const { setPosition } = require('../util/Util.js');
-const { CachedManager } = require('./CachedManager.js');
-const { GuildTextThreadManager } = require('./GuildTextThreadManager.js');
+import process from 'node:process';
+import { Collection } from '@discordjs/collection';
+import { ChannelType, Routes } from 'discord-api-types/v10';
+import { DiscordjsError, DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { GuildChannel } from '../structures/GuildChannel.js';
+import { PermissionOverwrites } from '../structures/PermissionOverwrites.js';
+import { ThreadChannel } from '../structures/ThreadChannel.js';
+import { Webhook } from '../structures/Webhook.js';
+import { ChannelFlagsBitField } from '../util/ChannelFlagsBitField.js';
+import { transformGuildForumTag, transformGuildDefaultReaction } from '../util/Channels.js';
+import { ThreadChannelTypes } from '../util/Constants.js';
+import { resolveImage } from '../util/DataResolver.js';
+import { setPosition } from '../util/Util.js';
+import { CachedManager } from './CachedManager.js';
+import { GuildTextThreadManager } from './GuildTextThreadManager.js';
 
 let cacheWarningEmitted = false;
 
@@ -23,7 +21,7 @@ let cacheWarningEmitted = false;
  *
  * @extends {CachedManager}
  */
-class GuildChannelManager extends CachedManager {
+export class GuildChannelManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, GuildChannel, iterable);
     const defaultCaching =
@@ -552,5 +550,3 @@ class GuildChannelManager extends CachedManager {
     this.client.actions.ChannelDelete.handle({ id });
   }
 }
-
-exports.GuildChannelManager = GuildChannelManager;

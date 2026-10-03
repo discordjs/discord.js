@@ -1,15 +1,13 @@
-'use strict';
-
-const { Routes } = require('discord-api-types/v10');
-const { VoiceState } = require('../structures/VoiceState.js');
-const { CachedManager } = require('./CachedManager.js');
+import { Routes } from 'discord-api-types/v10';
+import { VoiceState } from '../structures/VoiceState.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for VoiceStates and stores their cache.
  *
  * @extends {CachedManager}
  */
-class VoiceStateManager extends CachedManager {
+export class VoiceStateManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, VoiceState, iterable);
 
@@ -60,5 +58,3 @@ class VoiceStateManager extends CachedManager {
     return this._add(data, cache);
   }
 }
-
-exports.VoiceStateManager = VoiceStateManager;

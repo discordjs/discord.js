@@ -1,16 +1,14 @@
-'use strict';
-
-const { Routes } = require('discord-api-types/v10');
-const { ReactionUserManager } = require('../managers/ReactionUserManager.js');
-const { flatten, resolveGuildEmoji } = require('../util/Util.js');
-const { ApplicationEmoji } = require('./ApplicationEmoji.js');
-const { GuildEmoji } = require('./GuildEmoji.js');
-const { ReactionEmoji } = require('./ReactionEmoji.js');
+import { Routes } from 'discord-api-types/v10';
+import { ReactionUserManager } from '../managers/ReactionUserManager.js';
+import { flatten, resolveGuildEmoji } from '../util/Util.js';
+import { ApplicationEmoji } from './ApplicationEmoji.js';
+import { GuildEmoji } from './GuildEmoji.js';
+import { ReactionEmoji } from './ReactionEmoji.js';
 
 /**
  * Represents a reaction to a message.
  */
-class MessageReaction {
+export class MessageReaction {
   constructor(client, data, message) {
     /**
      * The client that instantiated this message reaction
@@ -210,5 +208,3 @@ class MessageReaction {
     }
   }
 }
-
-exports.MessageReaction = MessageReaction;

@@ -1,14 +1,12 @@
-'use strict';
-
-const { RouteBases, Routes } = require('discord-api-types/v10');
-const { Base } = require('./Base.js');
+import { RouteBases, Routes } from 'discord-api-types/v10';
+import { Base } from './Base.js';
 
 /**
  * Represents the template for a guild.
  *
  * @extends {Base}
  */
-class GuildTemplate extends Base {
+export class GuildTemplate extends Base {
   /**
    * A regular expression that matches guild template links.
    * The `code` group property is present on the `exec()` result of this expression.
@@ -217,5 +215,3 @@ class GuildTemplate extends Base {
     return this.code;
   }
 }
-
-exports.GuildTemplate = GuildTemplate;

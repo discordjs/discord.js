@@ -1,21 +1,17 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { lazy } = require('@discordjs/util');
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { SoundboardSound } = require('../structures/SoundboardSound.js');
-const { resolveBase64, resolveFile } = require('../util/DataResolver.js');
-const { CachedManager } = require('./CachedManager.js');
-
-const fileTypeMime = lazy(() => require('magic-bytes.js').filetypemime);
+import { Collection } from '@discordjs/collection';
+import { Routes } from 'discord-api-types/v10';
+import { filetypemime } from 'magic-bytes.js';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { SoundboardSound } from '../structures/SoundboardSound.js';
+import { resolveBase64, resolveFile } from '../util/DataResolver.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for Soundboard Sounds and stores their cache.
  *
  * @extends {CachedManager}
  */
-class GuildSoundboardSoundManager extends CachedManager {
+export class GuildSoundboardSoundManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, SoundboardSound, iterable);
 
@@ -95,7 +91,7 @@ class GuildSoundboardSoundManager extends CachedManager {
   async create({ contentType, emojiId, emojiName, file, name, reason, volume }) {
     const resolvedFile = await resolveFile(file);
 
-    const resolvedContentType = contentType ?? resolvedFile.contentType ?? fileTypeMime()(resolvedFile.data)[0];
+    const resolvedContentType = contentType ?? resolvedFile.contentType ?? filetypemime(resolvedFile.data)[0];
 
     const sound = resolveBase64(resolvedFile.data, resolvedContentType);
 
@@ -222,5 +218,3 @@ class GuildSoundboardSoundManager extends CachedManager {
     return data.items.reduce((coll, sound) => coll.set(sound.sound_id, this._add(sound, cache)), new Collection());
   }
 }
-
-exports.GuildSoundboardSoundManager = GuildSoundboardSoundManager;

@@ -1,18 +1,16 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { ReactionType, Routes } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { User } = require('../structures/User.js');
-const { CachedManager } = require('./CachedManager.js');
+import { Collection } from '@discordjs/collection';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { ReactionType, Routes } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { User } from '../structures/User.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for users who reacted to a reaction and stores their cache.
  *
  * @extends {CachedManager}
  */
-class ReactionUserManager extends CachedManager {
+export class ReactionUserManager extends CachedManager {
   constructor(reaction, iterable) {
     super(reaction.client, User, iterable);
 
@@ -81,5 +79,3 @@ class ReactionUserManager extends CachedManager {
     return this.reaction;
   }
 }
-
-exports.ReactionUserManager = ReactionUserManager;

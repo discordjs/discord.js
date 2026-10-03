@@ -1,13 +1,11 @@
-'use strict';
-
-const { Base } = require('./Base.js');
+import { Base } from './Base.js';
 
 /**
  * Represents an Entitlement
  *
  * @extends {Base}
  */
-class Entitlement extends Base {
+export class Entitlement extends Base {
   constructor(client, data) {
     super(client);
 
@@ -195,5 +193,3 @@ class Entitlement extends Base {
     await this.client.application.entitlements.consume(this.id);
   }
 }
-
-exports.Entitlement = Entitlement;

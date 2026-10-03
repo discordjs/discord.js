@@ -1,15 +1,13 @@
-'use strict';
-
-const { transformResolved } = require('../util/Util.js');
-const { CommandInteraction } = require('./CommandInteraction.js');
-const { CommandInteractionOptionResolver } = require('./CommandInteractionOptionResolver.js');
+import { transformResolved } from '../util/Util.js';
+import { CommandInteraction } from './CommandInteraction.js';
+import { CommandInteractionOptionResolver } from './CommandInteractionOptionResolver.js';
 
 /**
  * Represents a command interaction.
  *
  * @extends {CommandInteraction}
  */
-class ChatInputCommandInteraction extends CommandInteraction {
+export class ChatInputCommandInteraction extends CommandInteraction {
   constructor(client, data) {
     super(client, data);
 
@@ -41,5 +39,3 @@ class ChatInputCommandInteraction extends CommandInteraction {
     return `/${properties.filter(Boolean).join(' ')}`;
   }
 }
-
-exports.ChatInputCommandInteraction = ChatInputCommandInteraction;

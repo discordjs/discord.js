@@ -1,4 +1,4 @@
-import type { ParameterReflection } from 'typedoc';
+import type { ParameterReflection } from '../index.js';
 import type { Param } from '../interfaces/index.js';
 import { parseType } from '../util/parseType.js';
 import { DocumentedItem } from './item.js';

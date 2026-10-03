@@ -1,7 +1,5 @@
-'use strict';
-
-const { flatten } = require('../util/Util.js');
-const { Emoji } = require('./Emoji.js');
+import { flatten } from '../util/Util.js';
+import { Emoji } from './Emoji.js';
 
 /**
  * Represents a limited emoji set used for both custom and unicode emojis. Custom emojis
@@ -10,7 +8,7 @@ const { Emoji } = require('./Emoji.js');
  *
  * @extends {Emoji}
  */
-class ReactionEmoji extends Emoji {
+export class ReactionEmoji extends Emoji {
   constructor(reaction, emoji) {
     super(reaction.message.client, emoji);
     /**
@@ -29,5 +27,3 @@ class ReactionEmoji extends Emoji {
     return this.id;
   }
 }
-
-exports.ReactionEmoji = ReactionEmoji;
