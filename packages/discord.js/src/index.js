@@ -2,7 +2,18 @@
 import packageJson from '../package.json' with { type: 'json' };
 
 // import/export early to avoid circular imports
-export * from './util/Util.js';
+export {
+  cleanCodeBlockContent,
+  cleanContent,
+  discordSort,
+  fetchRecommendedShardCount,
+  flatten,
+  parseEmoji,
+  parseWebhookURL,
+  resolveColor,
+  resolveSKUId,
+  verifyString,
+} from './util/Util.js';
 
 export { Client } from './client/Client.js';
 export { Shard } from './sharding/Shard.js';
