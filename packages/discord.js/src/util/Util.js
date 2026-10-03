@@ -1,18 +1,12 @@
-import { createRequire } from 'node:module';
 import { parse } from 'node:path';
 import { Collection } from '@discordjs/collection';
-import { lazy } from '@discordjs/util';
 import { APIVersion, ChannelType, Routes } from 'discord-api-types/v10';
 import { fetch } from 'undici';
-import { Colors } from './Colors.js';
-// eslint-disable-next-line import-x/order
 import { DiscordjsError, DiscordjsRangeError, DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
-
-// Fixes circular dependencies.
-const require = createRequire(import.meta.url);
-const getAttachment = lazy(() => require('../structures/Attachment.js').Attachment);
-const getGuildChannel = lazy(() => require('../structures/GuildChannel.js').GuildChannel);
-const getSKU = lazy(() => require('../structures/SKU.js').SKU);
+import { Attachment } from '../structures/Attachment.js';
+import { GuildChannel } from '../structures/GuildChannel.js';
+import { SKU } from '../structures/SKU.js';
+import { Colors } from './Colors.js';
 
 const isObject = data => typeof data === 'object' && data !== null;
 
@@ -362,7 +356,7 @@ export function resolveColor(color) {
  * @returns {Collection}
  */
 export function discordSort(collection) {
-  const isGuildChannel = collection.first() instanceof getGuildChannel();
+  const isGuildChannel = collection.first() instanceof GuildChannel;
   return collection.toSorted(
     isGuildChannel
       ? (a, b) => a.rawPosition - b.rawPosition || Number(BigInt(a.id) - BigInt(b.id))
@@ -564,7 +558,7 @@ export function transformResolved(
   if (attachments) {
     result.attachments = new Collection();
     for (const attachment of Object.values(attachments)) {
-      const patched = new (getAttachment())(attachment);
+      const patched = new Attachment(attachment);
       result.attachments.set(attachment.id, patched);
     }
   }
@@ -580,6 +574,6 @@ export function transformResolved(
  */
 export function resolveSKUId(resolvable) {
   if (typeof resolvable === 'string') return resolvable;
-  if (resolvable instanceof getSKU()) return resolvable.id;
+  if (resolvable instanceof SKU) return resolvable.id;
   return null;
 }

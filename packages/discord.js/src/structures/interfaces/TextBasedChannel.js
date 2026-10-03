@@ -1,14 +1,11 @@
 import { Collection } from '@discordjs/collection';
-import { lazy } from '@discordjs/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { InteractionType, Routes } from 'discord-api-types/v10';
 import { DiscordjsTypeError, DiscordjsError, ErrorCodes } from '../../errors/index.js';
+import { GuildMessageManager } from '../../managers/GuildMessageManager.js';
 import { MaxBulkDeletableMessageAge } from '../../util/Constants.js';
 import { InteractionCollector } from '../InteractionCollector.js';
 import { MessageCollector } from '../MessageCollector.js';
-
-// Fixes circular dependencies.
-const getGuildMessageManager = lazy(() => require('../../managers/GuildMessageManager.js').GuildMessageManager);
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -22,7 +19,7 @@ export class TextBasedChannel {
      *
      * @type {GuildMessageManager}
      */
-    this.messages = new (getGuildMessageManager())(this);
+    this.messages = new GuildMessageManager(this);
 
     /**
      * The channel's last message id, if one was sent

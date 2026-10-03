@@ -1,6 +1,8 @@
 // "Root" classes (starting points)
 import packageJson from '../package.json' with { type: 'json' };
 
+export * from './util/Util.js';
+
 export { Client } from './client/Client.js';
 export { Shard } from './sharding/Shard.js';
 export { ShardClientUtil } from './sharding/ShardClientUtil.js';
@@ -43,16 +45,6 @@ export { UserFlagsBitField } from './util/UserFlagsBitField.js';
 
 export * from './util/DataResolver.js';
 
-export { cleanCodeBlockContent } from './util/Util.js';
-export { cleanContent } from './util/Util.js';
-export { discordSort } from './util/Util.js';
-export { fetchRecommendedShardCount } from './util/Util.js';
-export { flatten } from './util/Util.js';
-export { parseEmoji } from './util/Util.js';
-export { parseWebhookURL } from './util/Util.js';
-export { resolveColor } from './util/Util.js';
-export { resolveSKUId } from './util/Util.js';
-export { verifyString } from './util/Util.js';
 export const version = packageJson.version;
 
 // Managers
