@@ -1,6 +1,7 @@
 // "Root" classes (starting points)
 import packageJson from '../package.json' with { type: 'json' };
 
+// import/export early to avoid circular imports
 export * from './util/Util.js';
 
 export { Client } from './client/Client.js';
