@@ -1,13 +1,10 @@
 /* eslint-disable promise/prefer-await-to-callbacks, promise/prefer-await-to-then */
-import { createRequire } from 'node:module';
 import process from 'node:process';
 import { calculateShardId } from '@discordjs/util';
 import { WebSocketShardEvents } from '@discordjs/ws';
 import { DiscordjsError, DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
 import { Events } from '../util/Events.js';
 import { makeError, makePlainError } from '../util/Util.js';
-
-const require = createRequire(import.meta.url);
 
 /**
  * Helper class for sharded clients spawned as a child process/worker, such as from a {@link ShardingManager}.
@@ -50,7 +47,7 @@ export class ShardClientUtil {
         });
         break;
       case 'worker':
-        this.parentPort = require('node:worker_threads').parentPort;
+        this.parentPort = process.getBuiltinModule('node:worker_threads').parentPort;
         this.parentPort.on('message', this._handleMessage.bind(this));
         client.on(Events.ClientReady, () => {
           this.parentPort.postMessage({ _ready: true });

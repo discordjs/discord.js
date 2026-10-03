@@ -1,19 +1,15 @@
 import { Buffer } from 'node:buffer';
-import { createRequire } from 'node:module';
-import { isJSONEncodable, isRawFileEncodable, lazy } from '@discordjs/util';
+import { isJSONEncodable, isRawFileEncodable } from '@discordjs/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { DiscordjsError, DiscordjsRangeError, ErrorCodes } from '../errors/index.js';
+import { MessageManager } from '../managers/MessageManager.js';
 import { resolveFile } from '../util/DataResolver.js';
 import { MessageFlagsBitField } from '../util/MessageFlagsBitField.js';
 import { findName, verifyString, resolvePartialEmoji } from '../util/Util.js';
-
-// Fixes circular dependencies.
-const require = createRequire(import.meta.url);
-const getWebhook = lazy(() => require('./Webhook.js').Webhook);
-const getUser = lazy(() => require('./User.js').User);
-const getGuildMember = lazy(() => require('./GuildMember.js').GuildMember);
-const getMessage = lazy(() => require('./Message.js').Message);
-const getMessageManager = lazy(() => require('../managers/MessageManager.js').MessageManager);
+import { GuildMember } from './GuildMember.js';
+import { Message } from './Message.js';
+import { User } from './User.js';
+import { Webhook } from './Webhook.js';
 
 /**
  * Represents a message to be sent to the API.
@@ -60,7 +56,7 @@ export class MessagePayload {
    * @readonly
    */
   get isWebhook() {
-    return this.target instanceof getWebhook();
+    return this.target instanceof Webhook;
   }
 
   /**
@@ -70,7 +66,7 @@ export class MessagePayload {
    * @readonly
    */
   get isUser() {
-    return this.target instanceof getUser() || this.target instanceof getGuildMember();
+    return this.target instanceof User || this.target instanceof GuildMember;
   }
 
   /**
@@ -80,7 +76,7 @@ export class MessagePayload {
    * @readonly
    */
   get isMessage() {
-    return this.target instanceof getMessage();
+    return this.target instanceof Message;
   }
 
   /**
@@ -90,7 +86,7 @@ export class MessagePayload {
    * @readonly
    */
   get isMessageManager() {
-    return this.target instanceof getMessageManager();
+    return this.target instanceof MessageManager;
   }
 
   /**

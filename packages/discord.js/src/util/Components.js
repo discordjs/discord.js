@@ -1,36 +1,21 @@
-import { createRequire } from 'node:module';
-import { lazy } from '@discordjs/util';
 import { ComponentType } from 'discord-api-types/v10';
-
-// Fixes circular dependencies.
-const require = createRequire(import.meta.url);
-const getActionRow = lazy(() => require('../structures/ActionRow.js').ActionRow);
-const getButtonComponent = lazy(() => require('../structures/ButtonComponent.js').ButtonComponent);
-const getChannelSelectMenuComponent = lazy(
-  () => require('../structures/ChannelSelectMenuComponent.js').ChannelSelectMenuComponent,
-);
-const getComponent = lazy(() => require('../structures/Component.js').Component);
-const getContainerComponent = lazy(() => require('../structures/ContainerComponent.js').ContainerComponent);
-const getFileComponent = lazy(() => require('../structures/FileComponent.js').FileComponent);
-const getLabelComponent = lazy(() => require('../structures/LabelComponent.js').LabelComponent);
-const getMediaGalleryComponent = lazy(() => require('../structures/MediaGalleryComponent.js').MediaGalleryComponent);
-const getMentionableSelectMenuComponent = lazy(
-  () => require('../structures/MentionableSelectMenuComponent.js').MentionableSelectMenuComponent,
-);
-const getRoleSelectMenuComponent = lazy(
-  () => require('../structures/RoleSelectMenuComponent.js').RoleSelectMenuComponent,
-);
-const getSectionComponent = lazy(() => require('../structures/SectionComponent.js').SectionComponent);
-const getSeparatorComponent = lazy(() => require('../structures/SeparatorComponent.js').SeparatorComponent);
-const getStringSelectMenuComponent = lazy(
-  () => require('../structures/StringSelectMenuComponent.js').StringSelectMenuComponent,
-);
-const getTextDisplayComponent = lazy(() => require('../structures/TextDisplayComponent.js').TextDisplayComponent);
-const getTextInputComponent = lazy(() => require('../structures/TextInputComponent.js').TextInputComponent);
-const getThumbnailComponent = lazy(() => require('../structures/ThumbnailComponent.js').ThumbnailComponent);
-const getUserSelectMenuComponent = lazy(
-  () => require('../structures/UserSelectMenuComponent.js').UserSelectMenuComponent,
-);
+import { ActionRow } from '../structures/ActionRow.js';
+import { ButtonComponent } from '../structures/ButtonComponent.js';
+import { ChannelSelectMenuComponent } from '../structures/ChannelSelectMenuComponent.js';
+import { Component } from '../structures/Component.js';
+import { ContainerComponent } from '../structures/ContainerComponent.js';
+import { FileComponent } from '../structures/FileComponent.js';
+import { LabelComponent } from '../structures/LabelComponent.js';
+import { MediaGalleryComponent } from '../structures/MediaGalleryComponent.js';
+import { MentionableSelectMenuComponent } from '../structures/MentionableSelectMenuComponent.js';
+import { RoleSelectMenuComponent } from '../structures/RoleSelectMenuComponent.js';
+import { SectionComponent } from '../structures/SectionComponent.js';
+import { SeparatorComponent } from '../structures/SeparatorComponent.js';
+import { StringSelectMenuComponent } from '../structures/StringSelectMenuComponent.js';
+import { TextDisplayComponent } from '../structures/TextDisplayComponent.js';
+import { TextInputComponent } from '../structures/TextInputComponent.js';
+import { ThumbnailComponent } from '../structures/ThumbnailComponent.js';
+import { UserSelectMenuComponent } from '../structures/UserSelectMenuComponent.js';
 
 /**
  * @typedef {Object} BaseComponentData
@@ -262,22 +247,22 @@ const getUserSelectMenuComponent = lazy(
  */
 
 const ComponentTypeToClass = {
-  [ComponentType.ActionRow]: getActionRow,
-  [ComponentType.Button]: getButtonComponent,
-  [ComponentType.StringSelect]: getStringSelectMenuComponent,
-  [ComponentType.TextInput]: getTextInputComponent,
-  [ComponentType.UserSelect]: getUserSelectMenuComponent,
-  [ComponentType.RoleSelect]: getRoleSelectMenuComponent,
-  [ComponentType.MentionableSelect]: getMentionableSelectMenuComponent,
-  [ComponentType.ChannelSelect]: getChannelSelectMenuComponent,
-  [ComponentType.Container]: getContainerComponent,
-  [ComponentType.TextDisplay]: getTextDisplayComponent,
-  [ComponentType.File]: getFileComponent,
-  [ComponentType.MediaGallery]: getMediaGalleryComponent,
-  [ComponentType.Section]: getSectionComponent,
-  [ComponentType.Separator]: getSeparatorComponent,
-  [ComponentType.Thumbnail]: getThumbnailComponent,
-  [ComponentType.Label]: getLabelComponent,
+  [ComponentType.ActionRow]: ActionRow,
+  [ComponentType.Button]: ButtonComponent,
+  [ComponentType.StringSelect]: StringSelectMenuComponent,
+  [ComponentType.TextInput]: TextInputComponent,
+  [ComponentType.UserSelect]: UserSelectMenuComponent,
+  [ComponentType.RoleSelect]: RoleSelectMenuComponent,
+  [ComponentType.MentionableSelect]: MentionableSelectMenuComponent,
+  [ComponentType.ChannelSelect]: ChannelSelectMenuComponent,
+  [ComponentType.Container]: ContainerComponent,
+  [ComponentType.TextDisplay]: TextDisplayComponent,
+  [ComponentType.File]: FileComponent,
+  [ComponentType.MediaGallery]: MediaGalleryComponent,
+  [ComponentType.Section]: SectionComponent,
+  [ComponentType.Separator]: SeparatorComponent,
+  [ComponentType.Thumbnail]: ThumbnailComponent,
+  [ComponentType.Label]: LabelComponent,
 };
 
 /**
@@ -288,7 +273,7 @@ const ComponentTypeToClass = {
  * @ignore
  */
 export function createComponent(data) {
-  return data instanceof getComponent() ? data : new (ComponentTypeToClass[data.type]?.() ?? getComponent())(data);
+  return data instanceof Component ? data : new (ComponentTypeToClass[data.type] ?? Component)(data);
 }
 
 /**

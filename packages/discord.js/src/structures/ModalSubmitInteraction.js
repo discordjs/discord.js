@@ -1,15 +1,11 @@
-import { createRequire } from 'node:module';
 import { Collection } from '@discordjs/collection';
-import { lazy } from '@discordjs/util';
 import { transformResolved } from '../util/Util.js';
+import { Attachment } from './Attachment.js';
 import { BaseInteraction } from './BaseInteraction.js';
 import { InteractionWebhook } from './InteractionWebhook.js';
+import { Message } from './Message.js';
 import { ModalComponentResolver } from './ModalComponentResolver.js';
 import { InteractionResponses } from './interfaces/InteractionResponses.js';
-
-const require = createRequire(import.meta.url);
-const getMessage = lazy(() => require('./Message.js').Message);
-const getAttachment = lazy(() => require('./Attachment.js').Attachment);
 
 /**
  * @typedef {Object} BaseModalData
@@ -98,7 +94,7 @@ export class ModalSubmitInteraction extends BaseInteraction {
        *
        * @type {?Message}
        */
-      this.message = this.channel?.messages._add(data.message) ?? new (getMessage())(this.client, data.message);
+      this.message = this.channel?.messages._add(data.message) ?? new Message(this.client, data.message);
     } else {
       this.message = null;
     }
@@ -229,7 +225,7 @@ export class ModalSubmitInteraction extends BaseInteraction {
           data.attachments = new Collection();
           for (const [id, attachment] of Object.entries(attachments)) {
             if (valueSet.has(id)) {
-              data.attachments.set(id, new (getAttachment())(attachment));
+              data.attachments.set(id, new Attachment(attachment));
             }
           }
         }

@@ -1,16 +1,11 @@
-import { createRequire } from 'node:module';
 import { ClientApplication } from '../../../structures/ClientApplication.js';
+import { ClientUser } from '../../../structures/ClientUser.js';
 import { Status } from '../../../util/Status.js';
-
-const require = createRequire(import.meta.url);
-
-let ClientUser;
 
 export default (client, { d: data }, shardId) => {
   if (client.user) {
     client.user._patch(data.user);
   } else {
-    ClientUser ??= require('../../../structures/ClientUser.js').ClientUser;
     client.user = new ClientUser(client, data.user);
     client.users.cache.set(client.user.id, client.user);
   }

@@ -1,8 +1,4 @@
-import { createRequire } from 'node:module';
-import { lazy } from '@discordjs/util';
-
-const require = createRequire(import.meta.url);
-const getMessage = lazy(() => require('./Message.js').Message);
+import { Message } from './Message.js';
 
 /**
  * Represents the resource that was created by the interaction response.
@@ -47,7 +43,7 @@ export class InteractionCallbackResource {
        */
       this.message =
         this.client.channels.cache.get(data.message.channel_id)?.messages._add(data.message) ??
-        new (getMessage())(client, data.message);
+        new Message(client, data.message);
     } else {
       this.message = null;
     }

@@ -1,12 +1,8 @@
-import { createRequire } from 'node:module';
-import { lazy } from '@discordjs/util';
 import { findComponentByCustomId } from '../util/Components.js';
 import { BaseInteraction } from './BaseInteraction.js';
 import { InteractionWebhook } from './InteractionWebhook.js';
+import { Message } from './Message.js';
 import { InteractionResponses } from './interfaces/InteractionResponses.js';
-
-const require = createRequire(import.meta.url);
-const getMessage = lazy(() => require('./Message.js').Message);
 
 /**
  * Represents a message component interaction.
@@ -30,7 +26,7 @@ export class MessageComponentInteraction extends BaseInteraction {
      *
      * @type {Message}
      */
-    this.message = this.channel?.messages._add(data.message) ?? new (getMessage())(client, data.message);
+    this.message = this.channel?.messages._add(data.message) ?? new Message(client, data.message);
 
     /**
      * The custom id of the component which was interacted with

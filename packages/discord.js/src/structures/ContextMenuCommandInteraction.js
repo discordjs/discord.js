@@ -1,12 +1,8 @@
-import { createRequire } from 'node:module';
-import { lazy } from '@discordjs/util';
 import { ApplicationCommandOptionType } from 'discord-api-types/v10';
 import { transformResolved } from '../util/Util.js';
 import { CommandInteraction } from './CommandInteraction.js';
 import { CommandInteractionOptionResolver } from './CommandInteractionOptionResolver.js';
-
-const require = createRequire(import.meta.url);
-const getMessage = lazy(() => require('./Message.js').Message);
+import { Message } from './Message.js';
 
 /**
  * Represents a context menu interaction.
@@ -58,7 +54,7 @@ export class ContextMenuCommandInteraction extends CommandInteraction {
         value: target_id,
         message:
           this.channel?.messages._add(resolved.messages[target_id]) ??
-          new (getMessage())(this.client, resolved.messages[target_id]),
+          new Message(this.client, resolved.messages[target_id]),
       });
     }
 

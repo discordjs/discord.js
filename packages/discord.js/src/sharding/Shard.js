@@ -1,5 +1,4 @@
 /* eslint-disable promise/prefer-await-to-callbacks, promise/prefer-await-to-then, no-use-before-define */
-import { createRequire } from 'node:module';
 import path from 'node:path';
 import process from 'node:process';
 import { setTimeout, clearTimeout } from 'node:timers';
@@ -9,8 +8,6 @@ import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import { DiscordjsError, ErrorCodes } from '../errors/index.js';
 import { ShardEvents } from '../util/ShardEvents.js';
 import { makeError, makePlainError } from '../util/Util.js';
-
-const require = createRequire(import.meta.url);
 
 let childProcess = null;
 let Worker = null;
@@ -28,10 +25,10 @@ export class Shard extends AsyncEventEmitter {
 
     switch (manager.mode) {
       case 'process':
-        childProcess = require('node:child_process');
+        childProcess = process.getBuiltinModule('node:child_process');
         break;
       case 'worker':
-        Worker = require('node:worker_threads').Worker;
+        Worker = process.getBuiltinModule('node:worker_threads').Worker;
         break;
       default:
         throw new Error(`Invalid sharding mode in Shard ${id}`);
