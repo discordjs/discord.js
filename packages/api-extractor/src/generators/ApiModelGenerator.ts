@@ -43,7 +43,8 @@ import {
 import type * as tsdoc from '@microsoft/tsdoc';
 import { DeclarationReference, type Meaning } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { JsonFile, Path } from '@rushstack/node-core-library';
-import * as ts from 'typescript';
+import * as ts from 'typescript/unstable/ast';
+import * as tsAPI from 'typescript/unstable/sync';
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstEntity } from '../analyzer/AstEntity.js';
 import { AstImport } from '../analyzer/AstImport.js';
@@ -1166,7 +1167,7 @@ export class ApiModelGenerator {
 					return; // trim out items marked as "@internal" or "@alpha"
 				}
 
-				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
+				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & tsAPI.SymbolFlags.Optional) !== 0;
 				const isProtected: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Protected) !== 0;
 				const isAbstract: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Abstract) !== 0;
 				const sourceLocation: ISourceLocation = this._getSourceLocation(methodDeclaration);
@@ -1218,7 +1219,8 @@ export class ApiModelGenerator {
 
 		if (apiMethodSignature === undefined) {
 			if (astDeclaration) {
-				const methodSignature: ts.MethodSignature = astDeclaration.declaration as ts.MethodSignature;
+				const methodSignature: ts.MethodSignatureDeclaration =
+					astDeclaration.declaration as ts.MethodSignatureDeclaration;
 
 				const nodeTransforms: IExcerptBuilderNodeTransform[] = [];
 
@@ -1265,7 +1267,7 @@ export class ApiModelGenerator {
 				}
 
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
+				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & tsAPI.SymbolFlags.Optional) !== 0;
 				const sourceLocation: ISourceLocation = this._getSourceLocation(methodSignature);
 
 				apiMethodSignature = new ApiMethodSignature({
@@ -1388,7 +1390,7 @@ export class ApiModelGenerator {
 				}
 
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
+				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & tsAPI.SymbolFlags.Optional) !== 0;
 				const isProtected: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Protected) !== 0;
 				const isAbstract: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Abstract) !== 0;
 				const isReadonly: boolean = this._isReadonly(astDeclaration);
@@ -1443,7 +1445,8 @@ export class ApiModelGenerator {
 			(astDeclaration || !this._isInherited(parent as DocgenInterfaceJson, jsDoc!, parentApiItem.kind))
 		) {
 			if (astDeclaration) {
-				const propertySignature: ts.PropertySignature = astDeclaration.declaration as ts.PropertySignature;
+				const propertySignature: ts.PropertySignatureDeclaration =
+					astDeclaration.declaration as ts.PropertySignatureDeclaration;
 
 				const nodeTransforms: IExcerptBuilderNodeTransform[] = [];
 
@@ -1473,7 +1476,7 @@ export class ApiModelGenerator {
 				}
 
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
+				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & tsAPI.SymbolFlags.Optional) !== 0;
 				const isReadonly: boolean = this._isReadonly(astDeclaration);
 				const sourceLocation: ISourceLocation = this._getSourceLocation(propertySignature);
 
@@ -1761,8 +1764,8 @@ export class ApiModelGenerator {
 				}
 
 				const defaultTypeTokenRange: IExcerptTokenRange = ExcerptBuilder.createEmptyTokenRange();
-				if (typeParameter.default) {
-					nodeTransforms.push({ node: typeParameter.default, captureTokenRange: defaultTypeTokenRange });
+				if (typeParameter.defaultType) {
+					nodeTransforms.push({ node: typeParameter.defaultType, captureTokenRange: defaultTypeTokenRange });
 				}
 
 				typeParameters.push({
@@ -1793,7 +1796,7 @@ export class ApiModelGenerator {
 				parameters.push({
 					parameterName: syntheticName ?? parameter.name.getText().trim(),
 					parameterTypeTokenRange,
-					isOptional: this._collector.typeChecker.isOptionalParameter(parameter),
+					isOptional: Boolean(parameter.questionToken ?? parameter.initializer),
 					isRest: Boolean(parameter.dotDotDotToken),
 					defaultValue:
 						parameter.initializer?.getText() ??

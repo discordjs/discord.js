@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
-import type * as ts from 'typescript';
+import type * as ts from 'typescript/unstable/ast';
+import type * as tsAPI from 'typescript/unstable/sync';
 import type { AstEntity } from './AstEntity.js';
 import type { AstSymbol } from './AstSymbol.js';
 
@@ -25,7 +26,7 @@ export interface IAstModuleExportInfo {
  */
 export interface IAstModuleOptions {
 	externalModulePath: string | undefined;
-	moduleSymbol: ts.Symbol;
+	moduleSymbol: tsAPI.Symbol;
 	sourceFile: ts.SourceFile;
 }
 
@@ -43,7 +44,7 @@ export class AstModule {
 	 * The symbol for the module.  Typically this corresponds to ts.SourceFile itself, however
 	 * in some cases the ts.SourceFile may contain multiple modules declared using the `module` keyword.
 	 */
-	public readonly moduleSymbol: ts.Symbol;
+	public readonly moduleSymbol: tsAPI.Symbol;
 
 	/**
 	 * Example:  "\@rushstack/node-core-library/lib/FileSystem"

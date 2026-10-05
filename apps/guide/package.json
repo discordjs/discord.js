@@ -90,8 +90,7 @@
 		"shiki": "^4.4.3",
 		"tailwindcss": "^4.3.3",
 		"turbo": "^2.10.12",
-		"typescript": "npm:@typescript/typescript6@~6.0.2",
-		"typescript-native": "npm:typescript@~7.0.2",
+		"typescript": "~7.1.0-dev.20261003.1",
 		"vercel": "^59.11.2",
 		"wrangler": "^4.128.0"
 	},

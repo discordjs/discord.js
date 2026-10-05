@@ -3,7 +3,7 @@
 // See LICENSE in the project root for license information.
 
 import { InternalError, Sort, Text } from '@rushstack/node-core-library';
-import * as ts from 'typescript';
+import * as ts from 'typescript/unstable/ast';
 import { IndentedWriter } from '../generators/IndentedWriter.js';
 
 interface IWriteModifiedTextOptions {
@@ -138,7 +138,7 @@ export class SpanModification {
 		this.sortKey = undefined;
 		this._prefix = undefined;
 		this._suffix = undefined;
-		if (this._span.kind === ts.SyntaxKind.JSDocComment) {
+		if (this._span.kind === ts.SyntaxKind.JSDoc) {
 			this.indentDocComment = IndentDocCommentScope.SpanAndChildren;
 		}
 	}

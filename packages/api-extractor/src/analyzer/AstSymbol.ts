@@ -2,7 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import { InternalError } from '@rushstack/node-core-library';
-import type * as ts from 'typescript';
+import type * as ts from 'typescript/unstable/sync';
 import type { AstDeclaration } from './AstDeclaration.js';
 import { AstEntity } from './AstEntity.js';
 

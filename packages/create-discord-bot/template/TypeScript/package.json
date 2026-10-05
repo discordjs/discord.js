@@ -22,8 +22,7 @@
 		"eslint-config-neon": "^0.5.4",
 		"eslint-formatter-pretty": "^7.1.0",
 		"prettier": "~3.8.1",
-		"typescript": "npm:@typescript/typescript6@~6.0.2",
-		"typescript-native": "npm:typescript@~7.0.2",
+		"typescript": "~7.1.0-dev.20261003.1",
 		"zod": "^4.5.4"
 	},
 	"engines": {

@@ -71,8 +71,7 @@
 		"prettier": "~3.8.1",
 		"terser": "^5.51.2",
 		"turbo": "^2.10.12",
-		"typescript": "npm:@typescript/typescript6@~6.0.2",
-		"typescript-native": "npm:typescript@~7.0.2"
+		"typescript": "~7.1.0-dev.20261003.1"
 	},
 	"engines": {
 		"node": ">=24.17.0"

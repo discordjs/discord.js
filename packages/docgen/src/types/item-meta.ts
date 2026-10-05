@@ -1,11 +1,12 @@
-import { basename, relative } from 'node:path';
-import type { SourceReference } from '../index.js';
+import { /* basename, */ relative } from 'node:path';
+// import type { SourceReference } from '../index.js';
 import type { Meta } from '../interfaces/index.js';
 import { DocumentedItem } from './item.js';
 
-export class DocumentedItemMeta extends DocumentedItem<Meta | SourceReference> {
+export class DocumentedItemMeta extends DocumentedItem<Meta /* | SourceReference */> {
 	public override serializer() {
 		if (this.config.typescript) {
+			/*
 			const data = this.data as SourceReference;
 
 			return {
@@ -13,7 +14,7 @@ export class DocumentedItemMeta extends DocumentedItem<Meta | SourceReference> {
 				file: basename(data.fileName),
 				path: undefined,
 				url: data.url,
-			};
+			}; */
 		}
 
 		const data = this.data as Meta;

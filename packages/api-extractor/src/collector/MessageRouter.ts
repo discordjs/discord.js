@@ -4,7 +4,8 @@
 import type * as tsdoc from '@microsoft/tsdoc';
 import { Sort, InternalError } from '@rushstack/node-core-library';
 import { Colorize } from '@rushstack/terminal';
-import * as ts from 'typescript';
+import type * as ts from 'typescript/unstable/ast';
+import * as tsAPI from 'typescript/unstable/sync';
 import { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstSymbol } from '../analyzer/AstSymbol.js';
 import { ConsoleMessageId } from '../api/ConsoleMessageId.js';
@@ -199,34 +200,34 @@ export class MessageRouter {
 	/**
 	 * Add a diagnostic message reported by the TypeScript compiler
 	 */
-	public addCompilerDiagnostic(diagnostic: ts.Diagnostic): void {
+	public addCompilerDiagnostic(diagnostic: tsAPI.Diagnostic): void {
 		switch (diagnostic.category) {
-			case ts.DiagnosticCategory.Suggestion:
-			case ts.DiagnosticCategory.Message:
+			case tsAPI.DiagnosticCategory.Suggestion:
+			case tsAPI.DiagnosticCategory.Message:
 				return; // ignore noise
 			default:
 				break;
 		}
 
-		const messageText: string = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
+		const messageText: string = diagnostic.text;
 		const options: IExtractorMessageOptions = {
 			category: ExtractorMessageCategory.Compiler,
 			messageId: `TS${diagnostic.code}`,
 			text: messageText,
 		};
 
-		if (diagnostic.file) {
+		if (diagnostic.fileName && diagnostic.startPosition) {
 			// NOTE: Since compiler errors pertain to issues specific to the .d.ts files,
 			// we do not apply source mappings for them.
-			const sourceFile: ts.SourceFile = diagnostic.file;
-			const sourceLocation: ISourceLocation = this._sourceMapper.getSourceLocation({
-				sourceFile,
-				pos: diagnostic.start ?? 0,
-				useDtsLocation: true,
-			});
-			options.sourceFilePath = sourceLocation.sourceFilePath;
-			options.sourceFileLine = sourceLocation.sourceFileLine;
-			options.sourceFileColumn = sourceLocation.sourceFileColumn;
+			// const sourceFile: ts.SourceFile = diagnostic.file;
+			// const sourceLocation: ISourceLocation = this._sourceMapper.getSourceLocation({
+			// 	sourceFile,
+			// 	pos: diagnostic.start ?? 0,
+			// 	useDtsLocation: true,
+			// });
+			options.sourceFilePath = diagnostic.fileName;
+			options.sourceFileLine = diagnostic.startPosition?.line;
+			options.sourceFileColumn = diagnostic.startPosition?.character;
 		}
 
 		this._messages.push(new ExtractorMessage(options));

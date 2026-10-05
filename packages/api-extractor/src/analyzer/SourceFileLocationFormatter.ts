@@ -3,7 +3,7 @@
 
 import * as path from 'node:path';
 import { Path, Text } from '@rushstack/node-core-library';
-import type * as ts from 'typescript';
+import type * as ts from 'typescript/unstable/ast';
 
 export interface ISourceFileLocationFormatOptions {
 	sourceFileColumn?: number | undefined;

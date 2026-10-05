@@ -1,15 +1,16 @@
-import { ReflectionKind } from 'typedoc';
-import type { DeclarationReflection } from '../index.js';
+// import { ReflectionKind } from 'typedoc';
+// import type { DeclarationReflection } from '../index.js';
 import type { Member } from '../interfaces/index.js';
-import { parseType } from '../util/parseType.js';
+// import { parseType } from '../util/parseType.js';
 import { DocumentedItemMeta } from './item-meta.js';
 import { DocumentedItem } from './item.js';
 import { DocumentedParam } from './param.js';
 import { DocumentedVarType } from './var-type.js';
 
-export class DocumentedMember extends DocumentedItem<DeclarationReflection | Member> {
+export class DocumentedMember extends DocumentedItem</* DeclarationReflection | */ Member> {
 	public override serializer() {
 		if (this.config.typescript) {
+			/*
 			const data = this.data as DeclarationReflection;
 			const signature = (data.signatures ?? [])[0] ?? data;
 			let meta;
@@ -110,7 +111,7 @@ export class DocumentedMember extends DocumentedItem<DeclarationReflection | Mem
 				};
 			}
 
-			return base;
+			return base; */
 		}
 
 		const data = this.data as Member;

@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
-import type * as ts from 'typescript';
+import type * as ts from 'typescript/unstable/ast';
+import type * as tsAPI from 'typescript/unstable/sync';
 import type { Collector } from '../collector/Collector.js';
 import { AstSyntheticEntity } from './AstEntity.js';
 import type { AstModule, IAstModuleExportInfo } from './AstModule.js';
@@ -10,7 +11,7 @@ export interface IAstNamespaceImportOptions {
 	readonly astModule: AstModule;
 	readonly declaration: ts.Declaration;
 	readonly namespaceName: string;
-	readonly symbol: ts.Symbol;
+	readonly symbol: tsAPI.Symbol;
 }
 
 /**
@@ -70,7 +71,7 @@ export class AstNamespaceImport extends AstSyntheticEntity {
 	/**
 	 * The original `ts.SymbolFlags.Namespace` symbol.
 	 */
-	public readonly symbol: ts.Symbol;
+	public readonly symbol: tsAPI.Symbol;
 
 	public constructor(options: IAstNamespaceImportOptions) {
 		super();
