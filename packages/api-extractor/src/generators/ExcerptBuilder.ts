@@ -8,7 +8,7 @@ import {
 	type IExcerptTokenRangeWithTypeParameters,
 } from '@discordjs/api-extractor-model';
 import type { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
-import * as ts from 'typescript';
+import * as ts from 'typescript/unstable/ast';
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import { Span } from '../analyzer/Span.js';
 import type { IWorkingPackageEntryPoint } from '../collector/WorkingPackage.js';
@@ -185,7 +185,7 @@ export class ExcerptBuilder {
 	 * @returns false if we encountered a token that causes iteration to stop.
 	 */
 	private static _buildSpan(excerptTokens: IExcerptToken[], span: Span, state: IBuildSpanState): boolean {
-		if (span.kind === ts.SyntaxKind.JSDocComment) {
+		if (span.kind === ts.SyntaxKind.JSDoc) {
 			// Discard any comments
 			return true;
 		}

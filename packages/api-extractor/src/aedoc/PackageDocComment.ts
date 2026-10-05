@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
-import * as ts from 'typescript';
+import * as ts from 'typescript/unstable/ast';
 import { ExtractorMessageId } from '../api/ExtractorMessageId.js';
 import type { Collector } from '../collector/Collector.js';
 

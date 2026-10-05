@@ -2,7 +2,8 @@
 // See LICENSE in the project root for license information.
 
 import { InternalError } from '@rushstack/node-core-library';
-import * as ts from 'typescript';
+import * as ts from 'typescript/unstable/ast';
+import * as tsAPI from 'typescript/unstable/sync';
 import { SourceFileLocationFormatter } from './SourceFileLocationFormatter.js';
 import { TypeScriptInternals } from './TypeScriptInternals.js';
 
@@ -26,14 +27,14 @@ export class TypeScriptHelpers {
 	 * original definition of MyClass, traversing any intermediary places where the
 	 * symbol was imported and re-exported.
 	 */
-	public static followAliases(symbol: ts.Symbol, typeChecker: ts.TypeChecker): ts.Symbol {
-		let current: ts.Symbol = symbol;
+	public static followAliases(symbol: tsAPI.Symbol, typeChecker: tsAPI.Checker): tsAPI.Symbol {
+		let current: tsAPI.Symbol = symbol;
 		for (;;) {
-			if (!(current.flags & ts.SymbolFlags.Alias)) {
+			if (!(current.flags & tsAPI.SymbolFlags.Alias)) {
 				break;
 			}
 
-			const currentAlias: ts.Symbol = typeChecker.getAliasedSymbol(current);
+			const currentAlias: tsAPI.Symbol = typeChecker.getAliasedSymbol(current);
 			if (!currentAlias || currentAlias === current) {
 				break;
 			}
@@ -48,12 +49,12 @@ export class TypeScriptHelpers {
 	 * Returns true if TypeScriptHelpers.followAliases() would return something different
 	 * from the input `symbol`.
 	 */
-	public static isFollowableAlias(symbol: ts.Symbol, typeChecker: ts.TypeChecker): boolean {
-		if (!(symbol.flags & ts.SymbolFlags.Alias)) {
+	public static isFollowableAlias(symbol: tsAPI.Symbol, typeChecker: tsAPI.Checker): boolean {
+		if (!(symbol.flags & tsAPI.SymbolFlags.Alias)) {
 			return false;
 		}
 
-		const alias: ts.Symbol = typeChecker.getAliasedSymbol(symbol);
+		const alias: tsAPI.Symbol = typeChecker.getAliasedSymbol(symbol);
 
 		return alias && alias !== symbol;
 	}
@@ -63,9 +64,9 @@ export class TypeScriptHelpers {
 	 * sometimes return a "prototype" symbol for an object, even though there is no corresponding declaration in the
 	 * source code.  API Extractor generally ignores such symbols.
 	 */
-	public static tryGetADeclaration(symbol: ts.Symbol): ts.Declaration | undefined {
+	public static tryGetADeclaration(symbol: tsAPI.Symbol): ts.Declaration | undefined {
 		if (symbol.declarations && symbol.declarations.length > 0) {
-			return symbol.declarations[0];
+			return symbol.declarations[0]?.resolve();
 		}
 
 		return undefined;
@@ -74,11 +75,11 @@ export class TypeScriptHelpers {
 	/**
 	 * Returns true if the specified symbol is an ambient declaration.
 	 */
-	public static isAmbient(symbol: ts.Symbol, typeChecker: ts.TypeChecker): boolean {
-		const followedSymbol: ts.Symbol = TypeScriptHelpers.followAliases(symbol, typeChecker);
+	public static isAmbient(symbol: tsAPI.Symbol, typeChecker: tsAPI.Checker): boolean {
+		const followedSymbol: tsAPI.Symbol = TypeScriptHelpers.followAliases(symbol, typeChecker);
 
 		if (followedSymbol.declarations && followedSymbol.declarations.length > 0) {
-			const firstDeclaration: ts.Declaration = followedSymbol.declarations[0]!;
+			const firstDeclaration: ts.Declaration = followedSymbol.declarations[0]!.resolve()!;
 
 			// Test 1: Are we inside the sinister "declare global {" construct?
 			const highestModuleDeclaration: ts.ModuleDeclaration | undefined = TypeScriptHelpers.findHighestParent(
@@ -106,11 +107,23 @@ export class TypeScriptHelpers {
 	 * Same semantics as tryGetSymbolForDeclaration(), but throws an exception if the symbol
 	 * cannot be found.
 	 */
-	public static getSymbolForDeclaration(declaration: ts.Declaration, checker: ts.TypeChecker): ts.Symbol {
-		const symbol: ts.Symbol | undefined = TypeScriptInternals.tryGetSymbolForDeclaration(declaration, checker);
+	public static getSymbolForDeclaration(declaration: ts.Declaration, checker: tsAPI.Checker): tsAPI.Symbol {
+		const symbol: tsAPI.Symbol | undefined = TypeScriptInternals.tryGetSymbolForDeclaration(declaration, checker);
 		if (!symbol) {
+			const symbols: Array<[string, boolean]> = [];
+			const adder = (child: ts.Node) => {
+				symbols.push([ts.SyntaxKind[child.kind], checker.getSymbolAtLocation(child) instanceof tsAPI.Symbol]);
+				child.forEachChild(adder);
+			};
+			declaration.forEachChild(adder);
+			let parent = declaration.parent;
+			while (parent) {
+				console.log(ts.SyntaxKind[parent.kind]);
+				symbols.push([ts.SyntaxKind[parent.kind], checker.getSymbolAtLocation(parent) instanceof tsAPI.Symbol]);
+				parent = parent.parent;
+			}
 			throw new InternalError(
-				'Unable to determine semantic information for declaration:\n' +
+				`Unable to determine semantic information for declaration:${ts.SyntaxKind[declaration.kind]}, ${symbols}, ${declaration.getText()}, ${declaration.pos}, ${checker.getSymbolAtLocation(declaration.parent)?.name}, ${declaration.parent.parent ? checker.getSymbolAtLocation(declaration.parent.parent)?.name : 'Nö'}, ${checker.getSymbolsInScope(declaration, tsAPI.SymbolFlags.All).map((symbol) => symbol.name)}\n` +
 					SourceFileLocationFormatter.formatDeclaration(declaration),
 			);
 		}
@@ -140,8 +153,11 @@ export class TypeScriptHelpers {
 		}
 
 		// Node is a declaration
-		if (nodeWithModuleSpecifier.moduleSpecifier && ts.isStringLiteralLike(nodeWithModuleSpecifier.moduleSpecifier)) {
-			return TypeScriptInternals.getTextOfIdentifierOrLiteral(nodeWithModuleSpecifier.moduleSpecifier);
+		if (
+			nodeWithModuleSpecifier.moduleSpecifier &&
+			ts.isStringLiteralLikeNode(nodeWithModuleSpecifier.moduleSpecifier)
+		) {
+			return nodeWithModuleSpecifier.moduleSpecifier.text;
 		}
 
 		return undefined;
@@ -274,19 +290,21 @@ export class TypeScriptHelpers {
 	public static tryGetLateBoundName(declarationName: ts.ComputedPropertyName): string | undefined {
 		// Create a node printer that ignores comments and indentation that we can use to convert
 		// declarationName to a string.
-		const printer: ts.Printer = ts.createPrinter(
-			{ removeComments: true },
-			{
-				onEmitNode(hint: ts.EmitHint, node: ts.Node, emitCallback: (hint: ts.EmitHint, node: ts.Node) => void): void {
-					ts.setEmitFlags(declarationName, ts.EmitFlags.NoIndentation | ts.EmitFlags.SingleLine);
-					emitCallback(hint, node);
-				},
-			},
-		);
-		const sourceFile: ts.SourceFile = declarationName.getSourceFile();
-		const text: string = printer.printNode(ts.EmitHint.Unspecified, declarationName, sourceFile);
-		// clean up any emit flags we've set on any nodes in the tree.
-		ts.disposeEmitNodes(sourceFile);
-		return text;
+		// const printer: ts.Printer = ts.createPrinter(
+		// 	{ removeComments: true },
+		// 	{
+		// 		onEmitNode(hint: ts.EmitHint, node: ts.Node, emitCallback: (hint: ts.EmitHint, node: ts.Node) => void): void {
+		// 			ts.setEmitFlags(declarationName, ts.EmitFlags.NoIndentation | ts.EmitFlags.SingleLine);
+		// 			emitCallback(hint, node);
+		// 		},
+		// 	},
+		// );
+		// const sourceFile: ts.SourceFile = declarationName.getSourceFile();
+		// const text: string = printer.printNode(ts.EmitHint.Unspecified, declarationName, sourceFile);
+		// // clean up any emit flags we've set on any nodes in the tree.
+		// ts.disposeEmitNodes(sourceFile);
+		// return text;
+
+		return declarationName.getText();
 	}
 }

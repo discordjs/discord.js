@@ -20,7 +20,7 @@
 		"eslint-config-neon": "^0.5.4",
 		"oxfmt": "^0.74.0",
 		"oxlint": "^1.89.0",
-		"typescript": "~7.0.2",
+		"typescript": "~7.1.0-dev.20261003.1",
 		"zod": "^4.5.4"
 	}
 }

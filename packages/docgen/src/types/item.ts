@@ -1,7 +1,7 @@
-import type { DeclarationReflection } from '../index.js';
+// import type { DeclarationReflection } from '../index.js';
 import type { Config, Item } from '../interfaces/index.js';
 
-export class DocumentedItem<Data = DeclarationReflection | Item> {
+export class DocumentedItem<Data = /* DeclarationReflection | */ Item> {
 	public constructor(
 		public readonly data: Data,
 		public readonly config: Config,

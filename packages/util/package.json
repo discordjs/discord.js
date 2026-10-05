@@ -73,7 +73,7 @@
 		"oxfmt": "^0.74.0",
 		"oxlint": "^1.89.0",
 		"turbo": "^2.10.12",
-		"typescript": "~7.0.2",
+		"typescript": "~7.1.0-dev.20261003.1",
 		"vitest": "^4.1.11"
 	},
 	"engines": {
