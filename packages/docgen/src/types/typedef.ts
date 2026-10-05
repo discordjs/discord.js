@@ -1,16 +1,17 @@
-import { ReflectionKind } from 'typedoc';
-import type { DeclarationReflection, LiteralType } from '../index.js';
+// import { ReflectionKind } from 'typedoc';
+// import type { DeclarationReflection, LiteralType } from '../index.js';
 import type { Typedef } from '../interfaces/index.js';
-import { parseType } from '../util/parseType.js';
-import { isReflectionType } from '../util/types.js';
+// import { parseType } from '../util/parseType.js';
+// import { isReflectionType } from '../util/types.js';
 import { DocumentedItemMeta } from './item-meta.js';
 import { DocumentedItem } from './item.js';
 import { DocumentedParam } from './param.js';
 import { DocumentedVarType } from './var-type.js';
 
-export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Typedef> {
+export class DocumentedTypeDef extends DocumentedItem</* DeclarationReflection | */ Typedef> {
 	public override serializer() {
 		if (this.config.typescript) {
+			/*
 			const data = this.data as DeclarationReflection;
 			const signature = (data.signatures ?? [])[0] ?? data;
 			let meta;
@@ -200,7 +201,7 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 				}
 			}
 
-			return baseReturn;
+			return baseReturn; */
 		}
 
 		const data = this.data as Typedef;

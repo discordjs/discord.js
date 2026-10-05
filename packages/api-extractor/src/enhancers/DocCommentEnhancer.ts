@@ -3,7 +3,7 @@
 
 import { ReleaseTag } from '@discordjs/api-extractor-model';
 import * as tsdoc from '@microsoft/tsdoc';
-import * as ts from 'typescript';
+import * as ts from 'typescript/unstable/ast';
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import { ResolverFailure } from '../analyzer/AstReferenceResolver.js';
 import { AstSymbol } from '../analyzer/AstSymbol.js';

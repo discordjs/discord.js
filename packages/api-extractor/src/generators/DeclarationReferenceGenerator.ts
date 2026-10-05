@@ -9,7 +9,8 @@ import {
 	GlobalSource,
 } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { type INodePackageJson, InternalError } from '@rushstack/node-core-library';
-import * as ts from 'typescript';
+import * as ts from 'typescript/unstable/ast';
+import * as tsAPI from 'typescript/unstable/sync';
 import { AstNamespaceImport } from '../analyzer/AstNamespaceImport.js';
 import { TypeScriptHelpers } from '../analyzer/TypeScriptHelpers.js';
 import { TypeScriptInternals } from '../analyzer/TypeScriptInternals.js';
@@ -33,21 +34,21 @@ export class DeclarationReferenceGenerator {
 		node: ts.Identifier,
 		entryPoint: IWorkingPackageEntryPoint,
 	): DeclarationReference | undefined {
-		const symbol: ts.Symbol | undefined = this._collector.typeChecker.getSymbolAtLocation(node);
+		const symbol: tsAPI.Symbol | undefined = this._collector.typeChecker.getSymbolAtLocation(node);
 		if (symbol !== undefined) {
 			const isExpression: boolean = DeclarationReferenceGenerator._isInExpressionContext(node);
 			return (
 				this.getDeclarationReferenceForSymbol(
 					symbol,
-					isExpression ? ts.SymbolFlags.Value : ts.SymbolFlags.Type,
+					isExpression ? tsAPI.SymbolFlags.Value : tsAPI.SymbolFlags.Type,
 					entryPoint,
 				) ??
 				this.getDeclarationReferenceForSymbol(
 					symbol,
-					isExpression ? ts.SymbolFlags.Type : ts.SymbolFlags.Value,
+					isExpression ? tsAPI.SymbolFlags.Type : tsAPI.SymbolFlags.Value,
 					entryPoint,
 				) ??
-				this.getDeclarationReferenceForSymbol(symbol, ts.SymbolFlags.Namespace, entryPoint)
+				this.getDeclarationReferenceForSymbol(symbol, tsAPI.SymbolFlags.Namespace, entryPoint)
 			);
 		}
 
@@ -58,8 +59,8 @@ export class DeclarationReferenceGenerator {
 	 * Gets the DeclarationReference for a TypeScript Symbol for a given meaning.
 	 */
 	public getDeclarationReferenceForSymbol(
-		symbol: ts.Symbol,
-		meaning: ts.SymbolFlags,
+		symbol: tsAPI.Symbol,
+		meaning: tsAPI.SymbolFlags,
 		entryPoint: IWorkingPackageEntryPoint,
 	): DeclarationReference | undefined {
 		return this._symbolToDeclarationReference(symbol, meaning, /* includeModuleSymbols*/ false, entryPoint);
@@ -77,36 +78,34 @@ export class DeclarationReferenceGenerator {
 		}
 	}
 
-	private static _isExternalModuleSymbol(symbol: ts.Symbol): boolean {
+	private static _isExternalModuleSymbol(symbol: tsAPI.Symbol): boolean {
 		return (
-			Boolean(symbol.flags & ts.SymbolFlags.ValueModule) &&
+			Boolean(symbol.flags & tsAPI.SymbolFlags.ValueModule) &&
 			symbol.valueDeclaration !== undefined &&
-			ts.isSourceFile(symbol.valueDeclaration)
+			ts.isSourceFile(symbol.valueDeclaration.resolve()!)
 		);
 	}
 
-	private static _isSameSymbol(left: ts.Symbol | undefined, right: ts.Symbol): boolean {
+	private static _isSameSymbol(left: tsAPI.Symbol | undefined, right: tsAPI.Symbol): boolean {
 		return (
 			left === right ||
 			Boolean(left?.valueDeclaration && right.valueDeclaration && left.valueDeclaration === right.valueDeclaration)
 		);
 	}
 
-	private _getNavigationToSymbol(symbol: ts.Symbol): Navigation {
+	private _getNavigationToSymbol(symbol: tsAPI.Symbol): Navigation {
 		const declaration: ts.Declaration | undefined = TypeScriptHelpers.tryGetADeclaration(symbol);
 		const sourceFile: ts.SourceFile | undefined = declaration?.getSourceFile();
-		const parent: ts.Symbol | undefined = TypeScriptInternals.getSymbolParent(symbol);
+		const parent: tsAPI.Symbol | undefined = symbol.getParent();
 
 		// If it's global or from an external library, then use either Members or Exports. It's not possible for
 		// global symbols or external library symbols to be Locals.
-		const isGlobal: boolean = Boolean(sourceFile) && !ts.isExternalModule(sourceFile!);
+		const isGlobal: boolean = Boolean(sourceFile) && !sourceFile!.externalModuleIndicator;
 		const isFromExternalLibrary: boolean =
 			Boolean(sourceFile) && this._collector.program.isSourceFileFromExternalLibrary(sourceFile!);
 		if (isGlobal || isFromExternalLibrary) {
-			if (
-				parent?.members &&
-				DeclarationReferenceGenerator._isSameSymbol(parent.members.get(symbol.escapedName), symbol)
-			) {
+			const members = parent?.getMembers();
+			if (members && DeclarationReferenceGenerator._isSameSymbol(members.get(symbol.escapedName), symbol)) {
 				return Navigation.Members;
 			}
 
@@ -126,10 +125,8 @@ export class DeclarationReferenceGenerator {
 		// is a source file, but it wasn't exported from the package entry point (in the check above), then the
 		// symbol is a local, so fall through below.
 		if (parent && !DeclarationReferenceGenerator._isExternalModuleSymbol(parent)) {
-			if (
-				parent.members &&
-				DeclarationReferenceGenerator._isSameSymbol(parent.members.get(symbol.escapedName), symbol)
-			) {
+			const members = parent?.getMembers();
+			if (members && DeclarationReferenceGenerator._isSameSymbol(members.get(symbol.escapedName), symbol)) {
 				return Navigation.Members;
 			}
 
@@ -143,48 +140,48 @@ export class DeclarationReferenceGenerator {
 		return Navigation.Locals;
 	}
 
-	private static _getMeaningOfSymbol(symbol: ts.Symbol, meaning: ts.SymbolFlags): Meaning | undefined {
-		if (symbol.flags & meaning & ts.SymbolFlags.Class) {
+	private static _getMeaningOfSymbol(symbol: tsAPI.Symbol, meaning: tsAPI.SymbolFlags): Meaning | undefined {
+		if (symbol.flags & meaning & tsAPI.SymbolFlags.Class) {
 			return Meaning.Class;
 		}
 
-		if (symbol.flags & meaning & ts.SymbolFlags.Enum) {
+		if (symbol.flags & meaning & tsAPI.SymbolFlags.Enum) {
 			return Meaning.Enum;
 		}
 
-		if (symbol.flags & meaning & ts.SymbolFlags.Interface) {
+		if (symbol.flags & meaning & tsAPI.SymbolFlags.Interface) {
 			return Meaning.Interface;
 		}
 
-		if (symbol.flags & meaning & ts.SymbolFlags.TypeAlias) {
+		if (symbol.flags & meaning & tsAPI.SymbolFlags.TypeAlias) {
 			return Meaning.TypeAlias;
 		}
 
-		if (symbol.flags & meaning & ts.SymbolFlags.Function) {
+		if (symbol.flags & meaning & tsAPI.SymbolFlags.Function) {
 			return Meaning.Function;
 		}
 
-		if (symbol.flags & meaning & ts.SymbolFlags.Variable) {
+		if (symbol.flags & meaning & tsAPI.SymbolFlags.Variable) {
 			return Meaning.Variable;
 		}
 
-		if (symbol.flags & meaning & ts.SymbolFlags.Module) {
+		if (symbol.flags & meaning & tsAPI.SymbolFlags.Module) {
 			return Meaning.Namespace;
 		}
 
-		if (symbol.flags & meaning & ts.SymbolFlags.ClassMember) {
+		if (symbol.flags & meaning & tsAPI.SymbolFlags.ClassMember) {
 			return Meaning.Member;
 		}
 
-		if (symbol.flags & meaning & ts.SymbolFlags.Constructor) {
+		if (symbol.flags & meaning & tsAPI.SymbolFlags.Constructor) {
 			return Meaning.Constructor;
 		}
 
-		if (symbol.flags & meaning & ts.SymbolFlags.EnumMember) {
+		if (symbol.flags & meaning & tsAPI.SymbolFlags.EnumMember) {
 			return Meaning.Member;
 		}
 
-		if (symbol.flags & meaning & ts.SymbolFlags.Signature) {
+		if (symbol.flags & meaning & tsAPI.SymbolFlags.Signature) {
 			if (symbol.escapedName === ts.InternalSymbolName.Call) {
 				return Meaning.CallSignature;
 			}
@@ -198,7 +195,7 @@ export class DeclarationReferenceGenerator {
 			}
 		}
 
-		if (symbol.flags & meaning & ts.SymbolFlags.TypeParameter) {
+		if (symbol.flags & meaning & tsAPI.SymbolFlags.TypeParameter) {
 			// This should have already been handled in `getDeclarationReferenceOfSymbol`.
 			throw new InternalError('Not supported.');
 		}
@@ -207,25 +204,25 @@ export class DeclarationReferenceGenerator {
 	}
 
 	private _symbolToDeclarationReference(
-		symbol: ts.Symbol,
-		meaning: ts.SymbolFlags,
+		symbol: tsAPI.Symbol,
+		meaning: tsAPI.SymbolFlags,
 		includeModuleSymbols: boolean,
 		entryPoint: IWorkingPackageEntryPoint,
 	): DeclarationReference | undefined {
 		const declaration: ts.Node | undefined = TypeScriptHelpers.tryGetADeclaration(symbol);
 		const sourceFile: ts.SourceFile | undefined = declaration?.getSourceFile();
 
-		let followedSymbol: ts.Symbol = symbol;
-		if (followedSymbol.flags & ts.SymbolFlags.ExportValue) {
+		let followedSymbol: tsAPI.Symbol = symbol;
+		if (followedSymbol.flags & tsAPI.SymbolFlags.ExportValue) {
 			followedSymbol = this._collector.typeChecker.getExportSymbolOfSymbol(followedSymbol);
 		}
 
-		if (followedSymbol.flags & ts.SymbolFlags.Alias) {
+		if (followedSymbol.flags & tsAPI.SymbolFlags.Alias) {
 			followedSymbol = this._collector.typeChecker.getAliasedSymbol(followedSymbol);
 
 			// Without this logic, we end up following the symbol `ns` in `import * as ns from './file'` to
 			// the actual file `file.ts`. We don't want to do this, so revert to the original symbol.
-			if (followedSymbol.flags & ts.SymbolFlags.ValueModule) {
+			if (followedSymbol.flags & tsAPI.SymbolFlags.ValueModule) {
 				followedSymbol = symbol;
 			}
 		}
@@ -239,7 +236,7 @@ export class DeclarationReferenceGenerator {
 		}
 
 		// Do not generate a declaration reference for a type parameter.
-		if (followedSymbol.flags & ts.SymbolFlags.TypeParameter) {
+		if (followedSymbol.flags & tsAPI.SymbolFlags.TypeParameter) {
 			return undefined;
 		}
 
@@ -266,7 +263,7 @@ export class DeclarationReferenceGenerator {
 				localName = wellKnownName;
 			} else if (TypeScriptHelpers.isUniqueSymbolName(followedSymbol.escapedName)) {
 				for (const decl of followedSymbol.declarations ?? []) {
-					const declName: ts.DeclarationName | undefined = ts.getNameOfDeclaration(decl);
+					const declName: ts.DeclarationName | undefined = ts.getNameOfDeclaration(decl.resolve());
 					if (declName && ts.isComputedPropertyName(declName)) {
 						const lateName: string | undefined = TypeScriptHelpers.tryGetLateBoundName(declName);
 						if (lateName !== undefined) {
@@ -291,7 +288,7 @@ export class DeclarationReferenceGenerator {
 	}
 
 	private _getParentReference(
-		symbol: ts.Symbol,
+		symbol: tsAPI.Symbol,
 		entryPoint: IWorkingPackageEntryPoint,
 	): DeclarationReference | undefined {
 		const declaration: ts.Node | undefined = TypeScriptHelpers.tryGetADeclaration(symbol);
@@ -308,10 +305,11 @@ export class DeclarationReferenceGenerator {
 
 			const firstExportingConsumableParent: CollectorEntity | undefined = entity.getFirstExportingConsumableParent();
 			if (firstExportingConsumableParent && firstExportingConsumableParent.astEntity instanceof AstNamespaceImport) {
-				const parentSymbol: ts.Symbol | undefined = TypeScriptInternals.tryGetSymbolForDeclaration(
-					firstExportingConsumableParent.astEntity.declaration,
-					this._collector.typeChecker,
-				);
+				const parentSymbol: tsAPI.Symbol | undefined =
+					TypeScriptInternals.tryGetSymbolForDeclaration(
+						firstExportingConsumableParent.astEntity.declaration,
+						this._collector.typeChecker,
+					) ?? symbol.getParent();
 				if (parentSymbol) {
 					return this._symbolToDeclarationReference(
 						parentSymbol,
@@ -324,7 +322,7 @@ export class DeclarationReferenceGenerator {
 		}
 
 		// Next, try to find a parent symbol via the symbol tree.
-		const parentSymbol: ts.Symbol | undefined = TypeScriptInternals.getSymbolParent(symbol);
+		const parentSymbol: tsAPI.Symbol | undefined = symbol.getParent();
 		if (parentSymbol) {
 			return this._symbolToDeclarationReference(
 				parentSymbol,
@@ -348,7 +346,7 @@ export class DeclarationReferenceGenerator {
 		// but its reference still needs to be qualified with the parent reference for `n`.
 		const grandParent: ts.Node | undefined = declaration?.parent?.parent;
 		if (grandParent && ts.isModuleDeclaration(grandParent)) {
-			const grandParentSymbol: ts.Symbol | undefined = TypeScriptInternals.tryGetSymbolForDeclaration(
+			const grandParentSymbol: tsAPI.Symbol | undefined = TypeScriptInternals.tryGetSymbolForDeclaration(
 				grandParent,
 				this._collector.typeChecker,
 			);

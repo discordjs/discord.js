@@ -4,7 +4,8 @@
 import { ReleaseTag } from '@discordjs/api-extractor-model';
 import * as tsdoc from '@microsoft/tsdoc';
 import { PackageJsonLookup, Sort, InternalError } from '@rushstack/node-core-library';
-import ts from 'typescript';
+import * as ts from 'typescript/unstable/ast';
+import type * as tsAPI from 'typescript/unstable/sync';
 import { PackageDocComment } from '../aedoc/PackageDocComment.js';
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstEntity } from '../analyzer/AstEntity.js';
@@ -15,7 +16,7 @@ import { AstReferenceResolver } from '../analyzer/AstReferenceResolver.js';
 import { AstSymbol } from '../analyzer/AstSymbol.js';
 import { AstSymbolTable } from '../analyzer/AstSymbolTable.js';
 import { TypeScriptHelpers } from '../analyzer/TypeScriptHelpers.js';
-import { TypeScriptInternals, type IGlobalVariableAnalyzer } from '../analyzer/TypeScriptInternals.js';
+import { /* TypeScriptInternals, */ type IGlobalVariableAnalyzer } from '../analyzer/TypeScriptInternals.js';
 import { ExtractorConfig } from '../api/ExtractorConfig.js';
 import { ExtractorMessageId } from '../api/ExtractorMessageId.js';
 import type { IConfigEntryPoint } from '../api/IConfigFile.js';
@@ -44,7 +45,7 @@ export interface ICollectorOptions {
 	 * - moduleResolution: ts.ModuleResolutionKind.NodeJs
 	 * - rootDir: inputFolder
 	 */
-	program: ts.Program;
+	program: tsAPI.Program;
 
 	sourceMapper: SourceMapper;
 }
@@ -56,11 +57,11 @@ export interface ICollectorOptions {
  * assigns unique names, and sorts everything into a normalized alphabetical ordering.
  */
 export class Collector {
-	public readonly program: ts.Program;
+	public readonly program: tsAPI.Program;
 
-	public readonly typeChecker: ts.TypeChecker;
+	public readonly typeChecker: tsAPI.Checker;
 
-	public readonly globalVariableAnalyzer: IGlobalVariableAnalyzer;
+	public readonly globalVariableAnalyzer: IGlobalVariableAnalyzer | undefined;
 
 	public readonly astSymbolTable: AstSymbolTable;
 
@@ -81,7 +82,7 @@ export class Collector {
 	 */
 	public readonly bundledPackageNames: ReadonlySet<string>;
 
-	private readonly _program: ts.Program;
+	private readonly _program: tsAPI.Program;
 
 	private readonly _tsdocParser: tsdoc.TSDocParser;
 
@@ -94,7 +95,7 @@ export class Collector {
 		CollectorEntity[]
 	>();
 
-	private readonly _entitiesBySymbol: Map<ts.Symbol, CollectorEntity> = new Map<ts.Symbol, CollectorEntity>();
+	private readonly _entitiesBySymbol: Map<tsAPI.Symbol, CollectorEntity> = new Map<tsAPI.Symbol, CollectorEntity>();
 
 	private readonly _starExportedExternalModulePaths: string[] = [];
 
@@ -144,8 +145,8 @@ export class Collector {
 		this.messageRouter = messageRouter;
 
 		this.program = program;
-		this.typeChecker = program.getTypeChecker();
-		this.globalVariableAnalyzer = TypeScriptInternals.getGlobalVariableAnalyzer(this.program);
+		this.typeChecker = program.getProject().checker;
+		this.globalVariableAnalyzer = undefined; // TypeScriptInternals.getGlobalVariableAnalyzer(this.program);
 
 		this._tsdocParser = new tsdoc.TSDocParser(this.extractorConfig.tsdocConfiguration);
 
@@ -212,19 +213,19 @@ export class Collector {
 			this.messageRouter.addCompilerDiagnostic(diagnostic);
 		}
 
-		const sourceFiles: readonly ts.SourceFile[] = this.program.getSourceFiles();
+		const sourceFileNames: readonly string[] = this.program.getSourceFileNames();
 
 		if (this.messageRouter.showDiagnostics) {
 			this.messageRouter.logDiagnosticHeader('Root filenames');
-			for (const fileName of this.program.getRootFileNames()) {
+			for (const fileName of this.program.getConfigFileNames()) {
 				this.messageRouter.logDiagnostic(fileName);
 			}
 
 			this.messageRouter.logDiagnosticFooter();
 
 			this.messageRouter.logDiagnosticHeader('Files analyzed by compiler');
-			for (const sourceFile of sourceFiles) {
-				this.messageRouter.logDiagnostic(sourceFile.fileName);
+			for (const fileName of sourceFileNames) {
+				this.messageRouter.logDiagnostic(fileName);
 			}
 
 			this.messageRouter.logDiagnosticFooter();
@@ -233,15 +234,15 @@ export class Collector {
 		// We can throw this error earlier in CompilerState.ts, but intentionally wait until after we've logged the
 		// associated diagnostic message above to make debugging easier for developers.
 		// Typically there will be many such files -- to avoid too much noise, only report the first one.
-		const badSourceFile: ts.SourceFile | undefined = sourceFiles.find(
-			({ fileName }) => !ExtractorConfig.hasDtsFileExtension(fileName),
+		const badSourceFile: string | undefined = sourceFileNames.find(
+			(fileName) => !ExtractorConfig.hasDtsFileExtension(fileName),
 		);
 		if (badSourceFile) {
 			this.messageRouter.addAnalyzerIssueForPosition(
 				ExtractorMessageId.WrongInputFileType,
 				'Incorrect file type; API Extractor expects to analyze compiler outputs with the .d.ts file extension. ' +
 					'Troubleshooting tips: https://api-extractor.com/link/dts-error',
-				badSourceFile,
+				this.program.getSourceFile(badSourceFile)!,
 				0,
 			);
 		}
@@ -367,7 +368,7 @@ export class Collector {
 	 * For a given analyzed ts.Symbol, return the CollectorEntity that it refers to. Returns undefined if it
 	 * doesn't refer to anything interesting.
 	 */
-	public tryGetEntityForSymbol(symbol: ts.Symbol): CollectorEntity | undefined {
+	public tryGetEntityForSymbol(symbol: tsAPI.Symbol): CollectorEntity | undefined {
 		return this._entitiesBySymbol.get(symbol);
 	}
 
@@ -633,7 +634,7 @@ export class Collector {
 			// If the idealNameForEmit happens to be the same as one of the exports, then we're safe to use that...
 			if (
 				entity.exportNames.has(idealNameForEmit) && // ...except that if it conflicts with a global name, then the global name wins
-				!this.globalVariableAnalyzer.hasGlobalName(idealNameForEmit) && // ...also avoid "default" which can interfere with "export { default } from 'some-module;'"
+				// !this.globalVariableAnalyzer.hasGlobalName(idealNameForEmit) && // ...also avoid "default" which can interfere with "export { default } from 'some-module;'"
 				idealNameForEmit !== 'default'
 			) {
 				entity.nameForEmit = idealNameForEmit;
@@ -647,8 +648,8 @@ export class Collector {
 			// Choose a name that doesn't conflict with usedNames or a global name
 			while (
 				nameForEmit === 'default' ||
-				usedNames.has(nameForEmit) ||
-				this.globalVariableAnalyzer.hasGlobalName(nameForEmit)
+				usedNames.has(nameForEmit) // ||
+				// this.globalVariableAnalyzer.hasGlobalName(nameForEmit)
 			) {
 				nameForEmit = `${idealNameForEmit}_${++suffix}`;
 			}
@@ -964,7 +965,10 @@ export class Collector {
 		}
 
 		const sourceFileText: string = declaration.getSourceFile().text;
-		const ranges: ts.CommentRange[] = TypeScriptInternals.getJSDocCommentRanges(nodeForComment, sourceFileText) ?? [];
+		const ranges: ts.CommentRange[] = [
+			...(ts.getLeadingCommentRanges(sourceFileText, nodeForComment.pos) ?? []),
+			...(ts.getTrailingCommentRanges(sourceFileText, nodeForComment.pos) ?? []),
+		]; // TypeScriptInternals.getJSDocCommentRanges(nodeForComment, sourceFileText) ?? [];
 
 		if (ranges.length === 0) {
 			return undefined;

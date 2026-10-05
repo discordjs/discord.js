@@ -16,6 +16,7 @@ import { structuredPatch, formatPatch, type StructuredPatch } from 'diff';
 import * as resolve from 'resolve';
 import * as semver from 'semver';
 import * as ts from 'typescript';
+import type * as tsAPI from 'typescript/unstable/sync';
 import { PackageMetadataManager } from '../analyzer/PackageMetadataManager.js';
 import { Collector } from '../collector/Collector.js';
 import { MessageRouter } from '../collector/MessageRouter.js';
@@ -268,7 +269,7 @@ export class Extractor {
 
 			messageRouter.logDiagnosticHeader('Compiler options');
 			const serializedCompilerOptions: object = MessageRouter.buildJsonDumpObject(
-				(compilerState.program as ts.Program).getCompilerOptions(),
+				(compilerState.program as tsAPI.Program).getCompilerOptions(),
 			);
 			messageRouter.logDiagnostic(JSON.stringify(serializedCompilerOptions, undefined, 2));
 			messageRouter.logDiagnosticFooter();
@@ -282,7 +283,7 @@ export class Extractor {
 		}
 
 		const collector: Collector = new Collector({
-			program: compilerState.program as ts.Program,
+			program: compilerState.program as tsAPI.Program,
 			messageRouter,
 			extractorConfig,
 			sourceMapper,

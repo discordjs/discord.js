@@ -1,11 +1,12 @@
-import type { DeclarationReflection, SignatureReflection } from '../index.js';
+// import type { DeclarationReflection, SignatureReflection } from '../index.js';
 import type { Constructor } from '../interfaces/index.js';
 import { DocumentedItem } from './item.js';
 import { DocumentedParam } from './param.js';
 
-export class DocumentedConstructor extends DocumentedItem<Constructor | DeclarationReflection> {
+export class DocumentedConstructor extends DocumentedItem<Constructor /* | DeclarationReflection */> {
 	public override serializer() {
 		if (this.config.typescript) {
+			/*
 			const data = this.data as DeclarationReflection;
 			const signature = (data.signatures ?? [])[0] ?? data;
 
@@ -31,7 +32,7 @@ export class DocumentedConstructor extends DocumentedItem<Constructor | Declarat
 								new DocumentedParam(param, this.config).serialize(),
 							)
 						: undefined,
-			};
+			}; */
 		}
 
 		const data = this.data as Constructor;

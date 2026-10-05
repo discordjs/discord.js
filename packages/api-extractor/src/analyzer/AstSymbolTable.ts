@@ -4,7 +4,8 @@
 // for ts.SymbolFlags
 
 import { type PackageJsonLookup, InternalError } from '@rushstack/node-core-library';
-import * as ts from 'typescript';
+import * as ts from 'typescript/unstable/ast';
+import * as tsAPI from 'typescript/unstable/sync';
 import type { MessageRouter } from '../collector/MessageRouter.js';
 import { AstDeclaration } from './AstDeclaration.js';
 import type { AstEntity } from './AstEntity.js';
@@ -16,7 +17,7 @@ import { PackageMetadataManager } from './PackageMetadataManager.js';
 import { SourceFileLocationFormatter } from './SourceFileLocationFormatter.js';
 import { SyntaxHelpers } from './SyntaxHelpers.js';
 import { TypeScriptHelpers } from './TypeScriptHelpers.js';
-import { TypeScriptInternals, type IGlobalVariableAnalyzer } from './TypeScriptInternals.js';
+import { TypeScriptInternals } from './TypeScriptInternals.js';
 
 /**
  * Options for `AstSymbolTable._fetchAstSymbol()`
@@ -30,7 +31,7 @@ export interface IFetchAstSymbolOptions {
 	/**
 	 * The symbol after any symbol aliases have been followed using TypeScriptHelpers.followAliases()
 	 */
-	followedSymbol: ts.Symbol;
+	followedSymbol: tsAPI.Symbol;
 
 	/**
 	 * If true, symbols with AstSymbol.nominalAnalysis=true will be returned.
@@ -60,13 +61,13 @@ export interface IFetchAstSymbolOptions {
  * are declared (i.e. the AstImport information needed to import them).
  */
 export class AstSymbolTable {
-	private readonly _program: ts.Program;
+	private readonly _program: tsAPI.Program;
 
-	private readonly _typeChecker: ts.TypeChecker;
+	private readonly _typeChecker: tsAPI.Checker;
 
 	private readonly _messageRouter: MessageRouter;
 
-	private readonly _globalVariableAnalyzer: IGlobalVariableAnalyzer;
+	// private readonly _globalVariableAnalyzer: IGlobalVariableAnalyzer;
 
 	private readonly _packageMetadataManager: PackageMetadataManager;
 
@@ -81,7 +82,7 @@ export class AstSymbolTable {
 	 *
 	 * After following type aliases, we use this map to look up the corresponding AstSymbol.
 	 */
-	private readonly _astSymbolsBySymbol: Map<ts.Symbol, AstSymbol> = new Map<ts.Symbol, AstSymbol>();
+	private readonly _astSymbolsBySymbol: Map<tsAPI.Symbol, AstSymbol> = new Map<tsAPI.Symbol, AstSymbol>();
 
 	/**
 	 * A mapping from ts.Declaration --\> AstDeclaration
@@ -96,8 +97,8 @@ export class AstSymbolTable {
 	>();
 
 	public constructor(
-		program: ts.Program,
-		typeChecker: ts.TypeChecker,
+		program: tsAPI.Program,
+		typeChecker: tsAPI.Checker,
 		packageJsonLookup: PackageJsonLookup,
 		bundledPackageNames: ReadonlySet<string>,
 		messageRouter: MessageRouter,
@@ -105,7 +106,7 @@ export class AstSymbolTable {
 		this._program = program;
 		this._typeChecker = typeChecker;
 		this._messageRouter = messageRouter;
-		this._globalVariableAnalyzer = TypeScriptInternals.getGlobalVariableAnalyzer(program);
+		// this._globalVariableAnalyzer = TypeScriptInternals.getGlobalVariableAnalyzer(program);
 		this._packageMetadataManager = new PackageMetadataManager(packageJsonLookup, messageRouter);
 
 		this._exportAnalyzer = new ExportAnalyzer(this._program, this._typeChecker, bundledPackageNames, {
@@ -215,7 +216,7 @@ export class AstSymbolTable {
 	 * }
 	 * ```
 	 */
-	public static getLocalNameForSymbol(symbol: ts.Symbol): string {
+	private getLocalNameForSymbol(symbol: tsAPI.Symbol): string {
 		// TypeScript binds well-known ECMAScript symbols like "[Symbol.iterator]" as "__@iterator".
 		// Decode it back into "[Symbol.iterator]".
 		const wellKnownSymbolName: string | undefined = TypeScriptHelpers.tryDecodeWellKnownSymbolName(symbol.escapedName);
@@ -229,9 +230,13 @@ export class AstSymbolTable {
 		let unquotedName: string = symbol.name;
 
 		for (const declaration of symbol.declarations ?? []) {
+			const declarationResolved = declaration.resolve();
 			// Handle cases such as "export default class X { }" where the symbol name is "default"
 			// but the local name is "X".
-			const localSymbol: ts.Symbol | undefined = TypeScriptInternals.tryGetLocalSymbol(declaration);
+			const localSymbol: tsAPI.Symbol | undefined =
+				declarationResolved && (ts.isExportSpecifier(declarationResolved) || ts.isIdentifier(declarationResolved))
+					? this._typeChecker.getExportSpecifierLocalTargetSymbol(declarationResolved)
+					: undefined;
 			if (localSymbol) {
 				unquotedName = localSymbol.name;
 			}
@@ -249,7 +254,7 @@ export class AstSymbolTable {
 			//  }
 			//
 			if (isUniqueSymbol) {
-				const declarationName: ts.DeclarationName | undefined = ts.getNameOfDeclaration(declaration);
+				const declarationName: ts.DeclarationName | undefined = ts.getNameOfDeclaration(declaration.resolve());
 				if (declarationName && ts.isComputedPropertyName(declarationName)) {
 					const lateBoundName: string | undefined = TypeScriptHelpers.tryGetLateBoundName(declarationName);
 					if (lateBoundName) {
@@ -342,7 +347,7 @@ export class AstSymbolTable {
 	 */
 	private _analyzeChildTree(node: ts.Node, governingAstDeclaration: AstDeclaration): void {
 		switch (node.kind) {
-			case ts.SyntaxKind.JSDocComment: // Skip JSDoc comments - TS considers @param tags TypeReference nodes
+			case ts.SyntaxKind.JSDoc: // Skip JSDoc comments - TS considers @param tags TypeReference nodes
 				return;
 
 			// Is this a reference to another AstSymbol?
@@ -362,7 +367,7 @@ export class AstSymbolTable {
 					if (identifierNode) {
 						let referencedAstEntity: AstEntity | undefined = this._entitiesByNode.get(identifierNode);
 						if (!referencedAstEntity) {
-							const symbol: ts.Symbol | undefined = this._typeChecker.getSymbolAtLocation(identifierNode);
+							const symbol: tsAPI.Symbol | undefined = this._typeChecker.getSymbolAtLocation(identifierNode);
 							if (!symbol) {
 								throw new Error('Symbol not found for identifier: ' + identifierNode.getText());
 							}
@@ -376,33 +381,33 @@ export class AstSymbolTable {
 							// https://github.com/microsoft/rushstack/issues/1765#issuecomment-595559849
 							let displacedSymbol = true;
 							for (const declaration of symbol.declarations ?? []) {
-								if (declaration.getSourceFile() === identifierNode.getSourceFile()) {
+								if (declaration.resolve()?.getSourceFile() === identifierNode.getSourceFile()) {
 									displacedSymbol = false;
 									break;
 								}
 							}
 
 							if (displacedSymbol) {
-								if (this._globalVariableAnalyzer.hasGlobalName(identifierNode.text)) {
-									// If the displaced symbol is a global variable, then API Extractor simply ignores it.
-									// Ambient declarations typically describe the runtime environment (provided by an API consumer),
-									// so we don't bother analyzing them as an API contract.  (There are probably some packages
-									// that include interesting global variables in their API, but API Extractor doesn't support
-									// that yet; it would be a feature request.)
+								// if (this._globalVariableAnalyzer?.hasGlobalName(identifierNode.text)) {
+								// If the displaced symbol is a global variable, then API Extractor simply ignores it.
+								// Ambient declarations typically describe the runtime environment (provided by an API consumer),
+								// so we don't bother analyzing them as an API contract.  (There are probably some packages
+								// that include interesting global variables in their API, but API Extractor doesn't support
+								// that yet; it would be a feature request.)
 
-									if (this._messageRouter.showDiagnostics && !this._alreadyWarnedGlobalNames.has(identifierNode.text)) {
-										this._alreadyWarnedGlobalNames.add(identifierNode.text);
-										this._messageRouter.logDiagnostic(
-											`Ignoring reference to global variable "${identifierNode.text}"` +
-												` in ` +
-												SourceFileLocationFormatter.formatDeclaration(identifierNode),
-										);
-									}
-								} else {
-									// If you encounter this, please report a bug with a repro.  We're interested to know
-									// how it can occur.
-									throw new InternalError(`Unable to follow symbol for "${identifierNode.text}"`);
+								if (this._messageRouter.showDiagnostics && !this._alreadyWarnedGlobalNames.has(identifierNode.text)) {
+									this._alreadyWarnedGlobalNames.add(identifierNode.text);
+									this._messageRouter.logDiagnostic(
+										`Ignoring reference to global variable "${identifierNode.text}"` +
+											` in ` +
+											SourceFileLocationFormatter.formatDeclaration(identifierNode),
+									);
 								}
+								// } else {
+								// If you encounter this, please report a bug with a repro.  We're interested to know
+								// how it can occur.
+								// throw new InternalError(`Unable to follow symbol for "${identifierNode.text}"`);
+								// }
 							} else {
 								referencedAstEntity = this._exportAnalyzer.fetchReferencedAstEntity(
 									symbol,
@@ -426,7 +431,7 @@ export class AstSymbolTable {
 				{
 					const identifierNode: ts.Identifier = node as ts.Identifier;
 					if (!this._entitiesByNode.has(identifierNode)) {
-						const symbol: ts.Symbol | undefined = this._typeChecker.getSymbolAtLocation(identifierNode);
+						const symbol: tsAPI.Symbol | undefined = this._typeChecker.getSymbolAtLocation(identifierNode);
 
 						let referencedAstEntity: AstEntity | undefined;
 
@@ -473,9 +478,9 @@ export class AstSymbolTable {
 			governingAstDeclaration.astSymbol.isExternal,
 		);
 
-		for (const childNode of node.getChildren()) {
-			this._analyzeChildTree(childNode, newGoverningAstDeclaration ?? governingAstDeclaration);
-		}
+		node.forEachChild((childNode) =>
+			this._analyzeChildTree(childNode, newGoverningAstDeclaration ?? governingAstDeclaration),
+		);
 	}
 
 	private _fetchEntityForNode(
@@ -490,7 +495,7 @@ export class AstSymbolTable {
 					governingAstDeclaration.astSymbol.isExternal,
 				);
 			} else {
-				const symbol: ts.Symbol | undefined = this._typeChecker.getSymbolAtLocation(node);
+				const symbol: tsAPI.Symbol | undefined = this._typeChecker.getSymbolAtLocation(node);
 				if (!symbol) {
 					throw new Error('Symbol not found for identifier: ' + node.getText());
 				}
@@ -512,7 +517,7 @@ export class AstSymbolTable {
 			return undefined;
 		}
 
-		const symbol: ts.Symbol | undefined = TypeScriptHelpers.getSymbolForDeclaration(
+		const symbol: tsAPI.Symbol | undefined = TypeScriptHelpers.getSymbolForDeclaration(
 			node as ts.Declaration,
 			this._typeChecker,
 		);
@@ -541,7 +546,7 @@ export class AstSymbolTable {
 	}
 
 	private _fetchAstSymbol(options: IFetchAstSymbolOptions): AstSymbol | undefined {
-		const followedSymbol: ts.Symbol = options.followedSymbol;
+		const followedSymbol: tsAPI.Symbol = options.followedSymbol;
 
 		// Filter out symbols representing constructs that we don't care about
 		const arbitraryDeclaration: ts.Declaration | undefined = TypeScriptHelpers.tryGetADeclaration(followedSymbol);
@@ -550,7 +555,8 @@ export class AstSymbolTable {
 		}
 
 		if (
-			followedSymbol.flags & (ts.SymbolFlags.TypeParameter | ts.SymbolFlags.TypeLiteral | ts.SymbolFlags.Transient) &&
+			followedSymbol.flags &
+				(tsAPI.SymbolFlags.TypeParameter | tsAPI.SymbolFlags.TypeLiteral | tsAPI.SymbolFlags.Transient) &&
 			!TypeScriptInternals.isLateBoundSymbol(followedSymbol)
 		) {
 			return undefined;
@@ -622,7 +628,7 @@ export class AstSymbolTable {
 						this._tryFindFirstAstDeclarationParent(arbitraryDeclaration);
 
 					if (arbitraryParentDeclaration) {
-						const parentSymbol: ts.Symbol = TypeScriptHelpers.getSymbolForDeclaration(
+						const parentSymbol: tsAPI.Symbol = TypeScriptHelpers.getSymbolForDeclaration(
 							arbitraryParentDeclaration as ts.Declaration,
 							this._typeChecker,
 						);
@@ -640,7 +646,7 @@ export class AstSymbolTable {
 				}
 			}
 
-			const localName: string | undefined = options.localName ?? AstSymbolTable.getLocalNameForSymbol(followedSymbol);
+			const localName: string | undefined = options.localName ?? this.getLocalNameForSymbol(followedSymbol);
 
 			astSymbol = new AstSymbol({
 				followedSymbol,
@@ -657,8 +663,10 @@ export class AstSymbolTable {
 			// their corresponding parent declarations
 			for (const declaration of followedSymbol.declarations ?? []) {
 				let parentAstDeclaration: AstDeclaration | undefined;
+				const declarationResolved = declaration.resolve();
+				if (!declarationResolved) continue;
 				if (parentAstSymbol) {
-					const parentDeclaration: ts.Node | undefined = this._tryFindFirstAstDeclarationParent(declaration);
+					const parentDeclaration: ts.Node | undefined = this._tryFindFirstAstDeclarationParent(declarationResolved);
 
 					if (!parentDeclaration) {
 						throw new InternalError('Missing parent declaration');
@@ -671,12 +679,12 @@ export class AstSymbolTable {
 				}
 
 				const astDeclaration: AstDeclaration = new AstDeclaration({
-					declaration,
+					declaration: declarationResolved,
 					astSymbol,
 					parent: parentAstDeclaration,
 				});
 
-				this._astDeclarationsByDeclaration.set(declaration, astDeclaration);
+				this._astDeclarationsByDeclaration.set(declarationResolved, astDeclaration);
 			}
 		}
 
