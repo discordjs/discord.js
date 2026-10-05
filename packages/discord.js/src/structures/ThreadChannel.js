@@ -547,14 +547,19 @@ class ThreadChannel extends BaseChannel {
    * @readonly
    */
   get joinable() {
-    return (
-      !this.archived &&
-      !this.joined &&
-      this.permissionsFor(this.client.user)?.has(
-        this.type === ChannelType.PrivateThread ? PermissionFlagsBits.ManageThreads : PermissionFlagsBits.ViewChannel,
-        false,
-      )
-    );
+    if (this.archived || this.joined) return false;
+    const permissions = this.permissionsFor(this.client.user);
+    if (!permissions) return false;
+    // This flag allows joining even if timed out
+    if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
+
+    if (this.guild.members.me?.communicationDisabledUntilTimestamp > Date.now()) return false;
+
+    const baseBitfield = PermissionFlagsBits.ViewChannel;
+    const bitfield =
+      this.type === ChannelType.PrivateThread ? baseBitfield | PermissionFlagsBits.ManageThreads : baseBitfield;
+
+    return permissions.has(bitfield, false);
   }
 
   /**
