@@ -2,7 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import { InternalError } from '@rushstack/node-core-library';
-import * as ts from 'typescript';
+import * as ts from 'typescript/unstable/ast';
 import { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import { AstImport, AstImportKind } from '../analyzer/AstImport.js';
 import { SourceFileLocationFormatter } from '../analyzer/SourceFileLocationFormatter.js';
@@ -190,7 +190,7 @@ export class DtsEmitHelpers {
 		// Optimistically assume that no parameters need to be normalized
 		for (actionIndex = 0; actionIndex < nodes.length; ++actionIndex) {
 			const parameter: ts.Node = nodes[actionIndex]!;
-			if (!ts.isParameter(parameter)) {
+			if (!ts.isParameterDeclaration(parameter)) {
 				continue;
 			}
 
@@ -212,7 +212,7 @@ export class DtsEmitHelpers {
 
 		for (const node of nodes) {
 			const parameter: ts.Node = node!;
-			if (!ts.isParameter(parameter)) {
+			if (!ts.isParameterDeclaration(parameter)) {
 				continue;
 			}
 
@@ -224,7 +224,7 @@ export class DtsEmitHelpers {
 		// Now continue with the rest of the actions
 		for (; actionIndex < nodes.length; ++actionIndex) {
 			const parameter: ts.Node = nodes[actionIndex]!;
-			if (!ts.isParameter(parameter)) {
+			if (!ts.isParameterDeclaration(parameter)) {
 				continue;
 			}
 

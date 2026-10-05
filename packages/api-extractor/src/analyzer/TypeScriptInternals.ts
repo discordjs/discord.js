@@ -1,8 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
-import { InternalError } from '@rushstack/node-core-library';
-import * as ts from 'typescript';
+// import { InternalError } from '@rushstack/node-core-library';
+import * as ts from 'typescript/unstable/ast';
+import * as tsAPI from 'typescript/unstable/sync';
 
 /**
  * Exposes the TypeScript compiler internals for detecting global variable names.
@@ -22,9 +23,9 @@ export class TypeScriptInternals {
 	 */
 	public static tryGetSymbolForDeclaration(
 		declaration: ts.Declaration,
-		checker: ts.TypeChecker,
-	): ts.Symbol | undefined {
-		let symbol: ts.Symbol | undefined = (declaration as any).symbol;
+		checker: tsAPI.Checker,
+	): tsAPI.Symbol | undefined {
+		let symbol: tsAPI.Symbol | undefined = tsAPI.getSymbol(declaration);
 		if (symbol?.escapedName === ts.InternalSymbolName.Computed) {
 			const name: ts.DeclarationName | undefined = ts.getNameOfDeclaration(declaration);
 			symbol = (name && checker.getSymbolAtLocation(name)) || symbol;
@@ -37,94 +38,85 @@ export class TypeScriptInternals {
 	 * Returns whether the provided Symbol is a TypeScript "late-bound" Symbol (i.e. was created by the Checker
 	 * for a computed property based on its type, rather than by the Binder).
 	 */
-	public static isLateBoundSymbol(symbol: ts.Symbol): boolean {
-		return (
-			(symbol.flags & ts.SymbolFlags.Transient) !== 0 &&
-			(ts as any).getCheckFlags(symbol) === (ts as any).CheckFlags.Late
-		);
+	public static isLateBoundSymbol(symbol: tsAPI.Symbol): boolean {
+		return (symbol.flags & tsAPI.SymbolFlags.Transient) !== 0 && symbol.checkFlags === tsAPI.CheckFlags.Late;
 	}
 
 	/**
 	 * Retrieves the comment ranges associated with the specified node.
 	 */
-	public static getJSDocCommentRanges(node: ts.Node, text: string): ts.CommentRange[] | undefined {
-		// Compiler internal:
-		// https://github.com/microsoft/TypeScript/blob/v2.4.2/src/compiler/utilities.ts#L616
+	// public static getJSDocCommentRanges(node: ts.Node, text: string): ts.CommentRange[] | undefined {
+	// 	// Compiler internal:
+	// 	// https://github.com/microsoft/TypeScript/blob/v2.4.2/src/compiler/utilities.ts#L616
 
-		return Reflect.apply((ts as any).getJSDocCommentRanges, this, [node, text]);
-	}
+	// 	return Reflect.apply((tsAPI as any).getJSDocCommentRanges, this, [node, text]);
+	// }
 
 	/**
 	 * Retrieves the (unescaped) value of an string literal, numeric literal, or identifier.
 	 */
-	public static getTextOfIdentifierOrLiteral(node: ts.Identifier | ts.NumericLiteral | ts.StringLiteralLike): string {
-		// Compiler internal:
-		// https://github.com/microsoft/TypeScript/blob/v3.2.2/src/compiler/utilities.ts#L2721
+	// public static getTextOfIdentifierOrLiteral(
+	// 	node: ts.Identifier | ts.NumericLiteral | ts.StringLiteralLikeNode,
+	// ): string {
+	// 	// Compiler internal:
+	// 	// https://github.com/microsoft/TypeScript/blob/v3.2.2/src/compiler/utilities.ts#L2721
 
-		return (ts as any).getTextOfIdentifierOrLiteral(node);
-	}
+	// 	return (tsAPI as any).getTextOfIdentifierOrLiteral(node);
+	// }
 
 	/**
 	 * Retrieves the (cached) module resolution information for a module name that was exported from a SourceFile.
 	 * The compiler populates this cache as part of analyzing the source file.
 	 */
-	public static getResolvedModule(
-		program: ts.Program,
-		sourceFile: ts.SourceFile,
-		moduleNameText: string,
-		mode: ts.ModuleKind.CommonJS | ts.ModuleKind.ESNext | undefined,
-	): ts.ResolvedModuleFull | undefined {
-		// Compiler internal:
-		// https://github.com/microsoft/TypeScript/blob/v5.3.3/src/compiler/types.ts#L4698
-		const result: ts.ResolvedModuleWithFailedLookupLocations | undefined = (program as any).getResolvedModule(
-			sourceFile,
-			moduleNameText,
-			mode,
-		);
-		return result?.resolvedModule;
-	}
+	// public static getResolvedModule(
+	// 	program: tsAPI.Program,
+	// 	sourceFile: ts.SourceFile,
+	// 	moduleNameText: string,
+	// 	mode: tsAPI.ModuleKind.CommonJS | tsAPI.ModuleKind.ESNext | tsAPI.ModuleKind.None,
+	// ): tsAPI.ResolvedModule | undefined {
+	// 	// Compiler internal:
+	// 	// https://github.com/microsoft/TypeScript/blob/v5.3.3/src/compiler/types.ts#L4698
+	// 	const result: tsAPI.ResolvedModule | undefined = program.getResolvedModule(sourceFile.path, moduleNameText, mode);
+	// 	return result;
+	// }
 
 	/**
 	 * Returns ts.Symbol.parent if it exists.
 	 */
-	public static getSymbolParent(symbol: ts.Symbol): ts.Symbol | undefined {
-		return (symbol as any).parent;
-	}
+	// public static getSymbolParent(symbol: tsAPI.Symbol): tsAPI.Symbol | undefined {
+	// 	return symbol.getParent();
+	// }
 
 	/**
 	 * In an statement like `export default class X { }`, the `Symbol.name` will be `default`
 	 * whereas the `localSymbol` is `X`.
 	 */
-	public static tryGetLocalSymbol(declaration: ts.Declaration): ts.Symbol | undefined {
-		return (declaration as any).localSymbol;
-	}
+	// public static tryGetLocalSymbol(declaration: ts.Declaration): tsAPI.Symbol | undefined {
+	// 	return (declaration as any).localSymbol;
+	// }
 
-	public static getGlobalVariableAnalyzer(program: ts.Program): IGlobalVariableAnalyzer {
-		const anyProgram: any = program;
-		const typeCheckerInstance: any = anyProgram.getDiagnosticsProducingTypeChecker ?? anyProgram.getTypeChecker;
+	// public static getGlobalVariableAnalyzer(program: tsAPI.Program): IGlobalVariableAnalyzer {
+	// 	// Compiler internals: `getEmitResolver` and `hasGlobalName` are accessed via `any` and
+	// 	// guarded below at runtime.
+	// 	// https://github.com/microsoft/TypeScript/blob/v6.0.3/src/compiler/checker.ts#L51221
+	// 	const typeChecker: any = program.getProject().checker;
+	// 	if (!typeChecker.getEmitResolver) {
+	// 		throw new InternalError('Missing TypeChecker.getEmitResolver');
+	// 	}
 
-		if (!typeCheckerInstance) {
-			throw new InternalError('Missing Program.getDiagnosticsProducingTypeChecker or Program.getTypeChecker');
-		}
+	// 	const resolver: any = typeChecker.getEmitResolver();
+	// 	if (!resolver.hasGlobalName) {
+	// 		throw new InternalError('Missing EmitResolver.hasGlobalName');
+	// 	}
 
-		const typeChecker: any = typeCheckerInstance();
-		if (!typeChecker.getEmitResolver) {
-			throw new InternalError('Missing TypeChecker.getEmitResolver');
-		}
-
-		const resolver: any = typeChecker.getEmitResolver();
-		if (!resolver.hasGlobalName) {
-			throw new InternalError('Missing EmitResolver.hasGlobalName');
-		}
-
-		return resolver;
-	}
+	// 	return resolver;
+	// }
 
 	/**
 	 * Returns whether a variable is declared with the const keyword
 	 */
 	public static isVarConst(node: ts.VariableDeclaration | ts.VariableDeclarationList): boolean {
 		// Compiler internal: https://github.com/microsoft/TypeScript/blob/71286e3d49c10e0e99faac360a6bbd40f12db7b6/src/compiler/utilities.ts#L925
-		return (ts as any).isVarConst(node);
+		return Boolean(node.flags & ts.NodeFlags.Const);
 	}
 }

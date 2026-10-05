@@ -5,7 +5,7 @@
 
 import { ReleaseTag, releaseTagGetTagName } from '@discordjs/api-extractor-model';
 import { Text, InternalError } from '@rushstack/node-core-library';
-import * as ts from 'typescript';
+import * as ts from 'typescript/unstable/ast';
 import { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstEntity } from '../analyzer/AstEntity.js';
 import { AstImport } from '../analyzer/AstImport.js';
@@ -314,7 +314,7 @@ export class ApiReportGenerator {
 		let sortChildren = false;
 
 		switch (span.kind) {
-			case ts.SyntaxKind.JSDocComment:
+			case ts.SyntaxKind.JSDoc:
 				span.modification.skipAll();
 				// For now, we don't transform JSDoc comment nodes at all
 				recurseChildren = false;
@@ -564,7 +564,7 @@ export class ApiReportGenerator {
 
 		let skipRest = false;
 		for (const child of span.children) {
-			if (skipRest || child.kind === ts.SyntaxKind.SyntaxList || child.kind === ts.SyntaxKind.JSDocComment) {
+			if (skipRest || child.kind === ts.SyntaxKind.SyntaxList || child.kind === ts.SyntaxKind.JSDoc) {
 				child.modification.skipAll();
 			}
 
