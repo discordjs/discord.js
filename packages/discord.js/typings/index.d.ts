@@ -492,7 +492,6 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   ): boolean;
   private static transformOption(option: ApplicationCommandOptionData, received?: boolean): unknown;
   private static transformCommand(command: ApplicationCommandData): RESTPostAPIApplicationCommandsJSONBody;
-  private static isAPICommandData(command: object): command is RESTPostAPIApplicationCommandsJSONBody;
 }
 
 export class ApplicationRoleConnectionMetadata {
@@ -943,9 +942,8 @@ export class Client<Ready extends boolean = boolean>
   public constructor(options: ClientOptions);
   private readonly actions: unknown;
   private readonly expectedGuilds: Set<Snowflake>;
-  private readonly packetQueue: unknown[];
+  private readonly incomingPacketQueue: unknown[];
   private readonly presence: ClientPresence;
-  private readonly pings: Collection<number, number>;
   private readonly readyTimeout: NodeJS.Timeout | null;
   private _broadcast(packet: GatewaySendPayload): void;
   private _eval(script: string): unknown;
@@ -965,6 +963,7 @@ export class Client<Ready extends boolean = boolean>
   public lastPingTimestamps: ReadonlyCollection<number, number>;
   public options: ClientOptions & { intents: IntentsBitField };
   public get ping(): number | null;
+  public pings: ReadonlyCollection<number, number>;
   public get readyAt(): If<Ready, Date>;
   public readyTimestamp: If<Ready, number>;
   public rest: REST;
@@ -1820,7 +1819,7 @@ export class GuildScheduledEvent<Status extends GuildScheduledEventStatus = Guil
     reason?: string,
   ): Promise<GuildScheduledEvent<Status>>;
   public setScheduledEndTime(scheduledEndTime: DateResolvable, reason?: string): Promise<GuildScheduledEvent<Status>>;
-  public setDescription(description: string, reason?: string): Promise<GuildScheduledEvent<Status>>;
+  public setDescription(description: string | null, reason?: string): Promise<GuildScheduledEvent<Status>>;
   public setStatus<AcceptableStatus extends GuildScheduledEventSetStatusArg<Status>>(
     status: AcceptableStatus,
     reason?: string,
@@ -4656,12 +4655,12 @@ export class GuildScheduledEventManager extends CachedManager<
 
 export interface GuildSoundboardSoundCreateOptions {
   contentType?: string;
-  emojiId?: Snowflake;
-  emojiName?: string;
+  emojiId?: Snowflake | null;
+  emojiName?: string | null;
   file: BufferResolvable | Stream;
   name: string;
   reason?: string;
-  volume?: number;
+  volume?: number | null;
 }
 
 export interface GuildSoundboardSoundEditOptions {
@@ -6484,7 +6483,7 @@ export interface GuildListMembersOptions {
 
 export interface BaseGuildScheduledEventOptions {
   channel?: GuildVoiceChannelResolvable | null;
-  description?: string;
+  description?: string | null;
   entityMetadata?: GuildScheduledEventEntityMetadataOptions;
   entityType?: GuildScheduledEventEntityType;
   image?: Base64Resolvable | BufferResolvable | null;
@@ -6499,6 +6498,7 @@ export interface BaseGuildScheduledEventOptions {
 // TODO: use conditional types for better TS support
 export interface GuildScheduledEventCreateOptions extends BaseGuildScheduledEventOptions {
   channel?: GuildVoiceChannelResolvable;
+  description?: string;
   entityType: GuildScheduledEventEntityType;
   name: string;
   privacyLevel: GuildScheduledEventPrivacyLevel;
@@ -6792,6 +6792,8 @@ export interface MessageInteractionMetadata {
   id: Snowflake;
   interactedMessageId: Snowflake | null;
   originalResponseMessageId: Snowflake | null;
+  targetMessageId: Snowflake | null;
+  targetUser: User | null;
   triggeringInteractionMetadata: MessageInteractionMetadata | null;
   type: InteractionType;
   user: User;
