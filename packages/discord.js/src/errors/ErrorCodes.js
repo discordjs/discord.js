@@ -88,6 +88,8 @@
  * @property {'NotGuildSoundboardSound'} NotGuildSoundboardSound
  * @property {'NotGuildSticker'} NotGuildSticker
  *
+ * @property {'SearchIndexNotYetAvailable'} SearchIndexNotYetAvailable
+ *
  * @property {'ReactionResolveUser'} ReactionResolveUser
  *
  * @property {'InviteResolveCode'} InviteResolveCode
@@ -221,6 +223,8 @@ const keys = [
 
   'NotGuildSoundboardSound',
   'NotGuildSticker',
+
+  'SearchIndexNotYetAvailable',
 
   'ReactionResolveUser',
 
