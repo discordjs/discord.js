@@ -4,5 +4,6 @@
 	"packagePath": "packages/create-discord-bot",
 	"tagTemplate": "{{name}}@{{new-version}}",
 	"identifierBase": false,
-	"monoRepo": true
+	"monoRepo": true,
+	"skipTag": true
 }

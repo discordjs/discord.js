@@ -3,5 +3,6 @@
 	"name": "rest",
 	"org": "discordjs",
 	"packagePath": "packages/rest",
-	"identifierBase": false
+	"identifierBase": false,
+	"skipTag": true
 }
