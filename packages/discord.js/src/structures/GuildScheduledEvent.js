@@ -502,15 +502,15 @@ class GuildScheduledEvent extends Base {
   }
 
   /**
-   * Set the cover image of a guild scheduled event.
+   * Sets the cover image of the guild scheduled event.
    *
    * @param {?(BufferResolvable|Base64Resolvable)} image The new cover image
    * @param {string} [reason] The reason for changing the cover image
    * @returns {Promise<GuildScheduledEvent>}
    * @example
-   * // Example: Set Cover Image of a guild scheduled Event!!
+   * // Set cover image of a guild scheduled event
    * guildScheduledEvent.setImage('./example.png')
-   *   .then(event =>console.log(`Updated the cover image for ${event.name}`))
+   *   .then(guildScheduledEvent => console.log(`Set the cover image to: ${guildScheduledEvent.coverImageURL()}`))
    *   .catch(console.error);
    */
   async setImage(image, reason) {
