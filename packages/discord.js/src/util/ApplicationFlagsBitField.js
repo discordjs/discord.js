@@ -15,8 +15,33 @@ class ApplicationFlagsBitField extends BitField {
    *
    * @type {ApplicationFlags}
    * @memberof ApplicationFlagsBitField
+   * @see {@link https://docs.discord.com/developers/resources/application#application-object-application-flags}
    */
   static Flags = ApplicationFlags;
+
+  /**
+   * @type {bigint}
+   * @memberof ApplicationFlagsBitField
+   * @private
+   */
+  static DefaultBit = 0n;
+
+  /**
+   * Resolves application flags to their bigint form.
+   *
+   * @param {ApplicationFlagsResolvable} [bit] Bit(s) to resolve
+   * @returns {bigint}
+   */
+  static resolve(bit) {
+    if (typeof bit === 'number' && Number.isSafeInteger(bit) && bit >= 0) return BigInt(bit);
+
+    if (typeof bit === 'string') {
+      const flag = this.Flags[bit];
+      if (typeof flag === 'number') return BigInt(flag);
+    }
+
+    return super.resolve(bit);
+  }
 }
 
 /**
@@ -29,7 +54,7 @@ class ApplicationFlagsBitField extends BitField {
 /**
  * Bitfield of the packed bits
  *
- * @type {number}
+ * @type {bigint}
  * @name ApplicationFlagsBitField#bitfield
  */
 
@@ -40,7 +65,7 @@ class ApplicationFlagsBitField extends BitField {
  * - An instance of ApplicationFlagsBitField
  * - An Array of ApplicationFlagsResolvable
  *
- * @typedef {string|number|ApplicationFlagsBitField|ApplicationFlagsResolvable[]} ApplicationFlagsResolvable
+ * @typedef {string|number|bigint|ApplicationFlagsBitField|ApplicationFlagsResolvable[]} ApplicationFlagsResolvable
  */
 
 exports.ApplicationFlagsBitField = ApplicationFlagsBitField;
