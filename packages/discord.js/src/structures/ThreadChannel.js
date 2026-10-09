@@ -2,7 +2,7 @@
 
 const { lazy } = require('@discordjs/util');
 const { ChannelFlags, ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
-const { DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
+const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 const { GuildMessageManager } = require('../managers/GuildMessageManager.js');
 const { ThreadMemberManager } = require('../managers/ThreadMemberManager.js');
 const { ChannelFlagsBitField } = require('../util/ChannelFlagsBitField.js');
@@ -569,6 +569,7 @@ class ThreadChannel extends BaseChannel {
     // This flag allows managing even if timed out
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
+    if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
     return (
       this.guild.members.me.communicationDisabledUntilTimestamp < Date.now() &&
       permissions.has(PermissionFlagsBits.ManageThreads, false)
@@ -599,6 +600,7 @@ class ThreadChannel extends BaseChannel {
     // This flag allows sending even if timed out
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
+    if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
     return (
       !(this.archived && this.locked && !this.manageable) &&
       (this.type !== ChannelType.PrivateThread || this.joined || this.manageable) &&
