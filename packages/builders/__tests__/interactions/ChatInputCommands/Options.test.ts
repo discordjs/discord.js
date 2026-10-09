@@ -254,6 +254,18 @@ describe('Application Command toJSON() results', () => {
 		).toThrow();
 	});
 
+	test('GIVEN an integer option with min_value greater than max_value THEN calling toJSON should throw', () => {
+		expect(() => getIntegerOption().setMinValue(11).setMaxValue(10).toJSON()).toThrowError();
+	});
+
+	test('GIVEN a number option with min_value greater than max_value THEN calling toJSON should throw', () => {
+		expect(() => getNumberOption().setMinValue(10.5).setMaxValue(10).toJSON()).toThrowError();
+	});
+
+	test('GIVEN a string option with min_length greater than max_length THEN calling toJSON should throw', () => {
+		expect(() => getStringOption().setMinLength(11).setMaxLength(10).toJSON()).toThrowError();
+	});
+
 	test.each(['document', 'pdf', '.'])(
 		'GIVEN invalid attachment file type %s THEN calling toJSON should throw',
 		(fileType) => {
