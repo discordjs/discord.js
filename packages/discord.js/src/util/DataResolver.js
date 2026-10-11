@@ -1,13 +1,30 @@
 import { Buffer } from 'node:buffer';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { lazy } from '@discordjs/util';
 import { fetch } from 'undici';
 import { DiscordjsError, DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
 import { BaseInvite } from '../structures/BaseInvite.js';
+import { GuildTemplate } from '../structures/GuildTemplate.js';
 
-// Fixes circular dependencies.
-const getGuildTemplate = lazy(async () => (await import('../structures/GuildTemplate.js')).GuildTemplate);
+/**
+ * Resolves target users file to CSV.
+ *
+ * @param {Client} client The client
+ * @param {UserResolvable[]|BufferResolvable} targetUsersFile The target users file for invite
+ * @returns {Promise<string>}
+ * @ignore
+ */
+export async function resolveInviteTargetUsersFile(client, targetUsersFile) {
+  let usersCsv;
+  if (Array.isArray(targetUsersFile)) {
+    usersCsv = targetUsersFile.map(user => client.users.resolveId(user)).join('\n');
+  } else {
+    const resolved = await resolveFile(targetUsersFile);
+    usersCsv = resolved.data.toString('utf8');
+  }
+
+  return usersCsv;
+}
 
 /**
  * Data that can be resolved to give an invite code. This can be:
@@ -56,7 +73,7 @@ export function resolveInviteCode(data) {
  * @private
  */
 export async function resolveGuildTemplateCode(data) {
-  return resolveCode(data, (await getGuildTemplate()).GuildTemplatesPattern);
+  return resolveCode(data, GuildTemplate.GuildTemplatesPattern);
 }
 
 /**
