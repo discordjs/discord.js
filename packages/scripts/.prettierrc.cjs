@@ -9,7 +9,7 @@ module.exports = {
 			},
 		},
 		{
-			files: 'turbo/generators/templates/**/{.lintstagedrc.js.hbs,.prettierrc.js.hbs}',
+			files: 'turbo/generators/templates/**/{.lintstagedrc.cjs.hbs,.prettierrc.cjs.hbs}',
 			options: {
 				parser: 'babel',
 			},
