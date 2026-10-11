@@ -4,8 +4,8 @@
 import * as path from 'node:path';
 import { JsonFile } from '@rushstack/node-core-library';
 import { Colorize } from '@rushstack/terminal';
-import type { RootedFilePath } from 'typescript/unstable/ast';
-import * as ts from 'typescript/unstable/sync';
+import type { RootedFilePath } from 'typescript/ast';
+import * as ts from 'typescript/sync';
 import { ExtractorConfig } from './ExtractorConfig.js';
 
 /**

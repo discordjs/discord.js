@@ -4,8 +4,8 @@
 // for ts.SymbolFlags
 
 import { type PackageJsonLookup, InternalError } from '@rushstack/node-core-library';
-import * as ts from 'typescript/unstable/ast';
-import * as tsAPI from 'typescript/unstable/sync';
+import * as ts from 'typescript/ast';
+import * as tsAPI from 'typescript/sync';
 import type { MessageRouter } from '../collector/MessageRouter.js';
 import { AstDeclaration } from './AstDeclaration.js';
 import type { AstEntity } from './AstEntity.js';

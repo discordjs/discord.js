@@ -4,8 +4,8 @@
 import type * as tsdoc from '@microsoft/tsdoc';
 import { Sort, InternalError } from '@rushstack/node-core-library';
 import { Colorize } from '@rushstack/terminal';
-import type * as ts from 'typescript/unstable/ast';
-import * as tsAPI from 'typescript/unstable/sync';
+import type * as ts from 'typescript/ast';
+import * as tsAPI from 'typescript/sync';
 import { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstSymbol } from '../analyzer/AstSymbol.js';
 import { ConsoleMessageId } from '../api/ConsoleMessageId.js';

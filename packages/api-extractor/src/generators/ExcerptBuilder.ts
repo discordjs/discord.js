@@ -8,7 +8,7 @@ import {
 	type IExcerptTokenRangeWithTypeParameters,
 } from '@discordjs/api-extractor-model';
 import type { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
-import * as ts from 'typescript/unstable/ast';
+import * as ts from 'typescript/ast';
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import { Span } from '../analyzer/Span.js';
 import type { IWorkingPackageEntryPoint } from '../collector/WorkingPackage.js';
