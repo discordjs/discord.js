@@ -3,7 +3,7 @@
 	"remoteCache": {
 		"enabled": true
 	},
-	"globalDependencies": ["tsconfig.json"],
+	"globalDependencies": ["tsconfig.base.json"],
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
@@ -108,7 +108,7 @@
 		},
 		"discord.js#test": {
 			"dependsOn": ["^build"],
-			"inputs": ["typings/**", "package.json", "tsconfig.json"],
+			"inputs": ["src/**", "typings/**", "package.json", "tsconfig.json"],
 			"outputs": [],
 			"outputLogs": "full"
 		},

@@ -1,6 +1,6 @@
 import { Collection } from '@discordjs/collection';
 import { FormattingPatterns } from 'discord-api-types/v10';
-import { flatten } from '../util/Util.js';
+import { flatten } from '../util/Flatten.js';
 
 /**
  * Keeps track of mentions in a {@link Message}.

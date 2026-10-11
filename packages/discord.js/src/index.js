@@ -1,19 +1,5 @@
 import packageJson from '../package.json' with { type: 'json' };
 
-// import/export early to avoid circular imports
-export {
-  cleanCodeBlockContent,
-  cleanContent,
-  discordSort,
-  fetchRecommendedShardCount,
-  flatten,
-  parseEmoji,
-  parseWebhookURL,
-  resolveColor,
-  resolveSKUId,
-  verifyString,
-} from './util/Util.js';
-
 // "Root" classes (starting points)
 export { Client } from './client/Client.js';
 export { Shard } from './sharding/Shard.js';
@@ -37,6 +23,7 @@ export { Collection } from '@discordjs/collection';
 export { Colors } from './util/Colors.js';
 export * as Constants from './util/Constants.js';
 export { Events } from './util/Events.js';
+export { flatten } from './util/Flatten.js';
 export { GuildMemberFlagsBitField } from './util/GuildMemberFlagsBitField.js';
 export { IntentsBitField } from './util/IntentsBitField.js';
 export { InviteFlagsBitField } from './util/InviteFlagsBitField.js';
@@ -54,6 +41,17 @@ export { Sweepers } from './util/Sweepers.js';
 export { SystemChannelFlagsBitField } from './util/SystemChannelFlagsBitField.js';
 export { ThreadMemberFlagsBitField } from './util/ThreadMemberFlagsBitField.js';
 export { UserFlagsBitField } from './util/UserFlagsBitField.js';
+export {
+  cleanCodeBlockContent,
+  cleanContent,
+  discordSort,
+  fetchRecommendedShardCount,
+  parseEmoji,
+  parseWebhookURL,
+  resolveColor,
+  resolveSKUId,
+  verifyString,
+} from './util/Util.js';
 
 export * from './util/DataResolver.js';
 
