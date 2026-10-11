@@ -3,7 +3,7 @@
 
 import type * as tsdoc from '@microsoft/tsdoc';
 import type { INodePackageJson } from '@rushstack/node-core-library';
-import type * as ts from 'typescript/unstable/ast';
+import type * as ts from 'typescript/ast';
 
 /**
  * Constructor options for WorkingPackage

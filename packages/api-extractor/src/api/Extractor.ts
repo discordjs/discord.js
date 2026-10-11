@@ -16,7 +16,7 @@ import { structuredPatch, formatPatch, type StructuredPatch } from 'diff';
 import * as resolve from 'resolve';
 import * as semver from 'semver';
 import * as ts from 'typescript';
-import type * as tsAPI from 'typescript/unstable/sync';
+import type * as tsAPI from 'typescript/sync';
 import { PackageMetadataManager } from '../analyzer/PackageMetadataManager.js';
 import { Collector } from '../collector/Collector.js';
 import { MessageRouter } from '../collector/MessageRouter.js';

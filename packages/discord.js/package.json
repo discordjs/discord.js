@@ -90,7 +90,7 @@
     "oxlint": "^1.89.0",
     "tstyche": "^7.2.4",
     "turbo": "^2.10.12",
-    "typescript": "~7.1.0-dev.20261003.1"
+    "typescript": "~7.1.0-dev.20261011.1"
   },
   "engines": {
     "node": ">=24.17.0"

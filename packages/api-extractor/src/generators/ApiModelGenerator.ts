@@ -43,8 +43,8 @@ import {
 import type * as tsdoc from '@microsoft/tsdoc';
 import { DeclarationReference, type Meaning } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { JsonFile, Path } from '@rushstack/node-core-library';
-import * as ts from 'typescript/unstable/ast';
-import * as tsAPI from 'typescript/unstable/sync';
+import * as ts from 'typescript/ast';
+import * as tsAPI from 'typescript/sync';
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstEntity } from '../analyzer/AstEntity.js';
 import { AstImport } from '../analyzer/AstImport.js';

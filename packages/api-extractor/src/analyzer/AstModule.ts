@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
-import type * as ts from 'typescript/unstable/ast';
-import type * as tsAPI from 'typescript/unstable/sync';
+import type * as ts from 'typescript/ast';
+import type * as tsAPI from 'typescript/sync';
 import type { AstEntity } from './AstEntity.js';
 import type { AstSymbol } from './AstSymbol.js';
 

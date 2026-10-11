@@ -10,7 +10,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: ^21.2.2
-        version: 21.2.4(conventional-commits-parser@7.1.3)(typescript@7.1.0-dev.20261003.1)
+        version: 21.2.4(conventional-commits-parser@7.1.3)(typescript@7.1.0-dev.20261011.1)
       '@commitlint/config-angular':
         specifier: ^21.2.2
         version: 21.2.4
@@ -28,7 +28,7 @@ importers:
         version: 5.0.0(conventional-commits-filter@5.0.0)
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -49,7 +49,7 @@ importers:
         version: 2.11.10
       typescript:
         specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        version: 7.1.0-dev.20261011.1
       unocss:
         specifier: ^66.9.2
         version: 66.12.0(@oxc-project/types@0.156.0)(cac@7.1.0)(rolldown@1.2.16)(srvx@1.0.8)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1))
@@ -115,7 +115,7 @@ importers:
         version: 1.4.0
       twoslash:
         specifier: ^0.3.9
-        version: 0.3.9(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.3.9(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
     devDependencies:
       '@shikijs/rehype':
         specifier: ^4.4.3
@@ -149,7 +149,7 @@ importers:
         version: 10.1.0
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       git-describe:
         specifier: ^4.1.1
         version: 4.1.1
@@ -178,8 +178,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       vercel:
         specifier: ^59.11.2
         version: 59.26.0(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.3)(bufferutil@4.1.0)(encoding@0.1.14)(supports-color@10.2.2)
@@ -204,7 +204,7 @@ importers:
         version: 24.19.2
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -218,8 +218,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
 
   apps/website:
     dependencies:
@@ -246,7 +246,7 @@ importers:
         version: 1.1.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       cva:
         specifier: 1.0.0-beta.3
-        version: 1.0.0-beta.3(typescript@7.1.0-dev.20261003.1)
+        version: 1.0.0-beta.3(typescript@7.1.0-dev.20261011.1)
       geist:
         specifier: ^1.7.2
         version: 1.9.0(next@16.4.3(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
@@ -334,7 +334,7 @@ importers:
         version: 10.1.0
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       git-describe:
         specifier: ^4.1.1
         version: 4.1.1
@@ -366,8 +366,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       vercel:
         specifier: ^59.11.2
         version: 59.26.0(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.3)(bufferutil@4.1.0)(encoding@0.1.14)(supports-color@10.2.2)
@@ -428,7 +428,7 @@ importers:
         version: 4.1.12(vitest@4.1.12)
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -442,8 +442,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
         version: 4.1.12(@edge-runtime/vm@3.2.0)(@types/node@24.19.2)(@vitest/coverage-v8@4.1.12)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)
@@ -481,8 +481,8 @@ importers:
         specifier: ~0.6.1
         version: 0.6.1
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
     devDependencies:
       '@types/node':
         specifier: ^24.13.3
@@ -498,7 +498,7 @@ importers:
         version: 7.0.0
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -529,7 +529,7 @@ importers:
         version: 24.19.2
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -543,8 +543,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
 
   packages/api-extractor-utils:
     dependencies:
@@ -560,7 +560,7 @@ importers:
         version: 24.19.2
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -574,8 +574,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
 
   packages/brokers:
     dependencies:
@@ -612,7 +612,7 @@ importers:
         version: 4.1.12(vitest@4.1.12)
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -623,8 +623,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
         version: 4.1.12(@edge-runtime/vm@3.2.0)(@types/node@24.19.2)(@vitest/coverage-v8@4.1.12)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)
@@ -664,7 +664,7 @@ importers:
         version: 4.1.12(vitest@4.1.12)
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -675,8 +675,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
         version: 4.1.12(@edge-runtime/vm@3.2.0)(@types/node@24.19.2)(@vitest/coverage-v8@4.1.12)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)
@@ -700,7 +700,7 @@ importers:
         version: 4.1.12(vitest@4.1.12)
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -711,8 +711,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
         version: 4.1.12(@edge-runtime/vm@3.2.0)(@types/node@24.19.2)(@vitest/coverage-v8@4.1.12)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)
@@ -755,7 +755,7 @@ importers:
         version: 4.1.12(vitest@4.1.12)
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -766,8 +766,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
         version: 4.1.12(@edge-runtime/vm@3.2.0)(@types/node@24.19.2)(@vitest/coverage-v8@4.1.12)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)
@@ -801,7 +801,7 @@ importers:
         version: 4.0.2
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -812,8 +812,8 @@ importers:
         specifier: ^5.51.2
         version: 5.51.2
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
 
   packages/create-discord-bot/template/Bun/JavaScript:
     dependencies:
@@ -826,7 +826,7 @@ importers:
     devDependencies:
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -854,7 +854,7 @@ importers:
         version: 1.4.4
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -862,8 +862,8 @@ importers:
         specifier: ^1.89.0
         version: 1.90.0
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       zod:
         specifier: ^4.5.4
         version: 4.6.7
@@ -879,7 +879,7 @@ importers:
     devDependencies:
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -907,7 +907,7 @@ importers:
         version: 24.19.2
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -915,8 +915,8 @@ importers:
         specifier: ^1.89.0
         version: 1.90.0
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       zod:
         specifier: ^4.5.4
         version: 4.6.7
@@ -983,7 +983,7 @@ importers:
         version: 24.19.2
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -992,13 +992,13 @@ importers:
         version: 1.90.0
       tstyche:
         specifier: ^7.2.4
-        version: 7.2.5(typescript@7.1.0-dev.20261003.1)
+        version: 7.2.5(typescript@7.1.0-dev.20261011.1)
       turbo:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
 
   packages/docgen:
     dependencies:
@@ -1013,7 +1013,7 @@ importers:
         version: 2.9.1
       typedoc:
         specifier: ^0.25.13
-        version: 0.25.13(typescript@7.1.0-dev.20261003.1)
+        version: 0.25.13(typescript@7.1.0-dev.20261011.1)
     devDependencies:
       '@types/jsdoc-to-markdown':
         specifier: ^7.0.6
@@ -1023,7 +1023,7 @@ importers:
         version: 24.19.2
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -1037,8 +1037,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
 
   packages/formatters:
     dependencies:
@@ -1066,7 +1066,7 @@ importers:
         version: 4.1.12(vitest@4.1.12)
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -1077,8 +1077,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
         version: 4.1.12(@edge-runtime/vm@3.2.0)(@types/node@24.19.2)(@vitest/coverage-v8@4.1.12)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)
@@ -1127,7 +1127,7 @@ importers:
         version: 4.1.12(vitest@4.1.12)
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -1138,8 +1138,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
         version: 4.1.12(@edge-runtime/vm@3.2.0)(@types/node@24.19.2)(@vitest/coverage-v8@4.1.12)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)
@@ -1179,7 +1179,7 @@ importers:
         version: 4.1.12(vitest@4.1.12)
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -1193,8 +1193,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
         version: 4.1.12(@edge-runtime/vm@3.2.0)(@types/node@24.19.2)(@vitest/coverage-v8@4.1.12)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)
@@ -1249,7 +1249,7 @@ importers:
         version: 4.1.12(vitest@4.1.12)
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -1260,8 +1260,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
         version: 4.1.12(@edge-runtime/vm@3.2.0)(@types/node@24.19.2)(@vitest/coverage-v8@4.1.12)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)
@@ -1289,7 +1289,7 @@ importers:
         version: 24.19.2
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -1300,8 +1300,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
 
   packages/scripts:
     dependencies:
@@ -1347,7 +1347,7 @@ importers:
         version: 24.19.2
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -1361,8 +1361,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
 
   packages/structures:
     dependencies:
@@ -1396,7 +1396,7 @@ importers:
         version: 7.0.0
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -1407,8 +1407,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
         version: 4.1.12(@edge-runtime/vm@3.2.0)(@types/node@24.19.2)(@vitest/coverage-v8@4.1.12)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)
@@ -1445,10 +1445,10 @@ importers:
         version: 10.6.5(storybook@10.6.5(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.1))(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1))
       '@storybook/react':
         specifier: ^10.5.10
-        version: 10.6.5(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(storybook@10.6.5(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 10.6.5(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(storybook@10.6.5(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       '@storybook/react-vite':
         specifier: ^10.5.10
-        version: 10.6.5(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(storybook@10.6.5(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1))
+        version: 10.6.5(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(storybook@10.6.5(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1))
       '@types/node':
         specifier: ^24.13.3
         version: 24.19.2
@@ -1469,7 +1469,7 @@ importers:
         version: 18.13.6
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -1486,14 +1486,14 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       unocss:
         specifier: ^66.9.2
         version: 66.12.0(@oxc-project/types@0.156.0)(cac@7.1.0)(rolldown@1.2.16)(srvx@1.0.8)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1))
       unplugin-dts:
         specifier: ^1.0.3
-        version: 1.1.2(esbuild@0.28.2)(rolldown@1.2.16)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1))
+        version: 1.1.2(esbuild@0.28.2)(rolldown@1.2.16)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1))
       vite:
         specifier: ^8.2.2
         version: 8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)
@@ -1521,7 +1521,7 @@ importers:
         version: 4.1.12(vitest@4.1.12)
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -1532,8 +1532,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
         version: 4.1.12(@edge-runtime/vm@3.2.0)(@types/node@24.19.2)(@vitest/coverage-v8@4.1.12)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)
@@ -1582,7 +1582,7 @@ importers:
         version: 4.1.12(vitest@4.1.12)
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       oxfmt:
         specifier: ^0.74.0
         version: 0.74.0
@@ -1593,8 +1593,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
         version: 4.1.12(@edge-runtime/vm@3.2.0)(@types/node@24.19.2)(@vitest/coverage-v8@4.1.12)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)
@@ -1646,7 +1646,7 @@ importers:
         version: 4.1.12(vitest@4.1.12)
       eslint-config-neon:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+        version: 0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       mock-socket:
         specifier: ^9.3.1
         version: 9.3.1
@@ -1660,8 +1660,8 @@ importers:
         specifier: ^2.10.12
         version: 2.11.10
       typescript:
-        specifier: ~7.1.0-dev.20261003.1
-        version: 7.1.0-dev.20261003.1
+        specifier: ~7.1.0-dev.20261011.1
+        version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
         version: 4.1.12(@edge-runtime/vm@3.2.0)(@types/node@24.19.2)(@vitest/coverage-v8@4.1.12)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)
@@ -6165,44 +6165,44 @@ packages:
     resolution: {integrity: sha512-SB8xqipSzZHUePCCLNeYxqnxq83X61/qzNhjQGbTfjxGZIeOEP7tBgWYX05Tcd6CgE02WdTJnh5b8kMZJ/+bnQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261003.1':
-    resolution: {integrity: sha512-sB26B2cgo/6V0SMMikuZmkZfyeB799tzw9d/8o5lxbqEndXGrLyXgoPymocAU/Sx17Ehh755KlF7/2Xv+k2qbQ==}
+  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261011.1':
+    resolution: {integrity: sha512-Kj6wL95dLXjtx7um9LaF61YPaMSKlmTh6IffZUCwQlJntRh613hVKfWtbj3k7odmRe/K5hghQox8cvyKkFotjA==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@typescript/typescript-darwin-x64@7.1.0-dev.20261003.1':
-    resolution: {integrity: sha512-MPgMy8GegUMFH/aswHVYMQ326XtXzqOrC0AlRK9zXHa6mcazAHCROfjLZt+jfV81wiC3Cx51eRd8OjE6yHbH5A==}
+  '@typescript/typescript-darwin-x64@7.1.0-dev.20261011.1':
+    resolution: {integrity: sha512-ng8qcExjcmG2HG5Z22OcL07BntZQX7MwBlN9DmTwZX7+TMe1h9UitAiWPxCtmltcc5ObE+5YSF6AGyKMVgfMKg==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [darwin]
 
-  '@typescript/typescript-linux-arm64@7.1.0-dev.20261003.1':
-    resolution: {integrity: sha512-0Ip+ggDCJcyge/GU028qAfughL2qvMefoSbD5/PuviVHRuVVtqxg6KhbBcX3VsjWm7AVhsza8mkst7QLgNqefA==}
+  '@typescript/typescript-linux-arm64@7.1.0-dev.20261011.1':
+    resolution: {integrity: sha512-cX7seCo65VvUeQOvI2Ho4kVszrTMj+FMAJHDtJ6X4PBE2Dqv48OG+tNncPF1Z8VDNCCdJGr5FRjzxiHbUDzYLQ==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [linux]
 
-  '@typescript/typescript-linux-arm@7.1.0-dev.20261003.1':
-    resolution: {integrity: sha512-KSfYgddlUW4wS73jqvmXx2wDFKlhDueu+0vxKZ9b9yTE52yqtgA6Mf3aIGUfpDrZcTQAnh+dT8Nx23RziaRlTg==}
+  '@typescript/typescript-linux-arm@7.1.0-dev.20261011.1':
+    resolution: {integrity: sha512-TbBRba9ft28ME4JfCPkQ1zSTkNle1+dmKrSBCu9LFP2e/SgvTbt4mX8LgCwzg9EPe0CH8k6Zd+i/xxZys65qgQ==}
     engines: {node: '>=16.20.0'}
     cpu: [arm]
     os: [linux]
 
-  '@typescript/typescript-linux-x64@7.1.0-dev.20261003.1':
-    resolution: {integrity: sha512-y8ipEYeEy0Ksvm2bSfvWZRIT2kkmQD4HXfhBZCAIww/Ue6AToSy+WYWFaZ5A8fJkG1/CpMlK3ryOYZjDbOglvg==}
+  '@typescript/typescript-linux-x64@7.1.0-dev.20261011.1':
+    resolution: {integrity: sha512-0pt6E6fRcffVEUaHYIYGVYBghfeJL2E+JNz91dJf/UidoIU8kmj6qBd27xhsDzKe2aoxolt0t48ipRc+a2NjBA==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [linux]
 
-  '@typescript/typescript-win32-arm64@7.1.0-dev.20261003.1':
-    resolution: {integrity: sha512-bEwB6ehlWDvgCTlMfynO0dv+/+6luDI+nBcXvUIJzAqEB2ru4KClcgeD5qLzE7Uh7eGfTiWLhOqor4fBMfNMug==}
+  '@typescript/typescript-win32-arm64@7.1.0-dev.20261011.1':
+    resolution: {integrity: sha512-8UkixI8b4a12rZXr1RZk8oyx8yPZg8QNiJhbe3vTSA45o43YViVPoAll8bA5oTzi9UjetFT2iPDSpAPCZENVug==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [win32]
 
-  '@typescript/typescript-win32-x64@7.1.0-dev.20261003.1':
-    resolution: {integrity: sha512-mv8V/dhdv3BVN2UPPqm3/T0Wym+8aBy9TxWIrAfib6urkaH1uawcwSZEEzFSCicmI8F2yEw+3AMGpNRX/gIvVQ==}
+  '@typescript/typescript-win32-x64@7.1.0-dev.20261011.1':
+    resolution: {integrity: sha512-gw2jMUgKpICqDRFhpe1Cx/ol/xv2+/80y4dAf3CKnkG5GdSVZvULYL1MRXlHdZIi0WA27t8T+TKtqzi4WJ3WOw==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [win32]
@@ -12078,8 +12078,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@7.1.0-dev.20261003.1:
-    resolution: {integrity: sha512-tqkRsQcaRQz22cZm+Ex+AGwOtYxVRMTMjIvQzPw9FoPgZZSDOByD20xp2YRvAyuC24tQiE2IHgFTie3HVHy2oQ==}
+  typescript@7.1.0-dev.20261011.1:
+    resolution: {integrity: sha512-Oestzc61TT5cqxAyVxRsbL+pmMF8pzPlsnLcbCqAWqvC0eYQcp8EJrLWatIgjdUh4RiL79avUCHfM8hdkv07xg==}
     engines: {node: '>=16.20.0'}
     hasBin: true
 
@@ -12792,36 +12792,36 @@ snapshots:
 
   '@angular-eslint/bundled-angular-compiler@21.4.0': {}
 
-  '@angular-eslint/eslint-plugin-template@21.4.0(@angular-eslint/template-parser@21.4.0(typescript@7.1.0-dev.20261003.1))(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(typescript@7.1.0-dev.20261003.1)':
+  '@angular-eslint/eslint-plugin-template@21.4.0(@angular-eslint/template-parser@21.4.0(typescript@7.1.0-dev.20261011.1))(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(typescript@7.1.0-dev.20261011.1)':
     dependencies:
       '@angular-eslint/bundled-angular-compiler': 21.4.0
-      '@angular-eslint/template-parser': 21.4.0(typescript@7.1.0-dev.20261003.1)
-      '@angular-eslint/utils': 21.4.0(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(typescript@7.1.0-dev.20261003.1)
+      '@angular-eslint/template-parser': 21.4.0(typescript@7.1.0-dev.20261011.1)
+      '@angular-eslint/utils': 21.4.0(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(typescript@7.1.0-dev.20261011.1)
       '@typescript-eslint/types': 8.72.1
-      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       aria-query: 5.3.2
       axobject-query: 4.1.0
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
 
-  '@angular-eslint/eslint-plugin@21.4.0(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(typescript@7.1.0-dev.20261003.1)':
+  '@angular-eslint/eslint-plugin@21.4.0(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(typescript@7.1.0-dev.20261011.1)':
     dependencies:
       '@angular-eslint/bundled-angular-compiler': 21.4.0
-      '@angular-eslint/utils': 21.4.0(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(typescript@7.1.0-dev.20261003.1)
-      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
-      ts-api-utils: 2.5.0(typescript@7.1.0-dev.20261003.1)
-      typescript: 7.1.0-dev.20261003.1
+      '@angular-eslint/utils': 21.4.0(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(typescript@7.1.0-dev.20261011.1)
+      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
+      ts-api-utils: 2.5.0(typescript@7.1.0-dev.20261011.1)
+      typescript: 7.1.0-dev.20261011.1
 
-  '@angular-eslint/template-parser@21.4.0(typescript@7.1.0-dev.20261003.1)':
+  '@angular-eslint/template-parser@21.4.0(typescript@7.1.0-dev.20261011.1)':
     dependencies:
       '@angular-eslint/bundled-angular-compiler': 21.4.0
       eslint-scope: 9.1.2
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
 
-  '@angular-eslint/utils@21.4.0(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(typescript@7.1.0-dev.20261003.1)':
+  '@angular-eslint/utils@21.4.0(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(typescript@7.1.0-dev.20261011.1)':
     dependencies:
       '@angular-eslint/bundled-angular-compiler': 21.4.0
-      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
-      typescript: 7.1.0-dev.20261003.1
+      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
+      typescript: 7.1.0-dev.20261011.1
 
   '@antfu/install-pkg@2.1.0':
     dependencies:
@@ -13615,12 +13615,12 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20261023.1':
     optional: true
 
-  '@commitlint/cli@21.2.4(conventional-commits-parser@7.1.3)(typescript@7.1.0-dev.20261003.1)':
+  '@commitlint/cli@21.2.4(conventional-commits-parser@7.1.3)(typescript@7.1.0-dev.20261011.1)':
     dependencies:
       '@commitlint/config-conventional': 21.2.4
       '@commitlint/format': 21.2.3
       '@commitlint/lint': 21.2.4
-      '@commitlint/load': 21.2.4(typescript@7.1.0-dev.20261003.1)
+      '@commitlint/load': 21.2.4(typescript@7.1.0-dev.20261011.1)
       '@commitlint/read': 21.2.3(conventional-commits-parser@7.1.3)
       '@commitlint/types': 21.2.3
       tinyexec: 1.3.1
@@ -13670,13 +13670,13 @@ snapshots:
       '@commitlint/rules': 21.2.4
       '@commitlint/types': 21.2.3
 
-  '@commitlint/load@21.2.4(typescript@7.1.0-dev.20261003.1)':
+  '@commitlint/load@21.2.4(typescript@7.1.0-dev.20261011.1)':
     dependencies:
       '@commitlint/config-validator': 21.2.3
       '@commitlint/execute-rule': 21.0.1
       '@commitlint/resolve-extends': 21.2.3
       '@commitlint/types': 21.2.3
-      cosmiconfig: 9.0.2(typescript@7.1.0-dev.20261003.1)
+      cosmiconfig: 9.0.2(typescript@7.1.0-dev.20261011.1)
       es-toolkit: 1.53.1
       is-plain-obj: 4.1.0
       jiti: 2.7.0
@@ -14536,13 +14536,13 @@ snapshots:
     dependencies:
       minipass: 7.1.3
 
-  '@joshwooding/vite-plugin-react-docgen-typescript@0.7.0(typescript@7.1.0-dev.20261003.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1))':
+  '@joshwooding/vite-plugin-react-docgen-typescript@0.7.0(typescript@7.1.0-dev.20261011.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1))':
     dependencies:
       glob: 13.0.6
-      react-docgen-typescript: 2.4.0(typescript@7.1.0-dev.20261003.1)
+      react-docgen-typescript: 2.4.0(typescript@7.1.0-dev.20261011.1)
       vite: 8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)
     optionalDependencies:
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
@@ -16379,12 +16379,12 @@ snapshots:
       '@types/react': 19.3.0
       '@types/react-dom': 19.3.0(@types/react@19.3.0)
 
-  '@storybook/react-vite@10.6.5(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(storybook@10.6.5(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1))':
+  '@storybook/react-vite@10.6.5(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(storybook@10.6.5(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1))':
     dependencies:
-      '@joshwooding/vite-plugin-react-docgen-typescript': 0.7.0(typescript@7.1.0-dev.20261003.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1))
+      '@joshwooding/vite-plugin-react-docgen-typescript': 0.7.0(typescript@7.1.0-dev.20261011.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1))
       '@rollup/pluginutils': 5.5.1
       '@storybook/builder-vite': 10.6.5(storybook@10.6.5(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.1))(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1))
-      '@storybook/react': 10.6.5(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(storybook@10.6.5(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      '@storybook/react': 10.6.5(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(storybook@10.6.5(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       empathic: 2.1.0
       magic-string: 1.4.5
       react: 19.3.1
@@ -16395,26 +16395,26 @@ snapshots:
       tsconfig-paths: 4.2.0
       vite: 8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)
     optionalDependencies:
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
     transitivePeerDependencies:
       - '@types/react'
       - '@types/react-dom'
       - rollup
       - supports-color
 
-  '@storybook/react@10.6.5(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(storybook@10.6.5(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)':
+  '@storybook/react@10.6.5(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(storybook@10.6.5(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)':
     dependencies:
       '@storybook/global': 5.0.0
       '@storybook/react-dom-shim': 10.6.5(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(storybook@10.6.5(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.1))
       react: 19.3.1
       react-docgen: 8.0.4(supports-color@10.2.2)
-      react-docgen-typescript: 2.4.0(typescript@7.1.0-dev.20261003.1)
+      react-docgen-typescript: 2.4.0(typescript@7.1.0-dev.20261011.1)
       react-dom: 19.3.1(react@19.3.1)
       storybook: 10.6.5(@types/react@19.3.0)(bufferutil@4.1.0)(react@19.3.1)
     optionalDependencies:
       '@types/react': 19.3.0
       '@types/react-dom': 19.3.0(@types/react@19.3.0)
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
     transitivePeerDependencies:
       - supports-color
 
@@ -16862,54 +16862,54 @@ snapshots:
     dependencies:
       '@types/node': 24.19.2
 
-  '@typescript-eslint/eslint-plugin@8.72.1(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)':
+  '@typescript-eslint/eslint-plugin@8.72.1(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
-      '@typescript-eslint/parser': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      '@typescript-eslint/parser': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       '@typescript-eslint/scope-manager': 8.72.1
-      '@typescript-eslint/type-utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
-      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      '@typescript-eslint/type-utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
+      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       '@typescript-eslint/visitor-keys': 8.72.1
       ignore: 7.0.14
       natural-compare: 1.4.0
-      ts-api-utils: 2.5.0(typescript@7.1.0-dev.20261003.1)
-      typescript: 7.1.0-dev.20261003.1
+      ts-api-utils: 2.5.0(typescript@7.1.0-dev.20261011.1)
+      typescript: 7.1.0-dev.20261011.1
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/experimental-utils@5.62.0(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)':
+  '@typescript-eslint/experimental-utils@5.62.0(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)':
     dependencies:
-      '@typescript-eslint/utils': 5.62.0(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      '@typescript-eslint/utils': 5.62.0(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  '@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)':
+  '@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.72.1
       '@typescript-eslint/types': 8.72.1
-      '@typescript-eslint/typescript-estree': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      '@typescript-eslint/typescript-estree': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       '@typescript-eslint/visitor-keys': 8.72.1
       debug: 4.4.3(supports-color@10.2.2)
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/project-service@8.56.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)':
+  '@typescript-eslint/project-service@8.56.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.56.1(typescript@7.1.0-dev.20261003.1)
-      '@typescript-eslint/types': 8.56.1
-      debug: 4.4.3(supports-color@10.2.2)
-      typescript: 7.1.0-dev.20261003.1
-    transitivePeerDependencies:
-      - supports-color
-
-  '@typescript-eslint/project-service@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)':
-    dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.72.1(typescript@7.1.0-dev.20261003.1)
+      '@typescript-eslint/tsconfig-utils': 8.72.1(typescript@7.1.0-dev.20261011.1)
       '@typescript-eslint/types': 8.72.1
       debug: 4.4.3(supports-color@10.2.2)
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
+    transitivePeerDependencies:
+      - supports-color
+
+  '@typescript-eslint/project-service@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)':
+    dependencies:
+      '@typescript-eslint/tsconfig-utils': 8.72.1(typescript@7.1.0-dev.20261011.1)
+      '@typescript-eslint/types': 8.72.1
+      debug: 4.4.3(supports-color@10.2.2)
+      typescript: 7.1.0-dev.20261011.1
     transitivePeerDependencies:
       - supports-color
 
@@ -16928,22 +16928,22 @@ snapshots:
       '@typescript-eslint/types': 8.72.1
       '@typescript-eslint/visitor-keys': 8.72.1
 
-  '@typescript-eslint/tsconfig-utils@8.56.1(typescript@7.1.0-dev.20261003.1)':
+  '@typescript-eslint/tsconfig-utils@8.56.1(typescript@7.1.0-dev.20261011.1)':
     dependencies:
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
 
-  '@typescript-eslint/tsconfig-utils@8.72.1(typescript@7.1.0-dev.20261003.1)':
+  '@typescript-eslint/tsconfig-utils@8.72.1(typescript@7.1.0-dev.20261011.1)':
     dependencies:
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
 
-  '@typescript-eslint/type-utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)':
+  '@typescript-eslint/type-utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)':
     dependencies:
       '@typescript-eslint/types': 8.72.1
-      '@typescript-eslint/typescript-estree': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
-      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      '@typescript-eslint/typescript-estree': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
+      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       debug: 4.4.3(supports-color@10.2.2)
-      ts-api-utils: 2.5.0(typescript@7.1.0-dev.20261003.1)
-      typescript: 7.1.0-dev.20261003.1
+      ts-api-utils: 2.5.0(typescript@7.1.0-dev.20261011.1)
+      typescript: 7.1.0-dev.20261011.1
     transitivePeerDependencies:
       - supports-color
 
@@ -16953,7 +16953,7 @@ snapshots:
 
   '@typescript-eslint/types@8.72.1': {}
 
-  '@typescript-eslint/typescript-estree@5.62.0(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)':
+  '@typescript-eslint/typescript-estree@5.62.0(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)':
     dependencies:
       '@typescript-eslint/types': 5.62.0
       '@typescript-eslint/visitor-keys': 5.62.0
@@ -16961,73 +16961,73 @@ snapshots:
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.7.4
-      tsutils: 3.21.0(typescript@7.1.0-dev.20261003.1)
+      tsutils: 3.21.0(typescript@7.1.0-dev.20261011.1)
     optionalDependencies:
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/typescript-estree@8.56.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)':
+  '@typescript-eslint/typescript-estree@8.56.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)':
     dependencies:
-      '@typescript-eslint/project-service': 8.56.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
-      '@typescript-eslint/tsconfig-utils': 8.56.1(typescript@7.1.0-dev.20261003.1)
+      '@typescript-eslint/project-service': 8.56.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
+      '@typescript-eslint/tsconfig-utils': 8.56.1(typescript@7.1.0-dev.20261011.1)
       '@typescript-eslint/types': 8.56.1
       '@typescript-eslint/visitor-keys': 8.56.1
       debug: 4.4.3(supports-color@10.2.2)
       minimatch: 10.2.6
       semver: 7.7.4
       tinyglobby: 0.2.17
-      ts-api-utils: 2.5.0(typescript@7.1.0-dev.20261003.1)
-      typescript: 7.1.0-dev.20261003.1
+      ts-api-utils: 2.5.0(typescript@7.1.0-dev.20261011.1)
+      typescript: 7.1.0-dev.20261011.1
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/typescript-estree@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)':
+  '@typescript-eslint/typescript-estree@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)':
     dependencies:
-      '@typescript-eslint/project-service': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
-      '@typescript-eslint/tsconfig-utils': 8.72.1(typescript@7.1.0-dev.20261003.1)
+      '@typescript-eslint/project-service': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
+      '@typescript-eslint/tsconfig-utils': 8.72.1(typescript@7.1.0-dev.20261011.1)
       '@typescript-eslint/types': 8.72.1
       '@typescript-eslint/visitor-keys': 8.72.1
       debug: 4.4.3(supports-color@10.2.2)
       minimatch: 10.2.6
       semver: 7.7.4
       tinyglobby: 0.2.17
-      ts-api-utils: 2.5.0(typescript@7.1.0-dev.20261003.1)
-      typescript: 7.1.0-dev.20261003.1
+      ts-api-utils: 2.5.0(typescript@7.1.0-dev.20261011.1)
+      typescript: 7.1.0-dev.20261011.1
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/utils@5.62.0(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)':
+  '@typescript-eslint/utils@5.62.0(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)':
     dependencies:
       '@eslint-community/eslint-utils': 4.10.1
       '@types/json-schema': 7.0.15
       '@types/semver': 7.8.0
       '@typescript-eslint/scope-manager': 5.62.0
       '@typescript-eslint/types': 5.62.0
-      '@typescript-eslint/typescript-estree': 5.62.0(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      '@typescript-eslint/typescript-estree': 5.62.0(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       eslint-scope: 5.1.1
       semver: 7.7.4
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  '@typescript-eslint/utils@8.56.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)':
+  '@typescript-eslint/utils@8.56.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)':
     dependencies:
       '@eslint-community/eslint-utils': 4.10.1
       '@typescript-eslint/scope-manager': 8.56.1
       '@typescript-eslint/types': 8.56.1
-      '@typescript-eslint/typescript-estree': 8.56.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
-      typescript: 7.1.0-dev.20261003.1
+      '@typescript-eslint/typescript-estree': 8.56.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
+      typescript: 7.1.0-dev.20261011.1
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)':
+  '@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)':
     dependencies:
       '@eslint-community/eslint-utils': 4.10.1
       '@typescript-eslint/scope-manager': 8.72.1
       '@typescript-eslint/types': 8.72.1
-      '@typescript-eslint/typescript-estree': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
-      typescript: 7.1.0-dev.20261003.1
+      '@typescript-eslint/typescript-estree': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
+      typescript: 7.1.0-dev.20261011.1
     transitivePeerDependencies:
       - supports-color
 
@@ -17046,25 +17046,25 @@ snapshots:
       '@typescript-eslint/types': 8.72.1
       eslint-visitor-keys: 5.0.1
 
-  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261003.1':
+  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261011.1':
     optional: true
 
-  '@typescript/typescript-darwin-x64@7.1.0-dev.20261003.1':
+  '@typescript/typescript-darwin-x64@7.1.0-dev.20261011.1':
     optional: true
 
-  '@typescript/typescript-linux-arm64@7.1.0-dev.20261003.1':
+  '@typescript/typescript-linux-arm64@7.1.0-dev.20261011.1':
     optional: true
 
-  '@typescript/typescript-linux-arm@7.1.0-dev.20261003.1':
+  '@typescript/typescript-linux-arm@7.1.0-dev.20261011.1':
     optional: true
 
-  '@typescript/typescript-linux-x64@7.1.0-dev.20261003.1':
+  '@typescript/typescript-linux-x64@7.1.0-dev.20261011.1':
     optional: true
 
-  '@typescript/typescript-win32-arm64@7.1.0-dev.20261003.1':
+  '@typescript/typescript-win32-arm64@7.1.0-dev.20261011.1':
     optional: true
 
-  '@typescript/typescript-win32-x64@7.1.0-dev.20261003.1':
+  '@typescript/typescript-win32-x64@7.1.0-dev.20261011.1':
     optional: true
 
   '@typescript/typescript6@6.0.2':
@@ -17078,10 +17078,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript/vfs@1.6.5(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)':
+  '@typescript/vfs@1.6.5(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)':
     dependencies:
       debug: 4.4.3(supports-color@10.2.2)
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
     transitivePeerDependencies:
       - supports-color
 
@@ -17844,25 +17844,25 @@ snapshots:
     dependencies:
       '@volar/source-map': 2.4.30
 
-  '@volar/language-service@2.4.30(typescript@7.1.0-dev.20261003.1)':
+  '@volar/language-service@2.4.30(typescript@7.1.0-dev.20261011.1)':
     dependencies:
       '@volar/language-core': 2.4.30
       vscode-languageserver-protocol: 3.18.5
       vscode-languageserver-textdocument: 1.0.16
       vscode-uri: 3.2.0
     optionalDependencies:
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
 
   '@volar/source-map@2.4.30': {}
 
-  '@volar/typescript@2.4.30(typescript@7.1.0-dev.20261003.1)':
+  '@volar/typescript@2.4.30(typescript@7.1.0-dev.20261011.1)':
     dependencies:
       '@volar/language-core': 2.4.30
-      '@volar/language-service': 2.4.30(typescript@7.1.0-dev.20261003.1)
+      '@volar/language-service': 2.4.30(typescript@7.1.0-dev.20261011.1)
       path-browserify: 1.0.1
       vscode-uri: 3.2.0
     optionalDependencies:
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
 
   '@webcontainer/env@1.1.1': {}
 
@@ -18676,14 +18676,14 @@ snapshots:
     dependencies:
       layout-base: 2.0.1
 
-  cosmiconfig@9.0.2(typescript@7.1.0-dev.20261003.1):
+  cosmiconfig@9.0.2(typescript@7.1.0-dev.20261011.1):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.1
       js-yaml: 4.3.2
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
 
   cpy-cli@7.0.0:
     dependencies:
@@ -18736,11 +18736,11 @@ snapshots:
 
   csstype@3.2.3: {}
 
-  cva@1.0.0-beta.3(typescript@7.1.0-dev.20261003.1):
+  cva@1.0.0-beta.3(typescript@7.1.0-dev.20261011.1):
     dependencies:
       clsx: 2.1.1
     optionalDependencies:
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
 
   cytoscape-cose-bilkent@4.1.0(cytoscape@3.34.4):
     dependencies:
@@ -19453,44 +19453,44 @@ snapshots:
     dependencies:
       semver: 7.7.4
 
-  eslint-config-neon@0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1):
+  eslint-config-neon@0.5.4(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(bluebird@3.7.2)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1):
     dependencies:
-      '@angular-eslint/eslint-plugin': 21.4.0(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(typescript@7.1.0-dev.20261003.1)
-      '@angular-eslint/eslint-plugin-template': 21.4.0(@angular-eslint/template-parser@21.4.0(typescript@7.1.0-dev.20261003.1))(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(typescript@7.1.0-dev.20261003.1)
-      '@angular-eslint/template-parser': 21.4.0(typescript@7.1.0-dev.20261003.1)
+      '@angular-eslint/eslint-plugin': 21.4.0(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(typescript@7.1.0-dev.20261011.1)
+      '@angular-eslint/eslint-plugin-template': 21.4.0(@angular-eslint/template-parser@21.4.0(typescript@7.1.0-dev.20261011.1))(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(typescript@7.1.0-dev.20261011.1)
+      '@angular-eslint/template-parser': 21.4.0(typescript@7.1.0-dev.20261011.1)
       '@eslint/compat': 2.1.1
       '@next/eslint-plugin-next': 16.4.3
       '@stylistic/eslint-plugin': 5.10.0
       '@types/lodash.merge': 4.6.9
-      '@typescript-eslint/eslint-plugin': 8.72.1(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
-      '@typescript-eslint/parser': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      '@typescript-eslint/eslint-plugin': 8.72.1(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
+      '@typescript-eslint/parser': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       astro-eslint-parser: 1.4.0(supports-color@10.2.2)
       eslint-config-prettier: 10.1.8
-      eslint-import-resolver-typescript: 4.4.5(eslint-plugin-import-x@4.17.1(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(supports-color@10.2.2))(supports-color@10.2.2)
+      eslint-import-resolver-typescript: 4.4.5(eslint-plugin-import-x@4.17.1(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(supports-color@10.2.2))(supports-color@10.2.2)
       eslint-mdx: 3.8.3(bluebird@3.7.2)(supports-color@10.2.2)
       eslint-plugin-astro: 1.7.0(supports-color@10.2.2)
-      eslint-plugin-cypress: 6.4.4(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))
-      eslint-plugin-import-x: 4.17.1(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(supports-color@10.2.2)
+      eslint-plugin-cypress: 6.4.4(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))
+      eslint-plugin-import-x: 4.17.1(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(supports-color@10.2.2)
       eslint-plugin-jsdoc: 63.3.3(supports-color@10.2.2)
       eslint-plugin-jsx-a11y: 6.10.2
       eslint-plugin-mdx: 3.8.3(bluebird@3.7.2)(supports-color@10.2.2)
-      eslint-plugin-n: 18.5.0(typescript@7.1.0-dev.20261003.1)
+      eslint-plugin-n: 18.5.0(typescript@7.1.0-dev.20261011.1)
       eslint-plugin-promise: 7.3.0
       eslint-plugin-react: 7.37.5
       eslint-plugin-react-hooks: 7.1.1(supports-color@10.2.2)
       eslint-plugin-react-refresh: 0.5.7
-      eslint-plugin-rxjs-angular-x: 1.0.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
-      eslint-plugin-rxjs-x: 1.0.6(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      eslint-plugin-rxjs-angular-x: 1.0.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
+      eslint-plugin-rxjs-x: 1.0.6(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       eslint-plugin-sonarjs: 4.2.2
       eslint-plugin-svelte3: 4.0.0
-      eslint-plugin-tsdoc: 0.5.4(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
-      eslint-plugin-typescript-sort-keys: 3.3.0(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      eslint-plugin-tsdoc: 0.5.4(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
+      eslint-plugin-typescript-sort-keys: 3.3.0(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       eslint-plugin-unicorn: 64.0.0
-      eslint-plugin-vue: 10.12.0(@stylistic/eslint-plugin@5.10.0)(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(vue-eslint-parser@10.4.1(supports-color@10.2.2))
+      eslint-plugin-vue: 10.12.0(@stylistic/eslint-plugin@5.10.0)(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(vue-eslint-parser@10.4.1(supports-color@10.2.2))
       globals: 17.13.0
       lodash.merge: 4.6.2
       oxlint-tsgolint: 0.23.0
-      typescript-eslint: 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      typescript-eslint: 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       vue-eslint-parser: 10.4.1(supports-color@10.2.2)
     transitivePeerDependencies:
       - '@typescript-eslint/types'
@@ -19515,7 +19515,7 @@ snapshots:
     optionalDependencies:
       unrs-resolver: 1.12.2
 
-  eslint-import-resolver-typescript@4.4.5(eslint-plugin-import-x@4.17.1(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(supports-color@10.2.2))(supports-color@10.2.2):
+  eslint-import-resolver-typescript@4.4.5(eslint-plugin-import-x@4.17.1(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(supports-color@10.2.2))(supports-color@10.2.2):
     dependencies:
       debug: 4.4.3(supports-color@10.2.2)
       eslint-import-context: 0.1.9(unrs-resolver@1.12.2)
@@ -19525,7 +19525,7 @@ snapshots:
       tinyglobby: 0.2.17
       unrs-resolver: 1.12.2
     optionalDependencies:
-      eslint-plugin-import-x: 4.17.1(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(supports-color@10.2.2)
+      eslint-plugin-import-x: 4.17.1(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(supports-color@10.2.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -19560,11 +19560,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-cypress@6.4.4(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)):
+  eslint-plugin-cypress@6.4.4(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)):
     dependencies:
       globals: 17.13.0
     optionalDependencies:
-      '@typescript-eslint/parser': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      '@typescript-eslint/parser': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
 
   eslint-plugin-es-x@7.8.0:
     dependencies:
@@ -19572,7 +19572,7 @@ snapshots:
       '@eslint-community/regexpp': 4.12.2
       eslint-compat-utils: 0.5.1
 
-  eslint-plugin-import-x@4.17.1(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(supports-color@10.2.2):
+  eslint-plugin-import-x@4.17.1(@typescript-eslint/utils@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(supports-color@10.2.2):
     dependencies:
       '@typescript-eslint/types': 8.72.1
       comment-parser: 1.4.9
@@ -19584,7 +19584,7 @@ snapshots:
       stable-hash-x: 0.2.0
       unrs-resolver: 1.12.2
     optionalDependencies:
-      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -19642,7 +19642,7 @@ snapshots:
       - remark-lint-file-extension
       - supports-color
 
-  eslint-plugin-n@18.5.0(typescript@7.1.0-dev.20261003.1):
+  eslint-plugin-n@18.5.0(typescript@7.1.0-dev.20261011.1):
     dependencies:
       '@eslint-community/eslint-utils': 4.10.1
       enhanced-resolve: 5.26.0
@@ -19654,7 +19654,7 @@ snapshots:
       js-yaml: 5.5.0
       semver: 7.7.4
     optionalDependencies:
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
 
   eslint-plugin-promise@7.3.0:
     dependencies:
@@ -19693,20 +19693,20 @@ snapshots:
       string.prototype.matchall: 4.1.0
       string.prototype.repeat: 1.0.0
 
-  eslint-plugin-rxjs-angular-x@1.0.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1):
+  eslint-plugin-rxjs-angular-x@1.0.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1):
     dependencies:
-      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
-      ts-api-utils: 2.5.0(typescript@7.1.0-dev.20261003.1)
-      typescript: 7.1.0-dev.20261003.1
+      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
+      ts-api-utils: 2.5.0(typescript@7.1.0-dev.20261011.1)
+      typescript: 7.1.0-dev.20261011.1
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-rxjs-x@1.0.6(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1):
+  eslint-plugin-rxjs-x@1.0.6(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1):
     dependencies:
-      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       decamelize: 6.0.1
-      ts-api-utils: 2.5.0(typescript@7.1.0-dev.20261003.1)
-      typescript: 7.1.0-dev.20261003.1
+      ts-api-utils: 2.5.0(typescript@7.1.0-dev.20261011.1)
+      typescript: 7.1.0-dev.20261011.1
     transitivePeerDependencies:
       - supports-color
 
@@ -19729,22 +19729,22 @@ snapshots:
 
   eslint-plugin-svelte3@4.0.0: {}
 
-  eslint-plugin-tsdoc@0.5.4(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1):
+  eslint-plugin-tsdoc@0.5.4(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1):
     dependencies:
       '@microsoft/tsdoc': 0.17.1
       '@microsoft/tsdoc-config': 0.18.3
-      '@typescript-eslint/utils': 8.56.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      '@typescript-eslint/utils': 8.56.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  eslint-plugin-typescript-sort-keys@3.3.0(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1):
+  eslint-plugin-typescript-sort-keys@3.3.0(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1):
     dependencies:
-      '@typescript-eslint/experimental-utils': 5.62.0(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
-      '@typescript-eslint/parser': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      '@typescript-eslint/experimental-utils': 5.62.0(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
+      '@typescript-eslint/parser': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       json-schema: 0.4.0
       natural-compare-lite: 1.4.1
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
     transitivePeerDependencies:
       - supports-color
 
@@ -19767,7 +19767,7 @@ snapshots:
       semver: 7.7.4
       strip-indent: 4.1.1
 
-  eslint-plugin-vue@10.12.0(@stylistic/eslint-plugin@5.10.0)(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(vue-eslint-parser@10.4.1(supports-color@10.2.2)):
+  eslint-plugin-vue@10.12.0(@stylistic/eslint-plugin@5.10.0)(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(vue-eslint-parser@10.4.1(supports-color@10.2.2)):
     dependencies:
       '@eslint-community/eslint-utils': 4.10.1
       natural-compare: 1.4.0
@@ -19778,7 +19778,7 @@ snapshots:
       xml-name-validator: 5.0.0
     optionalDependencies:
       '@stylistic/eslint-plugin': 5.10.0
-      '@typescript-eslint/parser': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      '@typescript-eslint/parser': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
 
   eslint-scope@5.1.1:
     dependencies:
@@ -22801,9 +22801,9 @@ snapshots:
       react-stately: 3.51.0(react@19.3.1)
       use-sync-external-store: 1.7.0(react@19.3.1)
 
-  react-docgen-typescript@2.4.0(typescript@7.1.0-dev.20261003.1):
+  react-docgen-typescript@2.4.0(typescript@7.1.0-dev.20261011.1):
     dependencies:
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
 
   react-docgen@8.0.4(supports-color@10.2.2):
     dependencies:
@@ -23886,9 +23886,9 @@ snapshots:
     dependencies:
       typescript: 6.0.3
 
-  ts-api-utils@2.5.0(typescript@7.1.0-dev.20261003.1):
+  ts-api-utils@2.5.0(typescript@7.1.0-dev.20261011.1):
     dependencies:
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
 
   ts-dedent@2.3.0: {}
 
@@ -23913,14 +23913,14 @@ snapshots:
 
   tslib@2.9.1: {}
 
-  tstyche@7.2.5(typescript@7.1.0-dev.20261003.1):
+  tstyche@7.2.5(typescript@7.1.0-dev.20261011.1):
     optionalDependencies:
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
 
-  tsutils@3.21.0(typescript@7.1.0-dev.20261003.1):
+  tsutils@3.21.0(typescript@7.1.0-dev.20261011.1):
     dependencies:
       tslib: 1.14.1
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
 
   tsx@4.21.0:
     dependencies:
@@ -23952,11 +23952,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  twoslash@0.3.9(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1):
+  twoslash@0.3.9(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1):
     dependencies:
-      '@typescript/vfs': 1.6.5(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
+      '@typescript/vfs': 1.6.5(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
       twoslash-protocol: 0.3.9
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
     transitivePeerDependencies:
       - supports-color
 
@@ -24004,21 +24004,21 @@ snapshots:
 
   typedarray@0.0.6: {}
 
-  typedoc@0.25.13(typescript@7.1.0-dev.20261003.1):
+  typedoc@0.25.13(typescript@7.1.0-dev.20261011.1):
     dependencies:
       lunr: 2.3.9
       marked: 4.3.0
       minimatch: 9.0.9
       shiki: 0.14.7
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
 
-  typescript-eslint@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1):
+  typescript-eslint@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1):
     dependencies:
-      '@typescript-eslint/eslint-plugin': 8.72.1(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
-      '@typescript-eslint/parser': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
-      '@typescript-eslint/typescript-estree': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
-      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)
-      typescript: 7.1.0-dev.20261003.1
+      '@typescript-eslint/eslint-plugin': 8.72.1(@typescript-eslint/parser@8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1))(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
+      '@typescript-eslint/parser': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
+      '@typescript-eslint/typescript-estree': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
+      '@typescript-eslint/utils': 8.72.1(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)
+      typescript: 7.1.0-dev.20261011.1
     transitivePeerDependencies:
       - supports-color
 
@@ -24028,15 +24028,15 @@ snapshots:
 
   typescript@6.0.3: {}
 
-  typescript@7.1.0-dev.20261003.1:
+  typescript@7.1.0-dev.20261011.1:
     optionalDependencies:
-      '@typescript/typescript-darwin-arm64': 7.1.0-dev.20261003.1
-      '@typescript/typescript-darwin-x64': 7.1.0-dev.20261003.1
-      '@typescript/typescript-linux-arm': 7.1.0-dev.20261003.1
-      '@typescript/typescript-linux-arm64': 7.1.0-dev.20261003.1
-      '@typescript/typescript-linux-x64': 7.1.0-dev.20261003.1
-      '@typescript/typescript-win32-arm64': 7.1.0-dev.20261003.1
-      '@typescript/typescript-win32-x64': 7.1.0-dev.20261003.1
+      '@typescript/typescript-darwin-arm64': 7.1.0-dev.20261011.1
+      '@typescript/typescript-darwin-x64': 7.1.0-dev.20261011.1
+      '@typescript/typescript-linux-arm': 7.1.0-dev.20261011.1
+      '@typescript/typescript-linux-arm64': 7.1.0-dev.20261011.1
+      '@typescript/typescript-linux-x64': 7.1.0-dev.20261011.1
+      '@typescript/typescript-win32-arm64': 7.1.0-dev.20261011.1
+      '@typescript/typescript-win32-x64': 7.1.0-dev.20261011.1
 
   typical@2.6.1: {}
 
@@ -24226,17 +24226,17 @@ snapshots:
 
   unpipe@1.0.0: {}
 
-  unplugin-dts@1.1.2(esbuild@0.28.2)(rolldown@1.2.16)(supports-color@10.2.2)(typescript@7.1.0-dev.20261003.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)):
+  unplugin-dts@1.1.2(esbuild@0.28.2)(rolldown@1.2.16)(supports-color@10.2.2)(typescript@7.1.0-dev.20261011.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)):
     dependencies:
       '@rollup/pluginutils': 5.5.1
-      '@volar/typescript': 2.4.30(typescript@7.1.0-dev.20261003.1)
+      '@volar/typescript': 2.4.30(typescript@7.1.0-dev.20261011.1)
       compare-versions: 6.1.1
       debug: 4.4.3(supports-color@10.2.2)
       glob-to-regexp: 0.4.1
       kolorist: 1.8.0
       local-pkg: 1.2.1
       magic-string: 0.30.21
-      typescript: 7.1.0-dev.20261003.1
+      typescript: 7.1.0-dev.20261011.1
       unplugin: 2.3.11
     optionalDependencies:
       esbuild: 0.28.2

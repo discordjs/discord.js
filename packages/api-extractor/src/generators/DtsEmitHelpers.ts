@@ -2,7 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import { InternalError } from '@rushstack/node-core-library';
-import * as ts from 'typescript/unstable/ast';
+import * as ts from 'typescript/ast';
 import { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import { AstImport, AstImportKind } from '../analyzer/AstImport.js';
 import { SourceFileLocationFormatter } from '../analyzer/SourceFileLocationFormatter.js';

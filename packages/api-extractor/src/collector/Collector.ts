@@ -4,8 +4,8 @@
 import { ReleaseTag } from '@discordjs/api-extractor-model';
 import * as tsdoc from '@microsoft/tsdoc';
 import { PackageJsonLookup, Sort, InternalError } from '@rushstack/node-core-library';
-import * as ts from 'typescript/unstable/ast';
-import type * as tsAPI from 'typescript/unstable/sync';
+import * as ts from 'typescript/ast';
+import type * as tsAPI from 'typescript/sync';
 import { PackageDocComment } from '../aedoc/PackageDocComment.js';
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstEntity } from '../analyzer/AstEntity.js';

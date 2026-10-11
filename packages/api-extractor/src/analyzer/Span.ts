@@ -3,7 +3,7 @@
 // See LICENSE in the project root for license information.
 
 import { InternalError, Sort, Text } from '@rushstack/node-core-library';
-import * as ts from 'typescript/unstable/ast';
+import * as ts from 'typescript/ast';
 import { IndentedWriter } from '../generators/IndentedWriter.js';
 
 interface IWriteModifiedTextOptions {

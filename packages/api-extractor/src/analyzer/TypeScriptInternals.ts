@@ -2,8 +2,8 @@
 // See LICENSE in the project root for license information.
 
 // import { InternalError } from '@rushstack/node-core-library';
-import * as ts from 'typescript/unstable/ast';
-import * as tsAPI from 'typescript/unstable/sync';
+import * as ts from 'typescript/ast';
+import * as tsAPI from 'typescript/sync';
 
 /**
  * Exposes the TypeScript compiler internals for detecting global variable names.

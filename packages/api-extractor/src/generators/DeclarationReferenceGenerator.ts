@@ -9,8 +9,8 @@ import {
 	GlobalSource,
 } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { type INodePackageJson, InternalError } from '@rushstack/node-core-library';
-import * as ts from 'typescript/unstable/ast';
-import * as tsAPI from 'typescript/unstable/sync';
+import * as ts from 'typescript/ast';
+import * as tsAPI from 'typescript/sync';
 import { AstNamespaceImport } from '../analyzer/AstNamespaceImport.js';
 import { TypeScriptHelpers } from '../analyzer/TypeScriptHelpers.js';
 import { TypeScriptInternals } from '../analyzer/TypeScriptInternals.js';
