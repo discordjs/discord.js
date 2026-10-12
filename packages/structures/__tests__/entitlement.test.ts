@@ -73,19 +73,25 @@ describe('Entitlement structure', () => {
 	});
 
 	test('dates & timestamps returns null when they have no timestamp supplied (and snowflake id)', () => {
-		const instanceWithoutId = new Entitlement({
+		const entitlementWithoutIdsData = {
 			...data,
-			// @ts-expect-error for testing functionality with a null id
 			id: null,
-			starts_at: null,
-			ends_at: null,
-		});
+			starts_at: undefined,
+			ends_at: undefined,
+		};
+
+		// @ts-expect-error for testing functionality with a null id
+		const instanceWithoutId = new Entitlement(entitlementWithoutIdsData);
 
 		expect(instanceWithoutId.createdDate).toBeNull();
 		expect(instanceWithoutId.createdTimestamp).toBeNull();
+
 		expect(instanceWithoutId.startsDate).toBeNull();
 		expect(instanceWithoutId.startsTimestamp).toBeNull();
+
 		expect(instanceWithoutId.endsDate).toBeNull();
 		expect(instanceWithoutId.endsTimestamp).toBeNull();
+
+		expect(instanceWithoutId.toJSON()).toEqual(entitlementWithoutIdsData);
 	});
 });
