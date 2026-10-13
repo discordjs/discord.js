@@ -6,7 +6,7 @@ import {
 	type APIPollMedia,
 	type APIPollResults,
 } from 'discord-api-types/v10';
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, beforeEach } from 'vitest';
 import { Poll, PollAnswer, PollAnswerCount, PollMedia, PollResults } from '../src/index.js';
 import { kPatch } from '../src/utils/symbols';
 
@@ -42,7 +42,11 @@ const poll: APIPoll = {
 
 describe('Poll structure and substructures', () => {
 	const data = poll;
-	const instance = new Poll(data);
+	let instance: Poll;
+
+	beforeEach(() => {
+		instance = new Poll(data);
+	});
 
 	test('correct value for all getters', () => {
 		expect(instance.layoutType).toBe(data.layout_type);
@@ -63,7 +67,13 @@ describe('Poll structure and substructures', () => {
 		expect(instanceWithoutExpiry.expiresDate).toBeNull();
 		expect(instanceWithoutExpiry.expiresTimestamp).toBeNull();
 
-		expect(instanceWithoutExpiry.toJSON()).toEqual({ ...data, expiry: undefined });
+		expect(instanceWithoutExpiry.toJSON()).toStrictEqual({
+			question: data.question,
+			answers: data.answers,
+			results: data.results,
+			allow_multiselect: data.allow_multiselect,
+			layout_type: data.layout_type,
+		});
 	});
 
 	test('patching the structure works in-place', () => {
@@ -79,7 +89,11 @@ describe('Poll structure and substructures', () => {
 
 	describe('PollAnswer substructure', () => {
 		const data = answer;
-		const instance = new PollAnswer(data);
+		let instance: PollAnswer;
+
+		beforeEach(() => {
+			instance = new PollAnswer(data);
+		});
 
 		test('correct value for all getters', () => {
 			expect(instance.answerId).toBe(data.answer_id);
@@ -105,7 +119,11 @@ describe('Poll structure and substructures', () => {
 
 	describe('PollMedia substructure', () => {
 		const data = media;
-		const instance = new PollMedia(data);
+		let instance: PollMedia;
+
+		beforeEach(() => {
+			instance = new PollMedia(data);
+		});
 
 		test('correct value for all getters', () => {
 			expect(instance.text).toBe(data.text);
@@ -131,7 +149,11 @@ describe('Poll structure and substructures', () => {
 
 	describe('PollResults substructure', () => {
 		const data = results;
-		const instance = new PollResults(data);
+		let instance: PollResults;
+
+		beforeEach(() => {
+			instance = new PollResults(data);
+		});
 
 		test('correct value for all getters', () => {
 			expect(instance.isFinalized).toBe(data.is_finalized);
@@ -155,7 +177,11 @@ describe('Poll structure and substructures', () => {
 
 	describe('PollAnswerCount substructure', () => {
 		const data = answerCount;
-		const instance = new PollAnswerCount(data);
+		let instance: PollAnswerCount;
+
+		beforeEach(() => {
+			instance = new PollAnswerCount(data);
+		});
 
 		test('correct value for all getters', () => {
 			expect(instance.id).toBe(data.id);
