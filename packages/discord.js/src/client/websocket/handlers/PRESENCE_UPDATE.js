@@ -20,11 +20,14 @@ module.exports = (client, { d: data }) => {
 
   let member = guild.members.cache.get(user.id);
   if (!member && data.status !== 'offline') {
-    member = guild.members._add({
-      user,
-      deaf: false,
-      mute: false,
-    });
+    member = guild.members._add(
+      {
+        user,
+        deaf: false,
+        mute: false,
+      },
+      false,
+    );
 
     client.emit(Events.GuildMemberAvailable, member);
   }
