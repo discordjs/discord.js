@@ -123,7 +123,17 @@ test('request strategy accepts global FormData without a cast', async () => {
 	formData.append('message', 'hello');
 	formData.append('file', new Blob(['contents']), 'test.txt');
 
-	mockPool.intercept({ path: genPath('/formData'), method: 'POST' }).reply(200, { uploaded: true }, responseOptions);
+	mockPool.intercept({ path: genPath('/formData'), method: 'POST' }).reply(async ({ body }) => {
+		expect(body).toBeInstanceOf(UndiciFormData);
+		const interceptedBody = body as unknown as UndiciFormData;
+		expect(interceptedBody.get('message')).toBe('hello');
+		const file = interceptedBody.get('file');
+		expect(file).toBeInstanceOf(Blob);
+		expect(file).toHaveProperty('name', 'test.txt');
+		expect(await (file as Blob).text()).toBe('contents');
+
+		return { statusCode: 200, data: { uploaded: true }, responseOptions };
+	});
 
 	const response = await makeRequest(`https://discord.com${genPath('/formData')}`, {
 		body: formData,
