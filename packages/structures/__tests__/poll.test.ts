@@ -23,7 +23,7 @@ const results: APIPollResults = {
 
 const media: APIPollMedia = {
 	text: 'pollMedia_Text',
-	emoji: { id: '1', name: 'emojiName' },
+	emoji: { id: '1356710171296141332', name: 'emojiName' },
 };
 
 const answer: APIPollAnswer = {
