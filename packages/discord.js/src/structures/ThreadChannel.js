@@ -553,7 +553,12 @@ class ThreadChannel extends BaseChannel {
     // This flag allows joining even if timed out
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
-    if (this.guild.members.me?.communicationDisabledUntilTimestamp > Date.now()) return false;
+    if (
+      this.type === ChannelType.PrivateThread &&
+      this.guild.members.me?.communicationDisabledUntilTimestamp > Date.now()
+    ) {
+      return false;
+    }
 
     const baseBitfield = PermissionFlagsBits.ViewChannel;
     const bitfield =
