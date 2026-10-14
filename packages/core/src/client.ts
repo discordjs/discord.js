@@ -13,6 +13,7 @@ import {
 	type GatewayAutoModerationRuleUpdateDispatchData,
 	type GatewayChannelCreateDispatchData,
 	type GatewayChannelDeleteDispatchData,
+	type GatewayChannelInfoDispatchData,
 	type GatewayChannelPinsUpdateDispatchData,
 	type GatewayChannelUpdateDispatchData,
 	type GatewayEntitlementCreateDispatchData,
@@ -62,6 +63,7 @@ import {
 	type GatewayPresenceUpdateDispatchData,
 	type GatewayRateLimitedDispatchData,
 	type GatewayReadyDispatchData,
+	type GatewayRequestChannelInfoData,
 	type GatewayRequestGuildMembersData,
 	type GatewayStageInstanceCreateDispatchData,
 	type GatewayStageInstanceDeleteDispatchData,
@@ -77,6 +79,8 @@ import {
 	type GatewayThreadUpdateDispatchData,
 	type GatewayTypingStartDispatchData,
 	type GatewayUserUpdateDispatchData,
+	type GatewayVoiceChannelStartTimeUpdateDispatchData,
+	type GatewayVoiceChannelStatusUpdateDispatchData,
 	type GatewayVoiceServerUpdateDispatchData,
 	type GatewayVoiceStateUpdateData,
 	type GatewayVoiceStateUpdateDispatchData,
@@ -114,6 +118,7 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.AutoModerationRuleUpdate]: [ToEventProps<GatewayAutoModerationRuleUpdateDispatchData>];
 	[GatewayDispatchEvents.ChannelCreate]: [ToEventProps<GatewayChannelCreateDispatchData>];
 	[GatewayDispatchEvents.ChannelDelete]: [ToEventProps<GatewayChannelDeleteDispatchData>];
+	[GatewayDispatchEvents.ChannelInfo]: [ToEventProps<GatewayChannelInfoDispatchData>];
 	[GatewayDispatchEvents.ChannelPinsUpdate]: [ToEventProps<GatewayChannelPinsUpdateDispatchData>];
 	[GatewayDispatchEvents.ChannelUpdate]: [ToEventProps<GatewayChannelUpdateDispatchData>];
 	[GatewayDispatchEvents.EntitlementCreate]: [ToEventProps<GatewayEntitlementCreateDispatchData>];
@@ -181,6 +186,8 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.ThreadUpdate]: [ToEventProps<GatewayThreadUpdateDispatchData>];
 	[GatewayDispatchEvents.TypingStart]: [ToEventProps<GatewayTypingStartDispatchData>];
 	[GatewayDispatchEvents.UserUpdate]: [ToEventProps<GatewayUserUpdateDispatchData>];
+	[GatewayDispatchEvents.VoiceChannelStartTimeUpdate]: [ToEventProps<GatewayVoiceChannelStartTimeUpdateDispatchData>];
+	[GatewayDispatchEvents.VoiceChannelStatusUpdate]: [ToEventProps<GatewayVoiceChannelStatusUpdateDispatchData>];
 	[GatewayDispatchEvents.VoiceServerUpdate]: [ToEventProps<GatewayVoiceServerUpdateDispatchData>];
 	[GatewayDispatchEvents.VoiceStateUpdate]: [ToEventProps<GatewayVoiceStateUpdateDispatchData>];
 	[GatewayDispatchEvents.WebhooksUpdate]: [ToEventProps<GatewayWebhooksUpdateDispatchData>];
@@ -221,6 +228,58 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 		this.gateway.on(WebSocketShardEvents.Dispatch, (dispatch, shardId) => {
 			this.emit(dispatch.t, this.toEventProps(dispatch.d, shardId));
 		});
+	}
+
+	/**
+	 * Requests ephemeral channel data for channels in a guild via the gateway.
+	 *
+	 * @see {@link https://docs.discord.com/developers/events/gateway-events#request-channel-info}
+	 * @param options - The options for the request
+	 * @param timeout - The timeout for waiting for the channel info event
+	 * @example
+	 * Requesting voice channel status and start time for all channels in a guild
+	 * ```ts
+	 * const { channels } = await client.requestChannelInfo({
+	 * 	guild_id: '1234567890',
+	 * 	fields: [GatewayRequestChannelInfoField.Status, GatewayRequestChannelInfoField.VoiceStartTime],
+	 * });
+	 * ```
+	 */
+	public async requestChannelInfo(options: GatewayRequestChannelInfoData, timeout = 10_000) {
+		const shardId = calculateShardId(options.guild_id, await this.gateway.getShardCount());
+
+		const controller = new AbortController();
+		const timer = createTimer(controller, timeout);
+
+		await this.gateway.send(shardId, {
+			op: GatewayOpcodes.RequestChannelInfo,
+			// eslint-disable-next-line id-length
+			d: options,
+		});
+
+		try {
+			const iterator = AsyncEventEmitter.on(this, GatewayDispatchEvents.ChannelInfo, {
+				signal: controller.signal,
+			});
+
+			for await (const [{ data }] of iterator) {
+				if (data.guild_id !== options.guild_id) continue;
+
+				clearTimeout(timer);
+
+				return { channels: data.channels, guildId: data.guild_id };
+			}
+
+			throw new Error('Request timed out');
+		} catch (error) {
+			if (error instanceof Error && error.name === 'AbortError') {
+				throw new Error('Request timed out');
+			}
+
+			throw error;
+		} finally {
+			clearTimeout(timer);
+		}
 	}
 
 	/**
