@@ -175,10 +175,11 @@ export function calculateUserDefaultAvatarIndex(userId: Snowflake) {
  * Sleeps for a given amount of time.
  *
  * @param ms - The amount of time (in milliseconds) to sleep for
+ * @remarks Negative values resolve on the next timer tick instead of making Node.js emit a `TimeoutNegativeWarning`.
  */
 export async function sleep(ms: number): Promise<void> {
 	return new Promise<void>((resolve) => {
-		setTimeout(() => resolve(), ms);
+		setTimeout(() => resolve(), Math.max(0, ms));
 	});
 }
 
