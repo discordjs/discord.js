@@ -1,9 +1,8 @@
 import { AsyncQueue } from '@sapphire/async-queue';
-import type { RequestInit } from 'undici';
 import type { REST } from '../REST.js';
 import type { IHandler } from '../interfaces/Handler.js';
 import { RESTEvents } from '../utils/constants.js';
-import type { RateLimitData, ResponseLike, HandlerRequestData, RouteData } from '../utils/types.js';
+import type { RateLimitData, ResponseLike, HandlerRequestData, RouteData, RequestInitLike } from '../utils/types.js';
 import { hasSublimit, normalizeRateLimitOffset, onRateLimit, sleep } from '../utils/utils.js';
 import { handleErrors, incrementInvalidCount, makeNetworkRequest } from './Shared.js';
 
@@ -134,7 +133,7 @@ export class SequentialHandler implements IHandler {
 	public async queueRequest(
 		routeId: RouteData,
 		url: string,
-		options: RequestInit,
+		options: RequestInitLike,
 		requestData: HandlerRequestData,
 	): Promise<ResponseLike> {
 		let queue = this.#asyncQueue;
@@ -195,7 +194,7 @@ export class SequentialHandler implements IHandler {
 	private async runRequest(
 		routeId: RouteData,
 		url: string,
-		options: RequestInit,
+		options: RequestInitLike,
 		requestData: HandlerRequestData,
 		retries = 0,
 	): Promise<ResponseLike> {

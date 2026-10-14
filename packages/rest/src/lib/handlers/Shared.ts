@@ -1,12 +1,11 @@
 /* eslint-disable n/prefer-global/process */
 
-import type { RequestInit } from 'undici';
 import type { REST } from '../REST.js';
 import type { DiscordErrorData, OAuthErrorData } from '../errors/DiscordAPIError.js';
 import { DiscordAPIError } from '../errors/DiscordAPIError.js';
 import { HTTPError } from '../errors/HTTPError.js';
 import { RESTEvents } from '../utils/constants.js';
-import type { ResponseLike, HandlerRequestData, RouteData } from '../utils/types.js';
+import type { ResponseLike, HandlerRequestData, RouteData, RequestInitLike } from '../utils/types.js';
 import { normalizeRetryBackoff, normalizeTimeout, parseResponse, shouldRetry, sleep } from '../utils/utils.js';
 
 let authFalseWarningEmitted = false;
@@ -62,7 +61,7 @@ export async function makeNetworkRequest(
 	manager: REST,
 	routeId: RouteData,
 	url: string,
-	options: RequestInit,
+	options: RequestInitLike,
 	requestData: HandlerRequestData,
 	retries: number,
 ) {

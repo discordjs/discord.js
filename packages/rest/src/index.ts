@@ -1,9 +1,9 @@
 import { shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
 import { setDefaultStrategy } from './environment.js';
+import type { RESTOptions } from './shared.js';
 import { makeRequest } from './strategies/undiciRequest.js';
 
-// This cast is needed because of a mismatch between the version of undici-types provided by @types/node and undici
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-setDefaultStrategy(shouldUseGlobalFetchAndWebSocket() ? (fetch as typeof import('undici').fetch) : makeRequest);
+// Global fetch's bundled dispatcher types may differ from the installed undici types.
+setDefaultStrategy(shouldUseGlobalFetchAndWebSocket() ? (fetch as unknown as RESTOptions['makeRequest']) : makeRequest);
 
 export * from './shared.js';

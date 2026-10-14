@@ -2,7 +2,7 @@ import { Collection } from '@discordjs/collection';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import { filetypeinfo } from 'magic-bytes.js';
-import type { RequestInit, BodyInit, Dispatcher } from 'undici';
+import type { BodyInit, Dispatcher } from 'undici';
 import { v5 as uuidV5 } from 'uuid';
 import { CDN } from './CDN.js';
 import { BurstHandler } from './handlers/BurstHandler.js';
@@ -19,6 +19,7 @@ import {
 import { RequestMethod } from './utils/types.js';
 import type {
 	RESTOptions,
+	RequestInitLike,
 	ResponseLike,
 	RestEvents,
 	HashData,
@@ -293,7 +294,7 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 	 *
 	 * @param request - The request data
 	 */
-	private async resolveRequest(request: InternalRequest): Promise<{ fetchOptions: RequestInit; url: string }> {
+	private async resolveRequest(request: InternalRequest): Promise<{ fetchOptions: RequestInitLike; url: string }> {
 		const { options } = this;
 
 		let query = '';
@@ -336,7 +337,7 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 			request.fullRoute
 		}${query}`;
 
-		let finalBody: RequestInit['body'];
+		let finalBody: RequestInitLike['body'];
 		let additionalHeaders: Record<string, string> = {};
 
 		if (request.files?.length) {
@@ -384,8 +385,7 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 			}
 
 			// Set the final body to the form data.
-			// This cast is needed because of a mismatch between the version of undici-types provided by @types/node and undici
-			finalBody = formData as unknown as BodyInit;
+			finalBody = formData;
 
 			// eslint-disable-next-line no-eq-null, eqeqeq
 		} else if (request.body != null) {
@@ -401,14 +401,13 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 
 		const method = request.method.toUpperCase();
 
-		// The non null assertions in the following block are due to exactOptionalPropertyTypes, they have been tested to work with undefined
-		const fetchOptions: RequestInit = {
+		const fetchOptions: RequestInitLike = {
 			// Set body to null on get / head requests. This does not follow fetch spec (likely because it causes subtle bugs) but is aligned with what request was doing
-			body: ['GET', 'HEAD'].includes(method) ? null : finalBody!,
+			body: ['GET', 'HEAD'].includes(method) ? null : finalBody,
 			headers: { ...request.headers, ...additionalHeaders, ...headers } as Record<string, string>,
 			method,
 			// Prioritize setting an agent per request, use the agent for this instance otherwise.
-			dispatcher: request.dispatcher ?? this.agent ?? undefined!,
+			dispatcher: request.dispatcher ?? this.agent ?? undefined,
 		};
 
 		return { url, fetchOptions };

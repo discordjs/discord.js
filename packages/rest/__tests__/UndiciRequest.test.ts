@@ -4,7 +4,7 @@ import { MockAgent, setGlobalDispatcher, FormData as UndiciFormData } from 'undi
 import type { IncomingHttpHeaders } from 'undici/types/header.js';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor.js';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
-import { REST } from '../src/index.js';
+import { REST, RequestMethod } from '../src/index.js';
 import { buildHeaders, makeRequest, resolveBody } from '../src/strategies/undiciRequest.js';
 import { genPath } from './util.js';
 
@@ -83,7 +83,7 @@ test('resolveBody', async () => {
 		const fd = new globalThis.FormData();
 		fd.append('key', 'value');
 
-		const resolved = await resolveBody(fd as UndiciFormData);
+		const resolved = await resolveBody(fd);
 
 		expect(resolved).toBeInstanceOf(UndiciFormData);
 		expect([...(resolved as UndiciFormData).entries()]).toStrictEqual([['key', 'value']]);
@@ -116,6 +116,23 @@ test('buildHeaders', () => {
 	expect(headers.get('content-type')).toBe('application/json');
 	expect(headers.get('x-array-header')).toStrictEqual('a, b');
 	expect([...headers.keys()]).toStrictEqual(['content-type', 'x-array-header']);
+});
+
+test('request strategy accepts global FormData without a cast', async () => {
+	const formData = new FormData();
+	formData.append('message', 'hello');
+	formData.append('file', new Blob(['contents']), 'test.txt');
+
+	mockPool.intercept({ path: genPath('/formData'), method: 'POST' }).reply(200, { uploaded: true }, responseOptions);
+
+	const response = await makeRequest(`https://discord.com${genPath('/formData')}`, {
+		body: formData,
+		headers: {},
+		method: RequestMethod.Post,
+		dispatcher: mockAgent,
+	});
+
+	expect(await response.json()).toStrictEqual({ uploaded: true });
 });
 
 test('use passed undici request', async () => {

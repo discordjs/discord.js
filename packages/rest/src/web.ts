@@ -1,7 +1,7 @@
 import { setDefaultStrategy } from './environment.js';
+import type { RESTOptions } from './shared.js';
 
-// This cast is needed because of a mismatch between the version of undici-types provided by @types/node and undici
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-setDefaultStrategy(fetch as typeof import('undici').fetch);
+// Global fetch's bundled dispatcher types may differ from the installed undici types.
+setDefaultStrategy(fetch as unknown as RESTOptions['makeRequest']);
 
 export * from './shared.js';

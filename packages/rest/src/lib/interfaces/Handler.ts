@@ -1,5 +1,4 @@
-import type { RequestInit } from 'undici';
-import type { HandlerRequestData, RouteData, ResponseLike } from '../utils/types.js';
+import type { HandlerRequestData, RouteData, ResponseLike, RequestInitLike } from '../utils/types.js';
 
 export interface IHandler {
 	/**
@@ -21,7 +20,7 @@ export interface IHandler {
 	queueRequest(
 		routeId: RouteData,
 		url: string,
-		options: RequestInit,
+		options: RequestInitLike,
 		requestData: HandlerRequestData,
 	): Promise<ResponseLike>;
 }

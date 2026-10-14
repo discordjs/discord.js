@@ -1,8 +1,7 @@
-import type { RequestInit } from 'undici';
 import type { REST } from '../REST.js';
 import type { IHandler } from '../interfaces/Handler.js';
 import { RESTEvents } from '../utils/constants.js';
-import type { ResponseLike, HandlerRequestData, RouteData, RateLimitData } from '../utils/types.js';
+import type { ResponseLike, HandlerRequestData, RouteData, RateLimitData, RequestInitLike } from '../utils/types.js';
 import { normalizeRateLimitOffset, onRateLimit, sleep } from '../utils/utils.js';
 import { handleErrors, incrementInvalidCount, makeNetworkRequest } from './Shared.js';
 
@@ -53,7 +52,7 @@ export class BurstHandler implements IHandler {
 	public async queueRequest(
 		routeId: RouteData,
 		url: string,
-		options: RequestInit,
+		options: RequestInitLike,
 		requestData: HandlerRequestData,
 	): Promise<ResponseLike> {
 		return this.runRequest(routeId, url, options, requestData);
@@ -71,7 +70,7 @@ export class BurstHandler implements IHandler {
 	private async runRequest(
 		routeId: RouteData,
 		url: string,
-		options: RequestInit,
+		options: RequestInitLike,
 		requestData: HandlerRequestData,
 		retries = 0,
 	): Promise<ResponseLike> {

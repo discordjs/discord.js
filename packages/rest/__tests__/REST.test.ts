@@ -7,13 +7,14 @@ import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor.js';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
 import { REST } from '../src/index.js';
+import type { RESTOptions } from '../src/index.js';
 import { genPath } from './util.js';
 
 const newSnowflake: Snowflake = DiscordSnowflake.generate().toString();
 
 const api = new REST().setToken('A-Very-Fake-Token');
 
-const makeRequestMock = vitest.fn(fetch);
+const makeRequestMock = vitest.fn(fetch as RESTOptions['makeRequest']);
 
 const fetchApi = new REST({ makeRequest: makeRequestMock }).setToken('A-Very-Fake-Token');
 

@@ -2,7 +2,7 @@ import type { Readable } from 'node:stream';
 import type { ReadableStream } from 'node:stream/web';
 import type { Collection } from '@discordjs/collection';
 import type { Awaitable, RawFile } from '@discordjs/util';
-import type { Agent, Dispatcher, Headers, RequestInit, BodyInit, Response } from 'undici';
+import type { Agent, Dispatcher, Headers, BodyInit, Response } from 'undici';
 import type { IHandler } from '../interfaces/Handler.js';
 
 export interface RestEvents {
@@ -85,7 +85,7 @@ export interface RESTOptions {
 	 * The method called to perform the actual HTTP request given a url and web `fetch` options
 	 * For example, to use global fetch, simply provide `makeRequest: fetch`
 	 */
-	makeRequest(url: string, init: RequestInit): Promise<ResponseLike>;
+	makeRequest(url: string, init: RequestInitLike): Promise<ResponseLike>;
 	/**
 	 * The media proxy path
 	 *
@@ -247,7 +247,7 @@ export interface APIRequest {
 	/**
 	 * Additional HTTP options for this request
 	 */
-	options: RequestInit;
+	options: RequestInitLike;
 	/**
 	 * The full path used to make the request
 	 */
@@ -260,6 +260,33 @@ export interface APIRequest {
 	 * The API route identifying the ratelimit for this request
 	 */
 	route: string;
+}
+
+/**
+ * The HTTP request options supplied to a request strategy.
+ */
+export interface RequestInitLike {
+	/**
+	 * The serialized body, or a body supplied with {@link RequestData.passThroughBody}.
+	 * Request strategies must handle the global `FormData` used for file uploads.
+	 */
+	body?: BodyInit | globalThis.FormData | undefined;
+	/**
+	 * The dispatcher selected for this request.
+	 */
+	dispatcher?: Dispatcher | undefined;
+	/**
+	 * The headers prepared for this request.
+	 */
+	headers: Record<string, string>;
+	/**
+	 * The uppercase HTTP method.
+	 */
+	method: string;
+	/**
+	 * The signal used to abort the HTTP request.
+	 */
+	signal?: AbortSignal | undefined;
 }
 
 export interface ResponseLike extends Pick<

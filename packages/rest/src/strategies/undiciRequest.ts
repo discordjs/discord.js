@@ -1,15 +1,15 @@
 import { Buffer } from 'node:buffer';
 import { STATUS_CODES } from 'node:http';
 import { types } from 'node:util';
-import { type RequestInit, request, Headers, FormData as UndiciFormData, Agent } from 'undici';
+import { request, Headers, FormData as UndiciFormData, Agent } from 'undici';
 import type { IncomingHttpHeaders } from 'undici/types/header.js';
-import type { ResponseLike } from '../shared.js';
+import type { RequestInitLike, ResponseLike } from '../shared.js';
 
 export type RequestOptions = Exclude<Parameters<typeof request>[1], undefined>;
 
 let localAgent: Agent | null = null;
 
-export async function makeRequest(url: string, init: RequestInit): Promise<ResponseLike> {
+export async function makeRequest(url: string, init: RequestInitLike): Promise<ResponseLike> {
 	// The cast is necessary because `headers` and `method` are narrower types in `undici.request`
 	// our request path guarantees they are of acceptable type for `undici.request`
 	const options = {
@@ -47,7 +47,7 @@ export async function makeRequest(url: string, init: RequestInit): Promise<Respo
 	};
 }
 
-export async function resolveBody(body: RequestInit['body']): Promise<Exclude<RequestOptions['body'], undefined>> {
+export async function resolveBody(body: RequestInitLike['body']): Promise<Exclude<RequestOptions['body'], undefined>> {
 	// eslint-disable-next-line no-eq-null, eqeqeq
 	if (body == null) {
 		return null;
