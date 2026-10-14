@@ -41,38 +41,37 @@ const poll: APIPoll = {
 };
 
 describe('Poll structure and substructures', () => {
-	const data = poll;
 	let instance: Poll;
 
 	beforeEach(() => {
-		instance = new Poll(data);
+		instance = new Poll(poll);
 	});
 
 	test('correct value for all getters', () => {
-		expect(instance.layoutType).toBe(data.layout_type);
-		expect(instance.allowMultiselect).toBe(data.allow_multiselect);
+		expect(instance.layoutType).toBe(poll.layout_type);
+		expect(instance.allowMultiselect).toBe(poll.allow_multiselect);
 
-		const expiresTimestamp = Date.parse(data.expiry!);
+		const expiresTimestamp = Date.parse(poll.expiry!);
 		expect(instance.expiresTimestamp).toBe(expiresTimestamp);
 		expect(instance.expiresDate!.valueOf()).toEqual(expiresTimestamp);
 	});
 
 	test('toJSON() returns expected values', () => {
-		expect(instance.toJSON()).toStrictEqual(data);
+		expect(instance.toJSON()).toStrictEqual(poll);
 	});
 
 	test('returns null when no expiry provided', () => {
-		const instanceWithoutExpiry = new Poll({ ...data, expiry: null });
+		const instanceWithoutExpiry = new Poll({ ...poll, expiry: null });
 
 		expect(instanceWithoutExpiry.expiresDate).toBeNull();
 		expect(instanceWithoutExpiry.expiresTimestamp).toBeNull();
 
 		expect(instanceWithoutExpiry.toJSON()).toStrictEqual({
-			question: data.question,
-			answers: data.answers,
-			results: data.results,
-			allow_multiselect: data.allow_multiselect,
-			layout_type: data.layout_type,
+			question: poll.question,
+			answers: poll.answers,
+			results: poll.results,
+			allow_multiselect: poll.allow_multiselect,
+			layout_type: poll.layout_type,
 		});
 	});
 
@@ -83,24 +82,23 @@ describe('Poll structure and substructures', () => {
 
 		expect(patched.allowMultiselect).toEqual(false);
 
-		expect(patched.toJSON()).toEqual({ ...data, allow_multiselect: false });
+		expect(patched.toJSON()).toEqual({ ...poll, allow_multiselect: false });
 		expect(patched).toBe(instance);
 	});
 
 	describe('PollAnswer substructure', () => {
-		const data = answer;
 		let instance: PollAnswer;
 
 		beforeEach(() => {
-			instance = new PollAnswer(data);
+			instance = new PollAnswer(answer);
 		});
 
 		test('correct value for all getters', () => {
-			expect(instance.answerId).toBe(data.answer_id);
+			expect(instance.answerId).toBe(answer.answer_id);
 		});
 
 		test('toJSON() returns expected values', () => {
-			expect(instance.toJSON()).toStrictEqual(data);
+			expect(instance.toJSON()).toStrictEqual(answer);
 		});
 
 		test('patching the structure works in-place', () => {
@@ -112,25 +110,24 @@ describe('Poll structure and substructures', () => {
 
 			expect(patched.answerId).toEqual(answer_id);
 
-			expect(patched.toJSON()).toEqual({ ...data, answer_id });
+			expect(patched.toJSON()).toEqual({ ...answer, answer_id });
 			expect(patched).toBe(instance);
 		});
 	});
 
 	describe('PollMedia substructure', () => {
-		const data = media;
 		let instance: PollMedia;
 
 		beforeEach(() => {
-			instance = new PollMedia(data);
+			instance = new PollMedia(media);
 		});
 
 		test('correct value for all getters', () => {
-			expect(instance.text).toBe(data.text);
+			expect(instance.text).toBe(media.text);
 		});
 
 		test('toJSON() returns expected values', () => {
-			expect(instance.toJSON()).toStrictEqual(data);
+			expect(instance.toJSON()).toStrictEqual(media);
 		});
 
 		test('patching the structure works in-place', () => {
@@ -142,25 +139,24 @@ describe('Poll structure and substructures', () => {
 
 			expect(patched.text).toEqual(text);
 
-			expect(patched.toJSON()).toEqual({ ...data, text });
+			expect(patched.toJSON()).toEqual({ ...media, text });
 			expect(patched).toBe(instance);
 		});
 	});
 
 	describe('PollResults substructure', () => {
-		const data = results;
 		let instance: PollResults;
 
 		beforeEach(() => {
-			instance = new PollResults(data);
+			instance = new PollResults(results);
 		});
 
 		test('correct value for all getters', () => {
-			expect(instance.isFinalized).toBe(data.is_finalized);
+			expect(instance.isFinalized).toBe(results.is_finalized);
 		});
 
 		test('toJSON() returns expected values', () => {
-			expect(instance.toJSON()).toStrictEqual(data);
+			expect(instance.toJSON()).toStrictEqual(results);
 		});
 
 		test('patching the structure works in-place', () => {
@@ -170,27 +166,26 @@ describe('Poll structure and substructures', () => {
 
 			expect(patched.isFinalized).toEqual(true);
 
-			expect(patched.toJSON()).toEqual({ ...data, is_finalized: true });
+			expect(patched.toJSON()).toEqual({ ...results, is_finalized: true });
 			expect(patched).toBe(instance);
 		});
 	});
 
 	describe('PollAnswerCount substructure', () => {
-		const data = answerCount;
 		let instance: PollAnswerCount;
 
 		beforeEach(() => {
-			instance = new PollAnswerCount(data);
+			instance = new PollAnswerCount(answerCount);
 		});
 
 		test('correct value for all getters', () => {
-			expect(instance.id).toBe(data.id);
-			expect(instance.count).toBe(data.count);
-			expect(instance.meVoted).toBe(data.me_voted);
+			expect(instance.id).toBe(answerCount.id);
+			expect(instance.count).toBe(answerCount.count);
+			expect(instance.meVoted).toBe(answerCount.me_voted);
 		});
 
 		test('toJSON() returns expected values', () => {
-			expect(instance.toJSON()).toStrictEqual(data);
+			expect(instance.toJSON()).toStrictEqual(answerCount);
 		});
 
 		test('patching the structure works in-place', () => {
@@ -205,7 +200,7 @@ describe('Poll structure and substructures', () => {
 			expect(patched.count).toEqual(count);
 			expect(patched.meVoted).toEqual(me_voted);
 
-			expect(patched.toJSON()).toEqual({ ...data, count, me_voted });
+			expect(patched.toJSON()).toEqual({ ...answerCount, count, me_voted });
 		});
 	});
 });
