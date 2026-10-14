@@ -1,14 +1,12 @@
-'use strict';
-
-const { createComponent } = require('../util/Components.js');
-const { Component } = require('./Component.js');
+import { createComponent } from '../util/Components.js';
+import { Component } from './Component.js';
 
 /**
  * Represents a label component
  *
  * @extends {Component}
  */
-class LabelComponent extends Component {
+export class LabelComponent extends Component {
   constructor({ component, ...data }) {
     super(data);
 
@@ -50,5 +48,3 @@ class LabelComponent extends Component {
     return { ...this.data, component: this.component.toJSON() };
   }
 }
-
-exports.LabelComponent = LabelComponent;

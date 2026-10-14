@@ -1,13 +1,11 @@
-'use strict';
-
-const { Component } = require('./Component.js');
+import { Component } from './Component.js';
 
 /**
  * Represents a select menu component
  *
  * @extends {Component}
  */
-class BaseSelectMenuComponent extends Component {
+export class BaseSelectMenuComponent extends Component {
   /**
    * The placeholder for this select menu
    *
@@ -58,5 +56,3 @@ class BaseSelectMenuComponent extends Component {
     return this.data.disabled ?? false;
   }
 }
-
-exports.BaseSelectMenuComponent = BaseSelectMenuComponent;

@@ -1,16 +1,14 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Base } = require('./Base.js');
-const { Sticker } = require('./Sticker.js');
+import { Collection } from '@discordjs/collection';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { Base } from './Base.js';
+import { Sticker } from './Sticker.js';
 
 /**
  * Represents a pack of standard stickers.
  *
  * @extends {Base}
  */
-class StickerPack extends Base {
+export class StickerPack extends Base {
   constructor(client, pack) {
     super(client);
     /**
@@ -103,5 +101,3 @@ class StickerPack extends Base {
     return this.bannerId && this.client.rest.cdn.stickerPackBanner(this.bannerId, options);
   }
 }
-
-exports.StickerPack = StickerPack;

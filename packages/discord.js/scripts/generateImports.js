@@ -1,27 +1,30 @@
 import { readdir, writeFile } from 'node:fs/promises';
 
 async function writeWebsocketHandlerImports() {
-  const lines = ["'use strict';\n", 'const PacketHandlers = Object.fromEntries(['];
+  const imports = [];
+  const lines = ['', 'export const PacketHandlers = {'];
 
   const handlersDirectory = new URL('../src/client/websocket/handlers', import.meta.url);
 
   for (const file of (await readdir(handlersDirectory)).sort()) {
     if (file === 'index.js') continue;
 
-    lines.push(`  ['${file.slice(0, -3)}', require('./${file}')],`);
+    imports.push(`import ${file.slice(0, -3)} from './${file}';`);
+    lines.push(`  ${file.slice(0, -3)},`);
   }
 
-  lines.push(']);\n\nexports.PacketHandlers = PacketHandlers;\n');
+  lines.push('};\n');
 
   const outputFile = new URL('../src/client/websocket/handlers/index.js', import.meta.url);
 
-  await writeFile(outputFile, lines.join('\n'));
+  await writeFile(outputFile, [...imports, ...lines].join('\n'));
 }
 
 async function writeClientActionImports() {
+  const imports = [];
   const lines = [
-    "'use strict';\n",
-    'class ActionsManager {',
+    '',
+    'export class ActionsManager {',
     '  // These symbols represent fully built data that we inject at times when calling actions manually.',
     '  // Action#getUser, for example, will return the injected data (which is assumed to be a built structure)',
     '  // instead of trying to make it from provided data',
@@ -38,7 +41,8 @@ async function writeClientActionImports() {
 
     const actionName = file.slice(0, -3);
 
-    lines.push(`    this.${actionName} = this.load(require('./${file}').${actionName}Action);`);
+    imports.push(`import { ${actionName}Action } from './${file}';`);
+    lines.push(`    this.${actionName} = this.load(${actionName}Action);`);
   }
 
   lines.push('  }\n');
@@ -46,11 +50,10 @@ async function writeClientActionImports() {
   lines.push('    return new Action(this.client);');
   lines.push('  }');
   lines.push('}\n');
-  lines.push('exports.ActionsManager = ActionsManager;\n');
 
   const outputFile = new URL('../src/client/actions/ActionsManager.js', import.meta.url);
 
-  await writeFile(outputFile, lines.join('\n'));
+  await writeFile(outputFile, [...imports, ...lines].join('\n'));
 }
 
 writeWebsocketHandlerImports();

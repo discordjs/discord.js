@@ -1,12 +1,10 @@
-'use strict';
-
-const process = require('node:process');
-const { Collection } = require('@discordjs/collection');
-const { OverwriteType, Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { PermissionOverwrites } = require('../structures/PermissionOverwrites.js');
-const { Role } = require('../structures/Role.js');
-const { CachedManager } = require('./CachedManager.js');
+import process from 'node:process';
+import { Collection } from '@discordjs/collection';
+import { OverwriteType, Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { PermissionOverwrites } from '../structures/PermissionOverwrites.js';
+import { Role } from '../structures/Role.js';
+import { CachedManager } from './CachedManager.js';
 
 let cacheWarningEmitted = false;
 
@@ -15,7 +13,7 @@ let cacheWarningEmitted = false;
  *
  * @extends {CachedManager}
  */
-class PermissionOverwriteManager extends CachedManager {
+export class PermissionOverwriteManager extends CachedManager {
   constructor(channel, iterable) {
     super(channel.client, PermissionOverwrites);
     if (!cacheWarningEmitted && this._cache.constructor.name !== 'Collection') {
@@ -173,5 +171,3 @@ class PermissionOverwriteManager extends CachedManager {
     return this.channel;
   }
 }
-
-exports.PermissionOverwriteManager = PermissionOverwriteManager;

@@ -1,6 +1,4 @@
-'use strict';
-
-const { BaseGuild } = require('./BaseGuild.js');
+import { BaseGuild } from './BaseGuild.js';
 
 /**
  * Bundles common attributes and methods between {@link Guild} and {@link InviteGuild}
@@ -8,7 +6,7 @@ const { BaseGuild } = require('./BaseGuild.js');
  * @extends {BaseGuild}
  * @abstract
  */
-class AnonymousGuild extends BaseGuild {
+export class AnonymousGuild extends BaseGuild {
   constructor(client, data, immediatePatch = true) {
     super(client, data);
     if (immediatePatch) this._patch(data);
@@ -103,5 +101,3 @@ class AnonymousGuild extends BaseGuild {
     return this.splash && this.client.rest.cdn.splash(this.id, this.splash, options);
   }
 }
-
-exports.AnonymousGuild = AnonymousGuild;

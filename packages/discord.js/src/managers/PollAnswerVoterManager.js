@@ -1,17 +1,15 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v10');
-const { User } = require('../structures/User.js');
-const { CachedManager } = require('./CachedManager.js');
+import { Collection } from '@discordjs/collection';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v10';
+import { User } from '../structures/User.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for users who voted on a poll and stores their cache.
  *
  * @extends {CachedManager}
  */
-class PollAnswerVoterManager extends CachedManager {
+export class PollAnswerVoterManager extends CachedManager {
   constructor(answer) {
     super(answer.client, User);
 
@@ -58,5 +56,3 @@ class PollAnswerVoterManager extends CachedManager {
     }, new Collection());
   }
 }
-
-exports.PollAnswerVoterManager = PollAnswerVoterManager;

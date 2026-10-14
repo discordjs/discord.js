@@ -1,14 +1,12 @@
-'use strict';
-
-const { createComponent } = require('../util/Components.js');
-const { Component } = require('./Component.js');
+import { createComponent } from '../util/Components.js';
+import { Component } from './Component.js';
 
 /**
  * Represents a section component
  *
  * @extends {Component}
  */
-class SectionComponent extends Component {
+export class SectionComponent extends Component {
   constructor({ accessory, components, ...data }) {
     super(data);
 
@@ -42,5 +40,3 @@ class SectionComponent extends Component {
     };
   }
 }
-
-exports.SectionComponent = SectionComponent;

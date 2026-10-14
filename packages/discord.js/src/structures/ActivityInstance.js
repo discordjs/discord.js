@@ -1,14 +1,12 @@
-'use strict';
-
-const { ActivityLocation } = require('./ActivityLocation.js');
-const { Base } = require('./Base.js');
+import { ActivityLocation } from './ActivityLocation.js';
+import { Base } from './Base.js';
 
 /**
  * Represents an activity instance.
  *
  * @extends {Base}
  */
-class ActivityInstance extends Base {
+export class ActivityInstance extends Base {
   constructor(client, data) {
     super(client);
 
@@ -48,5 +46,3 @@ class ActivityInstance extends Base {
     this.users = data.users;
   }
 }
-
-exports.ActivityInstance = ActivityInstance;

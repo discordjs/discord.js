@@ -1,22 +1,20 @@
-'use strict';
-
-const process = require('node:process');
-const { setTimeout, clearTimeout } = require('node:timers');
-const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { GatewayOpcodes, Routes, RouteBases } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { ShardClientUtil } = require('../sharding/ShardClientUtil.js');
-const { Guild } = require('../structures/Guild.js');
-const { GuildChannel } = require('../structures/GuildChannel.js');
-const { GuildEmoji } = require('../structures/GuildEmoji.js');
-const { GuildInvite } = require('../structures/GuildInvite.js');
-const { GuildMember } = require('../structures/GuildMember.js');
-const { OAuth2Guild } = require('../structures/OAuth2Guild.js');
-const { Role } = require('../structures/Role.js');
-const { Events } = require('../util/Events.js');
-const { _transformAPIIncidentsData } = require('../util/Transformers.js');
-const { CachedManager } = require('./CachedManager.js');
+import process from 'node:process';
+import { setTimeout, clearTimeout } from 'node:timers';
+import { Collection } from '@discordjs/collection';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { GatewayOpcodes, Routes, RouteBases } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { ShardClientUtil } from '../sharding/ShardClientUtil.js';
+import { Guild } from '../structures/Guild.js';
+import { GuildChannel } from '../structures/GuildChannel.js';
+import { GuildEmoji } from '../structures/GuildEmoji.js';
+import { GuildInvite } from '../structures/GuildInvite.js';
+import { GuildMember } from '../structures/GuildMember.js';
+import { OAuth2Guild } from '../structures/OAuth2Guild.js';
+import { Role } from '../structures/Role.js';
+import { Events } from '../util/Events.js';
+import { _transformAPIIncidentsData } from '../util/Transformers.js';
+import { CachedManager } from './CachedManager.js';
 
 let cacheWarningEmitted = false;
 
@@ -25,7 +23,7 @@ let cacheWarningEmitted = false;
  *
  * @extends {CachedManager}
  */
-class GuildManager extends CachedManager {
+export class GuildManager extends CachedManager {
   constructor(client, iterable) {
     super(client, Guild, iterable);
     if (!cacheWarningEmitted && this._cache.constructor.name !== 'Collection') {
@@ -264,5 +262,3 @@ class GuildManager extends CachedManager {
     }`;
   }
 }
-
-exports.GuildManager = GuildManager;

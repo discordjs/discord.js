@@ -1,6 +1,13 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig.json",
-	"extends": "../../tsconfig.json",
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"rootDirs": ["src", "bin"],
+		"rootDir": null,
+		"declaration": false,
+		"declarationMap": false,
+		"sourceMap": false
+	},
 	"include": ["src/**/*.ts", "src/**/*.js", "src/**/*.cjs", "src/**/*.mjs", "bin"],
 	"exclude": ["node_modules"]
 }

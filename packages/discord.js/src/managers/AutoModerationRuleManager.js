@@ -1,16 +1,14 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v10');
-const { AutoModerationRule } = require('../structures/AutoModerationRule.js');
-const { CachedManager } = require('./CachedManager.js');
+import { Collection } from '@discordjs/collection';
+import { Routes } from 'discord-api-types/v10';
+import { AutoModerationRule } from '../structures/AutoModerationRule.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for auto moderation rules and stores their cache.
  *
  * @extends {CachedManager}
  */
-class AutoModerationRuleManager extends CachedManager {
+export class AutoModerationRuleManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, AutoModerationRule, iterable);
 
@@ -306,5 +304,3 @@ class AutoModerationRuleManager extends CachedManager {
     await this.client.rest.delete(Routes.guildAutoModerationRule(this.guild.id, autoModerationRuleId), { reason });
   }
 }
-
-exports.AutoModerationRuleManager = AutoModerationRuleManager;

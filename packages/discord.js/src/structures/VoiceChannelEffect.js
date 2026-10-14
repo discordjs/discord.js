@@ -1,11 +1,9 @@
-'use strict';
-
-const { Emoji } = require('./Emoji.js');
+import { Emoji } from './Emoji.js';
 
 /**
  * Represents an effect used in a {@link VoiceChannel}.
  */
-class VoiceChannelEffect {
+export class VoiceChannelEffect {
   constructor(data, guild) {
     /**
      * The guild where the effect was sent from.
@@ -84,5 +82,3 @@ class VoiceChannelEffect {
     return this.guild.soundboardSounds.cache.get(this.soundId) ?? null;
   }
 }
-
-exports.VoiceChannelEffect = VoiceChannelEffect;

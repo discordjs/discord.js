@@ -1,14 +1,12 @@
-'use strict';
-
-const { AnonymousGuild } = require('./AnonymousGuild.js');
-const { WelcomeScreen } = require('./WelcomeScreen.js');
+import { AnonymousGuild } from './AnonymousGuild.js';
+import { WelcomeScreen } from './WelcomeScreen.js';
 
 /**
  * Represents a guild received from an invite, includes welcome screen data if available.
  *
  * @extends {AnonymousGuild}
  */
-class InviteGuild extends AnonymousGuild {
+export class InviteGuild extends AnonymousGuild {
   constructor(client, data) {
     super(client, data);
 
@@ -20,5 +18,3 @@ class InviteGuild extends AnonymousGuild {
     this.welcomeScreen = data.welcome_screen === undefined ? null : new WelcomeScreen(this, data.welcome_screen);
   }
 }
-
-exports.InviteGuild = InviteGuild;

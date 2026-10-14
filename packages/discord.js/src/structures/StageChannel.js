@@ -1,13 +1,11 @@
-'use strict';
-
-const { BaseGuildVoiceChannel } = require('./BaseGuildVoiceChannel.js');
+import { BaseGuildVoiceChannel } from './BaseGuildVoiceChannel.js';
 
 /**
  * Represents a guild stage channel on Discord.
  *
  * @extends {BaseGuildVoiceChannel}
  */
-class StageChannel extends BaseGuildVoiceChannel {
+export class StageChannel extends BaseGuildVoiceChannel {
   _patch(data) {
     super._patch(data);
 
@@ -117,5 +115,3 @@ class StageChannel extends BaseGuildVoiceChannel {
  * @param {string} [reason] Reason for changing the camera video quality mode.
  * @returns {Promise<StageChannel>}
  */
-
-exports.StageChannel = StageChannel;

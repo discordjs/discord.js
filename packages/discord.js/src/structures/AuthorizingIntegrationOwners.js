@@ -1,14 +1,12 @@
-'use strict';
-
-const { ApplicationIntegrationType } = require('discord-api-types/v10');
-const { Base } = require('./Base.js');
+import { ApplicationIntegrationType } from 'discord-api-types/v10';
+import { Base } from './Base.js';
 
 /**
  * Represents the owners of an authorizing integration.
  *
  * @extends {Base}
  */
-class AuthorizingIntegrationOwners extends Base {
+export class AuthorizingIntegrationOwners extends Base {
   constructor(client, data) {
     super(client);
 
@@ -60,5 +58,3 @@ class AuthorizingIntegrationOwners extends Base {
     return this.data;
   }
 }
-
-exports.AuthorizingIntegrationOwners = AuthorizingIntegrationOwners;

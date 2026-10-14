@@ -1,15 +1,13 @@
-'use strict';
-
-const { roleMention } = require('@discordjs/formatters');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Base } = require('./Base.js');
+import { roleMention } from '@discordjs/formatters';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { Base } from './Base.js';
 
 /**
  * The base role class.
  *
  * @extends {Base}
  */
-class BaseRole extends Base {
+export class BaseRole extends Base {
   constructor(client, data) {
     super(client);
 
@@ -139,5 +137,3 @@ class BaseRole extends Base {
     return super.toJSON({ createdTimestamp: true });
   }
 }
-
-exports.BaseRole = BaseRole;

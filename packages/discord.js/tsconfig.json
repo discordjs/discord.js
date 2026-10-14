@@ -1,12 +1,16 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig.json",
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     // Output Formatting
     "pretty": false,
 
     // Completeness
     "skipDefaultLibCheck": true,
+
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "rootDir": "./typings",
 
     "types": [
       "@discordjs/builders",
@@ -16,7 +20,6 @@
       "@discordjs/ws",
       "discord-api-types/v10",
       "node",
-      "tsd",
       "undici",
       "@sapphire/snowflake"
     ]
