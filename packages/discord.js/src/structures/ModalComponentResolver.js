@@ -3,17 +3,16 @@
 const { Collection } = require('@discordjs/collection');
 const { ComponentType } = require('discord-api-types/v10');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { isEmptyComponentValue } = require('../util/Util.js');
 
 /**
- * Narrows an empty component property to null.
+ * Returns null for an empty collection.
  *
- * @param {*} value The property to narrow
- * @returns {*}
+ * @param {Collection} collection The collection to check
+ * @returns {?Collection}
  * @ignore
  */
-function nullIfEmpty(value) {
-  return isEmptyComponentValue(value) ? null : value;
+function nullIfEmpty(collection) {
+  return collection.size === 0 ? null : collection;
 }
 
 /**
@@ -105,11 +104,43 @@ class ModalComponentResolver {
         component.type,
         allowedTypes.join(', '),
       );
-    } else if (required && properties.every(prop => isEmptyComponentValue(component[prop]))) {
+    } else if (required && properties.every(prop => component[prop] === null || component[prop] === undefined)) {
       throw new DiscordjsTypeError(ErrorCodes.ModalSubmitInteractionComponentEmpty, customId, component.type);
     }
 
     return component;
+  }
+
+  /**
+   * Gets the ids picked in a component, after checking its type.
+   *
+   * @param {string} customId The custom id of the component.
+   * @param {ComponentType[]} allowedTypes The allowed types of the component.
+   * @param {boolean} [required=false] Whether to throw an error if nothing was picked.
+   * @returns {Snowflake[]}
+   * @private
+   */
+  _getPickedIds(customId, allowedTypes, required = false) {
+    const { values, type } = this._getTypedComponent(customId, allowedTypes);
+    if (required && values.length === 0) {
+      throw new DiscordjsTypeError(ErrorCodes.ModalSubmitInteractionComponentEmpty, customId, type);
+    }
+
+    return values;
+  }
+
+  /**
+   * Gets the resolved entries for the given ids.
+   *
+   * @param {string} key The key of the resolved data to read.
+   * @param {Snowflake[]} ids The ids to keep.
+   * @returns {Collection<Snowflake, *>}
+   * @private
+   */
+  _pickResolved(key, ids) {
+    // discord leaves a key out of resolved when nothing of that kind was picked anywhere in the modal
+    const all = this.resolved[key] ?? new Collection();
+    return all.filter((_, id) => ids.includes(id));
   }
 
   /**
@@ -140,13 +171,8 @@ class ModalComponentResolver {
    * @returns {?Collection<Snowflake, User>} The selected users, or null if none were selected and not required
    */
   getSelectedUsers(customId, required = false) {
-    const component = this._getTypedComponent(
-      customId,
-      [ComponentType.UserSelect, ComponentType.MentionableSelect],
-      ['users'],
-      required,
-    );
-    return nullIfEmpty(component.users);
+    const ids = this._getPickedIds(customId, [ComponentType.UserSelect, ComponentType.MentionableSelect], required);
+    return nullIfEmpty(this._pickResolved('users', ids));
   }
 
   /**
@@ -157,13 +183,8 @@ class ModalComponentResolver {
    * @returns {?Collection<Snowflake, Role|APIRole>} The selected roles, or null if none were selected and not required
    */
   getSelectedRoles(customId, required = false) {
-    const component = this._getTypedComponent(
-      customId,
-      [ComponentType.RoleSelect, ComponentType.MentionableSelect],
-      ['roles'],
-      required,
-    );
-    return nullIfEmpty(component.roles);
+    const ids = this._getPickedIds(customId, [ComponentType.RoleSelect, ComponentType.MentionableSelect], required);
+    return nullIfEmpty(this._pickResolved('roles', ids));
   }
 
   /**
@@ -175,9 +196,9 @@ class ModalComponentResolver {
    * @returns {?Collection<Snowflake, GuildChannel|ThreadChannel|APIChannel>} The selected channels, or null if none were selected and not required
    */
   getSelectedChannels(customId, required = false, channelTypes = []) {
-    const component = this._getTypedComponent(customId, [ComponentType.ChannelSelect], ['channels'], required);
-    const channels = component.channels;
-    if (channels && channelTypes.length > 0) {
+    const ids = this._getPickedIds(customId, [ComponentType.ChannelSelect], required);
+    const channels = this._pickResolved('channels', ids);
+    if (channelTypes.length > 0) {
       for (const channel of channels.values()) {
         if (!channelTypes.includes(channel.type)) {
           throw new DiscordjsTypeError(
@@ -200,13 +221,8 @@ class ModalComponentResolver {
    * @returns {?Collection<Snowflake, GuildMember|APIGuildMember>} The selected members, or null if none were selected or the users were not present in the guild
    */
   getSelectedMembers(customId) {
-    const component = this._getTypedComponent(
-      customId,
-      [ComponentType.UserSelect, ComponentType.MentionableSelect],
-      ['members'],
-      false,
-    );
-    return nullIfEmpty(component.members);
+    const ids = this._getPickedIds(customId, [ComponentType.UserSelect, ComponentType.MentionableSelect]);
+    return nullIfEmpty(this._pickResolved('members', ids));
   }
 
   /**
@@ -217,22 +233,14 @@ class ModalComponentResolver {
    * @returns {?ModalSelectedMentionables} The selected mentionables, or null if none were selected and not required
    */
   getSelectedMentionables(customId, required = false) {
-    const component = this._getTypedComponent(
-      customId,
-      [ComponentType.MentionableSelect],
-      ['users', 'members', 'roles'],
-      required,
-    );
+    const ids = this._getPickedIds(customId, [ComponentType.MentionableSelect], required);
+    const users = this._pickResolved('users', ids);
+    const members = this._pickResolved('members', ids);
+    const roles = this._pickResolved('roles', ids);
 
-    if (
-      isEmptyComponentValue(component.users) &&
-      isEmptyComponentValue(component.members) &&
-      isEmptyComponentValue(component.roles)
-    ) {
-      return null;
-    }
+    if (users.size === 0 && members.size === 0 && roles.size === 0) return null;
 
-    return { users: component.users, members: component.members, roles: component.roles };
+    return { users, members, roles };
   }
 
   /**
@@ -243,9 +251,8 @@ class ModalComponentResolver {
    * @returns {?Collection<Snowflake, Attachment>} The uploaded files, or null if none were uploaded and not required
    */
   getUploadedFiles(customId, required = false) {
-    return nullIfEmpty(
-      this._getTypedComponent(customId, [ComponentType.FileUpload], ['attachments'], required).attachments,
-    );
+    const ids = this._getPickedIds(customId, [ComponentType.FileUpload], required);
+    return nullIfEmpty(this._pickResolved('attachments', ids));
   }
 
   /**

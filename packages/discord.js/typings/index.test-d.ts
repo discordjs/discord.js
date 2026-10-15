@@ -97,7 +97,6 @@ import type {
   ChannelMention,
   ChannelSelectMenuComponent,
   ChannelSelectMenuInteraction,
-  ChannelSelectModalData,
   ChatInputApplicationCommandData,
   ChatInputCommandInteraction,
   ClientApplication,
@@ -154,7 +153,6 @@ import type {
   MediaGalleryItemData,
   MentionableSelectMenuComponent,
   MentionableSelectMenuInteraction,
-  MentionableSelectModalData,
   Message,
   MessageActionRowComponent,
   MessageActionRowComponentData,
@@ -191,7 +189,6 @@ import type {
   RoleManager,
   RoleSelectMenuComponent,
   RoleSelectMenuInteraction,
-  RoleSelectModalData,
   SectionComponentData,
   SelectMenuInteraction,
   SendableChannels,
@@ -209,7 +206,6 @@ import type {
   StringSelectMenuComponent,
   StringSelectMenuComponentData,
   StringSelectMenuInteraction,
-  StringSelectModalData,
   TextBasedChannel,
   TextBasedChannelTypes,
   ThreadManager,
@@ -222,7 +218,6 @@ import type {
   ThreadOnlyChannel,
   Typing,
   User,
-  UserSelectModalData,
   VoiceBasedChannel,
   VoiceChannel,
   Invite,
@@ -3124,54 +3119,35 @@ declare const authorizingIntegrationOwners: AuthorizingIntegrationOwners;
 declare const modalComponent: ModalData;
 {
   if (modalComponent.type === ComponentType.UserSelect) {
-    expectType<ReadonlyCollection<Snowflake, User>>(modalComponent.users);
-    notPropertyOf(modalComponent, 'roles');
-    notPropertyOf(modalComponent, 'channels');
-  }
-
-  if (modalComponent.type === ComponentType.RoleSelect) {
+    expectType<readonly string[]>(modalComponent.values);
     notPropertyOf(modalComponent, 'users');
     notPropertyOf(modalComponent, 'members');
   }
 
-  if (modalComponent.type === ComponentType.ChannelSelect) {
-    notPropertyOf(modalComponent, 'users');
-  }
-
   if (modalComponent.type === ComponentType.MentionableSelect) {
-    expectType<ReadonlyCollection<Snowflake, User>>(modalComponent.users);
+    notPropertyOf(modalComponent, 'roles');
+  }
+
+  if (modalComponent.type === ComponentType.ChannelSelect) {
     notPropertyOf(modalComponent, 'channels');
   }
 
-  if (modalComponent.type === ComponentType.StringSelect) {
-    expectType<readonly string[]>(modalComponent.values);
-    notPropertyOf(modalComponent, 'users');
-    notPropertyOf(modalComponent, 'channels');
+  if (modalComponent.type === ComponentType.FileUpload) {
+    expectType<readonly Snowflake[]>(modalComponent.values);
+    notPropertyOf(modalComponent, 'attachments');
   }
-}
-
-declare const cachedUserSelect: UserSelectModalData<'cached'>;
-declare const cachedRoleSelect: RoleSelectModalData<'cached'>;
-declare const cachedChannelSelect: ChannelSelectModalData<'cached'>;
-declare const cachedMentionableSelect: MentionableSelectModalData<'cached'>;
-declare const stringSelect: StringSelectModalData;
-declare const cachedMentionables: ModalSelectedMentionables<'cached'>;
-{
-  expectType<ReadonlyCollection<Snowflake, User>>(cachedUserSelect.users);
-  expectType<ReadonlyCollection<Snowflake, GuildMember>>(cachedUserSelect.members);
-  expectType<ReadonlyCollection<Snowflake, Role>>(cachedRoleSelect.roles);
-  expectType<ReadonlyCollection<Snowflake, GuildBasedChannel>>(cachedChannelSelect.channels);
-  expectType<ReadonlyCollection<Snowflake, User>>(cachedMentionableSelect.users);
-  expectType<ReadonlyCollection<Snowflake, GuildMember>>(cachedMentionableSelect.members);
-  expectType<ReadonlyCollection<Snowflake, Role>>(cachedMentionableSelect.roles);
-  expectType<readonly string[]>(stringSelect.values);
-
-  expectType<ReadonlyCollection<Snowflake, User>>(cachedMentionables.users);
-  expectType<ReadonlyCollection<Snowflake, GuildMember>>(cachedMentionables.members);
-  expectType<ReadonlyCollection<Snowflake, Role>>(cachedMentionables.roles);
 }
 
 declare const cachedModalComponents: ModalComponentResolver<'cached'>;
 {
   expectType<Readonly<BaseInteractionResolvedData<'cached'>>>(cachedModalComponents.resolved);
+  expectType<ReadonlyCollection<Snowflake, User>>(cachedModalComponents.getSelectedUsers('id', true));
+  expectType<ReadonlyCollection<Snowflake, GuildMember> | null>(cachedModalComponents.getSelectedMembers('id'));
+  expectType<ReadonlyCollection<Snowflake, Role>>(cachedModalComponents.getSelectedRoles('id', true));
+
+  const mentionables = cachedModalComponents.getSelectedMentionables('id', true);
+  expectType<ModalSelectedMentionables<'cached'>>(mentionables);
+  expectType<ReadonlyCollection<Snowflake, User>>(mentionables.users);
+  expectType<ReadonlyCollection<Snowflake, GuildMember>>(mentionables.members);
+  expectType<ReadonlyCollection<Snowflake, Role>>(mentionables.roles);
 }
