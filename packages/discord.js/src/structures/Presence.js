@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 import { ActivityFlagsBitField } from '../util/ActivityFlagsBitField.js';
-import { flatten } from '../util/Util.js';
+import { flatten } from '../util/Flatten.js';
 import { Base } from './Base.js';
 import { Emoji } from './Emoji.js';
 

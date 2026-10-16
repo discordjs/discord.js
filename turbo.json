@@ -3,7 +3,7 @@
 	"remoteCache": {
 		"enabled": true
 	},
-	"globalDependencies": ["tsconfig.json"],
+	"globalDependencies": ["tsconfig.base.json"],
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
@@ -108,7 +108,7 @@
 		},
 		"discord.js#test": {
 			"dependsOn": ["^build"],
-			"inputs": ["typings/**", "package.json", "tsconfig.json"],
+			"inputs": ["src/**", "typings/**", "package.json", "tsconfig.json"],
 			"outputs": [],
 			"outputLogs": "full"
 		},
@@ -118,7 +118,7 @@
 				"../../eslint.config.js",
 				"../../.prettierrc.json",
 				"../../tsconfig.eslint.json",
-				".prettierrc.js",
+				".prettierrc.cjs",
 				"bin/**",
 				"src/**",
 				"scripts/**",
@@ -134,7 +134,7 @@
 				"../../eslint.config.js",
 				"../../.prettierrc.json",
 				"../../tsconfig.eslint.json",
-				".prettierrc.js",
+				".prettierrc.cjs",
 				"src/**",
 				"!src/styles/unocss.css",
 				"tsconfig.eslint.json"
@@ -148,7 +148,7 @@
 				"../../eslint.config.js",
 				"../../.prettierrc.json",
 				"../../tsconfig.eslint.json",
-				".prettierrc.js",
+				".prettierrc.cjs",
 				"src/**",
 				"!src/styles/unocss.css",
 				"tsconfig.eslint.json"
@@ -162,7 +162,7 @@
 				"../../eslint.config.js",
 				"../../.prettierrc.json",
 				"../../tsconfig.eslint.json",
-				".prettierrc.js",
+				".prettierrc.cjs",
 				"bin/**",
 				"src/**",
 				"scripts/**",
@@ -178,7 +178,7 @@
 				"../../eslint.config.js",
 				"../../.prettierrc.json",
 				"../../tsconfig.eslint.json",
-				".prettierrc.js",
+				".prettierrc.cjs",
 				"src/**",
 				"!src/styles/unocss.css",
 				"package.json",

@@ -1,6 +1,6 @@
 import { AttachmentFlags } from 'discord-api-types/v10';
 import { AttachmentFlagsBitField } from '../util/AttachmentFlagsBitField.js';
-import { flatten } from '../util/Util.js';
+import { flatten } from '../util/Flatten.js';
 
 /**
  * @typedef {Object} AttachmentPayload

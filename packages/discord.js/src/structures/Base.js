@@ -1,4 +1,4 @@
-import { flatten } from '../util/Util.js';
+import { flatten } from '../util/Flatten.js';
 
 /**
  * Represents a data model that is identifiable by a Snowflake (i.e. Discord API data models).

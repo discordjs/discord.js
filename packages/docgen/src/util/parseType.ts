@@ -1,25 +1,25 @@
-import type { JSONOutput } from 'typedoc';
-import {
-	isArrayType,
-	isConditionalType,
-	isIndexedAccessType,
-	isIntersectionType,
-	isPredicateType,
-	isReferenceType,
-	isReflectionType,
-	isLiteralType,
-	isTupleType,
-	isTypeOperatorType,
-	isUnionType,
-	isQueryType,
-	isInferredType,
-	isIntrinsicType,
-	isUnknownType,
-} from './types.js';
+// import type { JSONOutput } from 'typedoc';
+// import {
+// 	isArrayType,
+// 	isConditionalType,
+// 	isIndexedAccessType,
+// 	isIntersectionType,
+// 	isPredicateType,
+// 	isReferenceType,
+// 	isReflectionType,
+// 	isLiteralType,
+// 	isTupleType,
+// 	isTypeOperatorType,
+// 	isUnionType,
+// 	isQueryType,
+// 	isInferredType,
+// 	isIntrinsicType,
+// 	isUnknownType,
+// } from './types.js';
 
-export function parseType(someType: JSONOutput.SomeType | JSONOutput.Type | string): string {
-	if (typeof someType === 'string') {
-		return someType;
+export function parseType(someType: /* JSONOutput.SomeType | JSONOutput.Type | */ string): string {
+	// if (typeof someType === 'string') {
+	return someType; /*
 	}
 
 	if (isArrayType(someType)) {
@@ -118,5 +118,5 @@ export function parseType(someType: JSONOutput.SomeType | JSONOutput.Type | stri
 		return someType.name;
 	}
 
-	return 'unknown';
+	return 'unknown'; */
 }
