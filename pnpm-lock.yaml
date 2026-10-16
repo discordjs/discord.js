@@ -728,8 +728,8 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
       zod:
-        specifier: ^4.5.4
-        version: 4.5.4
+        specifier: ^4.6.6
+        version: 4.6.6
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -957,8 +957,8 @@ importers:
         specifier: ~3.8.1
         version: 3.8.5
       zod:
-        specifier: ^4.5.4
-        version: 4.5.4
+        specifier: ^4.6.6
+        version: 4.6.6
 
   packages/create-discord-bot/template/Bun/TypeScript:
     dependencies:
@@ -991,8 +991,8 @@ importers:
         specifier: ~7.1.0-dev.20261011.1
         version: 7.1.0-dev.20261011.1
       zod:
-        specifier: ^4.5.4
-        version: 4.5.4
+        specifier: ^4.6.6
+        version: 4.6.6
 
   packages/create-discord-bot/template/JavaScript:
     dependencies:
@@ -1016,8 +1016,8 @@ importers:
         specifier: ~3.8.1
         version: 3.8.5
       zod:
-        specifier: ^4.5.4
-        version: 4.5.4
+        specifier: ^4.6.6
+        version: 4.6.6
 
   packages/create-discord-bot/template/TypeScript:
     dependencies:
@@ -1050,8 +1050,8 @@ importers:
         specifier: ~7.1.0-dev.20261011.1
         version: 7.1.0-dev.20261011.1
       zod:
-        specifier: ^4.5.4
-        version: 4.5.4
+        specifier: ^4.6.6
+        version: 4.6.6
 
   packages/discord.js:
     dependencies:
@@ -13493,6 +13493,9 @@ packages:
 
   zod@4.5.4:
     resolution: {integrity: sha512-sC95tT5iHHH9gtpj6A81kh+NEaRAUFN+qlUPDUbRfOMvNf5QCBqsb3WgvnpVtK5Y+4UfA6KqufotuTvMGiTlsA==}
+
+  zod@4.6.6:
+    resolution: {integrity: sha512-4UmzQUF5fxvfcYHlbjBmejU+w+hbDnWFx4aS8kBx7nPBHcO2SqPbpAG8snbdg+Xse4pRefR98hgjFgIMCI/UhA==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -26162,5 +26165,7 @@ snapshots:
   zod@4.1.11: {}
 
   zod@4.5.4: {}
+
+  zod@4.6.6: {}
 
   zwitch@2.0.4: {}
