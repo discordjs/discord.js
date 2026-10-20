@@ -437,6 +437,40 @@ test('rejectOnRateLimit rejects on the pre-emptive throttle', async () => {
 	await expect(api.get('/preemptive', { rejectOnRateLimit: true })).rejects.toBeInstanceOf(RateLimitError);
 });
 
+test('Requests made with different tokens do not share a rate limit', async () => {
+	mockPool
+		.intercept({
+			path: genPath('/per-token'),
+			method: 'GET',
+		})
+		.reply(() => ({
+			statusCode: 200,
+			data: { test: true },
+			responseOptions: {
+				headers: {
+					...responseOptions.headers,
+					'x-ratelimit-limit': '1',
+					'x-ratelimit-remaining': '0',
+					'x-ratelimit-reset-after': '5',
+					'x-ratelimit-bucket': 'abcdef',
+				},
+			},
+		}))
+		.times(4);
+
+	const first = { auth: { prefix: 'Bearer' as const, token: 'First-Fake-User-Token' } };
+	const second = { auth: { prefix: 'Bearer' as const, token: 'Second-Fake-User-Token' } };
+
+	expect(await api.get('/per-token', first)).toStrictEqual({ test: true });
+	expect(await api.get('/per-token', second)).toStrictEqual({ test: true });
+
+	expect(await api.get('/per-token', { ...first, rejectOnRateLimit: true })).toStrictEqual({ test: true });
+	expect(await api.get('/per-token', { ...second, rejectOnRateLimit: true })).toStrictEqual({ test: true });
+
+	// each token is still throttled on its own
+	await expect(api.get('/per-token', { ...first, rejectOnRateLimit: true })).rejects.toBeInstanceOf(RateLimitError);
+});
+
 test('rejectOnRateLimit rejects on an unexpected 429', async () => {
 	mockPool
 		.intercept({
