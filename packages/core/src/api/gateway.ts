@@ -1,7 +1,6 @@
-/* eslint-disable jsdoc/check-param-names */
-
-import type { RequestData, REST } from '@discordjs/rest';
+import type { REST } from '@discordjs/rest';
 import { Routes, type RESTGetAPIGatewayBotResult, type RESTGetAPIGatewayResult } from 'discord-api-types/v10';
+import type { BaseRequestOptions, RequestOptions } from '../util/types.js';
 
 export class GatewayAPI {
 	public constructor(private readonly rest: REST) {}
@@ -12,10 +11,10 @@ export class GatewayAPI {
 	 * @see {@link https://discord.com/developers/docs/events/gateway#get-gateway}
 	 * @param options - The options for fetching the gateway information
 	 */
-	public async get({ signal }: Pick<RequestData, 'signal'> = {}) {
+	public async get(options: BaseRequestOptions = {}) {
 		return this.rest.get(Routes.gateway(), {
+			...options,
 			auth: false,
-			signal,
 		}) as Promise<RESTGetAPIGatewayResult>;
 	}
 
@@ -25,10 +24,7 @@ export class GatewayAPI {
 	 * @see {@link https://discord.com/developers/docs/events/gateway#get-gateway-bot}
 	 * @param options - The options for fetching the gateway information
 	 */
-	public async getBot({ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.get(Routes.gatewayBot(), {
-			auth,
-			signal,
-		}) as Promise<RESTGetAPIGatewayBotResult>;
+	public async getBot(options: RequestOptions = {}) {
+		return this.rest.get(Routes.gatewayBot(), options) as Promise<RESTGetAPIGatewayBotResult>;
 	}
 }

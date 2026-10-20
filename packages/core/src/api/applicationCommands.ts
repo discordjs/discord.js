@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/rest';
+import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import {
 	Routes,
 	type Locale,
@@ -28,6 +28,7 @@ import {
 	type RESTPutAPIApplicationGuildCommandsResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
+import type { BaseRequestOptions, RequestOptions } from '../util/types.js';
 
 export class ApplicationCommandsAPI {
 	public constructor(private readonly rest: REST) {}
@@ -43,13 +44,12 @@ export class ApplicationCommandsAPI {
 	public async getGlobalCommands(
 		applicationId: Snowflake,
 		query: RESTGetAPIApplicationCommandsQuery = {},
-		{ auth, locale, signal }: Pick<RequestData, 'auth' | 'signal'> & { locale?: Locale } = {},
+		{ headers, locale, ...options }: RequestOptions & { locale?: Locale } = {},
 	) {
 		return this.rest.get(Routes.applicationCommands(applicationId), {
-			auth,
-			headers: locale ? { 'X-Discord-Locale': locale } : {},
+			...options,
+			headers: locale ? { ...headers, 'X-Discord-Locale': locale } : headers,
 			query: makeURLSearchParams(query),
-			signal,
 		}) as Promise<RESTGetAPIApplicationCommandsResult>;
 	}
 
@@ -64,12 +64,11 @@ export class ApplicationCommandsAPI {
 	public async createGlobalCommand(
 		applicationId: Snowflake,
 		body: RESTPostAPIApplicationCommandsJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		options: RequestOptions = {},
 	) {
 		return this.rest.post(Routes.applicationCommands(applicationId), {
-			auth,
+			...options,
 			body,
-			signal,
 		}) as Promise<RESTPostAPIApplicationCommandsResult>;
 	}
 
@@ -81,15 +80,11 @@ export class ApplicationCommandsAPI {
 	 * @param commandId - The command id to fetch
 	 * @param options - The options for fetching the command
 	 */
-	public async getGlobalCommand(
-		applicationId: Snowflake,
-		commandId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
-	) {
-		return this.rest.get(Routes.applicationCommand(applicationId, commandId), {
-			auth,
-			signal,
-		}) as Promise<RESTGetAPIApplicationCommandResult>;
+	public async getGlobalCommand(applicationId: Snowflake, commandId: Snowflake, options: RequestOptions = {}) {
+		return this.rest.get(
+			Routes.applicationCommand(applicationId, commandId),
+			options,
+		) as Promise<RESTGetAPIApplicationCommandResult>;
 	}
 
 	/**
@@ -105,12 +100,11 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		commandId: Snowflake,
 		body: RESTPatchAPIApplicationCommandJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		options: RequestOptions = {},
 	) {
 		return this.rest.patch(Routes.applicationCommand(applicationId, commandId), {
-			auth,
+			...options,
 			body,
-			signal,
 		}) as Promise<RESTPatchAPIApplicationCommandResult>;
 	}
 
@@ -122,12 +116,8 @@ export class ApplicationCommandsAPI {
 	 * @param commandId - The id of the command to delete
 	 * @param options - The options for deleting a command
 	 */
-	public async deleteGlobalCommand(
-		applicationId: Snowflake,
-		commandId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
-	) {
-		await this.rest.delete(Routes.applicationCommand(applicationId, commandId), { auth, signal });
+	public async deleteGlobalCommand(applicationId: Snowflake, commandId: Snowflake, options: RequestOptions = {}) {
+		await this.rest.delete(Routes.applicationCommand(applicationId, commandId), options);
 	}
 
 	/**
@@ -141,12 +131,11 @@ export class ApplicationCommandsAPI {
 	public async bulkOverwriteGlobalCommands(
 		applicationId: Snowflake,
 		body: RESTPutAPIApplicationCommandsJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		options: RequestOptions = {},
 	) {
 		return this.rest.put(Routes.applicationCommands(applicationId), {
-			auth,
+			...options,
 			body,
-			signal,
 		}) as Promise<RESTPutAPIApplicationCommandsResult>;
 	}
 
@@ -163,13 +152,12 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		query: RESTGetAPIApplicationGuildCommandsQuery = {},
-		{ auth, locale, signal }: Pick<RequestData, 'auth' | 'signal'> & { locale?: Locale } = {},
+		{ headers, locale, ...options }: RequestOptions & { locale?: Locale } = {},
 	) {
 		return this.rest.get(Routes.applicationGuildCommands(applicationId, guildId), {
-			auth,
-			headers: locale ? { 'X-Discord-Locale': locale } : {},
+			...options,
+			headers: locale ? { ...headers, 'X-Discord-Locale': locale } : headers,
 			query: makeURLSearchParams(query),
-			signal,
 		}) as Promise<RESTGetAPIApplicationGuildCommandsResult>;
 	}
 
@@ -186,12 +174,11 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		body: RESTPostAPIApplicationGuildCommandsJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		options: RequestOptions = {},
 	) {
 		return this.rest.post(Routes.applicationGuildCommands(applicationId, guildId), {
-			auth,
+			...options,
 			body,
-			signal,
 		}) as Promise<RESTPostAPIApplicationGuildCommandsResult>;
 	}
 
@@ -208,12 +195,12 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		commandId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		options: RequestOptions = {},
 	) {
-		return this.rest.get(Routes.applicationGuildCommand(applicationId, guildId, commandId), {
-			auth,
-			signal,
-		}) as Promise<RESTGetAPIApplicationGuildCommandResult>;
+		return this.rest.get(
+			Routes.applicationGuildCommand(applicationId, guildId, commandId),
+			options,
+		) as Promise<RESTGetAPIApplicationGuildCommandResult>;
 	}
 
 	/**
@@ -231,12 +218,11 @@ export class ApplicationCommandsAPI {
 		guildId: Snowflake,
 		commandId: Snowflake,
 		body: RESTPatchAPIApplicationGuildCommandJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		options: RequestOptions = {},
 	) {
 		return this.rest.patch(Routes.applicationGuildCommand(applicationId, guildId, commandId), {
-			auth,
+			...options,
 			body,
-			signal,
 		}) as Promise<RESTPatchAPIApplicationGuildCommandResult>;
 	}
 
@@ -253,9 +239,9 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		commandId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		options: RequestOptions = {},
 	) {
-		await this.rest.delete(Routes.applicationGuildCommand(applicationId, guildId, commandId), { auth, signal });
+		await this.rest.delete(Routes.applicationGuildCommand(applicationId, guildId, commandId), options);
 	}
 
 	/**
@@ -271,12 +257,11 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		body: RESTPutAPIApplicationGuildCommandsJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		options: RequestOptions = {},
 	) {
 		return this.rest.put(Routes.applicationGuildCommands(applicationId, guildId), {
-			auth,
+			...options,
 			body,
-			signal,
 		}) as Promise<RESTPutAPIApplicationGuildCommandsResult>;
 	}
 
@@ -293,12 +278,12 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		commandId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		options: RequestOptions = {},
 	) {
-		return this.rest.get(Routes.applicationCommandPermissions(applicationId, guildId, commandId), {
-			auth,
-			signal,
-		}) as Promise<RESTGetAPIApplicationCommandPermissionsResult>;
+		return this.rest.get(
+			Routes.applicationCommandPermissions(applicationId, guildId, commandId),
+			options,
+		) as Promise<RESTGetAPIApplicationCommandPermissionsResult>;
 	}
 
 	/**
@@ -309,15 +294,11 @@ export class ApplicationCommandsAPI {
 	 * @param guildId - The guild id to get the permissions for
 	 * @param options - The options for fetching permissions
 	 */
-	public async getGuildCommandsPermissions(
-		applicationId: Snowflake,
-		guildId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
-	) {
-		return this.rest.get(Routes.guildApplicationCommandsPermissions(applicationId, guildId), {
-			auth,
-			signal,
-		}) as Promise<RESTGetAPIGuildApplicationCommandsPermissionsResult>;
+	public async getGuildCommandsPermissions(applicationId: Snowflake, guildId: Snowflake, options: RequestOptions = {}) {
+		return this.rest.get(
+			Routes.guildApplicationCommandsPermissions(applicationId, guildId),
+			options,
+		) as Promise<RESTGetAPIGuildApplicationCommandsPermissionsResult>;
 	}
 
 	/**
@@ -337,13 +318,13 @@ export class ApplicationCommandsAPI {
 		guildId: Snowflake,
 		commandId: Snowflake,
 		body: RESTPutAPIApplicationCommandPermissionsJSONBody,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ headers, ...options }: BaseRequestOptions = {},
 	) {
 		return this.rest.put(Routes.applicationCommandPermissions(applicationId, guildId, commandId), {
-			headers: { Authorization: `Bearer ${userToken.replace('Bearer ', '')}` },
+			...options,
+			headers: { ...headers, Authorization: `Bearer ${userToken.replace('Bearer ', '')}` },
 			auth: false,
 			body,
-			signal,
 		}) as Promise<RESTPutAPIApplicationCommandPermissionsResult>;
 	}
 }
