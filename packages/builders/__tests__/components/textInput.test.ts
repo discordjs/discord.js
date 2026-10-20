@@ -42,6 +42,14 @@ describe('Text Input Components', () => {
 				.setStyle(3 as TextInputStyle)
 				.toJSON();
 		}).toThrowError();
+
+		expect(() => {
+			textInputComponent().setCustomId('a').setMinLength(20).setMaxLength(10).setStyle(TextInputStyle.Short).toJSON();
+		}).toThrowError();
+
+		expect(() => {
+			textInputComponent().setCustomId('a').setMinLength(10).setMaxLength(20).setStyle(TextInputStyle.Short).toJSON();
+		}).not.toThrowError();
 	});
 
 	test('GIVEN valid input THEN valid JSON outputs are given', () => {
