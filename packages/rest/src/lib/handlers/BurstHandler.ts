@@ -29,15 +29,13 @@ export class BurstHandler implements IHandler {
 	 * @param manager - The request manager
 	 * @param hash - The hash that this RequestHandler handles
 	 * @param majorParameter - The major parameter for this handler
-	 * @param authPartition - The suffix identifying the token this handler is for, if any
 	 */
 	public constructor(
 		private readonly manager: REST,
 		private readonly hash: string,
 		private readonly majorParameter: string,
-		authPartition = '',
 	) {
-		this.id = `${hash}:${majorParameter}${authPartition}`;
+		this.id = `${hash}:${majorParameter}`;
 	}
 
 	/**
