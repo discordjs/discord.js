@@ -9,8 +9,21 @@ export const emojiPredicate = z
 		animated: z.boolean().optional(),
 	})
 	.refine((data) => data.id !== undefined || data.name !== undefined, {
-		error: "Either 'id' or 'name' must be provided",
-	});
+		error: "Either 'id' or 'name' must be provided.",
+	})
+	.refine(
+		(data) => {
+			if (data.id !== undefined && data.name !== undefined) {
+				return data.name.length >= 2;
+			}
+
+			return true;
+		},
+		{
+			error: 'Custom emoji names must be at least 2 characters.',
+			path: ['name'],
+		},
+	);
 
 const buttonPredicateBase = z.strictObject({
 	type: z.literal(ComponentType.Button),
