@@ -85,6 +85,7 @@ import type {
   AutoModerationRule,
   AutoModerationRuleManager,
   Awaitable,
+  BaseInteractionResolvedData,
   ButtonComponent,
   ButtonComponentData,
   ButtonInteraction,
@@ -162,6 +163,9 @@ import type {
   MessageManager,
   MessageMentions,
   MessageReaction,
+  ModalComponentResolver,
+  ModalData,
+  ModalSelectedMentionables,
   ModalSubmitInteraction,
   NonThreadGuildBasedChannel,
   PartialDMChannel,
@@ -2770,7 +2774,7 @@ declare const threadOnlyChannel: ThreadOnlyChannel;
 // Threads have messages.
 expectType<GuildMessageManager>(threadChannel.messages);
 
-// Thread-only channels have threads—not messages.
+// Thread-only channels do not have messages.
 notPropertyOf(threadOnlyChannel, 'messages');
 notPropertyOf(forumChannel, 'messages');
 notPropertyOf(mediaChannel, 'messages');
@@ -3132,4 +3136,40 @@ declare const authorizingIntegrationOwners: AuthorizingIntegrationOwners;
   expectType<Snowflake | null>(authorizingIntegrationOwners.userId);
   expectType<User | null>(authorizingIntegrationOwners.user);
   expectType<Snowflake | undefined>(authorizingIntegrationOwners[ApplicationIntegrationType.GuildInstall]);
+}
+
+declare const modalComponent: ModalData;
+{
+  if (modalComponent.type === ComponentType.UserSelect) {
+    expectType<readonly string[]>(modalComponent.values);
+    notPropertyOf(modalComponent, 'users');
+    notPropertyOf(modalComponent, 'members');
+  }
+
+  if (modalComponent.type === ComponentType.MentionableSelect) {
+    notPropertyOf(modalComponent, 'roles');
+  }
+
+  if (modalComponent.type === ComponentType.ChannelSelect) {
+    notPropertyOf(modalComponent, 'channels');
+  }
+
+  if (modalComponent.type === ComponentType.FileUpload) {
+    expectType<readonly Snowflake[]>(modalComponent.values);
+    notPropertyOf(modalComponent, 'attachments');
+  }
+}
+
+declare const cachedModalComponents: ModalComponentResolver<'cached'>;
+{
+  expectType<Readonly<BaseInteractionResolvedData<'cached'>>>(cachedModalComponents.resolved);
+  expectType<ReadonlyCollection<Snowflake, User>>(cachedModalComponents.getSelectedUsers('id', true));
+  expectType<ReadonlyCollection<Snowflake, GuildMember> | null>(cachedModalComponents.getSelectedMembers('id'));
+  expectType<ReadonlyCollection<Snowflake, Role>>(cachedModalComponents.getSelectedRoles('id', true));
+
+  const mentionables = cachedModalComponents.getSelectedMentionables('id', true);
+  expectType<ModalSelectedMentionables<'cached'>>(mentionables);
+  expectType<ReadonlyCollection<Snowflake, User>>(mentionables.users);
+  expectType<ReadonlyCollection<Snowflake, GuildMember>>(mentionables.members);
+  expectType<ReadonlyCollection<Snowflake, Role>>(mentionables.roles);
 }
