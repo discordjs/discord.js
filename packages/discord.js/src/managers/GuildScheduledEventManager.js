@@ -164,7 +164,7 @@ class GuildScheduledEventManager extends CachedManager {
   async fetch(options = {}) {
     const id = this.resolveId(options.guildScheduledEvent ?? options);
 
-    if (id) {
+    if (id !== null) {
       if (!options.force) {
         const existing = this.cache.get(id);
         if (existing) return existing;
