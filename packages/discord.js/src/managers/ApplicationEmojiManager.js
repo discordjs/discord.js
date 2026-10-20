@@ -1,18 +1,16 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { ApplicationEmoji } = require('../structures/ApplicationEmoji.js');
-const { resolveImage } = require('../util/DataResolver.js');
-const { CachedManager } = require('./CachedManager.js');
+import { Collection } from '@discordjs/collection';
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { ApplicationEmoji } from '../structures/ApplicationEmoji.js';
+import { resolveImage } from '../util/DataResolver.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for ApplicationEmojis and stores their cache.
  *
  * @extends {CachedManager}
  */
-class ApplicationEmojiManager extends CachedManager {
+export class ApplicationEmojiManager extends CachedManager {
   constructor(application, iterable) {
     super(application.client, ApplicationEmoji, iterable);
 
@@ -148,5 +146,3 @@ class ApplicationEmojiManager extends CachedManager {
     return this._add(data).author;
   }
 }
-
-exports.ApplicationEmojiManager = ApplicationEmojiManager;

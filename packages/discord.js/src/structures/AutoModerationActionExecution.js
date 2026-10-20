@@ -1,11 +1,9 @@
-'use strict';
-
-const { _transformAPIAutoModerationAction } = require('../util/Transformers.js');
+import { _transformAPIAutoModerationAction } from '../util/Transformers.js';
 
 /**
  * Represents the structure of an executed action when an {@link AutoModerationRule} is triggered.
  */
-class AutoModerationActionExecution {
+export class AutoModerationActionExecution {
   constructor(data, guild) {
     /**
      * The guild where this action was executed from.
@@ -127,5 +125,3 @@ class AutoModerationActionExecution {
     return this.guild.members.cache.get(this.userId) ?? null;
   }
 }
-
-exports.AutoModerationActionExecution = AutoModerationActionExecution;

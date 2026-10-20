@@ -1,17 +1,15 @@
-'use strict';
-
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { StickerFormatExtensionMap } = require('../util/Constants.js');
-const { Base } = require('./Base.js');
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { StickerFormatExtensionMap } from '../util/Constants.js';
+import { Base } from './Base.js';
 
 /**
  * Represents a Sticker.
  *
  * @extends {Base}
  */
-class Sticker extends Base {
+export class Sticker extends Base {
   constructor(client, sticker) {
     super(client);
 
@@ -288,5 +286,3 @@ class Sticker extends Base {
     }
   }
 }
-
-exports.Sticker = Sticker;

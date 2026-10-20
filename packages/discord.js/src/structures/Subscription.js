@@ -1,13 +1,11 @@
-'use strict';
-
-const { Base } = require('./Base.js');
+import { Base } from './Base.js';
 
 /**
  * Represents a Subscription
  *
  * @extends {Base}
  */
-class Subscription extends Base {
+export class Subscription extends Base {
   constructor(client, data) {
     super(client);
 
@@ -127,5 +125,3 @@ class Subscription extends Base {
     return new Date(this.currentPeriodEndTimestamp);
   }
 }
-
-exports.Subscription = Subscription;

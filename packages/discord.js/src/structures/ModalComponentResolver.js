@@ -1,8 +1,6 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { ComponentType } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+import { Collection } from '@discordjs/collection';
+import { ComponentType } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
 
 /**
  * @typedef {Object} ModalSelectedMentionables
@@ -14,7 +12,7 @@ const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 /**
  * A resolver for modal submit components
  */
-class ModalComponentResolver {
+export class ModalComponentResolver {
   constructor(client, components, resolved) {
     /**
      * The client that instantiated this.
@@ -265,5 +263,3 @@ class ModalComponentResolver {
     return this._getTypedComponent(customId, [ComponentType.Checkbox]).value;
   }
 }
-
-exports.ModalComponentResolver = ModalComponentResolver;

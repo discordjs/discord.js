@@ -1,16 +1,14 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { GuildFeature } = require('discord-api-types/v10');
-const { Base } = require('./Base.js');
-const { WelcomeChannel } = require('./WelcomeChannel.js');
+import { Collection } from '@discordjs/collection';
+import { GuildFeature } from 'discord-api-types/v10';
+import { Base } from './Base.js';
+import { WelcomeChannel } from './WelcomeChannel.js';
 
 /**
  * Represents a welcome screen.
  *
  * @extends {Base}
  */
-class WelcomeScreen extends Base {
+export class WelcomeScreen extends Base {
   constructor(guild, data) {
     super(guild.client);
 
@@ -50,5 +48,3 @@ class WelcomeScreen extends Base {
     return this.guild.features.includes(GuildFeature.WelcomeScreenEnabled);
   }
 }
-
-exports.WelcomeScreen = WelcomeScreen;

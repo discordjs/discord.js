@@ -1,18 +1,16 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes } = require('discord-api-types/v10');
-const { Base } = require('./Base.js');
-const { GuildPreviewEmoji } = require('./GuildPreviewEmoji.js');
-const { Sticker } = require('./Sticker.js');
+import { Collection } from '@discordjs/collection';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { Routes } from 'discord-api-types/v10';
+import { Base } from './Base.js';
+import { GuildPreviewEmoji } from './GuildPreviewEmoji.js';
+import { Sticker } from './Sticker.js';
 
 /**
  * Represents the data about the guild any bot can preview, connected to the specified guild.
  *
  * @extends {Base}
  */
-class GuildPreview extends Base {
+export class GuildPreview extends Base {
   constructor(client, data) {
     super(client);
 
@@ -209,5 +207,3 @@ class GuildPreview extends Base {
     return json;
   }
 }
-
-exports.GuildPreview = GuildPreview;

@@ -1,6 +1,4 @@
 /* eslint-disable jsdoc/tag-lines, jsdoc/require-property-description */
-'use strict';
-
 /**
  * @typedef {Object} DiscordjsErrorCodes
  * @property {'ClientInvalidOption'} ClientInvalidOption
@@ -275,6 +273,4 @@ const keys = [
  * @type {DiscordjsErrorCodes}
  * @ignore
  */
-const ErrorCodes = Object.fromEntries(keys.map(key => [key, key]));
-
-exports.ErrorCodes = ErrorCodes;
+export const ErrorCodes = Object.fromEntries(keys.map(key => [key, key]));

@@ -1,11 +1,9 @@
-'use strict';
-
-const process = require('node:process');
-const { GatewayOpcodes } = require('discord-api-types/v10');
+import process from 'node:process';
+import { GatewayOpcodes } from 'discord-api-types/v10';
 
 const emittedFor = new Set();
 
-module.exports = (client, { d: data }) => {
+export default (client, { d: data }) => {
   switch (data.opcode) {
     case GatewayOpcodes.RequestGuildMembers: {
       break;

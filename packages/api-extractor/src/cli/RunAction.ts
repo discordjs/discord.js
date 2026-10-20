@@ -11,12 +11,12 @@ import {
 	Path,
 	AlreadyReportedError,
 } from '@rushstack/node-core-library';
+import { Colorize } from '@rushstack/terminal';
 import {
 	CommandLineAction,
 	type CommandLineStringParameter,
 	type CommandLineFlagParameter,
 } from '@rushstack/ts-command-line';
-import colors from 'colors';
 import { Extractor, type ExtractorResult } from '../api/Extractor.js';
 import { ExtractorConfig, type IExtractorConfigPrepareOptions } from '../api/ExtractorConfig.js';
 import type { ApiExtractorCommandLine } from './ApiExtractorCommandLine.js';
@@ -169,9 +169,9 @@ export class RunAction extends CommandLineAction {
 			console.log(os.EOL + 'API Extractor completed successfully');
 		} else {
 			if (extractorResult.errorCount > 0) {
-				console.log(os.EOL + colors.red('API Extractor completed with errors'));
+				console.log(os.EOL + Colorize.red('API Extractor completed with errors'));
 			} else {
-				console.log(os.EOL + colors.yellow('API Extractor completed with warnings'));
+				console.log(os.EOL + Colorize.yellow('API Extractor completed with warnings'));
 			}
 
 			throw new AlreadyReportedError();

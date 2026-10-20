@@ -1,13 +1,11 @@
-'use strict';
-
-const { Application } = require('./interfaces/Application.js');
+import { Application } from './interfaces/Application.js';
 
 /**
  * Represents an Integration's OAuth2 Application.
  *
  * @extends {Application}
  */
-class IntegrationApplication extends Application {
+export class IntegrationApplication extends Application {
   _patch(data) {
     super._patch(data);
 
@@ -78,5 +76,3 @@ class IntegrationApplication extends Application {
     }
   }
 }
-
-exports.IntegrationApplication = IntegrationApplication;

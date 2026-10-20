@@ -1,20 +1,18 @@
-'use strict';
-
-const { Buffer } = require('node:buffer');
-const { createReadStream } = require('node:fs');
-const { readFile } = require('node:fs/promises');
-const path = require('node:path');
-const process = require('node:process');
-const { setTimeout: sleep } = require('node:timers/promises');
-const { fetch } = require('undici');
-const {
+import { Buffer } from 'node:buffer';
+import { createReadStream } from 'node:fs';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import process from 'node:process';
+import { setTimeout as sleep } from 'node:timers/promises';
+import { fetch } from 'undici';
+import {
   Client,
   GatewayIntentBits,
   AttachmentBuilder,
   EmbedBuilder,
   MessageFlags,
   ComponentType,
-} = require('../src/index.js');
+} from '../src/index.js';
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
@@ -134,23 +132,20 @@ client.on('messageCreate', async message => {
   if (message.author.id !== process.env.OWNER) return;
   const match = message.content.match(/^do (.+)$/);
   if (match?.[1] === 'it') {
-    /* eslint-disable no-await-in-loop */
     for (const [i, test] of tests.entries()) {
       await message.channel.send(`**#${i}**\n\`\`\`js\n${test.toString()}\`\`\``);
-      await test(message).catch(e => message.channel.send(`Error!\n\`\`\`\n${e}\`\`\``));
+      await test(message).catch(error => message.channel.send(`Error!\n\`\`\`\n${error}\`\`\``));
       await sleep(1_000);
     }
-    /* eslint-enable no-await-in-loop */
   } else if (match) {
-    const n = parseInt(match[1]) || 0;
+    const n = Number.parseInt(match[1]) || 0;
     const test = tests.slice(n)[0];
     const i = tests.indexOf(test);
     await message.channel.send(`**#${i}**\n\`\`\`js\n${test.toString()}\`\`\``);
-    await test(message).catch(e => message.channel.send(`Error!\n\`\`\`\n${e}\`\`\``));
+    await test(message).catch(error => message.channel.send(`Error!\n\`\`\`\n${error}\`\`\``));
   }
 });
 
 client.login();
 
-// eslint-disable-next-line no-console
 process.on('unhandledRejection', console.error);
