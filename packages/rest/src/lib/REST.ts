@@ -245,16 +245,17 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 		const routeId = REST.generateRouteData(request.fullRoute, request.method);
 		const customAuth = typeof request.auth === 'object' && request.auth.token !== this.#token;
 		const auth = customAuth ? uuidV5((request.auth as AuthData).token, AUTH_UUID_NAMESPACE) : request.auth !== false;
-		// Get the bucket hash for the generic route, or point to a global route otherwise
-		const hash = this.hashes.get(`${request.method}:${routeId.bucketRoute}${customAuth ? `:${auth}` : ''}`) ?? {
-			value: `Global(${request.method}:${routeId.bucketRoute}${customAuth ? `:${auth}` : ''})`,
+		const authPartition = customAuth ? `:${auth}` : '';
+		const hash = this.hashes.get(`${request.method}:${routeId.bucketRoute}${authPartition}`) ?? {
+			value: `Global(${request.method}:${routeId.bucketRoute}${authPartition})`,
 			lastAccess: -1,
 		};
 
-		// Get the request handler for the obtained hash, with its major parameter
+		// Get the request handler for the obtained hash, with its major parameter. The handler is partitioned by
+		// token as well
 		const handler =
-			this.handlers.get(`${hash.value}:${routeId.majorParameter}`) ??
-			this.createHandler(hash.value, routeId.majorParameter);
+			this.handlers.get(`${hash.value}:${routeId.majorParameter}${authPartition}`) ??
+			this.createHandler(hash.value, routeId.majorParameter, authPartition);
 
 		// Resolve the request into usable fetch options
 		const { url, fetchOptions } = await this.resolveRequest(request);
@@ -274,14 +275,15 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 	 *
 	 * @param hash - The hash for the route
 	 * @param majorParameter - The major parameter for this handler
+	 * @param authPartition - The suffix identifying the custom token this handler is for, if any
 	 * @internal
 	 */
-	private createHandler(hash: string, majorParameter: string) {
+	private createHandler(hash: string, majorParameter: string, authPartition: string) {
 		// Create the async request queue to handle requests
 		const queue =
 			majorParameter === BurstHandlerMajorIdKey
-				? new BurstHandler(this, hash, majorParameter)
-				: new SequentialHandler(this, hash, majorParameter);
+				? new BurstHandler(this, hash, majorParameter, authPartition)
+				: new SequentialHandler(this, hash, majorParameter, authPartition);
 		// Save the queue based on its id
 		this.handlers.set(queue.id, queue);
 
