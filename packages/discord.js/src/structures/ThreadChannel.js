@@ -600,9 +600,9 @@ class ThreadChannel extends BaseChannel {
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
     return (
-      !(this.archived && this.locked && !this.manageable) &&
+      (!this.locked || this.manageable) &&
       (this.type !== ChannelType.PrivateThread || this.joined || this.manageable) &&
-      permissions.has(PermissionFlagsBits.SendMessagesInThreads, false) &&
+      permissions.has(PermissionFlagsBits.ViewChannel | PermissionFlagsBits.SendMessagesInThreads, false) &&
       this.guild.members.me.communicationDisabledUntilTimestamp < Date.now()
     );
   }
