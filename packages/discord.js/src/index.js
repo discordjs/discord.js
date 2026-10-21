@@ -1,20 +1,6 @@
-// "Root" classes (starting points)
 import packageJson from '../package.json' with { type: 'json' };
 
-// import/export early to avoid circular imports
-export {
-  cleanCodeBlockContent,
-  cleanContent,
-  discordSort,
-  fetchRecommendedShardCount,
-  flatten,
-  parseEmoji,
-  parseWebhookURL,
-  resolveColor,
-  resolveSKUId,
-  verifyString,
-} from './util/Util.js';
-
+// "Root" classes (starting points)
 export { Client } from './client/Client.js';
 export { Shard } from './sharding/Shard.js';
 export { ShardClientUtil } from './sharding/ShardClientUtil.js';
@@ -37,6 +23,7 @@ export { Collection } from '@discordjs/collection';
 export { Colors } from './util/Colors.js';
 export * as Constants from './util/Constants.js';
 export { Events } from './util/Events.js';
+export { flatten } from './util/Flatten.js';
 export { GuildMemberFlagsBitField } from './util/GuildMemberFlagsBitField.js';
 export { IntentsBitField } from './util/IntentsBitField.js';
 export { InviteFlagsBitField } from './util/InviteFlagsBitField.js';
@@ -54,6 +41,17 @@ export { Sweepers } from './util/Sweepers.js';
 export { SystemChannelFlagsBitField } from './util/SystemChannelFlagsBitField.js';
 export { ThreadMemberFlagsBitField } from './util/ThreadMemberFlagsBitField.js';
 export { UserFlagsBitField } from './util/UserFlagsBitField.js';
+export {
+  cleanCodeBlockContent,
+  cleanContent,
+  discordSort,
+  fetchRecommendedShardCount,
+  parseEmoji,
+  parseWebhookURL,
+  resolveColor,
+  resolveSKUId,
+  verifyString,
+} from './util/Util.js';
 
 export * from './util/DataResolver.js';
 
@@ -123,6 +121,7 @@ export { BaseGuildTextChannel } from './structures/BaseGuildTextChannel.js';
 export { BaseGuildVoiceChannel } from './structures/BaseGuildVoiceChannel.js';
 export { BaseInteraction } from './structures/BaseInteraction.js';
 export { BaseInvite } from './structures/BaseInvite.js';
+export { BaseRole } from './structures/BaseRole.js';
 export { BaseSelectMenuComponent } from './structures/BaseSelectMenuComponent.js';
 export { ButtonComponent } from './structures/ButtonComponent.js';
 export { ButtonInteraction } from './structures/ButtonInteraction.js';
@@ -170,6 +169,7 @@ export { InteractionCallbackResponse } from './structures/InteractionCallbackRes
 export { InteractionCollector } from './structures/InteractionCollector.js';
 export { InteractionWebhook } from './structures/InteractionWebhook.js';
 export { InviteGuild } from './structures/InviteGuild.js';
+export { InviteRole } from './structures/InviteRole.js';
 export { LabelComponent } from './structures/LabelComponent.js';
 export { MediaChannel } from './structures/MediaChannel.js';
 export { MediaGalleryComponent } from './structures/MediaGalleryComponent.js';

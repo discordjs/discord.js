@@ -1,6 +1,7 @@
 import { Routes } from 'discord-api-types/v10';
 import { ReactionUserManager } from '../managers/ReactionUserManager.js';
-import { flatten, resolveGuildEmoji } from '../util/Util.js';
+import { flatten } from '../util/Flatten.js';
+import { resolveGuildEmoji } from '../util/Util.js';
 import { ApplicationEmoji } from './ApplicationEmoji.js';
 import { GuildEmoji } from './GuildEmoji.js';
 import { ReactionEmoji } from './ReactionEmoji.js';

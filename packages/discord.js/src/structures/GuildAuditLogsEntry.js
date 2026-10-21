@@ -1,7 +1,7 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { AuditLogOptionsType, AuditLogEvent } from 'discord-api-types/v10';
+import { flatten } from '../util/Flatten.js';
 import { Partials } from '../util/Partials.js';
-import { flatten } from '../util/Util.js';
 import { AutoModerationRule } from './AutoModerationRule.js';
 import { GuildInvite } from './GuildInvite.js';
 import { GuildOnboardingPrompt } from './GuildOnboardingPrompt.js';

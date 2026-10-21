@@ -1,5 +1,5 @@
 import { Collection } from '@discordjs/collection';
-import { flatten } from '../util/Util.js';
+import { flatten } from '../util/Flatten.js';
 import { ApplicationCommand } from './ApplicationCommand.js';
 import { GuildAuditLogsEntry } from './GuildAuditLogsEntry.js';
 import { Integration } from './Integration.js';

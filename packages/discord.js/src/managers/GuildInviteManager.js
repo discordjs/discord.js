@@ -1,8 +1,10 @@
+import { Buffer } from 'node:buffer';
 import { Collection } from '@discordjs/collection';
 import { Routes } from 'discord-api-types/v10';
 import { DiscordjsError, ErrorCodes } from '../errors/index.js';
 import { GuildInvite } from '../structures/GuildInvite.js';
-import { resolveInviteCode } from '../util/DataResolver.js';
+import { resolveInviteCode, resolveInviteTargetUsersFile } from '../util/DataResolver.js';
+import { _transformAPIInviteTargetUsersJobStatus } from '../util/Transformers.js';
 import { CachedManager } from './CachedManager.js';
 
 /**
@@ -103,6 +105,18 @@ export class GuildInviteManager extends CachedManager {
    */
 
   /**
+   * Job status for target users of an invite
+   *
+   * @typedef {Object} TargetUsersJobStatusForInvite
+   * @property {InviteTargetUsersJobStatus} status The status of job processing the users
+   * @property {number} totalUsers The total number of users provided in the list
+   * @property {number} processedUsers The total number of users processed so far
+   * @property {Date|null} createdAt The time when the job was created
+   * @property {Date|null} completedAt The time when the job was successfully completed
+   * @property {string|null} errorMessage The error message if the job failed
+   */
+
+  /**
    * Fetches invite(s) from Discord.
    *
    * @param {GuildInviteResolvable|FetchInviteOptions|FetchInvitesOptions} [options]
@@ -189,7 +203,7 @@ export class GuildInviteManager extends CachedManager {
   /**
    * Create an invite to the guild from the provided channel.
    *
-   * @param {GuildInvitableChannelResolvable} channel The options for creating the invite from a channel.
+   * @param {GuildInvitableChannelResolvable} channel The channel where the invite should be created.
    * @param {InviteCreateOptions} [options={}] The options for creating the invite from a channel.
    * @returns {Promise<GuildInvite>}
    * @example
@@ -200,23 +214,46 @@ export class GuildInviteManager extends CachedManager {
    */
   async create(
     channel,
-    { temporary, maxAge, maxUses, unique, targetUser, targetApplication, targetType, reason } = {},
+    {
+      temporary,
+      maxAge,
+      maxUses,
+      unique,
+      targetUser,
+      targetApplication,
+      targetType,
+      roles,
+      targetUsersFile,
+      reason,
+    } = {},
   ) {
     const id = this.guild.channels.resolveId(channel);
     if (!id) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
-
+    const options = {
+      temporary,
+      max_age: maxAge,
+      max_uses: maxUses,
+      unique,
+      target_user_id: this.client.users.resolveId(targetUser),
+      target_application_id: targetApplication?.id ?? targetApplication?.applicationId ?? targetApplication,
+      role_ids: roles?.map(role => this.guild.roles.resolveId(role)),
+      target_type: targetType,
+    };
     const invite = await this.client.rest.post(Routes.channelInvites(id), {
-      body: {
-        temporary,
-        max_age: maxAge,
-        max_uses: maxUses,
-        unique,
-        target_user_id: this.client.users.resolveId(targetUser),
-        target_application_id: targetApplication?.id ?? targetApplication?.applicationId ?? targetApplication,
-        target_type: targetType,
-      },
+      body: options,
       reason,
+      files: targetUsersFile
+        ? [
+            {
+              key: 'target_users_file',
+              data: await resolveInviteTargetUsersFile(this.client, targetUsersFile),
+              name: 'users.csv',
+              contentType: 'text/csv',
+            },
+          ]
+        : [],
     });
+
     return new GuildInvite(this.client, invite);
   }
 
@@ -231,5 +268,53 @@ export class GuildInviteManager extends CachedManager {
     const code = resolveInviteCode(invite);
 
     await this.client.rest.delete(Routes.invite(code), { reason });
+  }
+
+  /**
+   * Get target users for an invite.
+   *
+   * @param {InviteResolvable} invite The invite to get the target users
+   * @returns {Promise<Buffer>} The csv file containing target users
+   */
+  async fetchTargetUsers(invite) {
+    const code = resolveInviteCode(invite);
+    const arrayBuff = await this.client.rest.get(Routes.inviteTargetUsers(code));
+
+    return Buffer.from(arrayBuff);
+  }
+
+  /**
+   * Updates target users for an invite.
+   *
+   * @param {InviteResolvable} invite The invite to update the target users
+   * @param {UserResolvable[]|BufferResolvable} targetUsersFile An array of users or a CSV file with a single column of user ids
+   * for all the users able to accept this invite
+   * @returns {Promise<void>}
+   */
+  async updateTargetUsers(invite, targetUsersFile) {
+    const code = resolveInviteCode(invite);
+
+    await this.client.rest.put(Routes.inviteTargetUsers(code), {
+      files: [
+        {
+          key: 'target_users_file',
+          data: await resolveInviteTargetUsersFile(this.client, targetUsersFile),
+          name: 'users.csv',
+          contentType: 'text/csv',
+        },
+      ],
+    });
+  }
+
+  /**
+   * Get status of the job processing target users of an invite.
+   *
+   * @param {InviteResolvable} invite The invite to get the target users for
+   * @returns {Promise<TargetUsersJobStatusForInvite>} The target users
+   */
+  async fetchTargetUsersJobStatus(invite) {
+    const code = resolveInviteCode(invite);
+    const job = await this.client.rest.get(Routes.inviteTargetUsersJobStatus(code));
+    return _transformAPIInviteTargetUsersJobStatus(job);
   }
 }

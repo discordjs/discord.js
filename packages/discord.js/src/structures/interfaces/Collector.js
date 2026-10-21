@@ -2,7 +2,7 @@ import { setTimeout, clearTimeout } from 'node:timers';
 import { Collection } from '@discordjs/collection';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import { DiscordjsTypeError, ErrorCodes } from '../../errors/index.js';
-import { flatten } from '../../util/Util.js';
+import { flatten } from '../../util/Flatten.js';
 
 /**
  * Filter to be applied to the collector.

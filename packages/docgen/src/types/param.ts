@@ -1,12 +1,13 @@
-import type { ParameterReflection } from '../index.js';
+// import type { ParameterReflection } from '../index.js';
 import type { Param } from '../interfaces/index.js';
-import { parseType } from '../util/parseType.js';
+// import { parseType } from '../util/parseType.js';
 import { DocumentedItem } from './item.js';
 import { DocumentedVarType } from './var-type.js';
 
-export class DocumentedParam extends DocumentedItem<Param | ParameterReflection> {
+export class DocumentedParam extends DocumentedItem<Param /* | ParameterReflection */> {
 	public override serializer() {
 		if (this.config.typescript) {
+			/*
 			const data = this.data as ParameterReflection;
 
 			return {
@@ -25,7 +26,7 @@ export class DocumentedParam extends DocumentedItem<Param | ParameterReflection>
 						undefined),
 				variable: data.flags.isRest,
 				type: data.type ? new DocumentedVarType({ names: [parseType(data.type)] }, this.config).serialize() : undefined,
-			};
+			}; */
 		}
 
 		const data = this.data as Param;

@@ -1,4 +1,4 @@
-import { flatten } from '../util/Util.js';
+import { flatten } from '../util/Flatten.js';
 import { Emoji } from './Emoji.js';
 
 /**
