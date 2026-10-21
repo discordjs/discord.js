@@ -69,7 +69,7 @@
 		"eslint-formatter-pretty": "^7.1.0",
 		"prettier": "~3.8.1",
 		"turbo": "^2.10.12",
-		"typescript": "~7.1.0-dev.20261011.1"
+		"typescript": "~7.1.0-beta"
 	},
 	"engines": {
 		"node": ">=24.17.0"

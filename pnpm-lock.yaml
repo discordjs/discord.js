@@ -63,7 +63,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       typescript-eslint:
         specifier: ^8.69.0
@@ -202,7 +202,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       vercel:
         specifier: ^59.11.2
@@ -251,7 +251,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
 
   apps/website:
@@ -405,7 +405,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       vercel:
         specifier: ^59.11.2
@@ -490,7 +490,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
@@ -529,7 +529,7 @@ importers:
         specifier: ~0.6.1
         version: 0.6.1
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
     devDependencies:
       '@types/node':
@@ -609,7 +609,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
 
   packages/api-extractor-utils:
@@ -649,7 +649,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
 
   packages/brokers:
@@ -707,7 +707,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
@@ -768,7 +768,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
@@ -813,7 +813,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
@@ -877,7 +877,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
@@ -932,7 +932,7 @@ importers:
         specifier: ^5.51.2
         version: 5.51.2
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
 
   packages/create-discord-bot/template/Bun/JavaScript:
@@ -988,7 +988,7 @@ importers:
         specifier: ~3.8.1
         version: 3.8.5
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       zod:
         specifier: ^4.6.6
@@ -1047,7 +1047,7 @@ importers:
         specifier: ~3.8.1
         version: 3.8.5
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       zod:
         specifier: ^4.6.6
@@ -1138,7 +1138,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
 
   packages/docgen:
@@ -1187,7 +1187,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
 
   packages/formatters:
@@ -1236,7 +1236,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
@@ -1306,7 +1306,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
@@ -1370,7 +1370,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
@@ -1446,7 +1446,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
@@ -1495,7 +1495,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
 
   packages/scripts:
@@ -1565,7 +1565,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
 
   packages/structures:
@@ -1620,7 +1620,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
@@ -1711,7 +1711,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       unocss:
         specifier: ^66.9.2
@@ -1766,7 +1766,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
@@ -1836,7 +1836,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
@@ -1912,7 +1912,7 @@ importers:
         specifier: ^2.10.12
         version: 2.10.12
       typescript:
-        specifier: ~7.1.0-dev.20261011.1
+        specifier: ~7.1.0-beta
         version: 7.1.0-dev.20261011.1
       vitest:
         specifier: ^4.1.11
