@@ -81,7 +81,7 @@
 		"oxlint": "^1.89.0",
 		"supertest": "^7.2.2",
 		"turbo": "^2.10.12",
-		"typescript": "~7.1.0-dev.20261011.1",
+		"typescript": "~7.1.0-beta",
 		"vitest": "^4.1.11"
 	},
 	"engines": {
