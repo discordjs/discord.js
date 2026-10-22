@@ -1,3 +1,4 @@
+
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
@@ -23,7 +24,7 @@ const { PollAnswer } = require('./PollAnswer.js');
   * 
   * @type {Snowflake}
     */
-    this.channelId = data.channel_id ?? channel?.id ?? message.channelId;
+    this.channelId = message.channelId ?? channel?.id;
   
   /**
   
