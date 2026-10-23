@@ -12,8 +12,8 @@ import {
 	XCHACHA20_SAMPLE,
 	AES256GCM_SAMPLE,
 } from '../__mocks__/rtp';
-import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
 import { VoiceReceiver } from '../src/receive/VoiceReceiver';
+import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
 
 vitest.mock('../src/VoiceConnection', async (importOriginal) => {
 	// eslint-disable-next-line @typescript-eslint/consistent-type-imports

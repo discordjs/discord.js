@@ -71,7 +71,7 @@ export function SidebarProvider({
 				setInternalOpenState(openState);
 			}
 
-			// eslint-disable-next-line react-compiler/react-compiler
+			// oxlint-disable-next-line unicorn/no-document-cookie
 			document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
 		},
 		[setOpenProp, open, isMobile, setOpenMobile],

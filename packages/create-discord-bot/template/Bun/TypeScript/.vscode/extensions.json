@@ -1,7 +1,6 @@
 {
 	"recommendations": [
-		"esbenp.prettier-vscode",
-		"dbaeumer.vscode-eslint",
+		"oxc.oxc-vscode",
 		"codezombiech.gitignore",
 		"christian-kohler.npm-intellisense",
 		"christian-kohler.path-intellisense",

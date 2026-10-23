@@ -1,5 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/lintstagedrc.schema.json",
-  "*": "prettier --ignore-unknown --write",
-  "{src/**,typings/**,scripts/**}.{mjs,js,ts}": "cross-env eslint --fix --format=pretty"
+  "*": "oxfmt --no-error-on-unmatched-pattern",
+  "{src/**,typings/**,scripts/**}.{mjs,js,ts}": [
+    "oxlint --fix --fix-suggestions",
+    "node ./scripts/checkSourcePolicies.mjs"
+  ]
 }
