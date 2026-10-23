@@ -1,7 +1,5 @@
 import { isMainThread, parentPort } from 'node:worker_threads';
-
 import { Collection } from '@discordjs/collection';
-
 import type { SessionInfo } from '../../ws/WebSocketManager.js';
 import {
 	WorkerReceivePayloadOp,

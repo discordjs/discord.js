@@ -1,6 +1,5 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIWebhook } from 'discord-api-types/v10';
-
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
 import { isIdSet } from '../utils/type-guards.js';
@@ -102,7 +101,7 @@ export class Webhook<Omitted extends keyof APIWebhook | '' = ''> extends Structu
 	/**
 	 * The time the webhook was created at
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}

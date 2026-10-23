@@ -4,7 +4,6 @@
 import { Buffer } from 'node:buffer';
 import path from 'node:path';
 import util from 'node:util';
-
 import { TSDocConfiguration } from '@microsoft/tsdoc';
 import { TSDocConfigFile } from '@microsoft/tsdoc-config';
 import { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
@@ -16,7 +15,6 @@ import {
 	type JsonObject,
 	FileSystem,
 } from '@rushstack/node-core-library';
-
 import { ApiDocumentedItem, type IApiDocumentedItemOptions } from '../items/ApiDocumentedItem.js';
 import { ApiItem, ApiItemKind, type IApiItemJson } from '../items/ApiItem.js';
 import { ApiItemContainerMixin, type IApiItemContainerMixinOptions } from '../mixins/ApiItemContainerMixin.js';

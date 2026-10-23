@@ -1,5 +1,4 @@
 import { writeFile } from 'node:fs/promises';
-
 import type { PlopTypes } from '@turbo/gen';
 import { parse as parseYAML, stringify as stringifyYAML } from 'yaml';
 
@@ -33,7 +32,7 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
 			{
 				type: 'add',
 				path: `${plop.getDestBasePath()}/../{{name}}/src/index.ts`,
-				template: "console.log('Hello, from @discordjs/{{name}}');",
+				template: "console.log('Hello, from @discordjs/{{name}}');\n",
 			},
 			{
 				type: 'add',

@@ -2,10 +2,8 @@
 
 import { Buffer } from 'node:buffer';
 import crypto from 'node:crypto';
-
 import type { VoiceReceivePayload } from 'discord-api-types/voice/v8';
 import { VoiceOpcodes } from 'discord-api-types/voice/v8';
-
 import { NetworkingStatusCode, type ConnectionData } from '../networking/Networking';
 import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants';
 import { methods } from '../util/Secretbox';

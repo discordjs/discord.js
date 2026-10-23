@@ -7,7 +7,7 @@ export default defineConfig({
 	quoteProps: 'as-needed',
 	trailingComma: 'all',
 	endOfLine: 'lf',
-	sortImports: true,
+	sortImports: { newlinesBetween: false },
 	sortPackageJson: true,
 	ignorePatterns: [
 		'CODEOWNERS',

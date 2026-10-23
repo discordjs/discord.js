@@ -1,5 +1,4 @@
 import { describe, test, expect } from 'vitest';
-
 import { formatTag } from '../src/index.js';
 
 describe('Format Tag', () => {

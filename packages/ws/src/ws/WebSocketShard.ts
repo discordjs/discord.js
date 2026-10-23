@@ -2,7 +2,6 @@ import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import { setTimeout as sleep } from 'node:timers/promises';
 import type * as nativeZlib from 'node:zlib';
-
 import { Collection } from '@discordjs/collection';
 import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
 import { AsyncQueue } from '@sapphire/async-queue';
@@ -19,7 +18,6 @@ import {
 } from 'discord-api-types/v10';
 import { WebSocket, type Data } from 'ws';
 import type * as ZlibSync from 'zlib-sync';
-
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
 import {
 	CompressionMethod,
@@ -362,7 +360,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.failedToConnectDueToNetworkError = false;
 
 		// Clear session state if applicable
-		if (options.recover !== WebSocketShardDestroyRecovery.Resume) {
+		if (
+			(options.recover !== WebSocketShardDestroyRecovery.Resume && options.code !== CloseCodes.Resuming) ||
+			options.code === CloseCodes.Normal
+		) {
 			await this.strategy.updateSessionInfo(this.id, null);
 		}
 
@@ -551,6 +552,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			`shard id: ${this.id.toString()}`,
 			`shard count: ${this.strategy.options.shardCount}`,
 			`intents: ${this.strategy.options.intents}`,
+			`capabilities: ${this.strategy.options.capabilities}`,
 			`compression: ${this.transportCompressionEnabled ? CompressionParameterMap[this.strategy.options.compression!] : this.identifyCompressionEnabled ? 'identify' : 'none'}`,
 		]);
 
@@ -558,6 +560,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			token: this.strategy.options.token,
 			properties: this.strategy.options.identifyProperties,
 			intents: this.strategy.options.intents,
+			capabilities: this.strategy.options.capabilities,
 			compress: this.identifyCompressionEnabled,
 			shard: [this.id, this.strategy.options.shardCount],
 		};

@@ -1,7 +1,6 @@
 import type { Gateway, GatewayDispatchPayload, GatewaySendPayload, GatewayDispatchEvents } from '@discordjs/core';
 import type { ManagerShardEventsMap, WebSocketShardEvents } from '@discordjs/ws';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
-
 import type { PubSubRedisBroker } from './PubSubRedis.js';
 
 export type DiscordEvents = {

@@ -1,5 +1,4 @@
 import type { Buffer } from 'node:buffer';
-
 import type { IPubSubBroker } from '../Broker.js';
 import { BaseRedisBroker } from './BaseRedis.js';
 

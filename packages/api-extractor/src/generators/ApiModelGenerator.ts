@@ -3,7 +3,6 @@
 
 import { existsSync } from 'node:fs';
 import * as path from 'node:path';
-
 import type {
 	IApiMethodOptions,
 	ApiItemContainerMixin,
@@ -45,7 +44,6 @@ import type * as tsdoc from '@microsoft/tsdoc';
 import { DeclarationReference, type Meaning } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { JsonFile, Path } from '@rushstack/node-core-library';
 import * as ts from 'typescript';
-
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstEntity } from '../analyzer/AstEntity.js';
 import { AstImport } from '../analyzer/AstImport.js';

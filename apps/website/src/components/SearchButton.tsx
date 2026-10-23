@@ -2,9 +2,7 @@
 
 import { useSetAtom } from 'jotai';
 import { Command, Search } from 'lucide-react';
-
 import { isCmdKOpenAtom } from '@/stores/cmdk';
-
 import { useSidebar } from './ui/Sidebar';
 
 export function SearchButton() {

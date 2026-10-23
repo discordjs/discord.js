@@ -1,11 +1,17 @@
 import common from 'eslint-config-neon/oxlint/common';
+import edge from 'eslint-config-neon/oxlint/edge';
+import jsxA11y from 'eslint-config-neon/oxlint/jsx-a11y';
+import next from 'eslint-config-neon/oxlint/next';
 import node from 'eslint-config-neon/oxlint/node';
 import prettier from 'eslint-config-neon/oxlint/prettier';
+import react from 'eslint-config-neon/oxlint/react';
 import typescript from 'eslint-config-neon/oxlint/typescript';
 import { defineConfig } from 'oxlint';
 
 const commonFiles = '**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}';
 const plugins = [...new Set([...common.plugins, ...node.plugins, ...typescript.plugins, ...prettier.plugins])];
+const reactPlugins = [...new Set([...plugins, ...react.plugins, ...jsxA11y.plugins])];
+const nextPlugins = [...new Set([...reactPlugins, ...next.plugins, ...edge.plugins])];
 
 export default defineConfig({
 	extends: [common, node, prettier],
@@ -27,7 +33,11 @@ export default defineConfig({
 			files: [commonFiles],
 			excludeFiles: ['packages/discord.js/**/*.{js,mjs,cjs}'],
 			plugins,
-			rules: typescript.rules,
+			rules: {
+				...typescript.rules,
+				// TypeScript checks duplicate declarations and permits declaration merging.
+				'typescript/no-redeclare': 0,
+			},
 		},
 		{
 			files: [`packages/{api-extractor,brokers,create-discord-bot,docgen,ws}/${commonFiles}`],
@@ -142,6 +152,50 @@ export default defineConfig({
 			rules: {
 				'id-length': 0,
 			},
+		},
+		{
+			files: [`apps/{guide,website}/${commonFiles}`, `packages/ui/${commonFiles}`],
+			plugins: reactPlugins,
+			rules: {
+				...react.rules,
+				...jsxA11y.rules,
+				...prettier.rules,
+				'react/jsx-handler-names': 0,
+				'react/only-export-components': 0,
+				'react/error-boundaries': 2,
+				'react/globals': 2,
+				'react/immutability': 2,
+				'react/incompatible-library': 2,
+				'react/preserve-manual-memoization': 2,
+				'react/purity': 2,
+				'react/refs': 2,
+				'react/set-state-in-effect': 2,
+				'react/set-state-in-render': 2,
+				'react/static-components': 2,
+				'react/use-memo': 2,
+				'react/unsupported-syntax': 2,
+				'react/void-use-memo': 2,
+				'typescript/unbound-method': 0,
+			},
+		},
+		{
+			files: [`apps/{guide,website}/${commonFiles}`],
+			plugins: nextPlugins,
+			rules: { ...next.rules, ...edge.rules, ...prettier.rules },
+		},
+		{
+			files: ['apps/guide/src/app/layout.tsx'],
+			plugins: nextPlugins,
+			rules: { 'react/no-unstable-nested-components': 0 },
+		},
+		{
+			files: ['apps/website/src/components/CmdK.tsx'],
+			plugins: nextPlugins,
+			rules: { 'react/set-state-in-effect': 0 },
+		},
+		{
+			files: ['packages/scripts/src/generateSplitDocumentation.ts'],
+			rules: { 'unicorn/consistent-function-scoping': 0 },
 		},
 	],
 	options: {

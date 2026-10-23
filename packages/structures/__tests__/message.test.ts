@@ -27,7 +27,6 @@ import {
 	SelectMenuDefaultValueType,
 } from 'discord-api-types/v10';
 import { describe, expect, test } from 'vitest';
-
 import { Attachment } from '../src/messages/Attachment.js';
 import { ContainerComponent } from '../src/messages/components/ContainerComponent.js';
 import { Embed } from '../src/messages/embeds/Embed.js';
@@ -108,10 +107,10 @@ describe('message with embeds and attachments', () => {
 		expect(instance.position).toBe(data.position);
 		expect(instance.content).toBe(data.content);
 		expect(instance.createdTimestamp).toBe(Date.parse(data.timestamp));
-		expect(dateToDiscordISOTimestamp(instance.createdAt!)).toBe(data.timestamp);
+		expect(dateToDiscordISOTimestamp(instance.createdDate!)).toBe(data.timestamp);
 		expect(instance.flags?.toJSON()).toBe(data.flags);
 		expect(instance.editedTimestamp).toBe(Date.parse(data.edited_timestamp!));
-		expect(dateToDiscordISOTimestamp(instance.editedAt!)).toBe(data.edited_timestamp);
+		expect(dateToDiscordISOTimestamp(instance.editedDate!)).toBe(data.edited_timestamp);
 		expect(instance.nonce).toBe(data.nonce);
 		expect(instance.pinned).toBe(data.pinned);
 		expect(instance.tts).toBe(data.tts);
@@ -450,10 +449,10 @@ describe('message with components', () => {
 		expect(instance.position).toBe(data.position);
 		expect(instance.content).toBe(data.content);
 		expect(instance.createdTimestamp).toBe(Date.parse(data.timestamp));
-		expect(dateToDiscordISOTimestamp(instance.createdAt!)).toBe(data.timestamp);
+		expect(dateToDiscordISOTimestamp(instance.createdDate!)).toBe(data.timestamp);
 		expect(instance.flags?.toJSON()).toBe(data.flags);
 		expect(instance.editedTimestamp).toBe(Date.parse(data.edited_timestamp!));
-		expect(dateToDiscordISOTimestamp(instance.editedAt!)).toBe(data.edited_timestamp);
+		expect(dateToDiscordISOTimestamp(instance.editedDate!)).toBe(data.edited_timestamp);
 		expect(instance.nonce).toBe(data.nonce);
 		expect(instance.pinned).toBe(data.pinned);
 		expect(instance.tts).toBe(data.tts);

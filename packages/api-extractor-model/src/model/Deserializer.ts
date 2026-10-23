@@ -2,7 +2,6 @@
 // See LICENSE in the project root for license information.
 
 import { TSDocConfiguration } from '@microsoft/tsdoc';
-
 import type { IExcerptToken } from '../index.js';
 import { ExcerptTokenKind } from '../index.js';
 import type { IApiDeclaredItemJson } from '../items/ApiDeclaredItem.js';

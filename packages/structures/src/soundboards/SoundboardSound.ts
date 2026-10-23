@@ -1,6 +1,5 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APISoundboardSound } from 'discord-api-types/v10';
-
 import { Structure } from '../Structure';
 import { kData } from '../utils/symbols';
 import { isIdSet } from '../utils/type-guards';
@@ -93,9 +92,8 @@ export class SoundboardSound<Omitted extends keyof APISoundboardSound | '' = ''>
 	 *
 	 * @remarks only available for guild soundboard sounds
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
-
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
 }

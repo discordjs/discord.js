@@ -2,7 +2,6 @@
 // See LICENSE in the project root for license information.
 
 import * as path from 'node:path';
-
 import { EnumMemberOrder, ReleaseTag } from '@discordjs/api-extractor-model';
 import { TSDocConfiguration, TSDocTagDefinition } from '@microsoft/tsdoc';
 import { TSDocConfigFile } from '@microsoft/tsdoc-config';
@@ -20,7 +19,6 @@ import {
 	NewlineKind,
 } from '@rushstack/node-core-library';
 import * as resolve from 'resolve';
-
 import { PackageMetadataManager } from '../analyzer/PackageMetadataManager.js';
 import { MessageRouter } from '../collector/MessageRouter.js';
 import type { IApiModelGenerationOptions } from '../generators/ApiModelGenerator';

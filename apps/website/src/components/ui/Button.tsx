@@ -3,7 +3,6 @@
 import type { VariantProps } from 'cva';
 import { Button as RACButton, composeRenderProps } from 'react-aria-components';
 import type { ButtonProps as RACButtonProps } from 'react-aria-components';
-
 import { buttonStyles } from '@/styles/ui/button';
 
 export type ButtonProps = RACButtonProps & VariantProps<typeof buttonStyles>;

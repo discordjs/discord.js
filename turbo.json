@@ -126,7 +126,6 @@
 				"../../oxfmt.config.ts",
 				"../../oxlint.config.ts",
 				"../../tsconfig.eslint.json",
-				"oxlint.config.ts",
 				"src/**",
 				"!src/styles/unocss.css",
 				"tsconfig.eslint.json"
@@ -140,7 +139,6 @@
 				"../../oxfmt.config.ts",
 				"../../oxlint.config.ts",
 				"../../tsconfig.eslint.json",
-				"oxlint.config.ts",
 				"src/**",
 				"!src/styles/unocss.css",
 				"tsconfig.eslint.json"
@@ -169,7 +167,6 @@
 				"../../oxfmt.config.ts",
 				"../../oxlint.config.ts",
 				"../../tsconfig.eslint.json",
-				"oxlint.config.ts",
 				"src/**",
 				"!src/styles/unocss.css",
 				"package.json",

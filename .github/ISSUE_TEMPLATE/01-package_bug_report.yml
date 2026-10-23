@@ -23,6 +23,7 @@ body:
         - next
         - proxy
         - rest
+        - rpc
         - structures
         - ui
         - util

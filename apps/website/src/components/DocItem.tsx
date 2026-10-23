@@ -1,5 +1,4 @@
 import { VscSymbolParameter } from '@react-icons/all-files/vsc/VscSymbolParameter';
-
 import { ConstructorNode } from './ConstructorNode';
 import { DeprecatedNode } from './DeprecatedNode';
 import { EnumMemberNode } from './EnumMemberNode';

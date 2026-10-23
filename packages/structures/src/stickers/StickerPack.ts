@@ -1,6 +1,5 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIStickerPack } from 'discord-api-types/v10';
-
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
 import { isIdSet } from '../utils/type-guards.js';
@@ -79,7 +78,7 @@ export class StickerPack<Omitted extends keyof APIStickerPack | '' = ''> extends
 	/**
 	 * The time the sticker pack was created at
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}

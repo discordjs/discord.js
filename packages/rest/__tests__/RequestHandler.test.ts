@@ -1,9 +1,9 @@
 /* eslint-disable id-length */
 /* eslint-disable promise/prefer-await-to-then */
+import { getEventListeners } from 'node:events';
 import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor.js';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
-
 import { DiscordAPIError, HTTPError, RateLimitError, REST, RESTEvents } from '../src/index.js';
 import { genPath } from './util.js';
 
@@ -12,7 +12,9 @@ let mockPool: Interceptable;
 
 const api = new REST({ timeout: 2_000, offset: 5 }).setToken('A-Very-Fake-Token');
 const invalidAuthApi = new REST({ timeout: 2_000 }).setToken('Definitely-Not-A-Fake-Token');
-const rateLimitErrorApi = new REST({ rejectOnRateLimit: ['/channels'] }).setToken('Obviously-Not-A-Fake-Token');
+const rateLimitErrorApi = new REST({
+	rejectOnRateLimit: (rateLimitData) => rateLimitData.route.startsWith('/channels'),
+}).setToken('Obviously-Not-A-Fake-Token');
 
 beforeEach(() => {
 	mockAgent = new MockAgent();
@@ -45,6 +47,7 @@ let sublimitHits = 0;
 let serverOutage = true;
 let unexpected429 = true;
 let unexpected429cf = true;
+let optOut429 = true;
 const sublimitIntervals: {
 	reset: NodeJS.Timeout | null;
 	retry: NodeJS.Timeout | null;
@@ -409,6 +412,145 @@ test('Handle unexpected 429 cloudflare', async () => {
 	expect(Date.now()).toBeGreaterThanOrEqual(previous + 1_000);
 });
 
+test('rejectOnRateLimit rejects on the pre-emptive throttle', async () => {
+	mockPool
+		.intercept({
+			path: genPath('/preemptive'),
+			method: 'GET',
+		})
+		.reply(() => ({
+			statusCode: 200,
+			data: { test: true },
+			responseOptions: {
+				headers: {
+					...responseOptions.headers,
+					'x-ratelimit-limit': '1',
+					'x-ratelimit-remaining': '0',
+					'x-ratelimit-reset-after': '0.5',
+					via: '1.1 google',
+				},
+			},
+		}))
+		.times(1);
+
+	expect(await api.get('/preemptive')).toStrictEqual({ test: true });
+	await expect(api.get('/preemptive', { rejectOnRateLimit: true })).rejects.toBeInstanceOf(RateLimitError);
+});
+
+test('Requests made with different tokens do not share a rate limit', async () => {
+	mockPool
+		.intercept({
+			path: genPath('/per-token'),
+			method: 'GET',
+		})
+		.reply(() => ({
+			statusCode: 200,
+			data: { test: true },
+			responseOptions: {
+				headers: {
+					...responseOptions.headers,
+					'x-ratelimit-limit': '1',
+					'x-ratelimit-remaining': '0',
+					'x-ratelimit-reset-after': '5',
+					'x-ratelimit-bucket': 'abcdef',
+				},
+			},
+		}))
+		.times(4);
+
+	const first = { auth: { prefix: 'Bearer' as const, token: 'First-Fake-User-Token' } };
+	const second = { auth: { prefix: 'Bearer' as const, token: 'Second-Fake-User-Token' } };
+
+	expect(await api.get('/per-token', first)).toStrictEqual({ test: true });
+	expect(await api.get('/per-token', second)).toStrictEqual({ test: true });
+
+	expect(await api.get('/per-token', { ...first, rejectOnRateLimit: true })).toStrictEqual({ test: true });
+	expect(await api.get('/per-token', { ...second, rejectOnRateLimit: true })).toStrictEqual({ test: true });
+
+	// each token is still throttled on its own
+	await expect(api.get('/per-token', { ...first, rejectOnRateLimit: true })).rejects.toBeInstanceOf(RateLimitError);
+});
+
+test('rejectOnRateLimit rejects on an unexpected 429', async () => {
+	mockPool
+		.intercept({
+			path: genPath('/reject-429'),
+			method: 'GET',
+		})
+		.reply(() => ({
+			statusCode: 429,
+			data: '',
+			responseOptions: {
+				headers: {
+					'retry-after': '1',
+					'x-ratelimit-scope': 'shared',
+					via: '1.1 google',
+				},
+			},
+		}))
+		.times(1);
+
+	const rejectOnRateLimit = vitest.fn(() => true);
+
+	await expect(api.get('/reject-429', { rejectOnRateLimit })).rejects.toBeInstanceOf(RateLimitError);
+
+	expect(rejectOnRateLimit).toHaveBeenCalledTimes(1);
+	expect(rejectOnRateLimit).toHaveBeenCalledWith(
+		expect.objectContaining({
+			global: false,
+			method: 'GET',
+			route: '/reject-429',
+			majorParameter: 'global',
+			// 1_005 because of `offset: 5`
+			retryAfter: 1_005,
+			sublimitTimeout: 1_005,
+			scope: 'shared',
+		}),
+	);
+});
+
+test('Per-call rejectOnRateLimit takes precedence over the instance-wide one', async () => {
+	mockPool
+		.intercept({
+			path: genPath('/channels/1111111111111111111'),
+			method: 'GET',
+		})
+		.reply(() => ({
+			statusCode: 429,
+			data: '',
+			responseOptions: { headers: { 'retry-after': '1', via: '1.1 google' } },
+		}))
+		.times(1);
+
+	mockPool
+		.intercept({
+			path: genPath('/channels/2222222222222222222'),
+			method: 'GET',
+		})
+		.reply(() => {
+			if (optOut429) {
+				optOut429 = false;
+
+				return {
+					statusCode: 429,
+					data: '',
+					responseOptions: { headers: { 'retry-after': '1', via: '1.1 google' } },
+				};
+			}
+
+			return { statusCode: 200, data: { test: true }, responseOptions };
+		})
+		.times(2);
+
+	await expect(rateLimitErrorApi.get('/channels/1111111111111111111')).rejects.toBeInstanceOf(RateLimitError);
+
+	const previous = performance.now();
+	expect(await rateLimitErrorApi.get('/channels/2222222222222222222', { rejectOnRateLimit: false })).toStrictEqual({
+		test: true,
+	});
+	expect(performance.now()).toBeGreaterThanOrEqual(previous + 1_000);
+});
+
 test('Handle global rate limits', async () => {
 	mockPool
 		.intercept({
@@ -548,6 +690,22 @@ test('malformedRequest', async () => {
 		}));
 
 	await expect(api.get('/malformedRequest')).rejects.toBeInstanceOf(DiscordAPIError);
+});
+
+test('remove abort listeners after requests complete', async () => {
+	mockPool
+		.intercept({
+			path: genPath('/abort-listener-cleanup'),
+			method: 'GET',
+		})
+		.reply(200, { message: 'Hello World' }, responseOptions)
+		.times(2);
+
+	const controller = new AbortController();
+	for (let index = 0; index < 2; index++) {
+		await api.get('/abort-listener-cleanup', { signal: controller.signal });
+		expect(getEventListeners(controller.signal, 'abort')).toHaveLength(0);
+	}
 });
 
 // TODO: flaky due to changes in undici

@@ -1,6 +1,5 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APIEmbedFooter } from 'discord-api-types/v10';
-
 import { validate } from '../../util/validation.js';
 import { embedFooterPredicate } from './Assertions.js';
 

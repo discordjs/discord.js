@@ -54,20 +54,20 @@
 		"rename-to-app": "node scripts/rename-to-app.mjs"
 	},
 	"dependencies": {
-		"commander": "^14.0.3",
+		"commander": "^15.0.0",
 		"prompts": "^2.4.2",
-		"validate-npm-package-name": "^7.0.2"
+		"validate-npm-package-name": "^8.0.0"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
-		"@favware/cliff-jumper": "^6.0.0",
-		"@types/node": "^24.13.2",
+		"@favware/cliff-jumper": "^6.1.0",
+		"@types/node": "^24.13.3",
 		"@types/prompts": "^2.4.9",
 		"@types/validate-npm-package-name": "^4.0.2",
 		"eslint-config-neon": "^0.5.4",
-		"oxfmt": "^0.62.0",
-		"oxlint": "^1.77.0",
-		"terser": "^5.46.1",
+		"oxfmt": "^0.74.0",
+		"oxlint": "^1.89.0",
+		"terser": "^5.51.2",
 		"tsup": "^8.5.1",
 		"typescript": "~5.9.3"
 	},

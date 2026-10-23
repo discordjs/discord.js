@@ -1,5 +1,4 @@
 import type { DeclarationReflection, SignatureReflection } from 'typedoc';
-
 import type { Constructor } from '../interfaces/index.js';
 import { DocumentedItem } from './item.js';
 import { DocumentedParam } from './param.js';

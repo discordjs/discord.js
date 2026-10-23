@@ -1,6 +1,5 @@
 import { ComponentType } from 'discord-api-types/v10';
 import { z } from 'zod';
-
 import { customIdPredicate } from '../../Assertions.js';
 import { labelPredicate } from '../../components/label/Assertions.js';
 import { textDisplayPredicate } from '../../components/v2/Assertions.js';

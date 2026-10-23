@@ -18,7 +18,6 @@ import type {
 	ApiReturnTypeMixin,
 } from '@discordjs/api-extractor-model';
 import { ApiDeclaredItem, ApiItemKind } from '@discordjs/api-extractor-model';
-
 import { type TokenDocumentation, resolveName, genReference, genToken, genParameter, generatePath } from './parse.js';
 import type { DocBlockJSON } from './tsdoc/CommentBlock.js';
 import type { AnyDocNodeJSON } from './tsdoc/CommentNode.js';

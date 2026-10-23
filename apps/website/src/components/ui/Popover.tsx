@@ -18,7 +18,6 @@ import {
 	useSlottedContext,
 } from 'react-aria-components';
 import { useMediaQuery } from 'usehooks-ts';
-
 import type { DialogBodyProps, DialogFooterProps, DialogHeaderProps, DialogTitleProps } from '@/components/ui/Dialog';
 import { Dialog, DialogBody, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/Dialog';
 import { cva, cx } from '@/styles/cva';
@@ -44,7 +43,7 @@ export function PopoverFooter(props: DialogFooterProps) {
 }
 
 const contentStyles = cva({
-	base: 'peer/popover-content border-base-neutral-200 dark:border-base-neutral-600 shadow-base-sm bg-base-neutral-0 dark:bg-base-neutral-800 text-base-md max-w-xs rounded-sm border bg-clip-padding transition-transform [scrollbar-width:thin] sm:max-w-3xl dark:backdrop-saturate-200 forced-colors:bg-[Canvas]',
+	base: 'peer/popover-content border-base-neutral-200 dark:border-base-neutral-600 shadow-base-sm bg-base-neutral-0 dark:bg-base-neutral-800 text-base-md max-w-xs [scrollbar-width:thin] rounded-sm border bg-clip-padding transition-transform sm:max-w-3xl dark:backdrop-saturate-200 forced-colors:bg-[Canvas]',
 	variants: {
 		isPicker: {
 			true: 'max-h-72 min-w-(--trigger-width) overflow-y-auto',

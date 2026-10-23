@@ -4,7 +4,6 @@ import type {
 	APIModalInteractionResponseCallbackData,
 	APITextDisplayComponent,
 } from 'discord-api-types/v10';
-
 import type { ActionRowBuilder } from '../../components/ActionRow.js';
 import type { AnyModalComponentBuilder } from '../../components/Components.js';
 import { createComponentBuilder } from '../../components/Components.js';

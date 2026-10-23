@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { Suspense, type PropsWithChildren } from 'react';
-
 import { CmdK } from './CmdK';
 
 export async function generateMetadata({

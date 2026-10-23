@@ -1,6 +1,5 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIEmoji } from 'discord-api-types/v10';
-
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
 import { isIdSet } from '../utils/type-guards.js';
@@ -82,7 +81,7 @@ export class Emoji<Omitted extends keyof APIEmoji | '' = ''> extends Structure<A
 	/**
 	 * The time the emoji was created at
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}

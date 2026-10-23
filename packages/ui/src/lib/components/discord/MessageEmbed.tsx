@@ -1,5 +1,4 @@
 import type { PropsWithChildren, ReactNode } from 'react';
-
 import { DiscordMessageEmbedAuthor, type IDiscordMessageEmbedAuthor } from './MessageEmbedAuthor.js';
 import type { IDiscordMessageEmbedField } from './MessageEmbedField.js';
 import { DiscordMessageEmbedFields } from './MessageEmbedFields.js';

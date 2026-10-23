@@ -1,5 +1,4 @@
 import type { APIPartialEmoji, APIPollMedia } from 'discord-api-types/v10';
-
 import { validate } from '../../util/validation.js';
 import { pollAnswerMediaPredicate } from './Assertions.js';
 import { PollMediaBuilder } from './PollMedia.js';

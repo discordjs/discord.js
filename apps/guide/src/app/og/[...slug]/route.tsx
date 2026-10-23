@@ -1,7 +1,6 @@
 import { generateOGImage } from 'fumadocs-ui/og';
 import { notFound } from 'next/navigation';
 import pRetry, { AbortError } from 'p-retry';
-
 import { source } from '@/lib/source';
 
 export function generateStaticParams() {

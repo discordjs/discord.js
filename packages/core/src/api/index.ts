@@ -1,5 +1,4 @@
 import type { REST } from '@discordjs/rest';
-
 import { ApplicationCommandsAPI } from './applicationCommands.js';
 import { ApplicationsAPI } from './applications.js';
 import { ChannelsAPI } from './channel.js';

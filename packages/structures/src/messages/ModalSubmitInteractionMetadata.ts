@@ -1,5 +1,4 @@
 import type { APIModalSubmitInteractionMetadata, InteractionType } from 'discord-api-types/v10';
-
 import type { Partialize } from '../utils/types.js';
 import { InteractionMetadata } from './InteractionMetadata.js';
 

@@ -1,7 +1,6 @@
 import { stat, mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
-
 import {
 	type ApiItem,
 	ApiPackage,
@@ -13,7 +12,6 @@ import {
 import { generatePath } from '@discordjs/api-extractor-utils';
 import { DocNodeKind } from '@microsoft/tsdoc';
 import type { DocLinkTag, DocCodeSpan, DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
-
 import { resolveMembers } from './generateSplitDocumentation.js';
 import { PACKAGES, fetchVersionDocs, fetchVersions } from './shared.js';
 

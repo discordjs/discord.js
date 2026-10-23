@@ -54,13 +54,13 @@
 		"tslib": "^2.8.1"
 	},
 	"devDependencies": {
-		"@types/node": "^24.13.2",
+		"@types/node": "^24.13.3",
 		"eslint-config-neon": "^0.5.4",
-		"oxfmt": "^0.62.0",
-		"oxlint": "^1.77.0",
-		"terser": "^5.46.1",
+		"oxfmt": "^0.74.0",
+		"oxlint": "^1.89.0",
+		"terser": "^5.51.2",
 		"tsup": "^8.5.1",
-		"turbo": "^2.8.21",
+		"turbo": "^2.10.12",
 		"typescript": "~5.9.3"
 	},
 	"engines": {

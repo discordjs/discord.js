@@ -1,6 +1,5 @@
 import type { APIFileUploadComponent, FileUploadType } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
-
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { validate } from '../../util/validation.js';
 import { ComponentBuilder } from '../Component.js';

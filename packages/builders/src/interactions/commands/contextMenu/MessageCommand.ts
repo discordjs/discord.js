@@ -1,5 +1,4 @@
 import { ApplicationCommandType, type RESTPostAPIContextMenuApplicationCommandsJSONBody } from 'discord-api-types/v10';
-
 import { validate } from '../../../util/validation.js';
 import { messageCommandPredicate } from './Assertions.js';
 import { ContextMenuCommandBuilder } from './ContextMenuCommand.js';

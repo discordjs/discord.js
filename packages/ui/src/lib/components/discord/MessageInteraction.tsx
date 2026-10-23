@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-
 import type { IDiscordMessageAuthorReply } from './MessageAuthorReply.js';
 import { DiscordMessageBaseReply } from './MessageBaseReply.js';
 

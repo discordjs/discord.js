@@ -1,9 +1,7 @@
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { Code2, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
-
 import { ENV } from '@/util/env';
-
 import { Badges } from './Badges';
 import { ExampleNode } from './ExampleNode';
 import { ParameterNode } from './ParameterNode';

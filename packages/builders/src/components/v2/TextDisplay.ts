@@ -1,6 +1,5 @@
 import type { APITextDisplayComponent } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
-
 import { validate } from '../../util/validation.js';
 import { ComponentBuilder } from '../Component.js';
 import { textDisplayPredicate } from './Assertions.js';

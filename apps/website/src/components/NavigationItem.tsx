@@ -4,7 +4,6 @@ import { useSetAtom } from 'jotai';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import type { PropsWithChildren } from 'react';
-
 import { isDrawerOpenAtom } from '@/stores/drawer';
 import { cx } from '@/styles/cva';
 

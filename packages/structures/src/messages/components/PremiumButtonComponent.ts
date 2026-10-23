@@ -1,5 +1,4 @@
 import type { APIButtonComponentWithSKUId, ButtonStyle } from 'discord-api-types/v10';
-
 import { kData } from '../../utils/symbols.js';
 import type { Partialize } from '../../utils/types.js';
 import { ButtonComponent } from './ButtonComponent.js';

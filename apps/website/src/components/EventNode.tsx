@@ -1,9 +1,7 @@
 import { VscSymbolEvent } from '@react-icons/all-files/vsc/VscSymbolEvent';
 import { ChevronDown, ChevronUp, Code2, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
-
 import { ENV } from '@/util/env';
-
 import { Badges } from './Badges';
 import { DeprecatedNode } from './DeprecatedNode';
 import { ExampleNode } from './ExampleNode';

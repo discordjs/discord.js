@@ -1,5 +1,4 @@
 import { ApplicationCommandOptionType } from 'discord-api-types/v10';
-
 import { userOptionPredicate } from '../Assertions.js';
 import { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase.js';
 

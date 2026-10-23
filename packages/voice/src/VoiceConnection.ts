@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import type { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
-
 import type { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData } from 'discord-api-types/v10';
-
 import type { AudioPlayer } from './audio/AudioPlayer';
 import type { PlayerSubscription } from './audio/PlayerSubscription';
 import type { JoinConfig } from './DataStore';
@@ -380,6 +378,15 @@ export class VoiceConnection extends EventEmitter {
 			as it may have disconnected due to network failure. This will be gracefully handled once the voice websocket
 			dies, and then it is up to the user to decide how they wish to handle this.
 		*/
+
+		/*
+		  deals with race condition when VOICE_SERVER_UPDATE arrives before VOICE_STATE_UPDATE and connection stays
+			stuck in signalling state
+			gh issue #11553
+		*/
+		if (packet.channel_id && this.state.status === VoiceConnectionStatus.Signalling) {
+			this.configureNetworking();
+		}
 	}
 
 	/**

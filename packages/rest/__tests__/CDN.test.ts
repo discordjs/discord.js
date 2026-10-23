@@ -1,5 +1,4 @@
 import { test, expect } from 'vitest';
-
 import { CDN } from '../src/index.js';
 
 const baseCDN = 'https://cdn-discord.com';

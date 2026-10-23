@@ -1,5 +1,4 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-
 import { shouldUseGlobalFetchAndWebSocket } from '../src/index.js';
 
 describe('shouldUseGlobalFetchAndWebSocket', () => {

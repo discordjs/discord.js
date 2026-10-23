@@ -1,9 +1,7 @@
 import { type EventEmitter, once } from 'node:events';
-
 import { VoiceOpcodes } from 'discord-api-types/voice/v8';
 import { describe, test, expect, beforeEach } from 'vitest';
 import WS from 'vitest-websocket-mock';
-
 import { VoiceWebSocket } from '../src/networking/VoiceWebSocket';
 
 beforeEach(() => {

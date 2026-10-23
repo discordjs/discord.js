@@ -5,7 +5,6 @@ import {
 	type APIButtonComponentWithURL,
 } from 'discord-api-types/v10';
 import { Mixin } from 'ts-mixer';
-
 import { BaseButtonBuilder } from './Button.js';
 import { EmojiOrLabelButtonMixin } from './mixins/EmojiOrLabelButtonMixin.js';
 

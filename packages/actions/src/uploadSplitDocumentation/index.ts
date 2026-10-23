@@ -2,7 +2,6 @@ import { readFile } from 'node:fs/promises';
 import { basename, dirname, relative, sep } from 'node:path';
 import process from 'node:process';
 import { setTimeout as sleep } from 'node:timers/promises';
-
 import { setFailed, getInput } from '@actions/core';
 import { create } from '@actions/glob';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';

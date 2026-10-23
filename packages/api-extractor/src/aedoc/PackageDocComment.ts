@@ -2,7 +2,6 @@
 // See LICENSE in the project root for license information.
 
 import * as ts from 'typescript';
-
 import { ExtractorMessageId } from '../api/ExtractorMessageId.js';
 import type { Collector } from '../collector/Collector.js';
 

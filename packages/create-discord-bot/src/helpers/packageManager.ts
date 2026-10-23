@@ -1,7 +1,6 @@
 import { execSync } from 'node:child_process';
 import process from 'node:process';
 import { styleText } from 'node:util';
-
 import { DEFAULT_PACKAGE_MANAGER, type PACKAGE_MANAGERS } from '../util/constants.js';
 
 /**

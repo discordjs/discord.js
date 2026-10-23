@@ -4,7 +4,6 @@ import {
 	ComponentType,
 	SelectMenuDefaultValueType,
 } from 'discord-api-types/v10';
-
 import { type RestOrArray, normalizeArray } from '../../util/normalizeArray.js';
 import { validate } from '../../util/validation.js';
 import { selectMenuRolePredicate } from '../Assertions.js';

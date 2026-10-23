@@ -5,7 +5,6 @@ import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty'
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import Link from 'next/link';
 import { Fragment } from 'react';
-
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/Collapsible';
 
 export async function Outline({ node }: { readonly node: any }) {

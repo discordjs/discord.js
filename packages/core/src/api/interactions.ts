@@ -13,7 +13,6 @@ import {
 	type RESTPostAPIInteractionCallbackWithResponseResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
-
 import type { WebhooksAPI } from './webhook.js';
 
 export interface CreateInteractionResponseOptions

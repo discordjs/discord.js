@@ -1,3 +1,4 @@
+import process from 'node:process';
 import { info, warning } from '@actions/core';
 import type { PackageJSON, PackumentVersion } from '@npm/types';
 import { $, file, write } from 'bun';
@@ -42,6 +43,10 @@ async function getReleaseEntries(dry: boolean, devTag?: string) {
 
 	const commitHash = (await $`git rev-parse --short HEAD`.text()).trim();
 	const timestamp = Math.round(Date.now() / 1_000);
+
+	// We intentionally pin workspace dependencies in package.json for dev releases below,
+	// which causes pnpm's dependency validations to fail since the lockfile gets out of sync
+	if (devTag && !dry) process.env.pnpm_config_verify_deps_before_run = 'false';
 
 	for (const pkg of packageList) {
 		// Don't release private packages ever (npm will error anyways)

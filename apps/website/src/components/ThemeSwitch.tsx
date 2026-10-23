@@ -3,7 +3,6 @@
 import { VscColorMode } from '@react-icons/all-files/vsc/VscColorMode';
 import { useTheme } from 'next-themes';
 import dynamic from 'next/dynamic';
-
 import { Button } from '@/components/ui/Button';
 
 export function ThemeSwitch() {

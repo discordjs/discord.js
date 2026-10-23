@@ -1,9 +1,7 @@
 import process from 'node:process';
-
 import { Collection } from '@discordjs/collection';
 import { lazy } from '@discordjs/util';
 import { APIVersion, GatewayOpcodes } from 'discord-api-types/v10';
-
 import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy.js';
 import { SimpleIdentifyThrottler } from '../throttling/SimpleIdentifyThrottler.js';
 import type { SessionInfo, OptionalWebSocketManagerOptions, WebSocketManager } from '../ws/WebSocketManager.js';
@@ -39,11 +37,10 @@ export const CompressionParameterMap = {
  * Default options used by the manager
  */
 export const DefaultWebSocketManagerOptions = {
-	async buildIdentifyThrottler(manager: WebSocketManager) {
-		const info = await manager.fetchGatewayInformation();
-		return new SimpleIdentifyThrottler(info.session_start_limit.max_concurrency);
-	},
+	buildIdentifyThrottler: (manager: WebSocketManager) =>
+		new SimpleIdentifyThrottler(manager.getGatewayInformation().session_start_limit.max_concurrency),
 	buildStrategy: (manager) => new SimpleShardingStrategy(manager),
+	capabilities: 0,
 	shardCount: null,
 	shardIds: null,
 	largeThreshold: null,
@@ -72,7 +69,7 @@ export const DefaultWebSocketManagerOptions = {
 	handshakeTimeout: 30_000,
 	helloTimeout: 60_000,
 	readyTimeout: 15_000,
-} as const satisfies Omit<OptionalWebSocketManagerOptions, 'fetchGatewayInformation' | 'token'>;
+} as const satisfies Omit<OptionalWebSocketManagerOptions, 'token'>;
 
 export const ImportantGatewayOpcodes = new Set([
 	GatewayOpcodes.Heartbeat,

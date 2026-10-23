@@ -1,7 +1,6 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { relative, resolve } from 'node:path';
 import process from 'node:process';
-
 import ts from 'typescript';
 
 const packageRoot = resolve(import.meta.dirname, '..');

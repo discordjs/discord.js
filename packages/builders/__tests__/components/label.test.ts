@@ -6,7 +6,6 @@ import type {
 } from 'discord-api-types/v10';
 import { ComponentType, TextInputStyle } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-
 import { LabelBuilder } from '../../src/index.js';
 
 describe('Label components', () => {

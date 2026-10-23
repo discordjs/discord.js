@@ -2,7 +2,6 @@
 // See LICENSE in the project root for license information.
 
 import { InternalError } from '@rushstack/node-core-library';
-
 import { AstSyntheticEntity } from './AstEntity.js';
 import type { AstSymbol } from './AstSymbol.js';
 

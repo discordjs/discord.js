@@ -1,7 +1,6 @@
 import { LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Fragment } from 'react';
-
 import { Badges } from './Badges';
 import { DocNode } from './DocNode';
 import { ExcerptNode } from './ExcerptNode';

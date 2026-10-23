@@ -1,6 +1,5 @@
 /* eslint-disable no-template-curly-in-string */
 import { describe, test, expect, vitest } from 'vitest';
-
 import {
 	applicationDirectory,
 	chatInputApplicationCommandMention,
@@ -11,6 +10,7 @@ import {
 	codeBlock,
 	Faces,
 	formatEmoji,
+	gameProfileMention,
 	heading,
 	HeadingLevel,
 	hideLinkEmbed,
@@ -151,6 +151,12 @@ describe('Message formatters', () => {
 		describe('linkedRoleMention', () => {
 			test('GIVEN roleId THEN returns "<id:linked-roles:[roleId]>"', () => {
 				expect(linkedRoleMention('815434166602170409')).toEqual('<id:linked-roles:815434166602170409>');
+			});
+		});
+
+		describe('gameProfileMention', () => {
+			test('GIVEN gameId THEN returns "<@$[gameId]>"', () => {
+				expect<'<@$1402418491272986635>'>(gameProfileMention('1402418491272986635')).toEqual('<@$1402418491272986635>');
 			});
 		});
 

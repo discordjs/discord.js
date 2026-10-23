@@ -4,5 +4,5 @@ export default defineConfig({
 	printWidth: 120,
 	useTabs: true,
 	singleQuote: true,
-	sortImports: true,
+	sortImports: { newlinesBetween: false },
 });

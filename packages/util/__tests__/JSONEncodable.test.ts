@@ -1,5 +1,4 @@
 import { describe, test, expect } from 'vitest';
-
 import { isJSONEncodable, type JSONEncodable } from '../src/index.js';
 
 class Encodable implements JSONEncodable<Record<string, never>> {

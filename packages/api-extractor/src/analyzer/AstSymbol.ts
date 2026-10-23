@@ -3,7 +3,6 @@
 
 import { InternalError } from '@rushstack/node-core-library';
 import type * as ts from 'typescript';
-
 import type { AstDeclaration } from './AstDeclaration.js';
 import { AstEntity } from './AstEntity.js';
 

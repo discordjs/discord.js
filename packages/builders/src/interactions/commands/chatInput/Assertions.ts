@@ -5,7 +5,6 @@ import {
 	ApplicationCommandType,
 } from 'discord-api-types/v10';
 import { z } from 'zod';
-
 import { fileUploadTypesPredicate, localeMapPredicate, memberPermissionsPredicate } from '../../../Assertions.js';
 import { ApplicationCommandOptionAllowedChannelTypes } from './mixins/ApplicationCommandOptionChannelTypesMixin.js';
 

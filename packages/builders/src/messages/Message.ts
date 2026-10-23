@@ -19,7 +19,6 @@ import type {
 	APIMessageTopLevelComponent,
 	APIMessageSharedClientTheme,
 } from 'discord-api-types/v10';
-
 import { ActionRowBuilder } from '../components/ActionRow.js';
 import { ComponentBuilder } from '../components/Component.js';
 import type { MessageTopLevelComponentBuilder } from '../components/Components.js';

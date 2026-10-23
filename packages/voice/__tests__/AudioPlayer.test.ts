@@ -5,9 +5,7 @@ import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import process from 'node:process';
 import { Readable } from 'node:stream';
-
 import { describe, test, expect, vitest, type MockedFunction, beforeEach, afterEach } from 'vitest';
-
 import type { AudioPlayer } from '../src/audio/AudioPlayer';
 import { createAudioPlayer, AudioPlayerStatus, SILENCE_FRAME } from '../src/audio/AudioPlayer';
 import { AudioPlayerError } from '../src/audio/AudioPlayerError';

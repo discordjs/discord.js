@@ -3,7 +3,6 @@ import {
 	type APIApplicationCommandChannelOption,
 	ChannelType,
 } from 'discord-api-types/v10';
-
 import { normalizeArray, type RestOrArray } from '../../../../util/normalizeArray';
 
 export const ApplicationCommandOptionAllowedChannelTypes = [
@@ -17,6 +16,8 @@ export const ApplicationCommandOptionAllowedChannelTypes = [
 	ChannelType.GuildStageVoice,
 	ChannelType.GuildForum,
 	ChannelType.GuildMedia,
+	ChannelType.DM,
+	ChannelType.GroupDM,
 ] as const satisfies readonly ApplicationCommandOptionAllowedChannelType[];
 
 export interface ApplicationCommandOptionChannelTypesData extends Pick<

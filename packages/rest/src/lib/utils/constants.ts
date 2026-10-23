@@ -1,7 +1,6 @@
 import { getUserAgentAppendix } from '@discordjs/util';
 import type { ImageSize } from 'discord-api-types/v10';
 import { APIVersion } from 'discord-api-types/v10';
-
 import { getDefaultStrategy } from '../../environment.js';
 import type { RESTOptions, ResponseLike } from './types.js';
 
@@ -24,7 +23,7 @@ export const DefaultRestOptions = {
 	invalidRequestWarningInterval: 0,
 	globalRequestsPerSecond: 50,
 	offset: 50,
-	rejectOnRateLimit: null,
+	rejectOnRateLimit: false,
 	retries: 3,
 	retryBackoff: 0,
 	timeout: 15_000,

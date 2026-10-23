@@ -1,7 +1,6 @@
 import type { ServerResponse } from 'node:http';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
-
 import { DiscordAPIError, HTTPError, RateLimitError, type ResponseLike } from '@discordjs/rest';
 
 /**
@@ -51,6 +50,12 @@ export function populateGeneralErrorResponse(res: ServerResponse, error: Discord
 export function populateRatelimitErrorResponse(res: ServerResponse, error: RateLimitError): void {
 	res.statusCode = 429;
 	res.setHeader('Retry-After', error.timeToReset / 1_000);
+
+	if (error.global) {
+		res.setHeader('X-RateLimit-Global', 'true');
+	}
+
+	res.setHeader('X-RateLimit-Scope', error.scope);
 }
 
 /**

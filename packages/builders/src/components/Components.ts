@@ -6,7 +6,6 @@ import type {
 	APISectionAccessoryComponent,
 } from 'discord-api-types/v10';
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
-
 import { ActionRowBuilder } from './ActionRow.js';
 import type { BaseButtonBuilder } from './button/Button.js';
 import {

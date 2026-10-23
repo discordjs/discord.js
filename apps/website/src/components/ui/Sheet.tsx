@@ -11,7 +11,6 @@ import {
 	ModalOverlay as RACModalOverlay,
 	composeRenderProps,
 } from 'react-aria-components';
-
 import { Dialog, DialogCloseIndicator } from '@/components/ui/Dialog';
 import { cva } from '@/styles/cva';
 

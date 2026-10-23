@@ -1,6 +1,5 @@
 import { getInput, startGroup, endGroup, getBooleanInput, summary } from '@actions/core';
 import { program } from 'commander';
-
 import { generateReleaseTree } from './generateReleaseTree.js';
 import { releasePackage } from './releasePackage.js';
 

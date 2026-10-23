@@ -1,5 +1,4 @@
 import { glob, readFile } from 'node:fs/promises';
-
 import { Routes } from 'discord-api-types/v10';
 
 const usedRoutes = new Set<string>();

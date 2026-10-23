@@ -1,5 +1,4 @@
 import { describe, test, expect, vitest, beforeAll, beforeEach } from 'vitest';
-
 import { joinVoiceChannel } from '../src/joinVoiceChannel';
 import * as VoiceConnection from '../src/VoiceConnection';
 

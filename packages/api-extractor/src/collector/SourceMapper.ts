@@ -2,7 +2,6 @@
 // See LICENSE in the project root for license information.
 
 import * as path from 'node:path';
-
 import { FileSystem, InternalError, JsonFile, NewlineKind } from '@rushstack/node-core-library';
 import { SourceMapConsumer, type RawSourceMap, type MappingItem, type Position } from 'source-map';
 import type ts from 'typescript';

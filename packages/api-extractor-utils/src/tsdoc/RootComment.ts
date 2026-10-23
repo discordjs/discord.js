@@ -1,6 +1,5 @@
 import type { ApiItem, ApiModel } from '@discordjs/api-extractor-model';
 import type { DocComment } from '@microsoft/tsdoc';
-
 import { block, type DocBlockJSON } from './CommentBlock.js';
 import { type DocNodeJSON, node } from './CommentNode.js';
 import { createCommentNode } from './index.js';

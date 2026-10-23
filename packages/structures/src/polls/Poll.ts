@@ -1,5 +1,4 @@
 import type { APIPoll } from 'discord-api-types/v10';
-
 import { Structure } from '../Structure.js';
 import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
 import { kData, kExpiresTimestamp } from '../utils/symbols.js';
@@ -69,7 +68,7 @@ export class Poll<Omitted extends keyof APIPoll | '' = ''> extends Structure<API
 	/**
 	 * The time the poll will expire at
 	 */
-	public get expiresAt() {
+	public get expiresDate() {
 		const expiresTimestamp = this.expiresTimestamp;
 		return expiresTimestamp ? new Date(expiresTimestamp) : null;
 	}

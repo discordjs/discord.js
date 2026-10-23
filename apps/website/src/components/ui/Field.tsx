@@ -17,7 +17,6 @@ import {
 	Input as RACInput,
 	composeRenderProps,
 } from 'react-aria-components';
-
 import { compose, cva, cx } from '@/styles/cva';
 import { focusRing } from '@/styles/ui/focusRing';
 import { composeTailwindRenderProps } from '@/styles/util';

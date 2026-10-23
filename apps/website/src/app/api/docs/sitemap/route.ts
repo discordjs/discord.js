@@ -1,5 +1,4 @@
 import { NextResponse, type NextRequest } from 'next/server';
-
 import { fetchSitemap } from '@/util/fetchSitemap';
 
 export async function GET(request: NextRequest) {

@@ -1,6 +1,5 @@
 import { ButtonStyle, ChannelType, ComponentType, SelectMenuDefaultValueType } from 'discord-api-types/v10';
 import { z } from 'zod';
-
 import { idPredicate, customIdPredicate, snowflakePredicate } from '../Assertions.js';
 
 export const emojiPredicate = z

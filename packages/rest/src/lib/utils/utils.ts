@@ -1,7 +1,5 @@
 import type { Buffer } from 'node:buffer';
-
 import type { RESTPatchAPIChannelJSONBody, Snowflake } from 'discord-api-types/v10';
-
 import { RateLimitError } from '../errors/RateLimitError.js';
 import type { REST } from '../REST.js';
 import { RequestMethod } from './types.js';
@@ -9,6 +7,7 @@ import type {
 	GetRateLimitOffsetFunction,
 	GetRetryBackoffFunction,
 	GetTimeoutFunction,
+	HandlerRequestData,
 	RateLimitData,
 	ResponseLike,
 } from './types.js';
@@ -152,15 +151,13 @@ export function shouldRetry(error: Error | NodeJS.ErrnoException) {
  *
  * @internal
  */
-export async function onRateLimit(manager: REST, rateLimitData: RateLimitData) {
-	const { options } = manager;
-	if (!options.rejectOnRateLimit) return;
+export async function onRateLimit(manager: REST, rateLimitData: RateLimitData, requestData: HandlerRequestData) {
+	// Explicit false opts out of `REST` level `rejectOnRateLimit`, only `undefined` falls back.
+	const policy = requestData.rejectOnRateLimit ?? manager.options.rejectOnRateLimit;
 
-	const shouldThrow =
-		typeof options.rejectOnRateLimit === 'function'
-			? await options.rejectOnRateLimit(rateLimitData)
-			: options.rejectOnRateLimit.some((route) => rateLimitData.route.startsWith(route.toLowerCase()));
-	if (shouldThrow) {
+	if (!policy) return;
+
+	if (policy === true || (await policy(rateLimitData))) {
 		throw new RateLimitError(rateLimitData);
 	}
 }

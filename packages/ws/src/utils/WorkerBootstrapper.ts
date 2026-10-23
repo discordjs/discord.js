@@ -1,8 +1,6 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
-
 import { Collection } from '@discordjs/collection';
 import type { Awaitable } from '@discordjs/util';
-
 import { WorkerContextFetchingStrategy } from '../strategies/context/WorkerContextFetchingStrategy.js';
 import {
 	WorkerReceivePayloadOp,

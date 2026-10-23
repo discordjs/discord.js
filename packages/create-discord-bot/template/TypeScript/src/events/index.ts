@@ -1,6 +1,5 @@
 import type { ClientEvents } from 'discord.js';
 import { z } from 'zod';
-
 import type { StructurePredicate } from '../util/loaders.ts';
 
 /**

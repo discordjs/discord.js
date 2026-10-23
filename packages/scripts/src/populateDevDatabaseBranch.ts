@@ -1,6 +1,5 @@
 import { readFile } from 'node:fs/promises';
 import process from 'node:process';
-
 import { create } from '@actions/glob';
 import { put } from '@vercel/blob';
 import { createPool } from '@vercel/postgres';

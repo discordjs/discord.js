@@ -1,0 +1,58 @@
+---
+title: Usage
+---
+
+### Legend
+
+- `client` is a placeholder for the `RPCClient` object, such as `const client = new RPCClient({ scopes: [Oauth2Scopes.MessagesRead] });`.
+
+### Authorization
+
+Authorizing your client:
+
+```ts
+client.login({ clientId: env.CLIENT_ID, clientSecret: env.CLIENT_SECRET });
+```
+
+If the current user has already been authorized recently:
+
+```ts
+client.login({ clientId: env.CLIENT_ID, accessToken: env.ACCESS_TOKEN });
+```
+
+Optionally, if you aren't requesting for any scopes, you can exclude the client secret:
+
+```ts
+client.login({ clientId: env.CLIENT_ID });
+```
+
+### RPC Commands
+
+Update a user's activity:
+
+```ts
+let updatesDoneSinceStart = 0;
+
+setInterval(async () => {
+	await client.setActivity({
+		details: 'Doing silly things: ${updatesDoneSinceStart}',
+		state: 'Silly stuff :3',
+		name: 'Silly',
+		type: 1,
+	});
+
+	updatesDoneSinceStart++;
+}, 15_000);
+```
+
+### RPC Events
+
+Listen for messages on the current user's discord client:
+
+<Callout>Listening for messages requires the scope `messages.read`</Callout>
+
+```ts
+client.on(RPCEvents.MessageCreate, (data: RPCMessageCreateDispatchData) =>
+	console.log(`${data.message.author.username} posted ${data.message.content}`),
+);
+```

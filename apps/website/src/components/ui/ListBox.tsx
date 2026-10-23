@@ -4,7 +4,6 @@ import { CheckIcon, MenuIcon } from 'lucide-react';
 import type { ComponentProps } from 'react';
 import type { ListBoxItemProps as RACListBoxItemProps, ListBoxProps as RACListBoxProps } from 'react-aria-components';
 import { ListBoxItem as RACListBoxItem, ListBox as RACListBox, composeRenderProps } from 'react-aria-components';
-
 import { DropdownLabel, DropdownSection, dropdownItemStyles } from '@/components/ui/Dropdown';
 import { cx } from '@/styles/cva';
 
@@ -15,7 +14,7 @@ export function ListBox<Type extends object>(props: RACListBoxProps<Type>) {
 			className={composeRenderProps(props.className, (className) =>
 				cx(
 					[
-						'border-base-neutral-200 dark:border-base-neutral-600 shadow-base-sm flex max-h-96 w-full min-w-40 flex-col gap-x-1 overflow-y-auto rounded-sm border p-2 outline-hidden [scrollbar-width:thin]',
+						'border-base-neutral-200 dark:border-base-neutral-600 shadow-base-sm flex max-h-96 w-full min-w-40 [scrollbar-width:thin] flex-col gap-x-1 overflow-y-auto rounded-sm border p-2 outline-hidden',
 						"grid grid-cols-[1fr_auto] overflow-auto *:[[role='group']+[role=group]]:mt-4 *:[[role='group']+[role=separator]]:mt-1",
 					],
 					className,

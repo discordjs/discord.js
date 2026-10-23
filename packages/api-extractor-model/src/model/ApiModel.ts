@@ -4,7 +4,6 @@
 import { DocDeclarationReference } from '@microsoft/tsdoc';
 import { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { PackageName } from '@rushstack/node-core-library';
-
 import { ApiItem, ApiItemKind } from '../items/ApiItem.js';
 import { ApiItemContainerMixin } from '../mixins/ApiItemContainerMixin.js';
 import { ApiPackage } from './ApiPackage.js';

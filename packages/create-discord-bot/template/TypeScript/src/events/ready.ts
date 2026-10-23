@@ -1,5 +1,4 @@
 import { Events } from 'discord.js';
-
 import type { Event } from './index.ts';
 
 export default {

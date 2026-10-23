@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
 import { DiscordMessage } from './Message.jsx';
 import { DiscordMessageEmbed } from './MessageEmbed.jsx';
 import { DiscordMessages } from './Messages.jsx';

@@ -1,5 +1,4 @@
 import type { APIAttachment, AttachmentFlags } from 'discord-api-types/v10';
-
 import { AttachmentFlagsBitField } from '../bitfields/AttachmentFlagsBitField.js';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';

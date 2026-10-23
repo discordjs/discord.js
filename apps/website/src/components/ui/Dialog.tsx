@@ -5,7 +5,6 @@ import { useEffect, useRef, type ComponentProps, type ComponentPropsWithoutRef, 
 import type { HeadingProps as RACHeadingProps } from 'react-aria-components';
 import { Dialog as RACDialog, Heading as RACHeading, Text as RACText } from 'react-aria-components';
 import { useMediaQuery } from 'usehooks-ts';
-
 import { Button, type ButtonProps } from '@/components/ui/Button';
 import { cx } from '@/styles/cva';
 
@@ -14,7 +13,7 @@ export function Dialog(props: ComponentProps<typeof RACDialog>) {
 		<RACDialog
 			{...props}
 			className={cx(
-				'peer/dialog group/dialog relative flex max-h-[inherit] flex-col overflow-hidden outline-hidden [scrollbar-width:thin]',
+				'peer/dialog group/dialog relative flex max-h-[inherit] [scrollbar-width:thin] flex-col overflow-hidden outline-hidden',
 				props.className,
 			)}
 			role={props.role!}
@@ -60,7 +59,11 @@ export function DialogHeader({ hasBorder = false, ...props }: DialogHeaderProps)
 		>
 			{props.title && <DialogTitle>{props.title}</DialogTitle>}
 			{props.description && <DialogDescription>{props.description}</DialogDescription>}
-			{!props.title && typeof props.children === 'string' ? <DialogTitle {...props} /> : props.children}
+			{!props.title && typeof props.children === 'string' ? (
+				<DialogTitle>{props.children}</DialogTitle>
+			) : (
+				props.children
+			)}
 		</div>
 	);
 }

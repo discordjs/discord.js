@@ -1,7 +1,5 @@
 import { Buffer } from 'node:buffer';
-
 import { test, expect, vitest } from 'vitest';
-
 import { methods, secretboxLoadPromise } from '../src/util/Secretbox';
 
 vitest.mock('@noble/ciphers/chacha.js');

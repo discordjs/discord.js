@@ -1,5 +1,4 @@
 import type { Readable } from 'node:stream';
-
 import prism from 'prism-media';
 
 /**

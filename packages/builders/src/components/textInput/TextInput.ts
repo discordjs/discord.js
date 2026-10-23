@@ -1,5 +1,4 @@
 import { ComponentType, type TextInputStyle, type APITextInputComponent } from 'discord-api-types/v10';
-
 import { validate } from '../../util/validation.js';
 import { ComponentBuilder } from '../Component.js';
 import { textInputPredicate } from './Assertions.js';

@@ -1,5 +1,4 @@
 import type { ChannelType, GuildChannelType } from 'discord-api-types/v10';
-
 import { kData } from '../../utils/symbols.js';
 import { GuildChannelMixin } from './GuildChannelMixin.js';
 

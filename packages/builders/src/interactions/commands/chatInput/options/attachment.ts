@@ -3,7 +3,6 @@ import {
 	type APIApplicationCommandAttachmentOption,
 	type FileUploadType,
 } from 'discord-api-types/v10';
-
 import { normalizeArray, type RestOrArray } from '../../../../util/normalizeArray.js';
 import { attachmentOptionPredicate } from '../Assertions.js';
 import { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase.js';

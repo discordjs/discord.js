@@ -1,5 +1,4 @@
 import { NextResponse, type NextRequest } from 'next/server';
-
 import { fetchEntryPoints } from '@/util/fetchEntryPoints';
 
 export async function GET(request: NextRequest) {

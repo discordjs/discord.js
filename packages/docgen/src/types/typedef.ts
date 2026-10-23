@@ -1,5 +1,4 @@
 import type { DeclarationReflection, LiteralType } from 'typedoc';
-
 import type { Typedef } from '../interfaces/index.js';
 import { parseType } from '../util/parseType.js';
 import { isReflectionType } from '../util/types.js';

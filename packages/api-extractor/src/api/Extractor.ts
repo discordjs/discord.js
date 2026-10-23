@@ -2,7 +2,6 @@
 // See LICENSE in the project root for license information.
 
 import * as path from 'node:path';
-
 import type { ApiPackage } from '@discordjs/api-extractor-model';
 import { TSDocConfigFile } from '@microsoft/tsdoc-config';
 import {
@@ -17,7 +16,6 @@ import { structuredPatch, formatPatch, type StructuredPatch } from 'diff';
 import * as resolve from 'resolve';
 import * as semver from 'semver';
 import * as ts from 'typescript';
-
 import { PackageMetadataManager } from '../analyzer/PackageMetadataManager.js';
 import { Collector } from '../collector/Collector.js';
 import { MessageRouter } from '../collector/MessageRouter.js';

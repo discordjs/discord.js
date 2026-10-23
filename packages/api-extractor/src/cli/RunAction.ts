@@ -4,7 +4,6 @@
 import * as os from 'node:os';
 import * as path from 'node:path';
 import process from 'node:process';
-
 import {
 	PackageJsonLookup,
 	FileSystem,
@@ -18,7 +17,6 @@ import {
 	type CommandLineFlagParameter,
 } from '@rushstack/ts-command-line';
 import colors from 'colors';
-
 import { Extractor, type ExtractorResult } from '../api/Extractor.js';
 import { ExtractorConfig, type IExtractorConfigPrepareOptions } from '../api/ExtractorConfig.js';
 import type { ApiExtractorCommandLine } from './ApiExtractorCommandLine.js';

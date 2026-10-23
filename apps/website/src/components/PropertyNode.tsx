@@ -2,9 +2,7 @@ import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty'
 import { ChevronDown, ChevronUp, Code2, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Fragment } from 'react';
-
 import { ENV } from '@/util/env';
-
 import { Badges } from './Badges';
 import { DeprecatedNode } from './DeprecatedNode';
 import { ExcerptNode } from './ExcerptNode';

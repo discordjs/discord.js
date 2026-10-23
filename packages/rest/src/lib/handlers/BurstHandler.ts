@@ -1,5 +1,4 @@
 import type { RequestInit } from 'undici';
-
 import type { IHandler } from '../interfaces/Handler.js';
 import type { REST } from '../REST.js';
 import { RESTEvents } from '../utils/constants.js';
@@ -106,19 +105,23 @@ export class BurstHandler implements IHandler {
 			const isGlobal = res.headers.has('X-RateLimit-Global');
 			const scope = (res.headers.get('X-RateLimit-Scope') ?? 'user') as RateLimitData['scope'];
 
-			await onRateLimit(this.manager, {
-				global: isGlobal,
-				method,
-				url,
-				route: routeId.bucketRoute,
-				majorParameter: this.majorParameter,
-				hash: this.hash,
-				limit: Number.POSITIVE_INFINITY,
-				timeToReset: retryAfter,
-				retryAfter,
-				sublimitTimeout: 0,
-				scope,
-			});
+			await onRateLimit(
+				this.manager,
+				{
+					global: isGlobal,
+					method,
+					url,
+					route: routeId.bucketRoute,
+					majorParameter: this.majorParameter,
+					hash: this.hash,
+					limit: Number.POSITIVE_INFINITY,
+					timeToReset: retryAfter,
+					retryAfter,
+					sublimitTimeout: 0,
+					scope,
+				},
+				requestData,
+			);
 
 			this.debug(
 				[

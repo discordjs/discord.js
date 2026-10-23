@@ -1,5 +1,4 @@
 import type { DocNode, DocNodeKind } from '@microsoft/tsdoc';
-
 import type { DocBlockJSON } from './CommentBlock.js';
 import type { DocCodeSpanJSON } from './CommentCodeSpan.js';
 import type { DocNodeContainerJSON } from './CommentNodeContainer.js';

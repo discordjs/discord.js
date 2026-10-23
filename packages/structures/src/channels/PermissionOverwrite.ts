@@ -1,5 +1,4 @@
 import type { APIOverwrite } from 'discord-api-types/v10';
-
 import { PermissionsBitField } from '../bitfields/PermissionsBitField.js';
 import { Structure } from '../Structure.js';
 import { kAllow, kData, kDeny } from '../utils/symbols.js';
