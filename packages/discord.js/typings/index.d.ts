@@ -2088,12 +2088,16 @@ export class BaseInvite<WithCounts extends boolean = boolean> extends Base {
   public toJSON(props?: Record<string, boolean | string>): unknown;
 }
 
+type InviteGuildChannel<T extends { guild: Guild }> = T extends unknown
+  ? Omit<T, 'guild'> & { guild: Guild | InviteGuild }
+  : never;
+
 export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvite<WithCounts> {
   public readonly type: InviteType.Guild;
   public flags: Readonly<InviteFlagsBitField>;
   public guild: Guild | InviteGuild | null;
   public readonly guildId: Snowflake;
-  public channel: (Omit<NonThreadGuildBasedChannel, 'guild'> & { guild: Guild | InviteGuild }) | null;
+  public channel: InviteGuildChannel<NonThreadGuildBasedChannel> | null;
   public roles: Collection<Snowflake, InviteRole | Role> | null;
   public targetType: InviteTargetType | null;
   public targetUser: User | null;
