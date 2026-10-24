@@ -2093,7 +2093,7 @@ export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvit
   public flags: Readonly<InviteFlagsBitField>;
   public guild: Guild | InviteGuild | null;
   public readonly guildId: Snowflake;
-  public channel: NonThreadGuildBasedChannel | null;
+  public channel: (Omit<NonThreadGuildBasedChannel, 'guild'> & { guild: Guild | InviteGuild }) | null;
   public roles: Collection<Snowflake, InviteRole | Role> | null;
   public targetType: InviteTargetType | null;
   public targetUser: User | null;
