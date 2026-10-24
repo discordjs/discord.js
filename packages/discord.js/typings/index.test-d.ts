@@ -219,6 +219,7 @@ import type {
   VoiceChannel,
   Invite,
   GuildInvite,
+  InviteGuild,
   AuthorizingIntegrationOwners,
   VoiceServerUpdateData,
 } from './index.js';
@@ -424,6 +425,14 @@ client.on('interactionCreate', async interaction => {
 client.on('inviteCreate', invite => {
   expectType<GuildInvite>(invite);
   expectType<Client<true>>(invite.client);
+
+  // https://github.com/discordjs/discord.js/issues/10894
+  if (invite.channel) {
+    expectType<Guild | InviteGuild>(invite.channel.guild);
+    if (invite.channel.type === ChannelType.GuildText) {
+      expectAssignable<TextChannel['threads']>(invite.channel.threads);
+    }
+  }
 });
 
 client.on('inviteDelete', invite => {
