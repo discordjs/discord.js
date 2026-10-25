@@ -13,7 +13,7 @@ import {
 import type { CreateVoiceConnectionOptions } from './index';
 import type { VoiceWebSocket, VoiceUDPSocket } from './networking';
 import { Networking, NetworkingStatusCode, type NetworkingState } from './networking/Networking';
-import { VoiceReceiver } from './receive/index';
+import { VideoReceiver, VoiceReceiver } from './receive/index';
 import type { DiscordGatewayAdapterImplementerMethods } from './util/adapter';
 import { noop } from './util/util';
 
@@ -118,8 +118,7 @@ export interface VoiceConnectionDisconnectedWebSocketState extends VoiceConnecti
  * it attempting to connect. You can manually attempt to connect using VoiceConnection#reconnect.
  */
 export type VoiceConnectionDisconnectedState =
-	| VoiceConnectionDisconnectedOtherState
-	| VoiceConnectionDisconnectedWebSocketState;
+	VoiceConnectionDisconnectedOtherState | VoiceConnectionDisconnectedWebSocketState;
 
 /**
  * The state that a VoiceConnection will be in when it is establishing a connection to a Discord
@@ -238,6 +237,13 @@ export class VoiceConnection extends EventEmitter {
 	public readonly receiver: VoiceReceiver;
 
 	/**
+	 * The video receiver of this voice connection, allowing you to capture the
+	 * camera and screen share streams of other users. You should join the voice
+	 * channel with `selfDeaf` set to false for this feature to work properly.
+	 */
+	public readonly videoReceiver: VideoReceiver;
+
+	/**
 	 * The debug logger function, if debugging is enabled.
 	 */
 	private readonly debug: ((message: string) => void) | null;
@@ -260,6 +266,7 @@ export class VoiceConnection extends EventEmitter {
 		this.rejoinAttempts = 0;
 
 		this.receiver = new VoiceReceiver(this);
+		this.videoReceiver = new VideoReceiver(this);
 
 		this.onNetworkingClose = this.onNetworkingClose.bind(this);
 		this.onNetworkingStateChange = this.onNetworkingStateChange.bind(this);
@@ -404,14 +411,25 @@ export class VoiceConnection extends EventEmitter {
 		if (oldWs !== newWs) {
 			oldWs?.off('packet', this.receiver.onWsPacket);
 			newWs?.on('packet', this.receiver.onWsPacket);
+			oldWs?.off('packet', this.videoReceiver.onWsPacket);
+			newWs?.on('packet', this.videoReceiver.onWsPacket);
 		}
 
 		if (oldUdp !== newUdp) {
 			oldUdp?.off('message', this.receiver.onUdpMessage);
 			newUdp?.on('message', this.receiver.onUdpMessage);
+			oldUdp?.off('message', this.videoReceiver.onUdpMessage);
+			newUdp?.on('message', this.videoReceiver.onUdpMessage);
 		}
 
 		this.receiver.connectionData = Reflect.get(newState, 'connectionData') ?? {};
+		this.videoReceiver.connectionData = Reflect.get(newState, 'connectionData') ?? {};
+
+		// Once the session is established, tell the server that we want to
+		// receive video streams.
+		if (newState.code === NetworkingStatusCode.Ready && oldState?.code !== NetworkingStatusCode.Ready) {
+			this.videoReceiver.onNetworkingReady();
+		}
 	}
 
 	/**

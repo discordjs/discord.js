@@ -359,11 +359,39 @@ export class DAVESession extends EventEmitter {
 	 * @returns The decrypted packet, or `null` if the decryption failed but should be ignored
 	 */
 	public decrypt(packet: Buffer, userId: string) {
+		return this.decryptMedia(packet, userId, false);
+	}
+
+	/**
+	 * Decrypt a video frame using end-to-end encryption.
+	 *
+	 * @remarks
+	 * Video frames are encrypted frame-by-frame (not packet-by-packet), so the
+	 * caller must reassemble RTP packets into a full frame before decrypting.
+	 * @param frame - The reassembled video frame to decrypt
+	 * @param userId - The user id that sent the frame
+	 * @returns The decrypted frame, or `null` if the decryption failed but should be ignored
+	 */
+	public decryptVideo(frame: Buffer, userId: string) {
+		return this.decryptMedia(frame, userId, true);
+	}
+
+	/**
+	 * Decrypt a media packet or frame using end-to-end encryption.
+	 *
+	 * @param packet - The packet (audio) or reassembled frame (video) to decrypt
+	 * @param userId - The user id that sent the packet
+	 * @param video - Whether the media is video
+	 * @returns The decrypted media, or `null` if the decryption failed but should be ignored
+	 */
+	private decryptMedia(packet: Buffer, userId: string, video: boolean) {
 		const canDecrypt = this.session?.ready && (this.protocolVersion !== 0 || this.session?.canPassthrough(userId));
-		if (packet.equals(SILENCE_FRAME) || !canDecrypt || !this.session) return packet;
+		if (!canDecrypt || !this.session) return packet;
+		if (!video && packet.equals(SILENCE_FRAME)) return packet;
 		try {
 			// @ts-expect-error - const enum is exported and works (todo: drop const modifier on Davey end)
-			const buffer = this.session.decrypt(userId, Davey.MediaType.AUDIO, packet);
+			const mediaType = video ? Davey.MediaType.VIDEO : Davey.MediaType.AUDIO;
+			const buffer = this.session.decrypt(userId, mediaType, packet);
 			this.consecutiveFailures = 0;
 			return buffer;
 		} catch (error) {

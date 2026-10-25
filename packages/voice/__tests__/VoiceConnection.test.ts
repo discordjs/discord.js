@@ -702,8 +702,9 @@ describe('VoiceConnection#onSubscriptionRemoved', () => {
 
 			// Assert
 			expect(oldNetworking.state.udp.listenerCount('message')).toEqual(0);
-			expect(newNetworking.state.udp.listenerCount('message')).toEqual(1);
+			expect(newNetworking.state.udp.listenerCount('message')).toEqual(2);
 			expect(voiceConnection.receiver.connectionData).toEqual(newNetworking.state.connectionData);
+			expect(voiceConnection.videoReceiver.connectionData).toEqual(newNetworking.state.connectionData);
 		});
 
 		test('Applies and removes ws listeners', () => {
@@ -732,8 +733,9 @@ describe('VoiceConnection#onSubscriptionRemoved', () => {
 
 			// Assert
 			expect(oldNetworking.state.ws.listenerCount('packet')).toEqual(0);
-			expect(newNetworking.state.ws.listenerCount('packet')).toEqual(1);
+			expect(newNetworking.state.ws.listenerCount('packet')).toEqual(2);
 			expect(voiceConnection.receiver.connectionData).toEqual(newNetworking.state.connectionData);
+			expect(voiceConnection.videoReceiver.connectionData).toEqual(newNetworking.state.connectionData);
 		});
 
 		test('Applies initial listeners', () => {
@@ -754,9 +756,10 @@ describe('VoiceConnection#onSubscriptionRemoved', () => {
 			voiceConnection['updateReceiveBindings'](newNetworking.state, undefined);
 
 			// Assert
-			expect(newNetworking.state.ws.listenerCount('packet')).toEqual(1);
-			expect(newNetworking.state.udp.listenerCount('message')).toEqual(1);
+			expect(newNetworking.state.ws.listenerCount('packet')).toEqual(2);
+			expect(newNetworking.state.udp.listenerCount('message')).toEqual(2);
 			expect(voiceConnection.receiver.connectionData).toEqual(newNetworking.state.connectionData);
+			expect(voiceConnection.videoReceiver.connectionData).toEqual(newNetworking.state.connectionData);
 		});
 	});
 });

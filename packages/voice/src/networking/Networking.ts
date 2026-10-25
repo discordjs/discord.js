@@ -12,6 +12,14 @@ import { DAVESession, getMaxProtocolVersion } from './DAVESession';
 import { VoiceUDPSocket } from './VoiceUDPSocket';
 import type { BinaryWebSocketMessage } from './VoiceWebSocket';
 import { VoiceWebSocket } from './VoiceWebSocket';
+import {
+	VIDEO_CODEC_NEGOTIATION,
+	VIDEO_IDENTIFY_STREAMS,
+	VideoGatewayOpcodes,
+	type MediaSinkWantsPayload,
+	type VideoIdentifyData,
+	type VideoSelectProtocolData,
+} from './video';
 
 // The number of audio channels required by Discord
 const CHANNELS = 2;
@@ -159,6 +167,10 @@ export interface ConnectionData {
 	speaking: boolean;
 	ssrc: number;
 	timestamp: number;
+	/**
+	 * The video codec negotiated for this connection, if any.
+	 */
+	videoCodec?: string;
 }
 
 /**
@@ -168,6 +180,14 @@ export interface NetworkingOptions {
 	daveEncryption?: boolean | undefined;
 	debug?: boolean | undefined;
 	decryptionFailureTolerance?: number | undefined;
+	/**
+	 * Whether to identify as a video-capable connection.
+	 *
+	 * @remarks
+	 * The voice server only forwards video streams to connections that
+	 * identified with video support. Defaults to true.
+	 */
+	video?: boolean | undefined;
 }
 
 /**
@@ -230,6 +250,15 @@ function randomNBit(numberOfBits: number) {
  */
 export class Networking extends EventEmitter {
 	private _state: NetworkingState;
+
+	/**
+	 * The protocol version advertised by the voice server in its hello packet.
+	 *
+	 * @remarks
+	 * Used to gate features such as media sink wants (opcode 15), which
+	 * requires a server speaking voice gateway version 5 or newer.
+	 */
+	private serverVersion = 0;
 
 	/**
 	 * The debug logger function, if debugging is enabled.
@@ -403,15 +432,18 @@ export class Networking extends EventEmitter {
 	 */
 	private onWsOpen() {
 		if (this.state.code === NetworkingStatusCode.OpeningWs) {
+			const identifyData: VideoIdentifyData = {
+				server_id: this.state.connectionOptions.serverId,
+				user_id: this.state.connectionOptions.userId,
+				session_id: this.state.connectionOptions.sessionId,
+				token: this.state.connectionOptions.token,
+				max_dave_protocol_version: this.options.daveEncryption === false ? 0 : getMaxProtocolVersion(),
+				video: this.options.video !== false,
+				streams: VIDEO_IDENTIFY_STREAMS,
+			};
 			this.state.ws.sendPacket({
 				op: VoiceOpcodes.Identify,
-				d: {
-					server_id: this.state.connectionOptions.serverId,
-					user_id: this.state.connectionOptions.userId,
-					session_id: this.state.connectionOptions.sessionId,
-					token: this.state.connectionOptions.token,
-					max_dave_protocol_version: this.options.daveEncryption === false ? 0 : getMaxProtocolVersion(),
-				},
+				d: identifyData,
 			});
 			this.state = {
 				...this.state,
@@ -474,6 +506,7 @@ export class Networking extends EventEmitter {
 	private onWsPacket(packet: VoiceReceivePayload) {
 		if (packet.op === VoiceOpcodes.Hello && this.state.code !== NetworkingStatusCode.Closed) {
 			this.state.ws.setHeartbeatInterval(packet.d.heartbeat_interval);
+			this.serverVersion = (packet.d as { v?: number }).v ?? 0;
 		} else if (packet.op === VoiceOpcodes.Ready && this.state.code === NetworkingStatusCode.Identifying) {
 			const { ip, port, ssrc, modes } = packet.d;
 
@@ -486,16 +519,18 @@ export class Networking extends EventEmitter {
 				// eslint-disable-next-line promise/prefer-await-to-then
 				.then((localConfig) => {
 					if (this.state.code !== NetworkingStatusCode.UdpHandshaking) return;
+					const selectProtocolData: VideoSelectProtocolData = {
+						protocol: 'udp',
+						codecs: VIDEO_CODEC_NEGOTIATION,
+						data: {
+							address: localConfig.ip,
+							port: localConfig.port,
+							mode: chooseEncryptionMode(modes),
+						},
+					};
 					this.state.ws.sendPacket({
 						op: VoiceOpcodes.SelectProtocol,
-						d: {
-							protocol: 'udp',
-							data: {
-								address: localConfig.ip,
-								port: localConfig.port,
-								mode: chooseEncryptionMode(modes),
-							},
-						},
+						d: selectProtocolData,
 					});
 					this.state = {
 						...this.state,
@@ -519,6 +554,7 @@ export class Networking extends EventEmitter {
 			this.state.code === NetworkingStatusCode.SelectingProtocol
 		) {
 			const { mode: encryptionMode, secret_key: secretKey, dave_protocol_version: daveProtocolVersion } = packet.d;
+			const videoCodec = (packet.d as { video_codec?: string }).video_codec;
 			this.state = {
 				...this.state,
 				code: NetworkingStatusCode.Ready,
@@ -533,6 +569,7 @@ export class Networking extends EventEmitter {
 					nonceBuffer: encryptionMode === 'aead_aes256_gcm_rtpsize' ? Buffer.alloc(12) : Buffer.alloc(24),
 					speaking: false,
 					packetsPlayed: 0,
+					...(videoCodec === undefined ? {} : { videoCodec }),
 				},
 			};
 		} else if (packet.op === VoiceOpcodes.Resumed && this.state.code === NetworkingStatusCode.Resuming) {
@@ -731,6 +768,43 @@ export class Networking extends EventEmitter {
 				ssrc: state.connectionData.ssrc,
 			},
 		});
+	}
+
+	/**
+	 * Sends a media sink wants (opcode 15) payload to the voice server, telling it
+	 * which video streams should be forwarded to this connection.
+	 *
+	 * @remarks
+	 * The server only forwards video RTP packets to connections that asked for
+	 * them, so this needs to be sent (at least once) before video can be received.
+	 * Requires a voice server speaking gateway version 5 or newer; the call is
+	 * silently ignored on older servers.
+	 * @param payload - The sink wants payload, e.g. `{ any: 100 }` for all streams
+	 * @returns Whether the payload was sent
+	 */
+	public sendMediaSinkWants(payload: MediaSinkWantsPayload) {
+		const state = this.state;
+		if (state.code !== NetworkingStatusCode.Ready && state.code !== NetworkingStatusCode.Resuming) return false;
+		if (this.serverVersion < 5) return false;
+		state.ws.sendPacket({
+			op: VideoGatewayOpcodes.MediaSinkWants,
+			d: payload,
+		});
+		return true;
+	}
+
+	/**
+	 * Sends a raw RTCP packet (e.g. a picture loss indication) to the voice server
+	 * over the UDP socket.
+	 *
+	 * @param buffer - The RTCP packet to send
+	 * @returns Whether the packet was sent
+	 */
+	public sendRTCP(buffer: Buffer) {
+		const state = this.state;
+		if (state.code !== NetworkingStatusCode.Ready) return false;
+		state.udp.send(buffer);
+		return true;
 	}
 
 	/**

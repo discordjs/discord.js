@@ -3,6 +3,7 @@ import { EventEmitter } from 'node:events';
 import type { VoiceSendPayload } from 'discord-api-types/voice/v8';
 import { VoiceOpcodes } from 'discord-api-types/voice/v8';
 import WebSocket, { type MessageEvent } from 'ws';
+import type { MediaSinkWantsSendPayload } from './video';
 
 /**
  * A binary WebSocket message.
@@ -168,7 +169,7 @@ export class VoiceWebSocket extends EventEmitter {
 	 *
 	 * @param packet - The packet to send
 	 */
-	public sendPacket(packet: VoiceSendPayload) {
+	public sendPacket(packet: MediaSinkWantsSendPayload | VoiceSendPayload) {
 		try {
 			const stringified = JSON.stringify(packet);
 			this.debug?.(`>> ${stringified}`);

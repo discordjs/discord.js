@@ -1,10 +1,8 @@
-import { Buffer } from 'node:buffer';
-import crypto from 'node:crypto';
+import type { Buffer } from 'node:buffer';
 import type { VoiceReceivePayload } from 'discord-api-types/voice/v8';
 import { VoiceOpcodes } from 'discord-api-types/voice/v8';
 import { NetworkingStatusCode, type ConnectionData } from '../networking/Networking';
 import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants';
-import { methods } from '../util/Secretbox';
 import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
 import {
 	AudioReceiveStream,
@@ -13,10 +11,8 @@ import {
 	type AudioReceiveStreamOptions,
 } from './AudioReceiveStream';
 import { SpeakingMap } from './SpeakingMap';
+import { decryptRtpPayload } from './decrypt';
 import { SSRCMap } from './SSRCMap';
-
-const UNPADDED_NONCE_LENGTH = 4;
-const AUTH_TAG_LENGTH = 16;
 
 /**
  * Attaches to a VoiceConnection, allowing you to receive audio packets from other
@@ -88,44 +84,7 @@ export class VoiceReceiver {
 	 * @returns decrypted packet payload
 	 */
 	private decrypt(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array, headerSize: number) {
-		// Copy the last 4 bytes of unpadded nonce to the padding of (12 - 4) or (24 - 4) bytes
-		buffer.copy(nonce, 0, buffer.length - UNPADDED_NONCE_LENGTH);
-
-		// The unencrypted RTP header is used as AAD (authenticated but not encrypted)
-		const header = buffer.subarray(0, headerSize);
-
-		// Encrypted contains the extension data, if any, the opus packet, and the auth tag
-		const encrypted = buffer.subarray(headerSize, buffer.length - AUTH_TAG_LENGTH - UNPADDED_NONCE_LENGTH);
-		const authTag = buffer.subarray(
-			buffer.length - AUTH_TAG_LENGTH - UNPADDED_NONCE_LENGTH,
-			buffer.length - UNPADDED_NONCE_LENGTH,
-		);
-
-		switch (mode) {
-			case 'aead_aes256_gcm_rtpsize': {
-				const decipheriv = crypto.createDecipheriv('aes-256-gcm', secretKey, nonce);
-				decipheriv.setAAD(header);
-				decipheriv.setAuthTag(authTag);
-
-				return Buffer.concat([decipheriv.update(encrypted), decipheriv.final()]);
-			}
-
-			case 'aead_xchacha20_poly1305_rtpsize': {
-				// Combined mode expects authtag in the encrypted message
-				return Buffer.from(
-					methods.crypto_aead_xchacha20poly1305_ietf_decrypt(
-						Buffer.concat([encrypted, authTag]),
-						header,
-						nonce,
-						secretKey,
-					),
-				);
-			}
-
-			default: {
-				throw new RangeError(`Unsupported decryption method: ${mode}`);
-			}
-		}
+		return decryptRtpPayload(buffer, mode, nonce, secretKey, headerSize);
 	}
 
 	/**
