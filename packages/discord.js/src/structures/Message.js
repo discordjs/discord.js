@@ -874,7 +874,8 @@ class Message extends Base {
       this.type === MessageType.Default &&
       !this.poll &&
       channel.viewable &&
-      channel.permissionsFor(this.client.user)?.has(bitfield, false),
+      channel.permissionsFor(this.client.user)?.has(bitfield, false) &&
+      this.guild.features.includes('NEWS'),
     );
   }
 
