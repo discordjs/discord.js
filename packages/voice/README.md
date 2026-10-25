@@ -3,184 +3,176 @@
 	<p>
 		<a href="https://discord.js.org"><img src="https://discord.js.org/static/logo.svg" width="546" alt="discord.js" /></a>
 	</p>
-	<br />
 	<p>
-		<a href="https://discord.gg/djs"><img src="https://img.shields.io/badge/join_us-on_discord-5865F2?logo=discord&logoColor=white" alt="Discord server" /></a>
-		<a href="https://www.npmjs.com/package/@discordjs/voice"><img src="https://img.shields.io/npm/v/@discordjs/voice.svg?maxAge=3600" alt="npm version" /></a>
-		<a href="https://www.npmjs.com/package/@discordjs/voice"><img src="https://img.shields.io/npm/dt/@discordjs/voice.svg?maxAge=3600" alt="npm downloads" /></a>
-		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/actions/workflows/tests.yml/badge.svg" alt="Build status" /></a>
-		<a href="https://github.com/discordjs/discord.js/commits/main/packages/voice"><img alt="Last commit." src="https://img.shields.io/github/last-commit/discordjs/discord.js?logo=github&logoColor=ffffff&path=packages%2Fvoice" /></a>
-		<a href="https://opencollective.com/discordjs"><img src="https://img.shields.io/opencollective/backers/discordjs?maxAge=3600&logo=opencollective" alt="backers" /></a>
-		<a href="https://codecov.io/gh/discordjs/discord.js"><img src="https://codecov.io/gh/discordjs/discord.js/branch/main/graph/badge.svg?precision=2&flag=voice" alt="Code coverage" /></a>
-	</p>
-	<p>
-		<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-vercel.svg" alt="Vercel" /></a>
-		<a href="https://www.cloudflare.com"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-workers.png" alt="Cloudflare Workers" height="44" /></a>
+		<a href="https://github.com/Davidooff/discordjs-voice-video-fork"><img src="https://img.shields.io/badge/fork-video%20receive%20%2B%20DAVE%20E2EE-5865F2?logo=github" alt="fork badge" /></a>
+		<img src="https://img.shields.io/badge/verified-live%20against%20Discord%20DAVE%20v1-brightgreen" alt="verified badge" />
+		<img src="https://img.shields.io/badge/base-%40discordjs%2Fvoice%20v0.19.2-blue" alt="base version" />
 	</p>
 </div>
 
 ## About
 
-`@discordjs/voice` is a TypeScript implementation of the Discord Voice API for Node.js.
+A fork of [`@discordjs/voice`](https://github.com/discordjs/discord.js) (v0.19.2) that adds **receiving video streams (user cameras and screen shares) from Discord voice channels** — including channels protected by **DAVE end-to-end encryption**, which Discord has made mandatory for all voice since March 2026.
 
 > [!IMPORTANT]
-> This is a **fork** of [`@discordjs/voice`](https://github.com/discordjs/discord.js) (based on v0.19.2) that adds support for
-> **receiving video streams (user cameras and screen shares)** from Discord voice channels - see
-> [Receiving video](#receiving-video-camera--screen-capture) below.
+> **This works.** It was verified live against production Discord (DAVE v1, MLS epoch participation): ~2,000 video frames decrypted across two sessions, 1280x720 AV1 at 25 fps recovered and re-encoded to MP4. See [Verification](#verification).
 
-**Features:**
+Video receive is **not documented** by Discord, and DAVE video is not implemented in any public Node.js library. Everything below was established from the [libdave](https://github.com/discord/libdave) source, the libwebrtc AV1 RTP packetizer/depacketizer source, and live protocol analysis.
 
-- Send and receive\* audio in Discord voice-based channels
-- **Receive video\* from users' cameras and screen shares (this fork)**
-- A strong focus on reliability and predictable behavior
-- Horizontal scalability and libraries other than [discord.js](https://discord.js.org/) are supported with custom adapters
-- A robust audio processing system that can handle a wide range of audio sources
+## What is implemented
 
-\*_Audio and video receive are not documented by Discord so stable support is not guaranteed_
+| Area                            | Status | Notes                                                                                                   |
+| ------------------------------- | ------ | ------------------------------------------------------------------------------------------------------- |
+| Voice gateway v8 video opcodes  | ✅     | op 12 (video broadcast) with replay on join, op 15 (media sink wants), op 13 (client disconnect)        |
+| Video-capable IDENTIFY          | ✅     | `video: true` + stream descriptors are **required** or the SFU forwards nothing and never replays op 12 |
+| Codec negotiation               | ✅     | H264 / VP8 / VP9 / AV1 / H265 offered in `SELECT_PROTOCOL`                                              |
+| SSRC ↔ user mapping             | ✅     | op 12 streams + RTX SSRCs + fallback discovery via sequential allocation (audio N, video N+1, rtx N+2)  |
+| Keyframe requests               | ✅     | RTCP PLI on subscribe + every 2 s per active stream                                                     |
+| RTX retransmission              | ✅     | OSN unwrap, sequence dedup, padding/probe filtering                                                     |
+| DAVE E2EE (MLS)                 | ✅     | full epoch participation, transitions, key ratchets — via `@snazzah/davey`                              |
+| DAVE audio decryption           | ✅     | verified live (real Opus speech frames)                                                                 |
+| **DAVE video decryption (AV1)** | ✅     | **verified live — the main achievement of this fork**                                                   |
+| AV1 RTP depacketizer            | ✅     | RFC 9494 / libwebrtc-compatible, sender-exact frame reconstruction                                      |
+| H264 video decryption           | ❌     | negotiation works, but no FU-A/STAP-A depacketizer yet — DAVE H264 frames are dropped                   |
+| Sending video                   | ❌     | receive only                                                                                            |
 
-## Installation
+## Verification
 
-**Node.js 24.17.0 or newer is required.**
+Live-tested on production Discord (October 2026, guild voice channel with DAVE v1):
 
-Install the fork directly from git (drop-in replacement for the npm package):
-
-```sh
-npm install github:<your-user>/discordjs_fork
+```
+videoStats: successes ≈ 2000, failures 80-149 (only the pre-keyframe window), passthroughs 0
+audioStats: successes 500+, failures 0
 ```
 
-Or from the registry, if you have published it:
+- Joining **mid-stream works**: after the first PLI-triggered keyframe arrives, every frame decrypts. The failures above are exactly the delta frames that arrived between joining and that keyframe (the DAVE ratchet has already advanced past them).
+- Recovered output: `1280x720, 25 fps, AV1` decoded by dav1d → MP4 (45 s and 17 s recordings captured in two sessions, from two different join points).
+- Decrypted frame heads are valid AV1 (`0a 0b 00 00 00 05 4c ff …` = OBU_SEQUENCE_HEADER + OBU_FRAME_HEADER …), confirming byte-exact reconstruction of what the sender encrypted.
+
+## How the DAVE video pipeline works
+
+This is the part that made every other implementation fail — the frame the sender encrypted is **not** the concatenation of RTP payloads.
+
+1. **Sender side** (Discord client, from `libdave` source):
+   - The AV1 encoder frame is processed OBU-by-OBU: temporal delimiters / tile lists / padding OBUs are dropped.
+   - Every remaining OBU keeps its header + canonical LEB128 size **unencrypted**; the payload is AEAD-encrypted (AES-GCM, 8-byte truncated tag).
+   - The **last OBU's size field is removed** (size bit flipped) so the DAVE trailer can ride inside its payload.
+   - The trailer is appended: `[tag (8B)][truncated nonce (LEB128)][unencrypted ranges (LEB128 pairs)][total size (1B)][0xFA FA]`. The ranges mark where the unencrypted OBU headers sit, e.g. `(0,2),(13,2),(31,1)` for a keyframe.
+2. **RTP packetization** (libwebrtc `RtpPacketizerAv1`):
+   - Each packet gets a 1-byte aggregation header: `Z` (continuation), `Y` (ends with fragment), `W` (element count, ≤ 3).
+   - OBU elements are length-prefixed with LEB128 **in the RTP payload**, and each OBU's own size field is stripped and its size bit cleared.
+3. **This fork reverses all of that** (`src/networking/av1.ts`):
+   - `parseAv1Obus` — port of libwebrtc's `VideoRtpDepacketizerAv1::ParseObus` (aggregation headers, element sizes, Z/Y fragment chaining).
+   - `serializeAv1Obus(..., senderLayout)` — rebuilds the **byte-exact frame the sender encrypted**: OBU headers get their size bit and canonical size back, the final OBU stays sizeless with the trailer inside its payload.
+   - The reconstructed frame goes to davey, which parses the trailer, splits authenticated/ciphertext bytes by the ranges and runs the AEAD decryption.
+   - For consumers, `depacketizeAv1FrameNormalized` emits a decoder-ready OBU stream instead.
+
+If you concatenate RTP payloads and try to decrypt (what every naive implementation does), GCM authentication fails with `NoValidCryptorFound` — that was this fork's bug for most of its development, and the reason a byte-exact depacketizer is required.
+
+### Voice gateway opcodes (v8)
+
+| Op  | Name              | Payload / purpose                                                                                                            |
+| --- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 0   | IDENTIFY          | requires `video: true` and `streams: [{ type, rid, quality }]` or video never flows                                          |
+| 2   | SELECT_PROTOCOL   | `codecs` array negotiates receive payload types (AV1 = 109)                                                                  |
+| 5   | SPEAKING          | audio SSRC → user map (used for discovery fallback)                                                                          |
+| 12  | VIDEO             | `{ user_id, audio_ssrc, streams: [{ ssrc, rtx_ssrc, active, quality, rid, type, … }] }`, replayed on join for active streams |
+| 13  | CLIENT_DISCONNECT | user left — drop their streams                                                                                               |
+| 15  | MEDIA_SINK_WANTS  | `{ any: 100 }` after identify (server ≥ v5, tracked from HELLO) — otherwise no forwarding                                    |
+
+## Usage
+
+### Installation
 
 ```sh
-npm install @discordjs/voice
+npm install Davidooff/discordjs-voice-video-fork
 ```
 
-## Dependencies
+Requires Node.js 22.12.0+; `ffmpeg` for the example/recorder.
 
-This library has several optional dependencies to support a variety
-of different platforms. Install one dependency from each of the
-categories shown below. The dependencies are listed in order of
-preference for performance. If you can't install one of the options,
-try installing another.
-
-**Encryption Libraries (npm install):**
-
-> [!NOTE]
-> You only need to install one of these libraries if your system does not support `aes-256-gcm` (verify by running `require('node:crypto').getCiphers().includes('aes-256-gcm')`).
-
-- `sodium-native`: ^3.3.0
-- `sodium`: ^3.0.2
-- `@stablelib/xchacha20poly1305`: ^2.0.0
-- `@noble/ciphers`: ^1.0.0
-- `libsodium-wrappers`: ^0.7.9
-
-**DAVE Protocol Libraries (e2ee)**
-
-> [!NOTE]
-> At this time, `@snazzah/davey` is the only supported DAVE protocol library in this package, and comes pre-installed. In the future, we may support other libraries once they are created.
-
-- `@snazzah/davey`: ^0.1.6
-
-**Opus Libraries (npm install):**
-
-- `@discordjs/opus`: ^0.4.0
-- `opusscript`: ^0.0.7
-
-**FFmpeg:**
-
-- [`FFmpeg`](https://ffmpeg.org/) (installed and added to environment)
-- `ffmpeg-static`: ^4.2.7 (npm install)
-
-## Examples
-
-The [voice-examples][voice-examples] repository contains examples on how to use this package. Feel free to check them out if you need a nudge in the right direction.
-
-A complete example for recording a user's camera to MP4 (via ffmpeg) is included in [`examples/record-camera.ts`](examples/record-camera.ts).
-
-## Receiving video (camera / screen capture)
-
-This fork adds a `videoReceiver` to every `VoiceConnection`, mirroring the audio `receiver`:
+### Receiving video (library)
 
 ```ts
 import { joinVoiceChannel } from '@discordjs/voice';
 
 const connection = joinVoiceChannel({
-	guildId: '...',
-	channelId: '...',
+	guildId: GUILD_ID,
+	channelId: CHANNEL_ID,
 	adapterCreator: guild.voiceAdapterCreator,
-	// The voice server only forwards streams to connections that are not deafened
-	selfDeaf: false,
+	selfDeaf: false, // the SFU does not forward streams to deafened connections
 });
 
-// Be notified when users start/stop their camera or screen share
 connection.videoReceiver.on('video', (userId, streams) => {
-	console.log(`User ${userId} streams:`, streams);
-	// streams: [{ ssrc, type: 'video' | 'screen', quality, rtxSSRC, ... }]
+	console.log('user streams:', userId, streams);
 });
 
-// Subscribe to a user's video. The stream is in object mode and emits one
-// entry per received RTP packet (or per frame when DAVE e2ee is active).
-const videoStream = connection.videoReceiver.subscribe(userId);
-
-videoStream.on('data', (packet) => {
-	// packet: { ssrc, sequence, timestamp, payloadType, marker, retransmitted, payload }
-	// packet.payload contains raw codec data (usually H264), still in RTP
-	// packetized form - pipe it into ffmpeg or another RTP-aware decoder.
+const video = connection.videoReceiver.subscribe(USER_ID);
+video.on('data', (packet) => {
+	// With DAVE active (always, on current Discord) each packet is one fully
+	// decrypted AV1 frame in libdave layout: OBU headers/sizes present, but
+	// the final OBU is sizeless and there is no temporal delimiter.
+	//
+	// To make it decodable: prepend a temporal delimiter (0x12 0x00) and give
+	// the final OBU an explicit size — see `decodeableAv1()` in record-live.mjs.
 });
 ```
 
-What the fork does for you under the hood:
+### Recorder harness (verified end-to-end)
 
-- **Codec negotiation** - the connection negotiates H264/VP8/VP9/AV1/H265 receive support in `SELECT_PROTOCOL`, which is required before the voice server will route video to you.
-- **Media sink wants (opcode 15)** - sent automatically once the session is ready (`{ any: 100 }`), telling Discord's SFU to forward all video streams to your connection. Without this, no video packets arrive at all.
-- **SSRC mapping (opcode 12)** - video RTP packets arrive on separate SSRCs per user; the receiver maps them via the `video` broadcasts (including RTX retransmission SSRCs).
-- **Keyframe requests** - RTCP picture loss indications (PLI) are sent every 2 seconds for every subscribed stream, so the H264 stream stays decodable.
-- **RTX recovery** - retransmissions arriving on the RTX SSRC are unpacked and delivered with their original sequence number.
-- **DAVE (end-to-end encryption)** - when the channel uses DAVE, video frames are decrypted frame-by-frame after RTP reassembly; in that case the stream emits one packet per frame (with `marker: true`).
+`record-live.mjs` in the repo root is the harness used for verification: it joins a channel with a **user token**, subscribes to whoever turns on their camera, writes decoder-ready AV1 frames to `recordings/*.obu`, converts to MP4 via ffmpeg (`-f obu`), and keeps a raw transport-decrypted packet log for analysis.
 
-Notes and limitations:
+```sh
+cp .env.example .env   # DISCORD_TOKEN, GUILD_ID, CHANNEL_ID
+npm run build && node record-live.mjs
+```
 
-- Video only flows from users that have their camera or screen share enabled; subscriptions stay open and pick up automatically when they do.
-- **DAVE (E2EE) channels**: audio and video are end-to-end encrypted; the fork performs full MLS participation and decrypts both. Streams that **started after** your connection joined decrypt reliably. A stream that has been running for a long time before you joined uses a video key ratchet thousands of generations ahead - those frames cannot be authenticated until the sender restarts video (camera off/on) or the group re-keys. This matches the behavior of other DAVE implementations; ask the user to toggle their camera if you join mid-stream.
-- Screen shares may use simulcast; you will receive every active layer. Filter by `quality`/`rid` from the `video` event if you only want one.
-- Recording people without their consent may be illegal depending on your jurisdiction - get consent first.
+> [!WARNING]
+> Automating a user account violates Discord's ToS; the harness exists because bots cannot see DAVE media the same way in all contexts. Use your own account and judgment. Recording people without consent may be illegal in your jurisdiction.
 
-## How it works / further reading
+### Complete example
 
-- Discord developer docs: [Voice Connections](https://discord.com/developers/docs/topics/voice-connections) (encryption modes, DAVE protocol)
-- The undocumented video opcodes were verified against the official Discord web client and community implementations such as [discord-video-stream](https://github.com/gabrielmaialva33/discord-video-stream).
+[`examples/record-camera.ts`](examples/record-camera.ts) — bot-token example that records a user's camera to MP4 (written for the pre-DAVE transport-only path with H264; kept for reference).
 
-## Links
+## Architecture
 
-- [Website][website] ([source][website-source])
-- [Documentation][documentation]
-- [Guide][guide] ([source][guide-source])
-  Also see the v13 to v14 [Update Guide][guide-update], which includes updated and removed items from the library.
-- [discord.js Discord server][discord]
-- [Discord Developers Discord server][discord-developers]
-- [GitHub][source]
-- [npm][npm]
-- [Related libraries][related-libs]
+```
+src/
+├─ networking/
+│  ├─ video.ts        # v8 opcodes, codec tables, identify/select payloads
+│  ├─ Networking.ts   # video identify, codec negotiation, sink wants, RTCP
+│  ├─ av1.ts          # RFC 9494 depacketizer + sender-layout serializer
+│  ├─ rtcp.ts         # PLI builder, RTCP detection
+│  └─ DAVESession.ts  # MLS/E2EE session glue (davey), decrypt audio+video
+├─ receive/
+│  ├─ VideoReceiver.ts  # op 12 mapping, subscriptions, PLI timer, RTX,
+│  │                    # frame assembly (per timestamp/marker), DAVE decrypt
+│  └─ VideoReceiveStream.ts
+└─ VoiceConnection.ts   # exposes .videoReceiver
+```
 
-## Contributing
+Tests: `__tests__/av1.test.ts` round-trips frames through a port of libwebrtc's packetizer and asserts byte-exact sender-layout reconstruction; `__tests__/VideoReceiver.test.ts` covers op 12 handling, RTX, discovery and assembly.
 
-Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation][documentation].  
-See [the contribution guide][contributing] if you'd like to submit a PR.
+## Limitations & known issues
 
-## Help
+- **DAVE key ratchet**: frames are encrypted with a per-frame advancing ratchet. Frames from before your first keyframe (joined mid-stream) cannot authenticate — expected, and bounded (~1-2 s at 25 fps). A single undecryptable frame does **not** desync the stream; the ratchet window covers it.
+- **H264**: Discord clients may send H264 (PT 101) briefly; those DAVE frames are dropped (no depacketizer). AV1 (PT 109) is what current clients stream and is fully supported.
+- Screen shares may use simulcast — you receive every layer; filter by `quality`/`rid` from the `video` event.
+- The `VideoRtpPacket.payload` for DAVE frames is libdave-layout AV1, not a plain bitstream — normalize before decoding (see usage).
+- 3 unit-test failures on Node 26 are environmental only (missing `@discordjs/opus` native prebuilds; pre-existing upstream).
 
-If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
+## Development
 
-[website]: https://discord.js.org
-[website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
-[documentation]: https://discord.js.org/docs/packages/voice/stable
-[guide]: https://discordjs.guide
-[guide-source]: https://github.com/discordjs/discord.js/tree/main/apps/guide
-[guide-update]: https://discordjs.guide/legacy/additional-info/changes-in-v14
-[discord]: https://discord.gg/djs
-[discord-developers]: https://discord.gg/discord-developers
-[source]: https://github.com/discordjs/discord.js/tree/main/packages/voice
-[npm]: https://www.npmjs.com/package/@discordjs/voice
-[related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
-[contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md
-[voice-examples]: https://github.com/discordjs/voice-examples
+```sh
+npm install
+npm run build     # tsc + tsup (ESM/CJS + types)
+npm test          # vitest
+npm run lint      # eslint + prettier
+```
+
+## Credits & legal
+
+- Base library: [discord.js](https://github.com/discordjs/discord.js) / `@discordjs/voice` v0.19.2 (MIT).
+- DAVE MLS implementation: [@snazzah/davey](https://github.com/snazzah/davey); protocol reference: [discord/libdave](https://github.com/discord/libdave).
+- Protocol facts verified against [libwebrtc](https://webrtc.googlesource.com/src) `rtp_packetizer_av1.cc` / `video_rtp_depacketizer_av1.cc` and live Discord traffic.
+
+For lawful research, education, interoperability, and use with the consent of everyone being recorded.
