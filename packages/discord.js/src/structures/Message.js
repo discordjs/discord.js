@@ -874,8 +874,8 @@ class Message extends Base {
       this.reference?.type !== MessageReferenceType.Forward &&
       this.type === MessageType.Default &&
       !this.poll &&
-      channel.viewable &&
       this.guild.features.includes(GuildFeature.News) &&
+      channel.viewable &&
       channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );
   }
