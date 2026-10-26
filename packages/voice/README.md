@@ -33,7 +33,7 @@ Video receive is **not documented** by Discord, and DAVE video is not implemente
 | DAVE audio decryption           | ✅     | verified live (real Opus speech frames)                                                                 |
 | **DAVE video decryption (AV1)** | ✅     | **verified live — the main achievement of this fork**                                                   |
 | AV1 RTP depacketizer            | ✅     | RFC 9494 / libwebrtc-compatible, sender-exact frame reconstruction                                      |
-| H264 video decryption           | ❌     | negotiation works, but no FU-A/STAP-A depacketizer yet — DAVE H264 frames are dropped                   |
+| H264 / VP8 / VP9 decryption     | ✅     | RFC 6184 (single, STAP-A, FU-A; 4-byte start codes as libdave writes them) and VP8/VP9 descriptor stripping |
 | Sending video                   | ❌     | receive only                                                                                            |
 
 ## Verification
@@ -155,7 +155,7 @@ Tests: `__tests__/av1.test.ts` round-trips frames through a port of libwebrtc's 
 ## Limitations & known issues
 
 - **DAVE key ratchet**: frames are encrypted with a per-frame advancing ratchet. Frames from before your first keyframe (joined mid-stream) cannot authenticate — expected, and bounded (~1-2 s at 25 fps). A single undecryptable frame does **not** desync the stream; the ratchet window covers it.
-- **H264**: Discord clients may send H264 (PT 101) briefly; those DAVE frames are dropped (no depacketizer). AV1 (PT 109) is what current clients stream and is fully supported.
+- **Codecs**: AV1 (PT 109), H264 (PT 101), VP8 (PT 105) and VP9 (PT 107) are depacketized into the sender layout DAVE encrypted, then decrypted; H265 (PT 103) frames are still dropped. Frames are assembled in RTP sequence order (retransmissions arrive out of place) and a frame with a sequence gap is dropped.
 - Screen shares may use simulcast — you receive every layer; filter by `quality`/`rid` from the `video` event.
 - The `VideoRtpPacket.payload` for DAVE frames is libdave-layout AV1, not a plain bitstream — normalize before decoding (see usage).
 - 3 unit-test failures on Node 26 are environmental only (missing `@discordjs/opus` native prebuilds; pre-existing upstream).

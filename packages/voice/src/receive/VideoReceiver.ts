@@ -6,6 +6,8 @@ import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection'
 import type { DAVESession } from '../networking/DAVESession';
 import { NetworkingStatusCode, type ConnectionData, type Networking } from '../networking/Networking';
 import { depacketizeAv1Frame, depacketizeAv1FrameNormalized } from '../networking/av1';
+import { depacketizeH264Frame } from '../networking/h264';
+import { depacketizeVp8Frame, depacketizeVp9Frame } from '../networking/vp8';
 import { createPLI, isRTCPPacket } from '../networking/rtcp';
 import { VideoGatewayOpcodes, type MediaSinkWantsPayload, type VoiceVideoPayload } from '../networking/video';
 import { RTP_VIDEO_PAYLOAD_TYPES } from '../util/constants';
@@ -59,7 +61,11 @@ export interface VideoStreamInfo {
 const PLI_INTERVAL = 2_000;
 
 interface FrameAssembler {
-	chunks: Buffer[];
+	/**
+	 * The packets of the frame with their RTP sequence numbers: sorted before depacketizing, since a retransmitted
+	 * (or reordered) packet arrives out of place and a frame must be rebuilt byte-exact for DAVE.
+	 */
+	chunks: { payload: Buffer; sequence: number }[];
 	lastPayloadType: number;
 	lastSequence: number;
 	retransmitted: boolean;
@@ -544,7 +550,7 @@ export class VideoReceiver extends EventEmitter {
 		}
 
 		const current = this.frameAssemblers.get(mediaSSRC)!;
-		current.chunks.push(payload);
+		current.chunks.push({ payload, sequence });
 		current.lastSequence = sequence;
 		// Retransmissions arrive with the RTX payload type; keep the media
 		// payload type of the stream so consumers see the codec actually used.
@@ -572,15 +578,36 @@ export class VideoReceiver extends EventEmitter {
 		// trailer (ending with the 0xFAFA magic marker) rides along inside the
 		// payload of the frame's final, sizeless OBU, so depacketizing with
 		// the sender layout reproduces the exact bytes that were encrypted.
-		const payloads = [...assembler.chunks];
-		const isAv1 = assembler.lastPayloadType === 109;
-		if (!isAv1 && daveSession) {
-			// Only the AV1 depacketizer is implemented; other codecs cannot be
-			// reconstructed (and thus not decrypted) in DAVE channels for now.
+		const first = assembler.chunks[0]?.sequence ?? 0;
+		// Sequence order, wrap-around safe: the signed 16-bit distance from the first packet that arrived, so a
+		// packet that came in after a later one still sorts before it.
+		const offset = (sequence: number) => ((sequence - first + 0x8000) & 0xffff) - 0x8000;
+		const sorted = [...assembler.chunks].sort((a, b) => offset(a.sequence) - offset(b.sequence));
+		// A gap (a packet lost and not retransmitted in time) cannot be rebuilt: the frame would fail DAVE
+		// authentication, or decode corrupt in a passthrough channel. Duplicates (a late retransmission) are dropped.
+		const unique = sorted.filter((chunk, index) => index === 0 || chunk.sequence !== sorted[index - 1]!.sequence);
+		for (let index = 1; index < unique.length; index++) {
+			if (offset(unique[index]!.sequence) - offset(unique[index - 1]!.sequence) !== 1) return;
+		}
+
+		const payloads = unique.map((chunk) => chunk.payload);
+		const payloadType = assembler.lastPayloadType;
+		const isAv1 = payloadType === 109;
+		// The sender-layout frame per codec: what DAVE encrypted (and, for codecs other than AV1, also what decoders
+		// read): AV1 (109), H264 (101: Annex-B, 4-byte start codes), VP8 (105) and VP9 (107: descriptors stripped).
+		const depacketize: Record<number, (parts: Buffer[]) => Buffer | undefined> = {
+			109: depacketizeAv1Frame,
+			101: depacketizeH264Frame,
+			105: depacketizeVp8Frame,
+			107: depacketizeVp9Frame,
+		};
+		const depacketizer = depacketize[payloadType];
+		if (!depacketizer && daveSession) {
+			// No depacketizer for this codec (H265): it cannot be reconstructed, thus not decrypted.
 			return;
 		}
 
-		const encryptedFrame = isAv1 ? depacketizeAv1Frame(payloads) : Buffer.concat(payloads);
+		const encryptedFrame = depacketizer ? depacketizer(payloads) : Buffer.concat(payloads);
 		if (!encryptedFrame) return;
 
 		// Sanity check the DAVE trailer marker before attempting decryption.
