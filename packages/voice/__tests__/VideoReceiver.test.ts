@@ -205,7 +205,7 @@ describe('VideoReceiver', () => {
 		send(RTX_SSRC, Buffer.from([0x00, 0x0b, 0x7c, 0x05, ...nal.subarray(4, 7)]), 500, 2_000, false, 102);
 		await nextTick();
 		expect(frames).toHaveLength(1);
-		expect(frames[0]).toMatchObject({ timestamp: 2_000, payloadType: 101, retransmitted: true });
+		expect(frames[0]).toMatchObject({ timestamp: 2_000, payloadType: 101, retransmitted: true, firstSequence: 10, sequence: 12 });
 		expect(frames[0]!.payload.equals(Buffer.concat([Buffer.from([0, 0, 0, 1]), nal]))).toBe(true);
 	});
 

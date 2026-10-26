@@ -741,6 +741,7 @@ export class VideoReceiver extends EventEmitter {
 		const e2eeSession = daveSession?.protocolVersion ? daveSession : undefined;
 		const meta = {
 			ssrc,
+			firstSequence: packets[0]!.sequence,
 			sequence: last.sequence,
 			timestamp: last.timestamp,
 			payloadType,

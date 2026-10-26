@@ -9,6 +9,13 @@ import { EndBehaviorType, type EndBehavior } from './AudioReceiveStream';
  */
 export interface VideoRtpPacket {
 	/**
+	 * For an assembled frame: the sequence number of its first packet. A frame whose first sequence is not the
+	 * previous frame's `sequence` + 1 follows a frame that was dropped (lost, malformed or undecryptable): a decoder
+	 * fed it shows grey/garbled areas until the next keyframe.
+	 */
+	firstSequence?: number;
+
+	/**
 	 * Whether the RTP marker bit is set (end of frame).
 	 */
 	marker: boolean;
