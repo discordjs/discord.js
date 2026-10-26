@@ -51,6 +51,12 @@ export interface VideoRtpPacket {
 }
 
 export interface VideoReceiveStreamOptions extends ReadableOptions {
+	/**
+	 * Push whole frames (depacketized: Annex-B H264, OBU AV1, bare VP8/VP9) instead of RTP packets also outside DAVE
+	 * channels (under DAVE frames are always assembled, since it encrypts frames). Packets are put in sequence
+	 * order, retransmissions slotted in, lost ones asked for again (NACK). Default false: packets as received.
+	 */
+	assembleFrames?: boolean;
 	end: EndBehavior;
 }
 
@@ -77,10 +83,15 @@ export class VideoReceiveStream extends Readable {
 	 */
 	public readonly end: EndBehavior;
 
+	/**
+	 * Whether this subscription wants whole frames (see {@link VideoReceiveStreamOptions.assembleFrames}).
+	 */
+	public readonly assembleFrames: boolean;
+
 	private endTimeout?: NodeJS.Timeout;
 
 	public constructor(options: VideoReceiveStreamOptions) {
-		const { end, ...rest } = options;
+		const { end, assembleFrames, ...rest } = options;
 
 		super({
 			...rest,
@@ -88,6 +99,7 @@ export class VideoReceiveStream extends Readable {
 		});
 
 		this.end = end;
+		this.assembleFrames = assembleFrames ?? false;
 	}
 
 	public override push(packet: VideoRtpPacket | null) {

@@ -177,6 +177,38 @@ describe('VideoReceiver', () => {
 		expect(packets[0]!.payload.equals(originalPayload)).toEqual(true);
 	});
 
+	test('assembleFrames: H264 FU-A packets become one Annex-B frame, a lost packet is NACKed and recovered from RTX', async () => {
+		receiver.onWsPacket(
+			makeVideoPayload([{ type: 'video', ssrc: VIDEO_SSRC, rtx_ssrc: RTX_SSRC, active: true }]) as any,
+		);
+		const stream = receiver.subscribe(USER_ID, { assembleFrames: true });
+		const frames: VideoRtpPacket[] = [];
+		stream.on('data', (data: VideoRtpPacket) => frames.push(data));
+
+		const send = (ssrc: number, payload: Buffer, sequence: number, timestamp: number, marker = false, payloadType = 101) =>
+			receiver.onUdpMessage(encryptPacket({ ssrc, payload, sequence, timestamp, marker, payloadType }).packet);
+		// The frame before: its marker tells the buffer where the next frame starts (itself dropped: after a mid-stream
+		// join the first frame may be partial).
+		send(VIDEO_SSRC, Buffer.from([0x41, 0x01]), 9, 1_000, true);
+		// An IDR (0x65) in three FU-A fragments (indicator 0x7c = NRI 3, type 28); the middle one is lost.
+		const nal = Buffer.from([0x65, ...Array.from({ length: 9 }, (_, index) => index + 1)]);
+		send(VIDEO_SSRC, Buffer.from([0x7c, 0x85, ...nal.subarray(1, 4)]), 10, 2_000);
+		send(VIDEO_SSRC, Buffer.from([0x7c, 0x45, ...nal.subarray(7)]), 12, 2_000, true);
+		await nextTick();
+		expect(frames).toHaveLength(0);
+		expect(sendRTCP).toHaveBeenCalledWith(expect.objectContaining({ 1: 205 })); // RTPFB: generic NACK
+		const nack: Buffer = sendRTCP.mock.calls.at(-1)![0];
+		expect(nack.readUInt32BE(8)).toBe(VIDEO_SSRC);
+		expect(nack.readUInt16BE(12)).toBe(11);
+
+		// The retransmission: RTX payload type 102 with the original sequence number first.
+		send(RTX_SSRC, Buffer.from([0x00, 0x0b, 0x7c, 0x05, ...nal.subarray(4, 7)]), 500, 2_000, false, 102);
+		await nextTick();
+		expect(frames).toHaveLength(1);
+		expect(frames[0]).toMatchObject({ timestamp: 2_000, payloadType: 101, retransmitted: true });
+		expect(frames[0]!.payload.equals(Buffer.concat([Buffer.from([0, 0, 0, 1]), nal]))).toBe(true);
+	});
+
 	test('bootstraps unmapped video SSRCs via the sequential SSRC allocation', async () => {
 		// audio ssrc 111 -> user (from opcode 5 speaking)
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any

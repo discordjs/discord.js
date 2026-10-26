@@ -3,12 +3,11 @@ import { EventEmitter } from 'node:events';
 import type { VoiceReceivePayload } from 'discord-api-types/voice/v8';
 import { VoiceOpcodes } from 'discord-api-types/voice/v8';
 import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
-import type { DAVESession } from '../networking/DAVESession';
 import { NetworkingStatusCode, type ConnectionData, type Networking } from '../networking/Networking';
 import { depacketizeAv1Frame, depacketizeAv1FrameNormalized } from '../networking/av1';
 import { depacketizeH264Frame } from '../networking/h264';
 import { depacketizeVp8Frame, depacketizeVp9Frame } from '../networking/vp8';
-import { createPLI, isRTCPPacket } from '../networking/rtcp';
+import { createNACK, createPLI, isRTCPPacket } from '../networking/rtcp';
 import { VideoGatewayOpcodes, type MediaSinkWantsPayload, type VoiceVideoPayload } from '../networking/video';
 import { RTP_VIDEO_PAYLOAD_TYPES } from '../util/constants';
 import {
@@ -17,6 +16,7 @@ import {
 	type VideoReceiveStreamOptions,
 	type VideoRtpPacket,
 } from './VideoReceiveStream';
+import { FrameBuffer, type BufferedPacket } from './FrameBuffer';
 import { decryptRtpPayload, stripExtensionBody, stripRtpPadding } from './decrypt';
 
 /**
@@ -60,17 +60,41 @@ export interface VideoStreamInfo {
  */
 const PLI_INTERVAL = 2_000;
 
-interface FrameAssembler {
-	/**
-	 * The packets of the frame with their RTP sequence numbers: sorted before depacketizing, since a retransmitted
-	 * (or reordered) packet arrives out of place and a frame must be rebuilt byte-exact for DAVE.
-	 */
-	chunks: { payload: Buffer; sequence: number }[];
-	lastPayloadType: number;
-	lastSequence: number;
-	retransmitted: boolean;
-	timestamp: number;
+/**
+ * RTX payload type → its media payload type (the fork's codec table: H264, H265, VP8, VP9, AV1).
+ */
+const RTX_TO_MEDIA_PAYLOAD_TYPE: Record<number, number> = { 102: 101, 104: 103, 106: 105, 108: 107, 110: 109 };
+
+/**
+ * The depacketizer per media payload type: the sender-layout frame DAVE encrypted.
+ */
+const DEPACKETIZERS: Record<number, (payloads: Buffer[]) => Buffer | undefined> = {
+	109: depacketizeAv1Frame,
+	101: depacketizeH264Frame,
+	105: depacketizeVp8Frame,
+	107: depacketizeVp9Frame,
+};
+
+/**
+ * Counters of the video receive path, per payload type where it matters (diagnostics: where frames get lost).
+ */
+export interface VideoReceiveStats {
+	/** Frames depacketized, but DAVE did not authenticate them. */
+	decryptFailed: Record<number, number>;
+	/** Frames emitted (decrypted, or passthrough). */
+	frames: Record<number, number>;
+	/** Frames whose packets did not depacketize (malformed, or a fragment missing). */
+	malformed: Record<number, number>;
+	/** Missing packets asked for again (RTCP NACK). */
+	nacked: number;
+	/** Media packets received (not counting retransmissions). */
+	packets: Record<number, number>;
+	/** Packets recovered from RTX. */
+	retransmitted: number;
+	/** Frames of a codec without a depacketizer (H265). */
+	unsupported: Record<number, number>;
 }
+
 
 export interface VideoReceiver extends EventEmitter {
 	/**
@@ -127,9 +151,27 @@ export class VideoReceiver extends EventEmitter {
 	private readonly mediaSSRCByRTXSSRC: Map<number, number>;
 
 	/**
-	 * Buffers used to reassemble RTP packets into frames for DAVE decryption.
+	 * Per media SSRC: packets reassembled into frames by sequence number (DAVE, or assembleFrames subscriptions).
 	 */
-	private readonly frameAssemblers: Map<number, FrameAssembler>;
+	private readonly frameBuffers: Map<number, FrameBuffer>;
+
+	/**
+	 * Gives up frames that waited too long for a retransmission (runs while frame buffers exist).
+	 */
+	private frameBufferTimer?: NodeJS.Timeout | undefined;
+
+	/**
+	 * Counters of the receive path since the receiver was created.
+	 */
+	public readonly stats: VideoReceiveStats = {
+		packets: {},
+		frames: {},
+		malformed: {},
+		decryptFailed: {},
+		unsupported: {},
+		retransmitted: 0,
+		nacked: 0,
+	};
 
 	/**
 	 * Audio SSRCs by user id, as advertised in opcode 12 payloads.
@@ -155,7 +197,7 @@ export class VideoReceiver extends EventEmitter {
 		this.connectionData = {};
 		this.userIdBySSRC = new Map();
 		this.mediaSSRCByRTXSSRC = new Map();
-		this.frameAssemblers = new Map();
+		this.frameBuffers = new Map();
 		this.audioSSRCByUserId = new Map();
 		this.recentSequences = new Map();
 
@@ -358,7 +400,7 @@ export class VideoReceiver extends EventEmitter {
 		for (const stream of streams) {
 			this.userIdBySSRC.delete(stream.ssrc);
 			if (stream.rtxSSRC !== undefined) this.mediaSSRCByRTXSSRC.delete(stream.rtxSSRC);
-			this.frameAssemblers.delete(stream.ssrc);
+			this.frameBuffers.delete(stream.ssrc);
 		}
 
 		this.activeStreams.delete(userId);
@@ -477,6 +519,21 @@ export class VideoReceiver extends EventEmitter {
 			return;
 		}
 
+		const daveSession =
+			this.voiceConnection.state.status === VoiceConnectionStatus.Ready &&
+			(this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Ready ||
+				this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Resuming)
+				? this.voiceConnection.state.networking.state.dave
+				: undefined;
+
+		// A DAVE session with protocol version 0 is in passthrough mode: the
+		// channel is transport-only encrypted, so packets carry no end-to-end
+		// trailer and need no (or passthrough) decryption.
+		const e2eeSession = daveSession?.protocolVersion ? daveSession : undefined;
+		// Frames are assembled under DAVE (it encrypts whole frames) and for subscriptions that ask for frames;
+		// otherwise packets are forwarded one by one, as received (the original behaviour).
+		const assemble = Boolean(e2eeSession) || stream.assembleFrames;
+
 		if (retransmitted) {
 			// RTX payloads carry the original sequence number, followed by the
 			// original payload. Padding-only RTX packets (used for keep-alives)
@@ -490,6 +547,20 @@ export class VideoReceiver extends EventEmitter {
 			payload = payload.subarray(2);
 			if (payload.length === 0) return;
 			if (!this.trackSequence(mediaSSRC, originalSequence)) return;
+			this.stats.retransmitted++;
+			if (assemble) {
+				// Into the frame it belongs to, under the media stream's payload type.
+				this.frameBuffer(stream, mediaSSRC, userId).push({
+					sequence: originalSequence,
+					timestamp,
+					marker,
+					payloadType: RTX_TO_MEDIA_PAYLOAD_TYPE[payloadType] ?? payloadType,
+					retransmitted,
+					payload,
+				});
+				return;
+			}
+
 			this.pushVideoPacket(stream, {
 				ssrc: mediaSSRC,
 				sequence: originalSequence,
@@ -505,20 +576,9 @@ export class VideoReceiver extends EventEmitter {
 		// Drop packets that were already processed (e.g. duplicates re-sent by
 		// the server).
 		if (!this.trackSequence(mediaSSRC, sequence)) return;
+		this.stats.packets[payloadType] = (this.stats.packets[payloadType] ?? 0) + 1;
 
-		const daveSession =
-			this.voiceConnection.state.status === VoiceConnectionStatus.Ready &&
-			(this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Ready ||
-				this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Resuming)
-				? this.voiceConnection.state.networking.state.dave
-				: undefined;
-
-		// A DAVE session with protocol version 0 is in passthrough mode: the
-		// channel is transport-only encrypted, so packets carry no end-to-end
-		// trailer and need no (or passthrough) decryption. They are forwarded
-		// per packet, as received.
-		const e2eeSession = daveSession?.protocolVersion ? daveSession : undefined;
-		if (!e2eeSession) {
+		if (!assemble) {
 			this.pushVideoPacket(stream, {
 				ssrc: mediaSSRC,
 				sequence,
@@ -531,84 +591,80 @@ export class VideoReceiver extends EventEmitter {
 			return;
 		}
 
-		// DAVE encrypts video frame-by-frame: reassemble packets into frames
-		// (packets of a frame share a timestamp, the last one has the marker bit)
-		// and decrypt the whole frame at once.
-		const assembler = this.frameAssemblers.get(mediaSSRC);
-		if (assembler && assembler.timestamp !== timestamp) {
-			this.flushFrame(stream, mediaSSRC, userId, assembler, e2eeSession);
-		}
-
-		if (!this.frameAssemblers.has(mediaSSRC)) {
-			this.frameAssemblers.set(mediaSSRC, {
-				chunks: [],
-				timestamp,
-				lastSequence: sequence,
-				lastPayloadType: payloadType,
-				retransmitted,
-			});
-		}
-
-		const current = this.frameAssemblers.get(mediaSSRC)!;
-		current.chunks.push({ payload, sequence });
-		current.lastSequence = sequence;
-		// Retransmissions arrive with the RTX payload type; keep the media
-		// payload type of the stream so consumers see the codec actually used.
-		if (!retransmitted) current.lastPayloadType = payloadType;
-
-		if (marker) {
-			this.flushFrame(stream, mediaSSRC, userId, current, e2eeSession);
-		}
+		this.frameBuffer(stream, mediaSSRC, userId).push({ sequence, timestamp, marker, payloadType, retransmitted, payload });
 	}
 
 	/**
-	 * Decrypts and pushes a reassembled frame for a DAVE session.
+	 * The frame buffer of a media SSRC (created on first use): frames by sequence number, NACKs for gaps.
 	 */
-	private flushFrame(
-		stream: VideoReceiveStream,
-		ssrc: number,
-		userId: string,
-		assembler: FrameAssembler,
-		daveSession: DAVESession | undefined,
-	) {
-		this.frameAssemblers.delete(ssrc);
+	private frameBuffer(stream: VideoReceiveStream, ssrc: number, userId: string): FrameBuffer {
+		let buffer = this.frameBuffers.get(ssrc);
+		if (!buffer) {
+			buffer = new FrameBuffer({
+				maxWaitMs: 300,
+				onNack: (sequences) => {
+					this.stats.nacked += sequences.length;
+					if (this.voiceConnection.state.status === VoiceConnectionStatus.Ready) {
+						this.voiceConnection.state.networking.sendRTCP(createNACK(ssrc, sequences));
+					}
+				},
+				onFrame: (packets) => this.emitFrame(stream, ssrc, userId, packets),
+			});
+			this.frameBuffers.set(ssrc, buffer);
+			this.frameBufferTimer ??= setInterval(() => {
+				if (this.frameBuffers.size === 0) {
+					clearInterval(this.frameBufferTimer);
+					this.frameBufferTimer = undefined;
+					return;
+				}
 
-		// DAVE encrypts the encoded (depacketized) frame and appends its
-		// supplemental trailer bytes to it before RTP packetization. The
-		// trailer (ending with the 0xFAFA magic marker) rides along inside the
-		// payload of the frame's final, sizeless OBU, so depacketizing with
-		// the sender layout reproduces the exact bytes that were encrypted.
-		const first = assembler.chunks[0]?.sequence ?? 0;
-		// Sequence order, wrap-around safe: the signed 16-bit distance from the first packet that arrived, so a
-		// packet that came in after a later one still sorts before it.
-		const offset = (sequence: number) => ((sequence - first + 0x8000) & 0xffff) - 0x8000;
-		const sorted = [...assembler.chunks].sort((a, b) => offset(a.sequence) - offset(b.sequence));
-		// A gap (a packet lost and not retransmitted in time) cannot be rebuilt: the frame would fail DAVE
-		// authentication, or decode corrupt in a passthrough channel. Duplicates (a late retransmission) are dropped.
-		const unique = sorted.filter((chunk, index) => index === 0 || chunk.sequence !== sorted[index - 1]!.sequence);
-		for (let index = 1; index < unique.length; index++) {
-			if (offset(unique[index]!.sequence) - offset(unique[index - 1]!.sequence) !== 1) return;
+				for (const frameBuffer of this.frameBuffers.values()) frameBuffer.tick();
+			}, 50);
+			this.frameBufferTimer.unref?.();
 		}
 
-		const payloads = unique.map((chunk) => chunk.payload);
-		const payloadType = assembler.lastPayloadType;
-		const isAv1 = payloadType === 109;
+		return buffer;
+	}
+
+	/**
+	 * Depacketizes a complete frame (its packets in sequence order), decrypts it under DAVE, and pushes it.
+	 */
+	private emitFrame(stream: VideoReceiveStream, ssrc: number, userId: string, packets: BufferedPacket[]) {
+		const last = packets.at(-1)!;
+		const payloadType = packets.find((packet) => !packet.retransmitted)?.payloadType ?? last.payloadType;
+		const payloads = packets.map((packet) => packet.payload);
+		const daveSession =
+			this.voiceConnection.state.status === VoiceConnectionStatus.Ready &&
+			(this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Ready ||
+				this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Resuming)
+				? this.voiceConnection.state.networking.state.dave
+				: undefined;
+		const e2eeSession = daveSession?.protocolVersion ? daveSession : undefined;
+		const meta = {
+			ssrc,
+			sequence: last.sequence,
+			timestamp: last.timestamp,
+			payloadType,
+			marker: true,
+			retransmitted: packets.some((packet) => packet.retransmitted),
+		};
+
 		// The sender-layout frame per codec: what DAVE encrypted (and, for codecs other than AV1, also what decoders
 		// read): AV1 (109), H264 (101: Annex-B, 4-byte start codes), VP8 (105) and VP9 (107: descriptors stripped).
-		const depacketize: Record<number, (parts: Buffer[]) => Buffer | undefined> = {
-			109: depacketizeAv1Frame,
-			101: depacketizeH264Frame,
-			105: depacketizeVp8Frame,
-			107: depacketizeVp9Frame,
-		};
-		const depacketizer = depacketize[payloadType];
-		if (!depacketizer && daveSession) {
+		const depacketizer = DEPACKETIZERS[payloadType];
+		if (!depacketizer) {
 			// No depacketizer for this codec (H265): it cannot be reconstructed, thus not decrypted.
+			this.stats.unsupported[payloadType] = (this.stats.unsupported[payloadType] ?? 0) + 1;
+			if (e2eeSession) return;
+			this.pushVideoPacket(stream, { ...meta, payload: Buffer.concat(payloads) });
 			return;
 		}
 
-		const encryptedFrame = depacketizer ? depacketizer(payloads) : Buffer.concat(payloads);
-		if (!encryptedFrame) return;
+		const encryptedFrame = depacketizer(payloads);
+		if (!encryptedFrame) {
+			this.stats.malformed[payloadType] = (this.stats.malformed[payloadType] ?? 0) + 1;
+			return;
+		}
 
 		// Sanity check the DAVE trailer marker before attempting decryption.
 		const hasTrailer =
@@ -616,45 +672,34 @@ export class VideoReceiver extends EventEmitter {
 			encryptedFrame[encryptedFrame.length - 2] === 0xfa &&
 			encryptedFrame[encryptedFrame.length - 1] === 0xfa;
 
-		if (daveSession && hasTrailer) {
+		if (e2eeSession && hasTrailer) {
 			let frame: Buffer | null;
 			try {
-				frame = daveSession.decryptVideo(encryptedFrame, userId);
+				frame = e2eeSession.decryptVideo(encryptedFrame, userId);
 			} catch {
 				// DAVE decryption failures (e.g. after a lost frame ratchets the
 				// key forward) are handled inside the session; drop the frame
 				// without tearing down the subscription.
+				this.stats.decryptFailed[payloadType] = (this.stats.decryptFailed[payloadType] ?? 0) + 1;
 				return;
 			}
 
-			if (!frame) return;
+			if (!frame) {
+				this.stats.decryptFailed[payloadType] = (this.stats.decryptFailed[payloadType] ?? 0) + 1;
+				return;
+			}
 
-			this.pushVideoPacket(stream, {
-				ssrc,
-				sequence: assembler.lastSequence,
-				timestamp: assembler.timestamp,
-				payloadType: assembler.lastPayloadType,
-				marker: true,
-				retransmitted: assembler.retransmitted,
-				payload: frame,
-			});
+			this.stats.frames[payloadType] = (this.stats.frames[payloadType] ?? 0) + 1;
+			this.pushVideoPacket(stream, { ...meta, payload: frame });
 			return;
 		}
 
 		// Passthrough (transport-only) or undecryptable frames: emit the
-		// normalized OBU bitstream decoders expect.
-		const normalized = isAv1 ? depacketizeAv1FrameNormalized(payloads) : encryptedFrame;
+		// normalized bitstream decoders expect.
+		const normalized = payloadType === 109 ? depacketizeAv1FrameNormalized(payloads) : encryptedFrame;
 		if (!normalized) return;
-
-		this.pushVideoPacket(stream, {
-			ssrc,
-			sequence: assembler.lastSequence,
-			timestamp: assembler.timestamp,
-			payloadType: assembler.lastPayloadType,
-			marker: true,
-			retransmitted: assembler.retransmitted,
-			payload: normalized,
-		});
+		this.stats.frames[payloadType] = (this.stats.frames[payloadType] ?? 0) + 1;
+		this.pushVideoPacket(stream, { ...meta, payload: normalized });
 	}
 
 	/**
@@ -695,6 +740,7 @@ export class VideoReceiver extends EventEmitter {
 
 		stream.once('close', () => {
 			this.subscriptions.delete(userId);
+			for (const info of this.activeStreams.get(userId) ?? []) this.frameBuffers.delete(info.ssrc);
 			if (this.subscriptions.size === 0) this.stopPLITimer();
 		});
 
