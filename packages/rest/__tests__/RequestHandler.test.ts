@@ -1,9 +1,10 @@
 /* eslint-disable id-length */
 /* eslint-disable promise/prefer-await-to-then */
 import { getEventListeners } from 'node:events';
-import { MockAgent, setGlobalDispatcher } from 'undici';
+import { MockAgent, Response, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor.js';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
+import type { RESTOptions } from '../src/index.js';
 import { DiscordAPIError, HTTPError, RateLimitError, REST, RESTEvents } from '../src/index.js';
 import { genPath } from './util.js';
 
@@ -708,30 +709,46 @@ test('remove abort listeners after requests complete', async () => {
 	}
 });
 
-// TODO: flaky due to changes in undici
-test.skip('abort', async () => {
-	mockPool
-		.intercept({
-			path: genPath('/abort'),
-			method: 'GET',
-		})
-		.reply(200, { message: 'Hello World' }, responseOptions)
-		.delay(100)
-		.times(3);
-
+test('abort active and queued requests', async () => {
+	const {
+		promise: activeResponse,
+		resolve: releaseResponse,
+		reject: rejectResponse,
+	} = Promise.withResolvers<Response>();
+	const makeRequest = vitest
+		.fn<RESTOptions['makeRequest']>()
+		.mockResolvedValueOnce(Response.json({ message: 'Hello World' }))
+		.mockImplementation(async (_url, { signal }) => {
+			signal!.addEventListener('abort', () => rejectResponse(signal!.reason), { once: true });
+			return activeResponse;
+		});
+	const abortApi = new REST({ makeRequest, retries: 0 });
 	const controller = new AbortController();
-	const [aP2, bP2, cP2] = [
-		api.get('/abort', { signal: controller.signal }),
-		api.get('/abort', { signal: controller.signal }),
-		api.get('/abort', { signal: controller.signal }),
+	const [completed, active, queued] = [
+		abortApi.get('/abort', { auth: false, signal: controller.signal }),
+		abortApi.get('/abort', { auth: false, signal: controller.signal }),
+		abortApi.get('/abort', { auth: false, signal: controller.signal }),
 	];
+	// Observe rejections immediately, including when an assertion fails before aborting.
+	const outcomes = Promise.allSettled([completed, active, queued]);
 
-	await expect(aP2).resolves.toStrictEqual({ message: 'Hello World' });
-	controller.abort();
+	try {
+		await expect(completed).resolves.toStrictEqual({ message: 'Hello World' });
+		await vitest.waitFor(() => {
+			expect(makeRequest).toHaveBeenCalledTimes(2);
+			// One listener forwards cancellation to the active request; the other cancels the queued request.
+			expect(getEventListeners(controller.signal, 'abort')).toHaveLength(2);
+		});
+	} finally {
+		controller.abort();
+		releaseResponse(Response.json({ message: 'Hello World' }));
+		await outcomes;
+	}
 
-	// Abort mid-execution:
-	await expect(bP2).rejects.toThrowError('aborted');
-
-	// Abort scheduled:
-	await expect(cP2).rejects.toThrowError('Request aborted manually');
+	expect(await outcomes).toStrictEqual([
+		{ status: 'fulfilled', value: { message: 'Hello World' } },
+		{ status: 'rejected', reason: controller.signal.reason },
+		{ status: 'rejected', reason: new Error('Request aborted manually') },
+	]);
+	expect(makeRequest).toHaveBeenCalledTimes(2);
 });
