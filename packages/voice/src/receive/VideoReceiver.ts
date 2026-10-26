@@ -7,7 +7,7 @@ import { NetworkingStatusCode, type ConnectionData, type Networking } from '../n
 import { depacketizeAv1Frame, depacketizeAv1FrameNormalized } from '../networking/av1';
 import { depacketizeH264Frame } from '../networking/h264';
 import { depacketizeH265Frame } from '../networking/h265';
-import { createNACK, createPLI, createReceiverReport, isRTCPPacket } from '../networking/rtcp';
+import { createNACK, createPLI, createREMB, createReceiverReport, isRTCPPacket } from '../networking/rtcp';
 import { VideoGatewayOpcodes, type MediaSinkWantsPayload, type VoiceVideoPayload } from '../networking/video';
 import { depacketizeVp8Frame, depacketizeVp9Frame } from '../networking/vp8';
 import { RTP_VIDEO_PAYLOAD_TYPES } from '../util/constants';
@@ -116,6 +116,10 @@ export interface VideoReceiveStats {
 	 */
 	rrSent: number;
 	/**
+	 * REMB packets sent (rembKbps > 0).
+	 */
+	rembSent?: number;
+	/**
 	 * Frames of a codec without a depacketizer.
 	 */
 	unsupported: Record<number, number>;
@@ -189,6 +193,12 @@ export class VideoReceiver extends EventEmitter {
 	/**
 	 * Counters of the receive path since the receiver was created.
 	 */
+	/**
+	 * When above 0, a REMB with this bitrate (kbit/s) goes out with every receiver report: the SFU (and through it
+	 * the camera's sender) otherwise has no bandwidth estimate for this receiver and keeps it on a low layer/bitrate.
+	 */
+	public rembKbps = 0;
+
 	public readonly stats: VideoReceiveStats = {
 		packets: {},
 		frames: {},
@@ -393,9 +403,13 @@ export class VideoReceiver extends EventEmitter {
 			return;
 		}
 
-		// A big jump backwards is a wrap; anything else backwards is a retransmission or reorder.
-		if (((sequence - state.last + 0x1_00_00) & 0xffff) > 0x8000) state.cycles++;
-		if (((sequence - state.last + 0x1_00_00) & 0xffff) !== 0) state.last = sequence;
+		// Only a step forward moves the highest sequence; one that passes 65535 starts a new cycle. A step backwards
+		// is a retransmission or reorder and changes nothing (it used to count as a wrap, so after the first wrap the
+		// reports claimed a highest sequence 65536 too far: a huge loss to the SFU).
+		const forward = ((sequence - state.last + 0x1_00_00) & 0xffff) < 0x8000;
+		if (!forward || sequence === state.last) return;
+		if (sequence < state.last) state.cycles++;
+		state.last = sequence;
 	}
 
 	/**
@@ -414,6 +428,11 @@ export class VideoReceiver extends EventEmitter {
 		for (let index = 0; index < sources.length; index += 31) {
 			this.voiceConnection.state.networking.sendRTCP(createReceiverReport(senderSSRC, sources.slice(index, index + 31)));
 			this.stats.rrSent++;
+		}
+
+		if (this.rembKbps > 0) {
+			this.voiceConnection.state.networking.sendRTCP(createREMB(senderSSRC, sources.map((source) => source.ssrc), this.rembKbps * 1_000));
+			this.stats.rembSent = (this.stats.rembSent ?? 0) + 1;
 		}
 	}
 

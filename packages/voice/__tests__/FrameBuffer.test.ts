@@ -102,3 +102,22 @@ describe('createNACK', () => {
 		expect(nack.readUInt16BE(18)).toBe(1 << 0);
 	});
 });
+
+describe('createREMB', () => {
+	test('length, identifier, exponent/mantissa and SSRCs as libwebrtc writes them', async () => {
+		const { createREMB } = await import('../src/networking/rtcp');
+		const remb = createREMB(0x11, [0xaa, 0xbb], 8_000_000);
+		expect(remb.length).toBe(28);
+		expect(remb[0]).toBe(0x8f);
+		expect(remb[1]).toBe(206);
+		expect(remb.readUInt16BE(2)).toBe(remb.length / 4 - 1); // 6 = 7 words minus one
+		expect(remb.readUInt32BE(8)).toBe(0);
+		expect(remb.toString('ascii', 12, 16)).toBe('REMB');
+		expect(remb[16]).toBe(2);
+		const exponent = remb[17]! >> 2;
+		const mantissa = ((remb[17]! & 0x03) << 16) | (remb[18]! << 8) | remb[19]!;
+		expect(mantissa * 2 ** exponent).toBeLessThanOrEqual(8_000_000);
+		expect(mantissa * 2 ** exponent).toBeGreaterThan(7_900_000);
+		expect(remb.readUInt32BE(24)).toBe(0xbb);
+	});
+});

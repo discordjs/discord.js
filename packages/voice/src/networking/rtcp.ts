@@ -145,3 +145,37 @@ export function createReceiverReport(senderSsrc: number, sources: ReceiverReport
 	for (const [index, block] of blocks.entries()) block.copy(buffer, 8 + 24 * index);
 	return buffer;
 }
+
+/**
+ * Creates an RTCP REMB (receiver estimated maximum bitrate, draft-alvestrand-rmcat-remb): tells the SFU how much
+ * this receiver can take, so it forwards (and the sender encodes) a higher layer / bitrate than for a receiver that
+ * never reports bandwidth.
+ *
+ * @param senderSsrc - Our own SSRC
+ * @param mediaSsrcs - The video SSRCs the estimate applies to (at most 255)
+ * @param bitrateBps - The estimated maximum bitrate in bits per second
+ */
+export function createREMB(senderSsrc: number, mediaSsrcs: number[], bitrateBps: number): Buffer {
+	const ssrcs = mediaSsrcs.slice(0, 255);
+	// 18-bit mantissa, 6-bit exponent (libwebrtc rtcp_packet/remb.cc).
+	let exponent = 0;
+	let mantissa = Math.max(0, Math.floor(bitrateBps));
+	while (mantissa > 0x3_ffff && exponent < 63) {
+		mantissa = Math.floor(mantissa / 2);
+		exponent++;
+	}
+
+	const buffer = Buffer.alloc(20 + 4 * ssrcs.length);
+	buffer[0] = 0x80 | 15; // V=2, FMT=15 (application layer feedback: REMB)
+	buffer[1] = PSFB;
+	buffer.writeUInt16BE(buffer.length / 4 - 1, 2); // length in 32-bit words minus one
+	buffer.writeUInt32BE(senderSsrc >>> 0, 4);
+	buffer.writeUInt32BE(0, 8); // media source SSRC: always 0 for REMB
+	buffer.write('REMB', 12, 'ascii');
+	buffer[16] = ssrcs.length;
+	buffer[17] = ((exponent & 0x3f) << 2) | ((mantissa >> 16) & 0x03);
+	buffer[18] = (mantissa >> 8) & 0xff;
+	buffer[19] = mantissa & 0xff;
+	for (const [index, ssrc] of ssrcs.entries()) buffer.writeUInt32BE(ssrc >>> 0, 20 + 4 * index);
+	return buffer;
+}
