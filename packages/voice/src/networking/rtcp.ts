@@ -104,3 +104,44 @@ export function createNACK(mediaSsrc: number, sequences: number[], senderSsrc = 
 
 	return buffer;
 }
+
+/**
+ * A source's reception state for a receiver report block (RFC 3550 section 6.4.2).
+ */
+export interface ReceiverReportSource {
+	/**
+	 * The extended (32-bit) highest sequence number received.
+	 */
+	extHighestSequence: number;
+	/**
+	 * The media SSRC the block describes.
+	 */
+	ssrc: number;
+}
+
+/**
+ * Creates an RTCP Receiver Report (RFC 3550): the periodic "I am receiving you" signal every RTP receiver
+ * sends. An SFU that never sees one from a sink eventually stops treating it as live.
+ *
+ * @param senderSsrc - Our own SSRC
+ * @param sources - The received streams to report on (at most 31 per report)
+ */
+export function createReceiverReport(senderSsrc: number, sources: ReceiverReportSource[]): Buffer {
+	const blocks = sources.slice(0, 31).map((source) => {
+		const block = Buffer.alloc(24);
+		block.writeUInt32BE(source.ssrc >>> 0, 0);
+		block[4] = 0; // fraction lost: none reported
+		// cumulative lost (3 bytes) 0, jitter 0, last SR 0 (the server's SRs are not correlated), delay since last SR 0
+		block.writeUInt32BE(source.extHighestSequence >>> 0, 8);
+		return block;
+	});
+
+	const buffer = Buffer.alloc(8 + 24 * blocks.length);
+	buffer[0] = 0x80 | blocks.length;
+	buffer[1] = RtcpPayloadType.ReceiverReport;
+	// Length in 32-bit words minus one: 8-byte header and sender SSRC, then 24 bytes per block.
+	buffer.writeUInt16BE(1 + 6 * blocks.length, 2);
+	buffer.writeUInt32BE(senderSsrc >>> 0, 4);
+	for (const [index, block] of blocks.entries()) block.copy(buffer, 8 + 24 * index);
+	return buffer;
+}

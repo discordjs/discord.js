@@ -25,15 +25,16 @@ Video receive is **not documented** by Discord, and DAVE video is not implemente
 | ------------------------------- | ------ | ------------------------------------------------------------------------------------------------------- |
 | Voice gateway v8 video opcodes  | ✅     | op 12 (video broadcast) with replay on join, op 15 (media sink wants), op 13 (client disconnect)        |
 | Video-capable IDENTIFY          | ✅     | `video: true` + stream descriptors are **required** or the SFU forwards nothing and never replays op 12 |
-| Codec negotiation               | ✅     | H264 / VP8 / VP9 / AV1 / H265 offered in `SELECT_PROTOCOL`                                              |
+| Codec negotiation               | ✅     | H264 / H265 / VP8 / VP9 / AV1 offered in `SELECT_PROTOCOL`                                              |
 | SSRC ↔ user mapping             | ✅     | op 12 streams + RTX SSRCs + fallback discovery via sequential allocation (audio N, video N+1, rtx N+2)  |
 | Keyframe requests               | ✅     | RTCP PLI on subscribe + every 2 s per active stream                                                     |
+| Receiver reports                | ✅     | RTCP RR every 5 s per received stream (an SFU that never hears from a sink stops forwarding to it)      |
 | RTX retransmission              | ✅     | OSN unwrap, sequence dedup, padding/probe filtering                                                     |
 | DAVE E2EE (MLS)                 | ✅     | full epoch participation, transitions, key ratchets — via `@snazzah/davey`                              |
 | DAVE audio decryption           | ✅     | verified live (real Opus speech frames)                                                                 |
 | **DAVE video decryption (AV1)** | ✅     | **verified live — the main achievement of this fork**                                                   |
 | AV1 RTP depacketizer            | ✅     | RFC 9494 / libwebrtc-compatible, sender-exact frame reconstruction                                      |
-| H264 / VP8 / VP9 decryption     | ✅     | RFC 6184 (single, STAP-A, FU-A; 4-byte start codes as libdave writes them) and VP8/VP9 descriptor stripping |
+| H264 / H265 / VP8 / VP9 decryption | ✅  | RFC 6184 / RFC 7798 (single, AP, FU; 4-byte start codes as libdave writes them) and VP8/VP9 descriptor stripping |
 | Sending video                   | ❌     | receive only                                                                                            |
 
 ## Verification
@@ -155,7 +156,7 @@ Tests: `__tests__/av1.test.ts` round-trips frames through a port of libwebrtc's 
 ## Limitations & known issues
 
 - **DAVE key ratchet**: frames are encrypted with a per-frame advancing ratchet. Frames from before your first keyframe (joined mid-stream) cannot authenticate — expected, and bounded (~1-2 s at 25 fps). A single undecryptable frame does **not** desync the stream; the ratchet window covers it.
-- **Codecs**: AV1 (PT 109), H264 (PT 101), VP8 (PT 105) and VP9 (PT 107) are depacketized into the sender layout DAVE encrypted, then decrypted; H265 (PT 103) frames are still dropped. Frames are assembled in RTP sequence order (retransmissions arrive out of place) and a frame with a sequence gap is dropped.
+- **Codecs**: AV1 (PT 109), H264 (PT 101), H265 (PT 103), VP8 (PT 105) and VP9 (PT 107) are depacketized into the sender layout DAVE encrypted, then decrypted. Frames are assembled in RTP sequence order (retransmissions arrive out of place) and a frame with a sequence gap is dropped.
 - Screen shares may use simulcast — you receive every layer; filter by `quality`/`rid` from the `video` event.
 - The `VideoRtpPacket.payload` for DAVE frames is libdave-layout AV1, not a plain bitstream — normalize before decoding (see usage).
 - 3 unit-test failures on Node 26 are environmental only (missing `@discordjs/opus` native prebuilds; pre-existing upstream).

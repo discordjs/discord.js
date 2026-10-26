@@ -2,9 +2,12 @@ import { Buffer } from 'node:buffer';
 import { randomBytes } from 'node:crypto';
 import { describe, expect, test } from 'vitest';
 import { depacketizeH264Frame, h264FrameIsKeyframe } from '../src/networking/h264';
+import { depacketizeH265Frame, h265FrameIsKeyframe } from '../src/networking/h265';
 import { depacketizeVp8Frame, depacketizeVp9Frame, vp8FrameIsKeyframe } from '../src/networking/vp8';
 
-/** Random bytes without 00 00 0x runs, as an encoder's emulation prevention (and libdave's retry) guarantees. */
+/**
+ * Random bytes without 00 00 0x runs, as an encoder's emulation prevention (and libdave's retry) guarantees.
+ */
 function noStartCodes(length: number): Buffer {
 	const bytes = randomBytes(length);
 	for (let index = 2; index < bytes.length; index++) {
@@ -14,10 +17,14 @@ function noStartCodes(length: number): Buffer {
 	return bytes;
 }
 
-/** A DAVE-shaped trailer (tag, nonce, ranges, size, 0xFAFA) as it rides at the end of the frame. */
+/**
+ * A DAVE-shaped trailer (tag, nonce, ranges, size, 0xFAFA) as it rides at the end of the frame.
+ */
 const trailer = () => Buffer.concat([randomBytes(8), Buffer.from([0x05, 0x00, 0x02, 0x0e]), Buffer.from([0xfa, 0xfa])]);
 
-/** NAL units → the sender-layout frame libdave encrypts: every start code 4 bytes, the trailer in the last NAL. */
+/**
+ * NAL units → the sender-layout frame libdave encrypts: every start code 4 bytes, the trailer in the last NAL.
+ */
 function senderFrame(nals: Buffer[]): Buffer {
 	return Buffer.concat(nals.flatMap((nal) => [Buffer.from([0, 0, 0, 1]), nal]));
 }
@@ -99,7 +106,103 @@ describe('H264 depacketizer', () => {
 	});
 });
 
-/** RTP payloads of a VP8 frame: X with a 15-bit PictureID, S + PID 0 on the first packet. */
+/**
+ * An H265 NAL header (2 bytes): forbidden bit 0, the type, a small layer id, TID 1.
+ */
+const h265Header = (type: number) => Buffer.from([(type << 1) | 0x01, 0x01]);
+
+/**
+ * RTP payloads of a frame as libwebrtc's RtpPacketizerH265 emits them: consecutive small NAL units aggregated
+ * into an AP, NAL units larger than the payload limit split into FUs, the rest single.
+ */
+function packetizeH265(nals: Buffer[], maxPayload: number): Buffer[] {
+	const out: Buffer[] = [];
+	let index = 0;
+	while (index < nals.length) {
+		const nal = nals[index]!;
+		if (nal.length > maxPayload) {
+			const header = nal.subarray(0, 2);
+			const body = nal.subarray(2);
+			const chunk = maxPayload - 3;
+			for (let offset = 0; offset < body.length; offset += chunk) {
+				const start = offset === 0 ? 0x80 : 0;
+				const end = offset + chunk >= body.length ? 0x40 : 0;
+				out.push(
+					Buffer.concat([
+						h265Header(49),
+						Buffer.from([start | end | ((header[0]! >> 1) & 0x3f)]),
+						body.subarray(offset, offset + chunk),
+					]),
+				);
+			}
+
+			index++;
+			continue;
+		}
+
+		// Aggregate following NAL units while they fit (2-byte NAL header + 2-byte size each).
+		const group: Buffer[] = [nal];
+		let size = 2 + 2 + nal.length;
+		while (index + group.length < nals.length) {
+			const next = nals[index + group.length]!;
+			if (next.length > maxPayload || size + 2 + next.length > maxPayload) break;
+			group.push(next);
+			size += 2 + next.length;
+		}
+
+		if (group.length === 1) out.push(nal);
+		else {
+			const parts = [h265Header(48)];
+			for (const member of group) {
+				const length = Buffer.alloc(2);
+				length.writeUInt16BE(member.length);
+				parts.push(length, member);
+			}
+
+			out.push(Buffer.concat(parts));
+		}
+
+		index += group.length;
+	}
+
+	return out;
+}
+
+describe('H265 depacketizer', () => {
+	const vps = Buffer.concat([h265Header(32), noStartCodes(20)]);
+	const sps = Buffer.concat([h265Header(33), noStartCodes(25)]);
+	const pps = Buffer.concat([h265Header(34), noStartCodes(5)]);
+	const idr = Buffer.concat([h265Header(19), noStartCodes(4_000), trailer()]);
+	const slice = Buffer.concat([h265Header(1), noStartCodes(300), trailer()]);
+
+	test('a keyframe (AP VPS+SPS+PPS, FU IDR) rebuilds byte-exact', () => {
+		const nals = [vps, sps, pps, idr];
+		const frame = depacketizeH265Frame(packetizeH265(nals, 1_200));
+		expect(frame).toEqual(senderFrame(nals));
+		expect(h265FrameIsKeyframe(frame!)).toBe(true);
+	});
+
+	test('a delta frame (single NAL unit) rebuilds byte-exact', () => {
+		const frame = depacketizeH265Frame(packetizeH265([slice], 1_200));
+		expect(frame).toEqual(senderFrame([slice]));
+		expect(h265FrameIsKeyframe(frame!)).toBe(false);
+	});
+
+	test('an FU without its start or end fails the frame', () => {
+		const packets = packetizeH265([idr], 1_200);
+		expect(depacketizeH265Frame(packets.slice(1))).toBeUndefined();
+		expect(depacketizeH265Frame(packets.slice(0, -1))).toBeUndefined();
+	});
+
+	test('an AP with a zero NAL size fails the frame', () => {
+		const ap = Buffer.concat([h265Header(48), Buffer.from([0, 0])]);
+		expect(depacketizeH265Frame([ap])).toBeUndefined();
+	});
+});
+
+/**
+ * RTP payloads of a VP8 frame: X with a 15-bit PictureID, S + PID 0 on the first packet.
+ */
 function packetizeVp8(frame: Buffer, maxPayload: number, pictureId: number): Buffer[] {
 	const out: Buffer[] = [];
 	const chunk = maxPayload - 4;
@@ -111,7 +214,9 @@ function packetizeVp8(frame: Buffer, maxPayload: number, pictureId: number): Buf
 	return out;
 }
 
-/** RTP payloads of a VP9 frame: I (15-bit PictureID), B on the first, E on the last, V (one 1280x720 layer) on a keyframe. */
+/**
+ * RTP payloads of a VP9 frame: I (15-bit PictureID), B on the first, E on the last, V (one 1280x720 layer) on a keyframe.
+ */
 function packetizeVp9(frame: Buffer, maxPayload: number, keyframe: boolean): Buffer[] {
 	const out: Buffer[] = [];
 	const ss = Buffer.from([0x10, 0x05, 0x00, 0x02, 0xd0]); // N_S=0, Y=1: width 1280, height 720

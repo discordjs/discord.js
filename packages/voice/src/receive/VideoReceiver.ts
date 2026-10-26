@@ -6,17 +6,18 @@ import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection'
 import { NetworkingStatusCode, type ConnectionData, type Networking } from '../networking/Networking';
 import { depacketizeAv1Frame, depacketizeAv1FrameNormalized } from '../networking/av1';
 import { depacketizeH264Frame } from '../networking/h264';
-import { depacketizeVp8Frame, depacketizeVp9Frame } from '../networking/vp8';
-import { createNACK, createPLI, isRTCPPacket } from '../networking/rtcp';
+import { depacketizeH265Frame } from '../networking/h265';
+import { createNACK, createPLI, createReceiverReport, isRTCPPacket } from '../networking/rtcp';
 import { VideoGatewayOpcodes, type MediaSinkWantsPayload, type VoiceVideoPayload } from '../networking/video';
+import { depacketizeVp8Frame, depacketizeVp9Frame } from '../networking/vp8';
 import { RTP_VIDEO_PAYLOAD_TYPES } from '../util/constants';
+import { FrameBuffer, type BufferedPacket } from './FrameBuffer';
 import {
 	VideoReceiveStream,
 	createDefaultVideoReceiveStreamOptions,
 	type VideoReceiveStreamOptions,
 	type VideoRtpPacket,
 } from './VideoReceiveStream';
-import { FrameBuffer, type BufferedPacket } from './FrameBuffer';
 import { decryptRtpPayload, stripExtensionBody, stripRtpPadding } from './decrypt';
 
 /**
@@ -61,6 +62,12 @@ export interface VideoStreamInfo {
 const PLI_INTERVAL = 2_000;
 
 /**
+ * How often (in milliseconds) RTCP receiver reports are sent for the streams this connection receives. An SFU
+ * that never hears from a sink stops treating it as live (cameras stall mid-stream until toggled).
+ */
+const RR_INTERVAL = 5_000;
+
+/**
  * RTX payload type → its media payload type (the fork's codec table: H264, H265, VP8, VP9, AV1).
  */
 const RTX_TO_MEDIA_PAYLOAD_TYPE: Record<number, number> = { 102: 101, 104: 103, 106: 105, 108: 107, 110: 109 };
@@ -71,6 +78,7 @@ const RTX_TO_MEDIA_PAYLOAD_TYPE: Record<number, number> = { 102: 101, 104: 103, 
 const DEPACKETIZERS: Record<number, (payloads: Buffer[]) => Buffer | undefined> = {
 	109: depacketizeAv1Frame,
 	101: depacketizeH264Frame,
+	103: depacketizeH265Frame,
 	105: depacketizeVp8Frame,
 	107: depacketizeVp9Frame,
 };
@@ -79,19 +87,37 @@ const DEPACKETIZERS: Record<number, (payloads: Buffer[]) => Buffer | undefined> 
  * Counters of the video receive path, per payload type where it matters (diagnostics: where frames get lost).
  */
 export interface VideoReceiveStats {
-	/** Frames depacketized, but DAVE did not authenticate them. */
+	/**
+	 * Frames depacketized, but DAVE did not authenticate them.
+	 */
 	decryptFailed: Record<number, number>;
-	/** Frames emitted (decrypted, or passthrough). */
+	/**
+	 * Frames emitted (decrypted, or passthrough).
+	 */
 	frames: Record<number, number>;
-	/** Frames whose packets did not depacketize (malformed, or a fragment missing). */
+	/**
+	 * Frames whose packets did not depacketize (malformed, or a fragment missing).
+	 */
 	malformed: Record<number, number>;
-	/** Missing packets asked for again (RTCP NACK). */
+	/**
+	 * Missing packets asked for again (RTCP NACK).
+	 */
 	nacked: number;
-	/** Media packets received (not counting retransmissions). */
+	/**
+	 * Media packets received (not counting retransmissions).
+	 */
 	packets: Record<number, number>;
-	/** Packets recovered from RTX. */
+	/**
+	 * Packets recovered from RTX.
+	 */
 	retransmitted: number;
-	/** Frames of a codec without a depacketizer (H265). */
+	/**
+	 * Receiver reports sent (liveness for the SFU).
+	 */
+	rrSent: number;
+	/**
+	 * Frames of a codec without a depacketizer.
+	 */
 	unsupported: Record<number, number>;
 }
 
@@ -171,6 +197,7 @@ export class VideoReceiver extends EventEmitter {
 		unsupported: {},
 		retransmitted: 0,
 		nacked: 0,
+		rrSent: 0,
 	};
 
 	/**
@@ -183,6 +210,16 @@ export class VideoReceiver extends EventEmitter {
 	 * retransmissions of packets that were already processed.
 	 */
 	private readonly recentSequences: Map<number, Set<number>>;
+
+	/**
+	 * The extended (32-bit) highest sequence number received per media SSRC, for receiver report blocks.
+	 */
+	private readonly extHighestSequence: Map<number, { cycles: number; last: number }>;
+
+	/**
+	 * The interval sending RTCP receiver reports for the streams this connection receives.
+	 */
+	private readonly rrTimer?: NodeJS.Timeout | undefined;
 
 	/**
 	 * The interval sending picture loss indications for subscribed streams.
@@ -200,10 +237,13 @@ export class VideoReceiver extends EventEmitter {
 		this.frameBuffers = new Map();
 		this.audioSSRCByUserId = new Map();
 		this.recentSequences = new Map();
+		this.extHighestSequence = new Map();
 
 		this.onWsPacket = this.onWsPacket.bind(this);
 		this.onUdpMessage = this.onUdpMessage.bind(this);
 		this.sendPLIs = this.sendPLIs.bind(this);
+		this.rrTimer = setInterval(this.sendRRs.bind(this), RR_INTERVAL);
+		this.rrTimer.unref();
 	}
 
 	/**
@@ -341,6 +381,43 @@ export class VideoReceiver extends EventEmitter {
 	}
 
 	/**
+	 * Tracks the extended highest sequence number of a media SSRC (receiver report blocks).
+	 *
+	 * @param ssrc - The media SSRC
+	 * @param sequence - The RTP sequence number just received for it
+	 */
+	private trackExtSequence(ssrc: number, sequence: number) {
+		const state = this.extHighestSequence.get(ssrc);
+		if (!state) {
+			this.extHighestSequence.set(ssrc, { cycles: 0, last: sequence });
+			return;
+		}
+
+		// A big jump backwards is a wrap; anything else backwards is a retransmission or reorder.
+		if (((sequence - state.last + 0x1_00_00) & 0xffff) > 0x8000) state.cycles++;
+		if (((sequence - state.last + 0x1_00_00) & 0xffff) !== 0) state.last = sequence;
+	}
+
+	/**
+	 * Sends receiver reports for every stream this connection receives video from.
+	 */
+	private sendRRs() {
+		if (this.extHighestSequence.size === 0) return;
+		if (this.voiceConnection.state.status !== VoiceConnectionStatus.Ready) return;
+		const senderSSRC = this.connectionData.ssrc;
+		if (!senderSSRC) return;
+
+		const sources = [...this.extHighestSequence].map(([ssrc, state]) => ({
+			ssrc,
+			extHighestSequence: ((state.cycles << 16) | state.last) >>> 0,
+		}));
+		for (let index = 0; index < sources.length; index += 31) {
+			this.voiceConnection.state.networking.sendRTCP(createReceiverReport(senderSSRC, sources.slice(index, index + 31)));
+			this.stats.rrSent++;
+		}
+	}
+
+	/**
 	 * Tries to resolve the user an unknown video SSRC belongs to.
 	 *
 	 * @remarks
@@ -401,6 +478,7 @@ export class VideoReceiver extends EventEmitter {
 			this.userIdBySSRC.delete(stream.ssrc);
 			if (stream.rtxSSRC !== undefined) this.mediaSSRCByRTXSSRC.delete(stream.rtxSSRC);
 			this.frameBuffers.delete(stream.ssrc);
+			this.extHighestSequence.delete(stream.ssrc);
 		}
 
 		this.activeStreams.delete(userId);
@@ -503,6 +581,7 @@ export class VideoReceiver extends EventEmitter {
 
 		// Drop padding-only packets.
 		if (msg[0]! & 0b10_0000) return;
+		this.trackExtSequence(mediaSSRC, sequence);
 
 		let payload: Buffer;
 		try {
@@ -547,6 +626,7 @@ export class VideoReceiver extends EventEmitter {
 			payload = payload.subarray(2);
 			if (payload.length === 0) return;
 			if (!this.trackSequence(mediaSSRC, originalSequence)) return;
+			this.trackExtSequence(mediaSSRC, originalSequence);
 			this.stats.retransmitted++;
 			if (assemble) {
 				// Into the frame it belongs to, under the media stream's payload type.
@@ -650,10 +730,10 @@ export class VideoReceiver extends EventEmitter {
 		};
 
 		// The sender-layout frame per codec: what DAVE encrypted (and, for codecs other than AV1, also what decoders
-		// read): AV1 (109), H264 (101: Annex-B, 4-byte start codes), VP8 (105) and VP9 (107: descriptors stripped).
+		// read): AV1 (109), H264 (101: Annex-B, 4-byte start codes), H265 (103: Annex-B), VP8 (105) and VP9 (107: descriptors stripped).
 		const depacketizer = DEPACKETIZERS[payloadType];
 		if (!depacketizer) {
-			// No depacketizer for this codec (H265): it cannot be reconstructed, thus not decrypted.
+			// No depacketizer for this codec: it cannot be reconstructed, thus not decrypted.
 			this.stats.unsupported[payloadType] = (this.stats.unsupported[payloadType] ?? 0) + 1;
 			if (e2eeSession) return;
 			this.pushVideoPacket(stream, { ...meta, payload: Buffer.concat(payloads) });
@@ -740,7 +820,11 @@ export class VideoReceiver extends EventEmitter {
 
 		stream.once('close', () => {
 			this.subscriptions.delete(userId);
-			for (const info of this.activeStreams.get(userId) ?? []) this.frameBuffers.delete(info.ssrc);
+			for (const info of this.activeStreams.get(userId) ?? []) {
+				this.frameBuffers.delete(info.ssrc);
+				this.extHighestSequence.delete(info.ssrc);
+			}
+
 			if (this.subscriptions.size === 0) this.stopPLITimer();
 		});
 
