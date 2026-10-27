@@ -371,7 +371,7 @@ export class DAVESession extends EventEmitter {
 				this.consecutiveFailures++;
 				this.emit('debug', `Failed to decrypt a packet (${this.consecutiveFailures} consecutive fails)`);
 				if (this.consecutiveFailures > this.failureTolerance) {
-					if (this.lastTransitionId) this.recoverFromInvalidTransition(this.lastTransitionId);
+					if (this.lastTransitionId !== undefined) this.recoverFromInvalidTransition(this.lastTransitionId);
 					else throw error;
 				}
 			} else if (this.reinitializing) {
