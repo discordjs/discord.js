@@ -98,6 +98,7 @@
 				"__mocks__/**",
 				"__tests__/**",
 				"src/**",
+				"scripts/**",
 				"package.json",
 				"tsconfig.json",
 				"vitest.config.ts"

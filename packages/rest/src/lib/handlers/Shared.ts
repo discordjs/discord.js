@@ -1,5 +1,3 @@
-/* eslint-disable n/prefer-global/process */
-
 import type { RequestInit } from 'undici';
 import type { DiscordErrorData, OAuthErrorData } from '../errors/DiscordAPIError.js';
 import { DiscordAPIError } from '../errors/DiscordAPIError.js';

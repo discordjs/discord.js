@@ -56,7 +56,8 @@
     "provenance": true
   },
   "scripts": {
-    "test": "pnpm run docs:test && pnpm run test:typescript",
+    "test": "pnpm run test:source-policies && pnpm run docs:test && pnpm run test:typescript",
+    "test:source-policies": "node --test scripts/checkSourcePolicies.test.mjs",
     "test:typescript": "tsc --noEmit && tsd",
     "lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json scripts src typings && node ./scripts/checkSourcePolicies.mjs",
     "format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json scripts src typings --fix --fix-suggestions",

@@ -1,4 +1,4 @@
-/* eslint-disable jsdoc/tag-lines, jsdoc/require-property-description */
+/* eslint-disable jsdoc/require-property-description */
 'use strict';
 
 /**

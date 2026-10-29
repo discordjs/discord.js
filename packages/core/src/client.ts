@@ -292,7 +292,6 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 
 				if (data.chunk_index >= data.chunk_count - 1) break;
 
-				// eslint-disable-next-line require-atomic-updates
 				timer = createTimer(controller, timeout);
 			}
 		} catch (error) {

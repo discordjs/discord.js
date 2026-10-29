@@ -413,7 +413,6 @@ export function SidebarTrigger({ onPress, children, ...props }: ButtonProps) {
 	return (
 		<Button
 			{...props}
-			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 			aria-label={props['aria-label'] || 'Toggle Sidebar'}
 			data-sidebar-trigger="true"
 			onPress={(event) => {

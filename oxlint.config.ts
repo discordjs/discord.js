@@ -199,7 +199,7 @@ export default defineConfig({
 		},
 	],
 	options: {
-		reportUnusedDisableDirectives: 'off',
+		reportUnusedDisableDirectives: 'error',
 		typeAware: false,
 		typeCheck: false,
 	},

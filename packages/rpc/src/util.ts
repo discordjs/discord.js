@@ -15,9 +15,7 @@ export const register: () => Promise<boolean | unknown> = async () => {
 };
 
 export function getPid() {
-	// eslint-disable-next-line node/prefer-global/process
 	if (typeof globalThis.process !== 'undefined') {
-		// eslint-disable-next-line node/prefer-global/process
 		return process.pid;
 	}
 

@@ -11,7 +11,7 @@ export class DocumentedParam extends DocumentedItem<Param | ParameterReflection>
 
 			return {
 				name: data.name,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+				// eslint-disable-next-line no-param-reassign
 				description: data.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				optional: data.flags.isOptional || data.defaultValue !== undefined,
 				default:
@@ -20,7 +20,6 @@ export class DocumentedParam extends DocumentedItem<Param | ParameterReflection>
 						?.find((block) => block.tag === '@default')
 						// eslint-disable-next-line no-param-reassign
 						?.content.reduce((prev, curr) => (prev += curr.text), '')
-						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 						.trim() ||
 						undefined),
 				variable: data.flags.isRest,

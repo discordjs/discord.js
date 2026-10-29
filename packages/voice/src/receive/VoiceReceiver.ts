@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import { Buffer } from 'node:buffer';
 import crypto from 'node:crypto';
 import type { VoiceReceivePayload } from 'discord-api-types/voice/v8';

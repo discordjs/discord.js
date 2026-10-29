@@ -50,7 +50,9 @@ function isLocalRequire(node) {
 }
 
 function inspectCommonJs(sourceFile) {
-  const allowModuleExports = relative(sourceRoot, sourceFile.fileName).startsWith('client/websocket/handlers/');
+  const allowModuleExports = relative(sourceRoot, sourceFile.fileName)
+    .replaceAll('\\', '/')
+    .startsWith('client/websocket/handlers/');
   const firstStatement = sourceFile.statements[0];
 
   if (
@@ -82,6 +84,49 @@ function inspectCommonJs(sourceFile) {
   visit(sourceFile);
 }
 
+function inspectDeclarations(sourceFile) {
+  function inspectType(node, allowMutableArrays = false) {
+    if (
+      !allowMutableArrays &&
+      ts.isArrayTypeNode(node) &&
+      !(ts.isTypeOperatorNode(node.parent) && node.parent.operator === ts.SyntaxKind.ReadonlyKeyword)
+    ) {
+      report(sourceFile, node, 'Array parameters and interface properties must be readonly');
+    }
+
+    if (ts.isTypeReferenceNode(node) && ts.isIdentifier(node.typeName) && node.typeName.text === 'Collection') {
+      report(sourceFile, node, 'Parameters and interface properties must use ReadonlyCollection');
+    }
+
+    ts.forEachChild(node, child => inspectType(child, allowMutableArrays));
+  }
+
+  function visit(node) {
+    if (ts.isMethodDeclaration(node) || ts.isFunctionDeclaration(node)) {
+      const allowMutableArrays =
+        !ts.isFunctionDeclaration(node) && ['on', 'once', 'off'].includes(node.name.getText(sourceFile));
+      for (const parameter of node.parameters) {
+        if (parameter.type && ts.isIdentifier(parameter.name) && !parameter.dotDotDotToken) {
+          inspectType(parameter.type, allowMutableArrays);
+        }
+      }
+    }
+
+    if (ts.isPropertySignature(node) && node.type) {
+      let ancestor = node.parent;
+      while (ancestor && !ts.isInterfaceDeclaration(ancestor)) ancestor = ancestor.parent;
+      // PartialPoll must retain Poll's mutable answers collection when narrowing its values.
+      if (ancestor && (ancestor.name.text !== 'PartialPoll' || node.name.getText(sourceFile) !== 'answers')) {
+        inspectType(node.type);
+      }
+    }
+
+    ts.forEachChild(node, visit);
+  }
+
+  visit(sourceFile);
+}
+
 for (const file of await collectFiles(sourceRoot, path => path.endsWith('.js'))) {
   const sourceFile = ts.createSourceFile(
     file,
@@ -91,6 +136,13 @@ for (const file of await collectFiles(sourceRoot, path => path.endsWith('.js')))
     ts.ScriptKind.JS,
   );
   inspectCommonJs(sourceFile);
+}
+
+for (const file of await collectFiles(resolve(packageRoot, 'typings'), path =>
+  /\.(?:d|test-d)\.(?:ts|mts)$/.test(path),
+)) {
+  const sourceFile = ts.createSourceFile(file, await readFile(file, 'utf8'), ts.ScriptTarget.Latest, true);
+  inspectDeclarations(sourceFile);
 }
 
 if (violations.length > 0) {
