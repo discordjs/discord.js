@@ -28,6 +28,9 @@ packages:discord.js:
 packages:formatters:
   - "### Which (application|package|application or package) is this (bug
     report|feature request) for\\?\\n\\nformatters\\n"
+packages:mock:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nmock\\n"
 packages:next:
   - "### Which (application|package|application or package) is this (bug
     report|feature request) for\\?\\n\\nnext\\n"
