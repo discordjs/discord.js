@@ -2607,26 +2607,18 @@ export interface TextInputModalData extends BaseModalData<ComponentType.TextInpu
   value: string;
 }
 
-export interface SelectMenuModalData<Cached extends CacheType = CacheType> extends BaseModalData<
+export interface SelectMenuModalData extends BaseModalData<
   | ComponentType.ChannelSelect
   | ComponentType.MentionableSelect
   | ComponentType.RoleSelect
   | ComponentType.StringSelect
   | ComponentType.UserSelect
 > {
-  channels?: ReadonlyCollection<
-    Snowflake,
-    CacheTypeReducer<Cached, GuildBasedChannel, APIInteractionDataResolvedChannel>
-  >;
   customId: string;
-  members?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>>;
-  roles?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
-  users?: ReadonlyCollection<Snowflake, User>;
   values: readonly string[];
 }
 
 export interface FileUploadModalData extends BaseModalData<ComponentType.FileUpload> {
-  attachments: ReadonlyCollection<Snowflake, Attachment>;
   customId: string;
   values: readonly Snowflake[];
 }
@@ -2664,15 +2656,19 @@ export interface ActionRowModalData extends BaseModalData<ComponentType.ActionRo
 export interface TextDisplayModalData extends BaseModalData<ComponentType.TextDisplay> {}
 
 export interface ModalSelectedMentionables<Cached extends CacheType = CacheType> {
-  members: NonNullable<SelectMenuModalData<Cached>['members']>;
-  roles: NonNullable<SelectMenuModalData<Cached>['roles']>;
-  users: NonNullable<SelectMenuModalData<Cached>['users']>;
+  members: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>>;
+  roles: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
+  users: ReadonlyCollection<Snowflake, User>;
 }
 export class ModalComponentResolver<Cached extends CacheType = CacheType> {
-  private constructor(client: Client<true>, components: readonly ModalData[], resolved: BaseInteractionResolvedData);
+  private constructor(
+    client: Client<true>,
+    components: readonly ModalData[],
+    resolved: BaseInteractionResolvedData<Cached>,
+  );
   public readonly client: Client<true>;
   public readonly data: readonly (ActionRowModalData | LabelModalData | TextDisplayModalData)[];
-  public readonly resolved: Readonly<BaseInteractionResolvedData<Cached>> | null;
+  public readonly resolved: Readonly<BaseInteractionResolvedData<Cached>>;
   public readonly hoistedComponents: ReadonlyCollection<string, ModalData>;
   public getComponent(customId: string): ModalData;
   private _getTypedComponent(
@@ -2681,11 +2677,20 @@ export class ModalComponentResolver<Cached extends CacheType = CacheType> {
     properties: string,
     required: boolean,
   ): ModalData;
+  private _getPickedIds(
+    customId: string,
+    allowedTypes: readonly ComponentType[],
+    required?: boolean,
+  ): readonly Snowflake[];
+  private _pickResolved(
+    key: keyof BaseInteractionResolvedData,
+    ids: readonly Snowflake[],
+  ): ReadonlyCollection<Snowflake, unknown>;
   public getTextInputValue(customId: string): string;
   public getStringSelectValues(customId: string): readonly string[];
   public getSelectedUsers(customId: string, required: true): ReadonlyCollection<Snowflake, User>;
   public getSelectedUsers(customId: string, required?: boolean): ReadonlyCollection<Snowflake, User> | null;
-  public getSelectedMembers(customId: string): NonNullable<SelectMenuModalData<Cached>['members']> | null;
+  public getSelectedMembers(customId: string): ModalSelectedMentionables<Cached>['members'] | null;
   public getSelectedChannels<const Type extends ChannelType = ChannelType>(
     customId: string,
     required: true,
@@ -2717,11 +2722,8 @@ export class ModalComponentResolver<Cached extends CacheType = CacheType> {
     >
   > | null;
 
-  public getSelectedRoles(customId: string, required: true): NonNullable<SelectMenuModalData<Cached>['roles']>;
-  public getSelectedRoles(
-    customId: string,
-    required?: boolean,
-  ): NonNullable<SelectMenuModalData<Cached>['roles']> | null;
+  public getSelectedRoles(customId: string, required: true): ModalSelectedMentionables<Cached>['roles'];
+  public getSelectedRoles(customId: string, required?: boolean): ModalSelectedMentionables<Cached>['roles'] | null;
 
   public getSelectedMentionables(customId: string, required: true): ModalSelectedMentionables<Cached>;
   public getSelectedMentionables(customId: string, required?: boolean): ModalSelectedMentionables<Cached> | null;
