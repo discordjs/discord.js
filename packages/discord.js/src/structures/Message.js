@@ -10,6 +10,7 @@ const {
   MessageFlags,
   PermissionFlagsBits,
   MessageReferenceType,
+  GuildFeature,
 } = require('discord-api-types/v10');
 const Attachment = require('./Attachment');
 const Base = require('./Base');
@@ -849,6 +850,7 @@ class Message extends Base {
       this.reference?.type !== MessageReferenceType.Forward &&
       this.type === MessageType.Default &&
       !this.poll &&
+      this.guild.features.includes(GuildFeature.News) &&
       channel.viewable &&
       channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );
