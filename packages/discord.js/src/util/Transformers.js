@@ -119,6 +119,24 @@ function _transformCollectibles(collectibles) {
   };
 }
 
+/**
+ * Transforms API invite target users job status
+ *
+ * @param {RESTGetAPIInviteTargetUsersJobStatusResult} job The job status to transform
+ * @returns {TargetUsersJobStatusForInvite}
+ * @ignore
+ */
+function _transformAPIInviteTargetUsersJobStatus(job) {
+  return {
+    status: job.status,
+    totalUsers: job.total_users,
+    processedUsers: job.processed_users,
+    createdAt: job.created_at ? new Date(job.created_at) : null,
+    completedAt: job.completed_at ? new Date(job.completed_at) : null,
+    errorMessage: job.error_message ?? null,
+  };
+}
+
 module.exports = {
   toSnakeCase,
   _transformAPIAutoModerationAction,
@@ -126,4 +144,5 @@ module.exports = {
   _transformGuildScheduledEventRecurrenceRule,
   _transformAPIIncidentsData,
   _transformCollectibles,
+  _transformAPIInviteTargetUsersJobStatus,
 };
