@@ -181,11 +181,7 @@ class ClientUser extends User {
   /**
    * Options for setting an activity.
    *
-   * @typedef {Object} ActivityOptions
-   * @property {string} name Name of the activity
-   * @property {string} [state] State of the activity
-   * @property {string} [url] Twitch / YouTube stream URL
-   * @property {ActivityType} [type] Type of the activity
+   * @typedef {ActivitiesOptions} ActivityOptions
    * @property {number|number[]} [shardId] Shard Id(s) to have the activity set on
    */
 
