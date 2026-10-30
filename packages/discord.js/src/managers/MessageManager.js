@@ -1,15 +1,13 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { isFileBodyEncodable, isJSONEncodable } = require('@discordjs/util');
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { Message } = require('../structures/Message.js');
-const { MessagePayload } = require('../structures/MessagePayload.js');
-const { MakeCacheOverrideSymbol } = require('../util/Symbols.js');
-const { resolvePartialEmoji } = require('../util/Util.js');
-const { CachedManager } = require('./CachedManager.js');
+import { Collection } from '@discordjs/collection';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { isFileBodyEncodable, isJSONEncodable } from '@discordjs/util';
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { Message } from '../structures/Message.js';
+import { MessagePayload } from '../structures/MessagePayload.js';
+import { MakeCacheOverrideSymbol } from '../util/Symbols.js';
+import { resolvePartialEmoji } from '../util/Util.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for Messages and holds their cache.
@@ -17,7 +15,7 @@ const { CachedManager } = require('./CachedManager.js');
  * @extends {CachedManager}
  * @abstract
  */
-class MessageManager extends CachedManager {
+export class MessageManager extends CachedManager {
   static [MakeCacheOverrideSymbol] = MessageManager;
 
   constructor(channel, iterable) {
@@ -351,5 +349,3 @@ class MessageManager extends CachedManager {
     return voters.users.reduce((acc, user) => acc.set(user.id, this.client.users._add(user, false)), new Collection());
   }
 }
-
-exports.MessageManager = MessageManager;

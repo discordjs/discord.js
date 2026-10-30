@@ -1,9 +1,7 @@
-'use strict';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const { Events } = require('../../util/Events.js');
-const { Action } = require('./Action.js');
-
-class MessageCreateAction extends Action {
+export class MessageCreateAction extends Action {
   handle(data) {
     const client = this.client;
     const channel = this.getChannel({
@@ -39,5 +37,3 @@ class MessageCreateAction extends Action {
     return {};
   }
 }
-
-exports.MessageCreateAction = MessageCreateAction;

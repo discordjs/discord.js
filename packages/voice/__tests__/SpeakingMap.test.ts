@@ -1,6 +1,5 @@
 import { describe, test, expect, vitest } from 'vitest';
 import { SpeakingMap } from '../src/receive/SpeakingMap';
-import { noop } from '../src/util/util';
 
 vitest.useFakeTimers();
 
@@ -17,7 +16,7 @@ describe('SpeakingMap', () => {
 
 		for (let index = 0; index < 10; index++) {
 			speaking.onPacket(userId);
-			setTimeout(noop, SpeakingMap.DELAY / 2);
+			setTimeout(() => {}, SpeakingMap.DELAY / 2);
 			vitest.advanceTimersToNextTimer();
 
 			expect(starts).toEqual([userId]);

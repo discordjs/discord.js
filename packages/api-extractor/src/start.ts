@@ -3,18 +3,19 @@
 
 import * as os from 'node:os';
 import process from 'node:process';
-import colors from 'colors';
+import { Colorize } from '@rushstack/terminal';
 import { Extractor } from './api/Extractor.js';
 import { ApiExtractorCommandLine } from './cli/ApiExtractorCommandLine.js';
 
 console.log(
-	os.EOL + colors.bold(`api-extractor ${Extractor.version} ` + colors.cyan(' - https://api-extractor.com/') + os.EOL),
+	os.EOL +
+		Colorize.bold(`api-extractor ${Extractor.version} ` + Colorize.cyan(' - https://api-extractor.com/') + os.EOL),
 );
 
 const parser: ApiExtractorCommandLine = new ApiExtractorCommandLine();
 
 // eslint-disable-next-line promise/prefer-await-to-callbacks
 parser.executeAsync().catch((error) => {
-	console.error(colors.red(`An unexpected error occurred:`), error);
+	console.error(Colorize.red(`An unexpected error occurred:`), error);
 	process.exit(1);
 });

@@ -1,4 +1,4 @@
-import type { DeclarationReflection } from 'typedoc';
+import type { DeclarationReflection } from '../index.js';
 import type { Config, Item } from '../interfaces/index.js';
 
 export class DocumentedItem<Data = DeclarationReflection | Item> {

@@ -1,11 +1,9 @@
-'use strict';
-
-const { WebSocketShardEvents, CloseCodes } = require('@discordjs/ws');
+import { WebSocketShardEvents, CloseCodes } from '@discordjs/ws';
 
 /**
  * Manages voice connections for the client
  */
-class ClientVoiceManager {
+export class ClientVoiceManager {
   constructor(client) {
     /**
      * The client that instantiated this voice manager
@@ -44,5 +42,3 @@ class ClientVoiceManager {
     }
   }
 }
-
-exports.ClientVoiceManager = ClientVoiceManager;

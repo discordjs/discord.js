@@ -1,16 +1,14 @@
-'use strict';
-
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { StageInstance } = require('../structures/StageInstance.js');
-const { CachedManager } = require('./CachedManager.js');
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { StageInstance } from '../structures/StageInstance.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for {@link StageInstance} objects and holds their cache.
  *
  * @extends {CachedManager}
  */
-class StageInstanceManager extends CachedManager {
+export class StageInstanceManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, StageInstance, iterable);
 
@@ -165,5 +163,3 @@ class StageInstanceManager extends CachedManager {
     await this.client.rest.delete(Routes.stageInstance(channelId));
   }
 }
-
-exports.StageInstanceManager = StageInstanceManager;

@@ -1,7 +1,5 @@
-'use strict';
-
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Base } = require('../Base.js');
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { Base } from '../Base.js';
 
 /**
  * Represents an OAuth2 Application.
@@ -9,7 +7,7 @@ const { Base } = require('../Base.js');
  * @extends {Base}
  * @abstract
  */
-class Application extends Base {
+export class Application extends Base {
   constructor(client, data) {
     super(client);
     this._patch(data);
@@ -169,5 +167,3 @@ class Application extends Base {
     return super.toJSON({ createdTimestamp: true });
   }
 }
-
-exports.Application = Application;

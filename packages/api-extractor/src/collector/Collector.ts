@@ -18,7 +18,7 @@ import { TypeScriptHelpers } from '../analyzer/TypeScriptHelpers.js';
 import { TypeScriptInternals, type IGlobalVariableAnalyzer } from '../analyzer/TypeScriptInternals.js';
 import { ExtractorConfig } from '../api/ExtractorConfig.js';
 import { ExtractorMessageId } from '../api/ExtractorMessageId.js';
-import type { IConfigEntryPoint } from '../api/IConfigFile';
+import type { IConfigEntryPoint } from '../api/IConfigFile.js';
 import { ApiItemMetadata, type IApiItemMetadataOptions } from './ApiItemMetadata.js';
 import { CollectorEntity } from './CollectorEntity.js';
 import { type DeclarationMetadata, InternalDeclarationMetadata } from './DeclarationMetadata.js';

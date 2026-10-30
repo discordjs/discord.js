@@ -1,11 +1,9 @@
-'use strict';
+import process from 'node:process';
+import { inspect } from 'node:util';
+import { GatewayIntentBits } from 'discord-api-types/v10';
+import { Client, Events, RESTEvents } from '../src/index.js';
+import { token, prefix, owner } from './auth.js';
 
-const process = require('node:process');
-const { GatewayIntentBits } = require('discord-api-types/v10');
-const { token, prefix, owner } = require('./auth.js');
-const { Client, Events, RESTEvents } = require('../src/index.js');
-
-// eslint-disable-next-line no-console
 const log = (...args) => console.log(process.uptime().toFixed(3), ...args);
 
 const client = new Client({
@@ -25,13 +23,14 @@ const commands = {
     if (message.author.id !== owner) return;
     let res;
     try {
+      // eslint-disable-next-line no-eval
       res = eval(message.content);
-      if (typeof res !== 'string') res = require('node:util').inspect(res);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error(err.stack);
-      res = err.message;
+      if (typeof res !== 'string') res = inspect(res);
+    } catch (error) {
+      console.error(error.stack);
+      res = error.message;
     }
+
     message.channel.send(res, { code: 'js' });
   },
   ping: message => message.channel.send('pong'),
@@ -44,7 +43,6 @@ client.on(Events.MessageCreate, message => {
   const command = message.content.shift();
   message.content = message.content.join(' ');
 
-  // eslint-disable-next-line no-console
   console.log('COMMAND', command, message.content);
 
   if (command in commands) commands[command](message);
@@ -52,5 +50,4 @@ client.on(Events.MessageCreate, message => {
 
 client.login(token);
 
-// eslint-disable-next-line no-console
 process.on('unhandledRejection', console.error);

@@ -1,19 +1,17 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { Subscription } = require('../structures/Subscription.js');
-const { resolveSKUId } = require('../util/Util.js');
-const { CachedManager } = require('./CachedManager.js');
+import { Collection } from '@discordjs/collection';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { Subscription } from '../structures/Subscription.js';
+import { resolveSKUId } from '../util/Util.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for subscriptions and stores their cache.
  *
  * @extends {CachedManager}
  */
-class SubscriptionManager extends CachedManager {
+export class SubscriptionManager extends CachedManager {
   constructor(client, iterable) {
     super(client, Subscription, iterable);
   }
@@ -82,5 +80,3 @@ class SubscriptionManager extends CachedManager {
     );
   }
 }
-
-exports.SubscriptionManager = SubscriptionManager;

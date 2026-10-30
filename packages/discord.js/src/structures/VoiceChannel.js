@@ -1,14 +1,12 @@
-'use strict';
-
-const { PermissionFlagsBits, Routes } = require('discord-api-types/v10');
-const { BaseGuildVoiceChannel } = require('./BaseGuildVoiceChannel.js');
+import { PermissionFlagsBits, Routes } from 'discord-api-types/v10';
+import { BaseGuildVoiceChannel } from './BaseGuildVoiceChannel.js';
 
 /**
  * Represents a guild voice channel on Discord.
  *
  * @extends {BaseGuildVoiceChannel}
  */
-class VoiceChannel extends BaseGuildVoiceChannel {
+export class VoiceChannel extends BaseGuildVoiceChannel {
   /**
    * Whether the channel is joinable by the client user
    *
@@ -119,5 +117,3 @@ class VoiceChannel extends BaseGuildVoiceChannel {
  * @param {string} [reason] Reason for changing the camera video quality mode.
  * @returns {Promise<VoiceChannel>}
  */
-
-exports.VoiceChannel = VoiceChannel;

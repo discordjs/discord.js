@@ -1,8 +1,6 @@
-'use strict';
+import { Action } from './Action.js';
 
-const { Action } = require('./Action.js');
-
-class MessageUpdateAction extends Action {
+export class MessageUpdateAction extends Action {
   handle(data) {
     const channel = this.getChannel({ id: data.channel_id, ...('guild_id' in data && { guild_id: data.guild_id }) });
     if (channel) {
@@ -22,5 +20,3 @@ class MessageUpdateAction extends Action {
     return {};
   }
 }
-
-exports.MessageUpdateAction = MessageUpdateAction;

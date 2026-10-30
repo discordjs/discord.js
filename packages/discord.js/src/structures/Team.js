@@ -1,16 +1,14 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Base } = require('./Base.js');
-const { TeamMember } = require('./TeamMember.js');
+import { Collection } from '@discordjs/collection';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { Base } from './Base.js';
+import { TeamMember } from './TeamMember.js';
 
 /**
  * Represents a Client OAuth2 Application Team.
  *
  * @extends {Base}
  */
-class Team extends Base {
+export class Team extends Base {
   constructor(client, data) {
     super(client);
     this._patch(data);
@@ -125,5 +123,3 @@ class Team extends Base {
     return super.toJSON({ createdTimestamp: true });
   }
 }
-
-exports.Team = Team;

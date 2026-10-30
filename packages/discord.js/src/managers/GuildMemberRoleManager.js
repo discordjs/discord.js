@@ -1,17 +1,15 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { Role } = require('../structures/Role.js');
-const { DataManager } = require('./DataManager.js');
+import { Collection } from '@discordjs/collection';
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { Role } from '../structures/Role.js';
+import { DataManager } from './DataManager.js';
 
 /**
  * Manages API methods for roles of a GuildMember and stores their cache.
  *
  * @extends {DataManager}
  */
-class GuildMemberRoleManager extends DataManager {
+export class GuildMemberRoleManager extends DataManager {
   constructor(member) {
     super(member.client, Role);
 
@@ -228,5 +226,3 @@ class GuildMemberRoleManager extends DataManager {
     return clone;
   }
 }
-
-exports.GuildMemberRoleManager = GuildMemberRoleManager;

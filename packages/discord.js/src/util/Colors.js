@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @typedef {Object} Colors
  * @property {number} Aqua 0x1ABC9C | rgb(26,188,156)
@@ -39,7 +37,7 @@
  * @type {Colors}
  * @ignore
  */
-exports.Colors = {
+export const Colors = {
   Aqua: 0x1abc9c,
   Blue: 0x3498db,
   Blurple: 0x5865f2,

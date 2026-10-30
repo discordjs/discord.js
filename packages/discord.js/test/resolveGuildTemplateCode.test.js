@@ -1,6 +1,4 @@
-'use strict';
+import { strictEqual } from 'node:assert/strict';
+import { resolveGuildTemplateCode } from '../src/index.js';
 
-const { strictEqual } = require('node:assert/strict');
-const { resolveGuildTemplateCode } = require('../src/index.js');
-
-strictEqual(resolveGuildTemplateCode('https://discord.new/abc'), 'abc');
+strictEqual(await resolveGuildTemplateCode('https://discord.new/abc'), 'abc');

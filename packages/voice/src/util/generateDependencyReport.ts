@@ -1,8 +1,9 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/no-require-imports */
 import { getCiphers } from 'node:crypto';
+import { createRequire } from 'node:module';
 import { resolve, dirname } from 'node:path';
 import prism from 'prism-media';
+
+const require = createRequire(import.meta.url);
 
 /**
  * Tries to find the package.json file for a given module.

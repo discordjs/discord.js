@@ -1,7 +1,5 @@
-'use strict';
-
-const { Events } = require('../util/Events.js');
-const { Collector } = require('./interfaces/Collector.js');
+import { Events } from '../util/Events.js';
+import { Collector } from './interfaces/Collector.js';
 
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions
@@ -17,7 +15,7 @@ const { Collector } = require('./interfaces/Collector.js');
  *
  * @extends {Collector}
  */
-class MessageCollector extends Collector {
+export class MessageCollector extends Collector {
   /**
    * @param {TextBasedChannels} channel The channel
    * @param {MessageCollectorOptions} options The options to be applied to this collector
@@ -153,5 +151,3 @@ class MessageCollector extends Collector {
     }
   }
 }
-
-exports.MessageCollector = MessageCollector;

@@ -1,13 +1,9 @@
-'use strict';
-
-const { lazy } = require('@discordjs/util');
-
-const getMessage = lazy(() => require('./Message.js').Message);
+import { Message } from './Message.js';
 
 /**
  * Represents the resource that was created by the interaction response.
  */
-class InteractionCallbackResource {
+export class InteractionCallbackResource {
   constructor(client, data) {
     /**
      * The client that instantiated this
@@ -47,11 +43,9 @@ class InteractionCallbackResource {
        */
       this.message =
         this.client.channels.cache.get(data.message.channel_id)?.messages._add(data.message) ??
-        new (getMessage())(client, data.message);
+        new Message(client, data.message);
     } else {
       this.message = null;
     }
   }
 }
-
-exports.InteractionCallbackResource = InteractionCallbackResource;

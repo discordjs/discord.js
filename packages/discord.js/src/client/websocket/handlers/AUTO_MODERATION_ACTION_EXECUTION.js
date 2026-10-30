@@ -1,9 +1,7 @@
-'use strict';
+import { AutoModerationActionExecution } from '../../../structures/AutoModerationActionExecution.js';
+import { Events } from '../../../util/Events.js';
 
-const { AutoModerationActionExecution } = require('../../../structures/AutoModerationActionExecution.js');
-const { Events } = require('../../../util/Events.js');
-
-module.exports = (client, { d: data }) => {
+export default (client, { d: data }) => {
   const guild = client.guilds.cache.get(data.guild_id);
   if (!guild) return;
 

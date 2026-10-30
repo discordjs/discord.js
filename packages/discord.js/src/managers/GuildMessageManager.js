@@ -1,15 +1,13 @@
-'use strict';
-
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { MessageManager } = require('./MessageManager.js');
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { MessageManager } from './MessageManager.js';
 
 /**
  * Manages API methods for messages in a guild and holds their cache.
  *
  * @extends {MessageManager}
  */
-class GuildMessageManager extends MessageManager {
+export class GuildMessageManager extends MessageManager {
   /**
    * The channel that the messages belong to
    *
@@ -31,5 +29,3 @@ class GuildMessageManager extends MessageManager {
     return this.cache.get(data.id) ?? this._add(data);
   }
 }
-
-exports.GuildMessageManager = GuildMessageManager;

@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @typedef {Object} ShardEvents
  * @property {string} Death death
@@ -16,7 +14,7 @@
  * @type {ShardEvents}
  * @ignore
  */
-exports.ShardEvents = {
+export const ShardEvents = {
   Death: 'death',
   Disconnect: 'disconnect',
   Error: 'error',
