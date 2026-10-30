@@ -4,10 +4,14 @@ const { Events } = require('../../../util/Events.js');
 
 module.exports = (client, { d: data }) => {
   const guild = client.guilds.cache.get(data.guild_id);
-  if (!guild) return;
+  if (!guild) {
+    return;
+  }
 
   const autoModerationRule = guild.autoModerationRules.cache.get(data.id);
-  if (!autoModerationRule) return;
+  if (!autoModerationRule) {
+    return;
+  }
 
   guild.autoModerationRules.cache.delete(autoModerationRule.id);
 

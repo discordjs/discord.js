@@ -139,7 +139,9 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * Returns the Date for when the client became ready
 	 */
 	public get readyAt() {
-		if (this.readyTimestamp === null) return null;
+		if (this.readyTimestamp === null) {
+			return null;
+		}
 		return new Date(this.readyTimestamp);
 	}
 
@@ -249,7 +251,9 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		this.clientSecret = clientSecret;
 
 		const authorizeArgs: RPCAuthorizeArgs = { client_id: this.clientId, scopes: this.options.scopes };
-		if (this.options.username) authorizeArgs.username = this.options.username;
+		if (this.options.username) {
+			authorizeArgs.username = this.options.username;
+		}
 
 		return this.authenticate(await this.authorize(authorizeArgs, options), options);
 	}

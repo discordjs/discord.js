@@ -5,7 +5,9 @@ const { Events } = require('../../../util/Events.js');
 module.exports = (client, { d: data }) => {
   const channel = client.channels.cache.get(data.channel_id);
   const guild = client.guilds.cache.get(data.guild_id);
-  if (!channel) return;
+  if (!channel) {
+    return;
+  }
 
   const inviteData = Object.assign(data, { channel, guild });
   const invite = guild.invites._add(inviteData);

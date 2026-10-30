@@ -44,7 +44,10 @@ class ThreadManager extends CachedManager {
 
   _add(thread) {
     const existing = this.cache.get(thread.id);
-    if (existing) return existing;
+    if (existing) {
+      return existing;
+    }
+
     this.cache.set(thread.id, thread);
     return thread;
   }
@@ -92,11 +95,17 @@ class ThreadManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetch(options, { cache, force } = {}) {
-    if (!options) return this.fetchActive(cache);
+    if (!options) {
+      return this.fetchActive(cache);
+    }
+
     const channel = this.client.channels.resolveId(options);
     if (channel) {
       const threadChannel = await this.client.channels.fetch(channel, { cache, force });
-      if (threadChannel.parentId !== this.channel.id) throw new DiscordjsTypeError(ErrorCodes.NotAThreadOfParent);
+      if (threadChannel.parentId !== this.channel.id) {
+        throw new DiscordjsTypeError(ErrorCodes.NotAThreadOfParent);
+      }
+
       return threadChannel;
     }
 
@@ -192,7 +201,10 @@ class ThreadManager extends CachedManager {
   static _mapThreads(rawThreads, client, { parent, guild, cache }) {
     const threads = rawThreads.threads.reduce((coll, raw) => {
       const thread = client.channels._add(raw, guild ?? parent?.guild, { cache });
-      if (parent && thread.parentId !== parent.id) return coll;
+      if (parent && thread.parentId !== parent.id) {
+        return coll;
+      }
+
       return coll.set(thread.id, thread);
     }, new Collection());
 
@@ -205,7 +217,10 @@ class ThreadManager extends CachedManager {
     const response = { threads, members: threadMembers };
 
     // The GET `/guilds/{guild.id}/threads/active` route does not return `has_more`.
-    if ('has_more' in rawThreads) response.hasMore = rawThreads.has_more;
+    if ('has_more' in rawThreads) {
+      response.hasMore = rawThreads.has_more;
+    }
+
     return response;
   }
 }

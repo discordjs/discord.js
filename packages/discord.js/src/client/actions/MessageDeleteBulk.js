@@ -10,9 +10,13 @@ class MessageDeleteBulkAction extends Action {
     const channel = client.channels.cache.get(data.channel_id);
 
     if (channel) {
-      if (!channel.isTextBased()) return {};
+      if (!channel.isTextBased()) {
+        return {};
+      }
 
-      if (channel.isThread()) channel.messageCount -= data.ids.length;
+      if (channel.isThread()) {
+        channel.messageCount -= data.ids.length;
+      }
 
       const ids = data.ids;
       const messages = new Collection();
@@ -38,7 +42,10 @@ class MessageDeleteBulkAction extends Action {
        * @param {Collection<Snowflake, Message>} messages The deleted messages, mapped by their id
        * @param {GuildTextBasedChannel} channel The channel that the messages were deleted in
        */
-      if (messages.size > 0) client.emit(Events.MessageBulkDelete, messages, channel);
+      if (messages.size > 0) {
+        client.emit(Events.MessageBulkDelete, messages, channel);
+      }
+
       return { messages };
     }
 

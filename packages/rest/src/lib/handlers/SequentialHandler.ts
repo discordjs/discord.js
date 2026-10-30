@@ -298,7 +298,9 @@ export class SequentialHandler implements IHandler {
 		this.reset = reset ? Number(reset) * 1_000 + Date.now() + offset : Date.now();
 
 		// Amount of time in milliseconds until we should retry if rate limited (globally or otherwise)
-		if (retry) retryAfter = Number(retry) * 1_000 + offset;
+		if (retry) {
+			retryAfter = Number(retry) * 1_000 + offset;
+		}
 
 		// Rate limits are tracked per token, but Discord reports the same bucket hash for every token on a given route,
 		// so requests made with a custom token need the token in their hash to avoid sharing a handler

@@ -146,7 +146,9 @@ export function escapeMarkdown(text: string, options: EscapeMarkdownOptions = {}
 		return text
 			.split('```')
 			.map((subString, index, array) => {
-				if (index % 2 && index !== array.length - 1) return subString;
+				if (index % 2 && index !== array.length - 1) {
+					return subString;
+				}
 				return escapeMarkdown(subString, {
 					inlineCode,
 					bold,
@@ -171,7 +173,9 @@ export function escapeMarkdown(text: string, options: EscapeMarkdownOptions = {}
 		return text
 			.split(/(?<=^|[^`])`(?=[^`]|$)/g)
 			.map((subString, index, array) => {
-				if (index % 2 && index !== array.length - 1) return subString;
+				if (index % 2 && index !== array.length - 1) {
+					return subString;
+				}
 				return escapeMarkdown(subString, {
 					codeBlock,
 					bold,
@@ -192,20 +196,48 @@ export function escapeMarkdown(text: string, options: EscapeMarkdownOptions = {}
 	}
 
 	let res = text;
-	if (escape) res = escapeEscape(res);
-	if (inlineCode) res = escapeInlineCode(res);
-	if (codeBlock) res = escapeCodeBlock(res);
-	if (italic) res = escapeItalic(res);
-	if (bold) res = escapeBold(res);
-	if (underline) res = escapeUnderline(res);
-	if (strikethrough) res = escapeStrikethrough(res);
-	if (spoiler) res = escapeSpoiler(res);
-	if (heading) res = escapeHeading(res);
-	if (bulletedList) res = escapeBulletedList(res);
-	if (numberedList) res = escapeNumberedList(res);
-	if (maskedLink) res = escapeMaskedLink(res);
-	if (quote) res = escapeQuote(res);
-	if (blockQuote) res = escapeBlockQuote(res);
+	if (escape) {
+		res = escapeEscape(res);
+	}
+	if (inlineCode) {
+		res = escapeInlineCode(res);
+	}
+	if (codeBlock) {
+		res = escapeCodeBlock(res);
+	}
+	if (italic) {
+		res = escapeItalic(res);
+	}
+	if (bold) {
+		res = escapeBold(res);
+	}
+	if (underline) {
+		res = escapeUnderline(res);
+	}
+	if (strikethrough) {
+		res = escapeStrikethrough(res);
+	}
+	if (spoiler) {
+		res = escapeSpoiler(res);
+	}
+	if (heading) {
+		res = escapeHeading(res);
+	}
+	if (bulletedList) {
+		res = escapeBulletedList(res);
+	}
+	if (numberedList) {
+		res = escapeNumberedList(res);
+	}
+	if (maskedLink) {
+		res = escapeMaskedLink(res);
+	}
+	if (quote) {
+		res = escapeQuote(res);
+	}
+	if (blockQuote) {
+		res = escapeBlockQuote(res);
+	}
 	return res;
 }
 
@@ -237,7 +269,9 @@ export function escapeItalic(text: string): string {
 	const newText = text.replaceAll(
 		/(?<=^|[^*])(?<!(?<!<)https?:\/\/\S*|<[^\s:]+:\/[^\s>]*)\*([^*]|\*\*|$)/g,
 		(_, match) => {
-			if (match === '**') return ++idx % 2 ? `\\*${match}` : `${match}\\*`;
+			if (match === '**') {
+				return ++idx % 2 ? `\\*${match}` : `${match}\\*`;
+			}
 			return `\\*${match}`;
 		},
 	);
@@ -245,7 +279,9 @@ export function escapeItalic(text: string): string {
 	return newText.replaceAll(
 		/(?<=^|[^_])(?<!<a?:.+|(?<!<)https?:\/\/\S*|<[^\s:]:\/[^\s>]*)_(?!:\d+>)([^_]|__|$)/g,
 		(_, match) => {
-			if (match === '__') return ++idx % 2 ? `\\_${match}` : `${match}\\_`;
+			if (match === '__') {
+				return ++idx % 2 ? `\\_${match}` : `${match}\\_`;
+			}
 			return `\\_${match}`;
 		},
 	);
@@ -259,7 +295,9 @@ export function escapeItalic(text: string): string {
 export function escapeBold(text: string): string {
 	let idx = 0;
 	return text.replaceAll(/\*\*(\*)?/g, (_, match) => {
-		if (match) return ++idx % 2 ? `${match}\\*\\*` : `\\*\\*${match}`;
+		if (match) {
+			return ++idx % 2 ? `${match}\\*\\*` : `\\*\\*${match}`;
+		}
 		return '\\*\\*';
 	});
 }
@@ -272,7 +310,9 @@ export function escapeBold(text: string): string {
 export function escapeUnderline(text: string): string {
 	let idx = 0;
 	return text.replaceAll(/(?<!<a?:.+|https?:\/\/\S+)__(_)?(?!:\d+>)/g, (_, match) => {
-		if (match) return ++idx % 2 ? `${match}\\_\\_` : `\\_\\_${match}`;
+		if (match) {
+			return ++idx % 2 ? `${match}\\_\\_` : `\\_\\_${match}`;
+		}
 		return '\\_\\_';
 	});
 }

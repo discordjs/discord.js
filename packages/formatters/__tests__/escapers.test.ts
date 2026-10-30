@@ -89,7 +89,9 @@ describe('Markdown escapers', () => {
 		});
 
 		test('url', () => {
-			for (const url of testURLs) expect(escapeItalic(url)).toBe(url);
+			for (const url of testURLs) {
+				expect(escapeItalic(url)).toBe(url);
+			}
 		});
 
 		test('after-url', () => {
@@ -122,7 +124,9 @@ describe('Markdown escapers', () => {
 		});
 
 		test('url', () => {
-			for (const url of testURLs) expect(escapeUnderline(url)).toBe(url);
+			for (const url of testURLs) {
+				expect(escapeUnderline(url)).toBe(url);
+			}
 		});
 	});
 

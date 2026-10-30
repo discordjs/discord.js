@@ -56,9 +56,13 @@ export async function releasePackage(release: ReleaseEntry, dry: boolean, devTag
 	}
 
 	// && !devTag just to be sure
-	if (doGitRelease && !devTag) await gitTagAndRelease(release, dry);
+	if (doGitRelease && !devTag) {
+		await gitTagAndRelease(release, dry);
+	}
 
-	if (dry) return true;
+	if (dry) {
+		return true;
+	}
 
 	const before = performance.now();
 

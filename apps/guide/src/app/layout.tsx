@@ -69,7 +69,9 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 									const url = landingPage?.url ?? option.url;
 
 									const meta = source.getNodeMeta(node);
-									if (!meta || !node.icon) return { ...option, url };
+									if (!meta || !node.icon) {
+										return { ...option, url };
+									}
 
 									// category selection color based on path src/styles/base.css
 									const color = `var(--${meta.path.split('/')[0]}-color, var(--color-fd-foreground))`;

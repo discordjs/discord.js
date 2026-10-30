@@ -37,7 +37,9 @@ export class ContainerComponent<Omitted extends keyof APIContainerComponent | ''
 	 */
 	public get hexAccentColor() {
 		const accentColor = this.accentColor;
-		if (typeof accentColor !== 'number') return accentColor;
+		if (typeof accentColor !== 'number') {
+			return accentColor;
+		}
 		return `#${accentColor.toString(16).padStart(6, '0')}`;
 	}
 

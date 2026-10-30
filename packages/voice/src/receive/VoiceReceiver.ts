@@ -159,11 +159,15 @@ export class VoiceReceiver {
 		// Compute unencrypted header size: fixed header + CSRC Identifiers + extension header if present
 		let headerSize = 12 + 4 * cc;
 		const extensionHeaderOffset = headerSize; // where the extension header starts, if present
-		if (hasHeaderExtension) headerSize += 4; // extension header (profile ID + length)
+		if (hasHeaderExtension) {
+			headerSize += 4;
+		} // extension header (profile ID + length)
 
 		// Decrypt the RTP Payload
 		let payload: Buffer = this.decrypt(rtp, mode, nonce, secretKey, headerSize);
-		if (!payload) throw new Error('Failed to parse packet');
+		if (!payload) {
+			throw new Error('Failed to parse packet');
+		}
 
 		// Strip padding (RFC3550 5.1)
 		const hasPadding = rtp[0] && Boolean(rtp[0] & 0b100000);
@@ -191,7 +195,9 @@ export class VoiceReceiver {
 			if (daveSession) {
 				payload = daveSession.decrypt(payload, userId)!;
 
-				if (!payload) return null; // decryption failed but should be ignored
+				if (!payload) {
+					return null;
+				} // decryption failed but should be ignored
 			}
 		}
 
@@ -206,24 +212,34 @@ export class VoiceReceiver {
 	 * @internal
 	 */
 	public onUdpMessage(msg: Buffer) {
-		if (msg.length <= 12) return;
+		if (msg.length <= 12) {
+			return;
+		}
 		const ssrc = msg.readUInt32BE(8);
 
 		const userData = this.ssrcMap.get(ssrc);
-		if (!userData) return;
+		if (!userData) {
+			return;
+		}
 
 		this.speaking.onPacket(userData.userId);
 
 		const stream = this.subscriptions.get(userData.userId);
-		if (!stream) return;
+		if (!stream) {
+			return;
+		}
 
 		if (this.connectionData.encryptionMode && this.connectionData.nonceBuffer && this.connectionData.secretKey) {
 			// As a guard, we shouldn't parse packets that (1) aren't voice packets and (2) are not in the right RTP version
-			if ((msg[1]! & 0x7f) !== RTP_OPUS_PAYLOAD_TYPE) return;
+			if ((msg[1]! & 0x7f) !== RTP_OPUS_PAYLOAD_TYPE) {
+				return;
+			}
 
 			// Ignore packets not in RTP version 2
 			const rtpVersion = msg[0]! >> 6;
-			if (rtpVersion !== 2) return;
+			if (rtpVersion !== 2) {
+				return;
+			}
 
 			try {
 				const packet = this.parsePacket(
@@ -234,7 +250,9 @@ export class VoiceReceiver {
 					userData.userId,
 					ssrc,
 				);
-				if (packet) stream.push(packet);
+				if (packet) {
+					stream.push(packet);
+				}
 			} catch (error) {
 				stream.destroy(error as Error);
 			}
@@ -249,7 +267,9 @@ export class VoiceReceiver {
 	 */
 	public subscribe(userId: string, options?: Partial<AudioReceiveStreamOptions>) {
 		const existing = this.subscriptions.get(userId);
-		if (existing) return existing;
+		if (existing) {
+			return existing;
+		}
 
 		const stream = new AudioReceiveStream({
 			...createDefaultAudioReceiveStreamOptions(),

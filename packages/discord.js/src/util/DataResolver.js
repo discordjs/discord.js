@@ -111,11 +111,16 @@ function resolveGuildTemplateCode(data) {
  * @private
  */
 async function resolveFile(resource) {
-  if (Buffer.isBuffer(resource)) return { data: resource };
+  if (Buffer.isBuffer(resource)) {
+    return { data: resource };
+  }
 
   if (typeof resource[Symbol.asyncIterator] === 'function') {
     const buffers = [];
-    for await (const data of resource) buffers.push(Buffer.from(data));
+    for await (const data of resource) {
+      buffers.push(Buffer.from(data));
+    }
+
     return { data: Buffer.concat(buffers) };
   }
 
@@ -128,7 +133,10 @@ async function resolveFile(resource) {
     const file = path.resolve(resource);
 
     const stats = await fs.stat(file);
-    if (!stats.isFile()) throw new DiscordjsError(ErrorCodes.FileNotFound, file);
+    if (!stats.isFile()) {
+      throw new DiscordjsError(ErrorCodes.FileNotFound, file);
+    }
+
     return { data: await fs.readFile(file) };
   }
 
@@ -152,7 +160,10 @@ async function resolveFile(resource) {
  * @private
  */
 function resolveBase64(data, contentType = 'image/jpg') {
-  if (Buffer.isBuffer(data)) return `data:${contentType};base64,${data.toString('base64')}`;
+  if (Buffer.isBuffer(data)) {
+    return `data:${contentType};base64,${data.toString('base64')}`;
+  }
+
   return data;
 }
 
@@ -164,7 +175,10 @@ function resolveBase64(data, contentType = 'image/jpg') {
  * @private
  */
 async function resolveImage(image) {
-  if (!image) return null;
+  if (!image) {
+    return null;
+  }
+
   if (typeof image === 'string' && image.startsWith('data:')) {
     return image;
   }

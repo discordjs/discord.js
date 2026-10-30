@@ -293,5 +293,12 @@ export default defineConfig(
 		rules: { 'tsdoc/syntax': 0 },
 	},
 	prettierRuleset,
+	{
+		files: [`**/*${commonFiles}`],
+		rules: {
+			// Re-enable curly brace rule
+			curly: 2,
+		},
+	},
 	// oxlintRuleset,
 );

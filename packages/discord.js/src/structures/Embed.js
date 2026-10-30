@@ -92,7 +92,10 @@ class Embed {
    * @readonly
    */
   get thumbnail() {
-    if (!this.data.thumbnail) return null;
+    if (!this.data.thumbnail) {
+      return null;
+    }
+
     return {
       url: this.data.thumbnail.url,
       proxyURL: this.data.thumbnail.proxy_url,
@@ -108,7 +111,10 @@ class Embed {
    * @readonly
    */
   get image() {
-    if (!this.data.image) return null;
+    if (!this.data.image) {
+      return null;
+    }
+
     return {
       url: this.data.image.url,
       proxyURL: this.data.image.proxy_url,
@@ -124,7 +130,10 @@ class Embed {
    * @readonly
    */
   get video() {
-    if (!this.data.video) return null;
+    if (!this.data.video) {
+      return null;
+    }
+
     return {
       url: this.data.video.url,
       proxyURL: this.data.video.proxy_url,
@@ -148,7 +157,10 @@ class Embed {
    * @readonly
    */
   get author() {
-    if (!this.data.author) return null;
+    if (!this.data.author) {
+      return null;
+    }
+
     return {
       name: this.data.author.name,
       url: this.data.author.url,
@@ -181,7 +193,10 @@ class Embed {
    * @readonly
    */
   get footer() {
-    if (!this.data.footer) return null;
+    if (!this.data.footer) {
+      return null;
+    }
+
     return {
       text: this.data.footer.text,
       iconURL: this.data.footer.icon_url,

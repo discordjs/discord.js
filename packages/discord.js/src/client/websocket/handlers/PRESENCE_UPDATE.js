@@ -9,12 +9,18 @@ module.exports = (client, { d: data }) => {
     user = client.users._add(data.user);
   }
 
-  if (!user) return;
+  if (!user) {
+    return;
+  }
 
-  if (data.user.username && !user._equals(data.user)) client.actions.UserUpdate.handle(data.user);
+  if (data.user.username && !user._equals(data.user)) {
+    client.actions.UserUpdate.handle(data.user);
+  }
 
   const guild = client.guilds.cache.get(data.guild_id);
-  if (!guild) return;
+  if (!guild) {
+    return;
+  }
 
   const oldPresence = guild.presences.cache.get(user.id)?._clone() ?? null;
 

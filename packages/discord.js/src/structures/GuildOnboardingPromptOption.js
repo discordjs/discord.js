@@ -88,7 +88,10 @@ class GuildOnboardingPromptOption extends Base {
    * @type {?(GuildEmoji|Emoji)}
    */
   get emoji() {
-    if (!this._emoji.id && !this._emoji.name) return null;
+    if (!this._emoji.id && !this._emoji.name) {
+      return null;
+    }
+
     return this.guild.emojis.cache.get(this._emoji.id) ?? new Emoji(this.client, this._emoji);
   }
 }

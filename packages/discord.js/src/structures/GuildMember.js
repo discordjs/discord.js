@@ -75,7 +75,9 @@ class GuildMember extends Base {
       this.user = this.client.users._add(data.user, true);
     }
 
-    if ('nick' in data) this.nickname = data.nick;
+    if ('nick' in data) {
+      this.nickname = data.nick;
+    }
     if ('avatar' in data) {
       /**
        * The guild member's avatar hash
@@ -113,7 +115,9 @@ class GuildMember extends Base {
       this.premiumSinceTimestamp = data.premium_since ? Date.parse(data.premium_since) : null;
     }
 
-    if ('roles' in data) this._roles = data.roles;
+    if ('roles' in data) {
+      this._roles = data.roles;
+    }
 
     if ('pending' in data) {
       this.pending = data.pending;
@@ -358,7 +362,9 @@ class GuildMember extends Base {
    * @readonly
    */
   get permissions() {
-    if (this.user.id === this.guild.ownerId) return new PermissionsBitField(PermissionsBitField.All).freeze();
+    if (this.user.id === this.guild.ownerId) {
+      return new PermissionsBitField(PermissionsBitField.All).freeze();
+    }
     return new PermissionsBitField(this.roles.cache.map(role => role.permissions)).freeze();
   }
 
@@ -370,9 +376,15 @@ class GuildMember extends Base {
    * @readonly
    */
   get manageable() {
-    if (this.user.id === this.guild.ownerId) return false;
-    if (this.user.id === this.client.user.id) return false;
-    if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
+    if (this.user.id === this.guild.ownerId) {
+      return false;
+    }
+    if (this.user.id === this.client.user.id) {
+      return false;
+    }
+    if (!this.guild.members.me) {
+      throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
+    }
     return this.guild.members.me.roles.highest.comparePositionTo(this.roles.highest) > 0;
   }
 
@@ -383,7 +395,9 @@ class GuildMember extends Base {
    * @readonly
    */
   get kickable() {
-    if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
+    if (!this.guild.members.me) {
+      throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
+    }
     return this.manageable && this.guild.members.me.permissions.has(PermissionFlagsBits.KickMembers);
   }
 
@@ -394,7 +408,9 @@ class GuildMember extends Base {
    * @readonly
    */
   get bannable() {
-    if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
+    if (!this.guild.members.me) {
+      throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
+    }
     return this.manageable && this.guild.members.me.permissions.has(PermissionFlagsBits.BanMembers);
   }
 
@@ -430,7 +446,9 @@ class GuildMember extends Base {
    */
   permissionsIn(channel) {
     const resolvedChannel = this.guild.channels.resolve(channel);
-    if (!resolvedChannel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
+    if (!resolvedChannel) {
+      throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
+    }
     return resolvedChannel.permissionsFor(this);
   }
 

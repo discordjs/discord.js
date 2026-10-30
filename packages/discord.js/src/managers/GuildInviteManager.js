@@ -155,21 +155,29 @@ class GuildInviteManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetch(options) {
-    if (!options) return this._fetchMany();
+    if (!options) {
+      return this._fetchMany();
+    }
     if (typeof options === 'string') {
       const code = resolveInviteCode(options);
-      if (!code) throw new DiscordjsError(ErrorCodes.InviteResolveCode);
+      if (!code) {
+        throw new DiscordjsError(ErrorCodes.InviteResolveCode);
+      }
       return this._fetchSingle({ code, cache: true });
     }
 
     if (!options.code) {
       if (options.channelId) {
         const id = this.guild.channels.resolveId(options.channelId);
-        if (!id) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
+        if (!id) {
+          throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
+        }
         return this._fetchChannelMany(id, options.cache);
       }
 
-      if ('cache' in options) return this._fetchMany(options.cache);
+      if ('cache' in options) {
+        return this._fetchMany(options.cache);
+      }
       throw new DiscordjsError(ErrorCodes.InviteResolveCode);
     }
 
@@ -182,12 +190,16 @@ class GuildInviteManager extends CachedManager {
   async _fetchSingle({ code, cache, force = false }) {
     if (!force) {
       const existing = this.cache.get(code);
-      if (existing) return existing;
+      if (existing) {
+        return existing;
+      }
     }
 
     const invites = await this._fetchMany(cache);
     const invite = invites.get(code);
-    if (!invite) throw new DiscordjsError(ErrorCodes.InviteNotFound);
+    if (!invite) {
+      throw new DiscordjsError(ErrorCodes.InviteNotFound);
+    }
     return invite;
   }
 
@@ -229,7 +241,9 @@ class GuildInviteManager extends CachedManager {
     } = {},
   ) {
     const id = this.guild.channels.resolveId(channel);
-    if (!id) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
+    if (!id) {
+      throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
+    }
     const options = {
       temporary,
       max_age: maxAge,

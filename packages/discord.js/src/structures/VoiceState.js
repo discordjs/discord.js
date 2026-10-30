@@ -243,7 +243,9 @@ class VoiceState extends Base {
    * @returns {Promise<VoiceState>}
    */
   async edit(options) {
-    if (this.channel?.type !== ChannelType.GuildStageVoice) throw new DiscordjsError(ErrorCodes.VoiceNotStageChannel);
+    if (this.channel?.type !== ChannelType.GuildStageVoice) {
+      throw new DiscordjsError(ErrorCodes.VoiceNotStageChannel);
+    }
 
     const target = this.client.user.id === this.id ? '@me' : this.id;
 

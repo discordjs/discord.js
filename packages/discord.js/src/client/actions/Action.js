@@ -46,7 +46,9 @@ class Action {
       payloadData.recipients = [recipient];
     }
 
-    if (id !== undefined) payloadData.id = id;
+    if (id !== undefined) {
+      payloadData.id = id;
+    }
 
     return (
       data[this.client.actions.injectedChannel] ??
@@ -75,7 +77,9 @@ class Action {
   getPoll(data, message, channel) {
     const includePollPartial = this.client.options.partials.includes(Partials.Poll);
     const includePollAnswerPartial = this.client.options.partials.includes(Partials.PollAnswer);
-    if (message.partial && (!includePollPartial || !includePollAnswerPartial)) return null;
+    if (message.partial && (!includePollPartial || !includePollAnswerPartial)) {
+      return null;
+    }
 
     if (!message.poll && includePollPartial) {
       message.poll = new Poll(this.client, data, message, channel);

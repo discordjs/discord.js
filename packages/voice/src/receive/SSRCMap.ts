@@ -55,7 +55,10 @@ export class SSRCMap extends EventEmitter {
 		};
 
 		this.map.set(data.audioSSRC, newValue);
-		if (!existing) this.emit('create', newValue);
+		if (!existing) {
+			this.emit('create', newValue);
+		}
+
 		this.emit('update', existing, newValue);
 	}
 

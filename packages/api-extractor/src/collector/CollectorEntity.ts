@@ -122,7 +122,9 @@ export class CollectorEntity {
 	 */
 	public get exported(): boolean {
 		// Exported from top-level?
-		if (this.exportedFromEntryPoint) return true;
+		if (this.exportedFromEntryPoint) {
+			return true;
+		}
 
 		// Exported from parent?
 		for (const localExportNames of this._localExportNamesByParent.values()) {
@@ -162,7 +164,9 @@ export class CollectorEntity {
 	 */
 	public get consumable(): boolean {
 		// Exported from top-level?
-		if (this.exportedFromEntryPoint) return true;
+		if (this.exportedFromEntryPoint) {
+			return true;
+		}
 
 		// Exported from consumable parent?
 		for (const [parent, localExportNames] of this._localExportNamesByParent) {

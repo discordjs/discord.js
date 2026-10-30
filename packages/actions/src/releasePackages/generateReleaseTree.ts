@@ -28,7 +28,9 @@ export interface ReleaseEntry {
 async function fetchDevVersion(pkg: string, tag: string) {
 	try {
 		const res = await fetch(`https://registry.npmjs.org/${pkg}/${tag}`);
-		if (!res.ok) return null;
+		if (!res.ok) {
+			return null;
+		}
 		const packument = (await res.json()) as PackumentVersion;
 		return packument.version;
 	} catch {
@@ -46,13 +48,19 @@ async function getReleaseEntries(dry: boolean, devTag?: string) {
 
 	// We intentionally pin workspace dependencies in package.json for dev releases below,
 	// which causes pnpm's dependency validations to fail since the lockfile gets out of sync
-	if (devTag && !dry) process.env.pnpm_config_verify_deps_before_run = 'false';
+	if (devTag && !dry) {
+		process.env.pnpm_config_verify_deps_before_run = 'false';
+	}
 
 	for (const pkg of packageList) {
 		// Don't release private packages ever (npm will error anyways)
-		if (pkg.private) continue;
+		if (pkg.private) {
+			continue;
+		}
 		// Just in case
-		if (!pkg.version || !pkg.name) continue;
+		if (!pkg.version || !pkg.name) {
+			continue;
+		}
 
 		const release: ReleaseEntry = {
 			name: pkg.name,
@@ -206,7 +214,9 @@ export async function generateReleaseTree(dry: boolean, devTag?: string, package
 				}
 			}
 
-			if (newThisBranch.length) excludedReleaseTree.unshift(newThisBranch);
+			if (newThisBranch.length) {
+				excludedReleaseTree.unshift(newThisBranch);
+			}
 		}
 
 		return excludedReleaseTree;
@@ -232,7 +242,9 @@ export async function generateReleaseTree(dry: boolean, devTag?: string, package
 			}
 		}
 
-		if (newThisBranch.length) packageReleaseTree.unshift(newThisBranch);
+		if (newThisBranch.length) {
+			packageReleaseTree.unshift(newThisBranch);
+		}
 	}
 
 	return packageReleaseTree;

@@ -23,9 +23,18 @@ export class DocumentedItem<Data = DeclarationReflection | Item> {
 
 	private detailedName() {
 		const data = this.data as unknown as Item | undefined;
-		if (!data) return this.constructor.name;
-		if (data.id) return `${data.id} (${this.constructor.name})`;
-		if (data.name) return `${data.name} (${this.constructor.name})`;
+		if (!data) {
+			return this.constructor.name;
+		}
+
+		if (data.id) {
+			return `${data.id} (${this.constructor.name})`;
+		}
+
+		if (data.name) {
+			return `${data.name} (${this.constructor.name})`;
+		}
+
 		return this.constructor.name;
 	}
 }

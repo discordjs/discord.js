@@ -102,10 +102,15 @@ class GuildBanManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetch(options) {
-    if (!options) return this._fetchMany();
+    if (!options) {
+      return this._fetchMany();
+    }
+
     const { user, cache, force, limit, before, after } = options;
     const resolvedUser = this.client.users.resolveId(user ?? options);
-    if (resolvedUser) return this._fetchSingle({ user: resolvedUser, cache, force });
+    if (resolvedUser) {
+      return this._fetchSingle({ user: resolvedUser, cache, force });
+    }
 
     if (!before && !after && !limit && cache === undefined) {
       throw new DiscordjsError(ErrorCodes.FetchBanResolveId);
@@ -117,7 +122,9 @@ class GuildBanManager extends CachedManager {
   async _fetchSingle({ user, cache, force = false }) {
     if (!force) {
       const existing = this.cache.get(user);
-      if (existing && !existing.partial) return existing;
+      if (existing && !existing.partial) {
+        return existing;
+      }
     }
 
     const data = await this.client.rest.get(Routes.guildBan(this.guild.id, user));
@@ -152,9 +159,14 @@ class GuildBanManager extends CachedManager {
    * await guild.bans.create('84484653687267328');
    */
   async create(user, options = {}) {
-    if (typeof options !== 'object') throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+    if (typeof options !== 'object') {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+    }
+
     const id = this.client.users.resolveId(user);
-    if (!id) throw new DiscordjsError(ErrorCodes.BanResolveId, true);
+    if (!id) {
+      throw new DiscordjsError(ErrorCodes.BanResolveId, true);
+    }
 
     await this.client.rest.put(Routes.guildBan(this.guild.id, id), {
       body: {
@@ -176,7 +188,10 @@ class GuildBanManager extends CachedManager {
    */
   async remove(user, reason) {
     const id = this.client.users.resolveId(user);
-    if (!id) throw new DiscordjsError(ErrorCodes.BanResolveId);
+    if (!id) {
+      throw new DiscordjsError(ErrorCodes.BanResolveId);
+    }
+
     await this.client.rest.delete(Routes.guildBan(this.guild.id, id), { reason });
   }
 
@@ -208,10 +223,14 @@ class GuildBanManager extends CachedManager {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'users', 'Array or Collection of UserResolvable', true);
     }
 
-    if (typeof options !== 'object') throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+    if (typeof options !== 'object') {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+    }
 
     const userIds = users.map(user => this.client.users.resolveId(user));
-    if (userIds.length === 0) throw new DiscordjsError(ErrorCodes.BulkBanUsersOptionEmpty);
+    if (userIds.length === 0) {
+      throw new DiscordjsError(ErrorCodes.BulkBanUsersOptionEmpty);
+    }
 
     const result = await this.client.rest.post(Routes.guildBulkBan(this.guild.id), {
       body: { delete_message_seconds: options.deleteMessageSeconds, user_ids: userIds },
