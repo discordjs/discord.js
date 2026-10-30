@@ -151,7 +151,6 @@ function resolveCanonicalReference(
 					return canonicalReference.source as ModuleSource;
 				},
 			},
-			// eslint-disable-next-line unicorn/better-regex
 			version: apiPackage?.dependencies?.[canonicalReference.source.packageName]?.replace(/[~^]/, ''),
 		};
 	else if (
@@ -174,7 +173,6 @@ function resolveCanonicalReference(
 					return canonicalReference;
 				},
 			},
-			// eslint-disable-next-line unicorn/better-regex
 			version: apiPackage?.dependencies?.[canonicalReference.packageName ?? '']?.replace(/[~^]/, ''),
 		};
 	}
@@ -544,8 +542,7 @@ function resolveFileUrl(item: ApiDeclaredItem) {
 		const version =
 			dir?.split('/').at(-1) === 'main'
 				? 'main'
-				: // eslint-disable-next-line unicorn/better-regex
-					item.getAssociatedPackage()?.dependencies?.[`${prefix}${pkgName}`]?.replace(/[~^]/, '');
+				: item.getAssociatedPackage()?.dependencies?.[`${prefix}${pkgName}`]?.replace(/[~^]/, '');
 
 		// https://github.com/discordjs/discord.js/tree/main/packages/builders/dist/index.d.ts
 		let currentItem = item;
@@ -953,7 +950,6 @@ function itemEnum(item: ApiEnum) {
 }
 
 function memberKind(member: ApiItem | null) {
-	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (member?.kind) {
 		case 'Class': {
 			const classMember = member as ApiClass;
@@ -1060,7 +1056,6 @@ export async function generateSplitDocumentation({
 			for (const entry of entries) {
 				const members = entry.members
 					.filter((item) => {
-						// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 						switch (item.kind) {
 							case ApiItemKind.Function:
 								return (item as ApiFunction).overloadIndex === 1;

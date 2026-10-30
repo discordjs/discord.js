@@ -4064,7 +4064,6 @@ export const version: string;
 // #endregion
 
 // #region Errors
-/* eslint-disable typescript-sort-keys/string-enum */
 export enum DiscordjsErrorCodes {
   ClientInvalidOption = 'ClientInvalidOption',
   ClientInvalidProvidedShards = 'ClientInvalidProvidedShards',
@@ -4196,7 +4195,6 @@ export enum DiscordjsErrorCodes {
   PermissionOverwritesTypeMandatory = 'PermissionOverwritesTypeMandatory',
   PermissionOverwritesTypeMismatch = 'PermissionOverwritesTypeMismatch',
 }
-/* eslint-enable typescript-sort-keys/string-enum */
 
 export class DiscordjsError extends Error {
   private constructor(code: DiscordjsErrorCodes, ...args: unknown[]);
@@ -7135,7 +7133,7 @@ export interface PartialPoll extends Partialize<
   null,
   'answers' | 'message' | 'question'
 > {
-  // eslint-disable-next-line no-restricted-syntax
+  // oxlint-disable-next-line discordjs/readonly-collections -- Retain Poll's mutable collection when narrowing its values.
   answers: Collection<number, PartialPollAnswer>;
   message: PartialMessage;
   question: { text: null };

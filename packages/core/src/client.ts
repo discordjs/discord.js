@@ -84,8 +84,8 @@ import {
 	type GatewayRequestSoundboardSoundsData,
 	type GatewaySoundboardSoundsDispatchData,
 } from 'discord-api-types/v10';
-import type { Gateway } from './Gateway.js';
 import { API } from './api/index.js';
+import type { Gateway } from './Gateway.js';
 
 export interface IntrinsicProps {
 	/**
@@ -292,7 +292,6 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 
 				if (data.chunk_index >= data.chunk_count - 1) break;
 
-				// eslint-disable-next-line require-atomic-updates
 				timer = createTimer(controller, timeout);
 			}
 		} catch (error) {

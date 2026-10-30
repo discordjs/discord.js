@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/check-values */
 'use strict';
 const { GatewayIntentBits } = require('discord-api-types/v10');
 const { BitField } = require('./BitField.js');

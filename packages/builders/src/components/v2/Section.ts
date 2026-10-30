@@ -11,8 +11,6 @@ import { ComponentType } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
 import { validate } from '../../util/validation.js';
-import { ComponentBuilder } from '../Component.js';
-import { resolveAccessoryComponent, type ButtonBuilder } from '../Components.js';
 import {
 	DangerButtonBuilder,
 	PrimaryButtonBuilder,
@@ -21,6 +19,8 @@ import {
 } from '../button/CustomIdButton.js';
 import { LinkButtonBuilder } from '../button/LinkButton.js';
 import { PremiumButtonBuilder } from '../button/PremiumButton.js';
+import { ComponentBuilder } from '../Component.js';
+import { resolveAccessoryComponent, type ButtonBuilder } from '../Components.js';
 import { sectionPredicate } from './Assertions.js';
 import { TextDisplayBuilder } from './TextDisplay.js';
 import { ThumbnailBuilder } from './Thumbnail.js';

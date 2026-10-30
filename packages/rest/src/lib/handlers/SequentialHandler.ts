@@ -1,7 +1,7 @@
 import { AsyncQueue } from '@sapphire/async-queue';
 import type { RequestInit } from 'undici';
-import type { REST } from '../REST.js';
 import type { IHandler } from '../interfaces/Handler.js';
+import type { REST } from '../REST.js';
 import { RESTEvents } from '../utils/constants.js';
 import type { RateLimitData, ResponseLike, HandlerRequestData, RouteData } from '../utils/types.js';
 import { hasSublimit, normalizeRateLimitOffset, onRateLimit, sleep } from '../utils/utils.js';
@@ -216,7 +216,6 @@ export class SequentialHandler implements IHandler {
 				limit = this.manager.options.globalRequestsPerSecond;
 				timeout = this.manager.globalReset + offset - Date.now();
 				// If this is the first task to reach the global timeout, set the global delay
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				if (!this.manager.globalDelay) {
 					// The global delay function clears the global delay state when it is resolved
 					this.manager.globalDelay = this.globalDelayFor(timeout);

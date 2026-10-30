@@ -1,18 +1,15 @@
-/* eslint-disable @typescript-eslint/unbound-method */
-/* eslint-disable @typescript-eslint/dot-notation */
-
 import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import process from 'node:process';
 import { Readable } from 'node:stream';
 import { describe, test, expect, vitest, type MockedFunction, beforeEach, afterEach } from 'vitest';
-import { addAudioPlayer, deleteAudioPlayer } from '../src/DataStore';
-import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
 import type { AudioPlayer } from '../src/audio/AudioPlayer';
 import { createAudioPlayer, AudioPlayerStatus, SILENCE_FRAME } from '../src/audio/AudioPlayer';
 import { AudioPlayerError } from '../src/audio/AudioPlayerError';
 import { AudioResource } from '../src/audio/AudioResource';
+import { addAudioPlayer, deleteAudioPlayer } from '../src/DataStore';
 import { NoSubscriberBehavior } from '../src/index';
+import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
 
 vitest.mock('../src/DataStore', () => ({
 	addAudioPlayer: vitest.fn(),

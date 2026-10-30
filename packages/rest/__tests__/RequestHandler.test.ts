@@ -108,7 +108,6 @@ test('Significant Invalid Requests', async () => {
 	await expect(d).rejects.toThrowError('Missing Permissions');
 	await expect(e).rejects.toThrowError('Missing Permissions');
 	expect(invalidListener).toHaveBeenCalledTimes(0);
-	// eslint-disable-next-line require-atomic-updates
 	api.options.invalidRequestWarningInterval = 2;
 
 	const [f, g, h, i, j] = [
@@ -323,7 +322,6 @@ test('Handle sublimits', async () => {
 		rateLimitErrorApi.patch('/channels/:id', sublimit),
 		rateLimitErrorApi.patch('/channels/:id', sublimit),
 	];
-	// eslint-disable-next-line @typescript-eslint/await-thenable
 	await expect(aP2).resolves;
 	await expect(bP2).rejects.toThrowError();
 	await expect(bP2).rejects.toBeInstanceOf(RateLimitError);

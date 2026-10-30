@@ -19,9 +19,6 @@ allowBuilds:
 
 autoInstallPeers: false
 
-patchedDependencies:
-  '@microsoft/tsdoc-config@0.17.1': patches/@microsoft__tsdoc-config@0.17.1.patch
-
 peerDependencyRules:
   allowAny:
     - '*'
@@ -29,8 +26,6 @@ peerDependencyRules:
     - '*'
 
 publicHoistPattern:
-  - '*eslint*'
-  - '*prettier*'
   - '*@rushstack/node-core-library*'
   - '*jju*'
 

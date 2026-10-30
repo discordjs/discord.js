@@ -5,8 +5,8 @@ import { Buffer } from 'node:buffer';
 import path from 'node:path';
 import util from 'node:util';
 import { TSDocConfiguration } from '@microsoft/tsdoc';
-import { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { TSDocConfigFile } from '@microsoft/tsdoc-config';
+import { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import {
 	JsonFile,
 	type IJsonFileSaveOptions,
