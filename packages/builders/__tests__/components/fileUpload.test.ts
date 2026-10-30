@@ -46,6 +46,10 @@ describe('File Upload Components', () => {
 		}).toThrowError();
 
 		expect(() => {
+			fileUploadComponent().setCustomId('a').setMinValues(5).setMaxValues(2).toJSON();
+		}).toThrowError();
+
+		expect(() => {
 			fileUploadComponent()
 				.setCustomId('a')
 				.setFileTypes(Array.from({ length: 11 }, () => '.txt' as const))
