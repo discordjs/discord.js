@@ -19,6 +19,7 @@ class ActionsManager {
     this.GuildChannelsPositionUpdate = this.load(
       require('./GuildChannelsPositionUpdate.js').GuildChannelsPositionUpdateAction,
     );
+    this.GuildDelete = this.load(require('./GuildDelete.js').GuildDeleteAction);
     this.GuildEmojiCreate = this.load(require('./GuildEmojiCreate.js').GuildEmojiCreateAction);
     this.GuildEmojiDelete = this.load(require('./GuildEmojiDelete.js').GuildEmojiDeleteAction);
     this.GuildEmojiUpdate = this.load(require('./GuildEmojiUpdate.js').GuildEmojiUpdateAction);
