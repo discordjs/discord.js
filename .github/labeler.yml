@@ -63,6 +63,11 @@ packages:formatters:
       - any-glob-to-any-file:
           - packages/formatters/*
           - packages/formatters/**/*
+packages:mock:
+  - changed-files:
+      - any-glob-to-any-file:
+          - packages/mock/*
+          - packages/mock/**/*
 packages:next:
   - changed-files:
       - any-glob-to-any-file:
