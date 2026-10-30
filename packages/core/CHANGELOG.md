@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/core@2.7.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.6.0...@discordjs/core@2.7.0) - (2026-10-30)
+
+## Bug Fixes
+
+- **applicationCommands:** Allow `X-Discord-Locale` (#11616) ([7d85b2a](https://github.com/discordjs/discord.js/commit/7d85b2ab670fd7be6a106900e7726f8247b8aaf9))
+
+## Features
+
+- **invites:** Backport invite target users and role (#11590) ([e779c1c](https://github.com/discordjs/discord.js/commit/e779c1c522b22b19ba6eb664c7d63532091dacab))
+
 # [@discordjs/core@2.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.5.0...@discordjs/core@2.6.0) - (2026-07-15)
 
 ## Bug Fixes
