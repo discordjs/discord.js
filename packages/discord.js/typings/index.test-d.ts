@@ -1,4 +1,5 @@
 /* eslint-disable no-lone-blocks, @typescript-eslint/unbound-method, @typescript-eslint/ban-ts-comment, no-param-reassign, id-length */
+import { Buffer } from 'node:buffer';
 import type { ChildProcess } from 'node:child_process';
 import type { Worker } from 'node:worker_threads';
 import {
@@ -139,6 +140,7 @@ import type {
   GuildMessageManager,
   GuildOnboarding,
   GuildResolvable,
+  GuildScheduledEvent,
   GuildScheduledEventCreateOptions,
   GuildScheduledEventManager,
   GuildScheduledEventRecurrenceRuleOptions,
@@ -3019,6 +3021,10 @@ await guildScheduledEventManager.edit(snowflake, { description: null });
   const event = await guildScheduledEventManager.fetch(snowflake);
   await event.setDescription(null);
   await event.edit({ description: null });
+  expectType<Promise<GuildScheduledEvent>>(event.setImage(Buffer.from('image')));
+  expectType<Promise<GuildScheduledEvent>>(event.setImage('data:image/png;base64,test'));
+  expectType<Promise<GuildScheduledEvent>>(event.setImage(null));
+  expectType<Promise<GuildScheduledEvent>>(event.setImage(null, 'Remove the cover image'));
   expectNotAssignable<GuildScheduledEventCreateOptions['description']>(null);
 }
 
