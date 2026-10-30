@@ -1,5 +1,6 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APIEmbed, APIEmbedAuthor, APIEmbedField, APIEmbedFooter } from 'discord-api-types/v10';
+import { Refineable } from '../../mixins/Refineable.js';
 import type { RestOrArray } from '../../util/normalizeArray.js';
 import { normalizeArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
@@ -21,7 +22,7 @@ export interface EmbedBuilderData extends Omit<APIEmbed, 'author' | 'fields' | '
 /**
  * A builder that creates API-compatible JSON data for embeds.
  */
-export class EmbedBuilder implements JSONEncodable<APIEmbed> {
+export class EmbedBuilder extends Refineable implements JSONEncodable<APIEmbed> {
 	/**
 	 * The API data associated with this embed.
 	 */
@@ -40,6 +41,7 @@ export class EmbedBuilder implements JSONEncodable<APIEmbed> {
 	 * @param data - The API data to create this embed with
 	 */
 	public constructor(data: Partial<APIEmbed> = {}) {
+		super();
 		const { author, fields = [], footer, ...rest } = data;
 
 		this.data = {
