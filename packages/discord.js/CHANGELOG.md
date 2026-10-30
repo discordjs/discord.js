@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.28.0](https://github.com/discordjs/discord.js/compare/14.27.0...14.28.0) - (2026-10-30)
+
+## Features
+
+- **invites:** Backport invite target users and role (#11590) ([e779c1c](https://github.com/discordjs/discord.js/commit/e779c1c522b22b19ba6eb664c7d63532091dacab))
+- `file types` for discord.js (#11580) ([cffb0b5](https://github.com/discordjs/discord.js/commit/cffb0b588f573df785124b34a10048b9c0a550d8))
+- **BaseChannel:** Add `permissions` and `appPermissions` (#11577) ([75a5eaa](https://github.com/discordjs/discord.js/commit/75a5eaadc1af2ec95613826862196e5c7c488ad2))
+
 # [14.27.0](https://github.com/discordjs/discord.js/compare/14.26.5...14.27.0) - (2026-07-15)
 
 ## Bug Fixes
