@@ -84,6 +84,11 @@ export interface SendRateLimitState {
 	sent: number;
 }
 
+/**
+ * Abort reason used when {@link WebSocketShard.destroy} cancels a pending {@link WebSocketShard.waitForEvent} call
+ */
+const destroyAbortReason = Symbol('WebSocketShard destroyed');
+
 const WebSocketConstructor: typeof WebSocket = shouldUseGlobalFetchAndWebSocket()
 	? (globalThis as any).WebSocket
 	: WebSocket;
@@ -352,7 +357,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.lastHeartbeatAt = -1;
 
 		for (const controller of this.timeoutAbortControllers.values()) {
-			controller.abort();
+			// Let waitForEvent know this destroy is what interrupted it, so it doesn't start a recovery destroy of its own
+			controller.abort(destroyAbortReason);
 		}
 
 		this.timeoutAbortControllers.clear();
@@ -433,6 +439,13 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 			return { ok: !closed };
 		} catch {
+			// The wait was cut short by destroy(), which is already tearing the shard down (and reconnecting if asked to).
+			// Starting a second, concurrent destroy here would race it for the connection's close handler,
+			// leaving the original destroy() promise unresolved and reconnecting a shard that was meant to stay down.
+			if (timeoutController.signal.reason === destroyAbortReason) {
+				return { ok: false };
+			}
+
 			// If we're here because of other reasons, we need to destroy the shard
 			void this.destroy({
 				code: CloseCodes.Normal,
