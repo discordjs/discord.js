@@ -128,7 +128,7 @@ class GuildManager extends CachedManager {
   async fetch(options = {}) {
     const id = this.resolveId(options) ?? this.resolveId(options.guild);
 
-    if (id) {
+    if (id !== null) {
       if (!options.force) {
         const existing = this.cache.get(id);
         if (existing) return existing;
