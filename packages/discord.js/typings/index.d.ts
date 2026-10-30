@@ -7133,6 +7133,7 @@ export interface PartialPoll extends Partialize<
   null,
   'answers' | 'message' | 'question'
 > {
+  // oxlint-disable-next-line discordjs/readonly-collections -- Retain Poll's mutable collection when narrowing its values.
   answers: Collection<number, PartialPollAnswer>;
   message: PartialMessage;
   question: { text: null };

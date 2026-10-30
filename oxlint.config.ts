@@ -14,6 +14,7 @@ const reactPlugins = [...new Set([...plugins, ...react.plugins, ...jsxA11y.plugi
 const nextPlugins = [...new Set([...reactPlugins, ...next.plugins, ...edge.plugins])];
 
 export default defineConfig({
+	jsPlugins: ['./packages/discord.js/scripts/oxlint-plugin.mjs'],
 	extends: [common, node, prettier],
 	ignorePatterns: [
 		'**/node_modules/**',
@@ -103,6 +104,9 @@ export default defineConfig({
 		{
 			files: ['packages/discord.js/src/**/*.{js,cjs}'],
 			rules: {
+				'discordjs/require-strict': 2,
+				'discordjs/named-exports': 2,
+				'discordjs/destructure-local-require': 2,
 				'jsdoc/check-tag-names': [2, { definedTags: ['emits', 'extends', 'method'] }],
 				'jsdoc/no-defaults': 0,
 				'no-eq-null': 0,
@@ -110,8 +114,14 @@ export default defineConfig({
 			},
 		},
 		{
+			files: ['packages/discord.js/src/client/websocket/handlers/**/*.js'],
+			rules: { 'discordjs/named-exports': 0 },
+		},
+		{
 			files: ['packages/discord.js/typings/*.{d.ts,test-d.ts,d.mts,test-d.mts}'],
 			rules: {
+				'discordjs/readonly-arrays': 2,
+				'discordjs/readonly-collections': 2,
 				'id-length': 0,
 				'promise/prefer-await-to-then': 0,
 				'typescript/consistent-type-imports': 0,

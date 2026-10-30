@@ -57,9 +57,9 @@
   },
   "scripts": {
     "test": "pnpm run test:source-policies && pnpm run docs:test && pnpm run test:typescript",
-    "test:source-policies": "node --test scripts/checkSourcePolicies.test.mjs",
+    "test:source-policies": "node --test scripts/oxlint-plugin.test.mjs",
     "test:typescript": "tsc --noEmit && tsd",
-    "lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json scripts src typings && node ./scripts/checkSourcePolicies.mjs",
+    "lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json scripts src typings",
     "format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json scripts src typings --fix --fix-suggestions",
     "fmt": "pnpm run format",
     "docs": "docgen -i \"./src/*.js\" \"./src/**/*.js\" -c ./docs/index.json -r ../../ -o ./docs/docs.json && pnpm run docs:new",

@@ -3,7 +3,12 @@
 	"remoteCache": {
 		"enabled": true
 	},
-	"globalDependencies": ["oxfmt.config.ts", "oxlint.config.ts", "tsconfig.json"],
+	"globalDependencies": [
+		"oxfmt.config.ts",
+		"oxlint.config.ts",
+		"packages/discord.js/scripts/oxlint-plugin.mjs",
+		"tsconfig.json"
+	],
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
