@@ -2,6 +2,7 @@
 
 const { isJSONEncodable } = require('@discordjs/util');
 const snakeCase = require('lodash.snakecase');
+const { AuthorizingIntegrationOwners } = require('../structures/AuthorizingIntegrationOwners.js');
 
 /**
  * Transforms camel-cased keys into snake cased keys
@@ -48,9 +49,16 @@ function _transformAPIMessageInteractionMetadata(client, messageInteractionMetad
     id: messageInteractionMetadata.id,
     type: messageInteractionMetadata.type,
     user: client.users._add(messageInteractionMetadata.user),
-    authorizingIntegrationOwners: messageInteractionMetadata.authorizing_integration_owners,
+    authorizingIntegrationOwners: new AuthorizingIntegrationOwners(
+      client,
+      messageInteractionMetadata.authorizing_integration_owners,
+    ),
     originalResponseMessageId: messageInteractionMetadata.original_response_message_id ?? null,
     interactedMessageId: messageInteractionMetadata.interacted_message_id ?? null,
+    targetUser: messageInteractionMetadata.target_user
+      ? client.users._add(messageInteractionMetadata.target_user)
+      : null,
+    targetMessageId: messageInteractionMetadata.target_message_id ?? null,
     triggeringInteractionMetadata: messageInteractionMetadata.triggering_interaction_metadata
       ? _transformAPIMessageInteractionMetadata(client, messageInteractionMetadata.triggering_interaction_metadata)
       : null,
@@ -112,9 +120,28 @@ function _transformCollectibles(collectibles) {
   };
 }
 
+/**
+ * Transforms API invite target users job status
+ *
+ * @param {RESTGetAPIInviteTargetUsersJobStatusResult} job The job status to transform
+ * @returns {TargetUsersJobStatusForInvite}
+ * @ignore
+ */
+function _transformAPIInviteTargetUsersJobStatus(job) {
+  return {
+    status: job.status,
+    totalUsers: job.total_users,
+    processedUsers: job.processed_users,
+    createdAt: job.created_at ? new Date(job.created_at) : null,
+    completedAt: job.completed_at ? new Date(job.completed_at) : null,
+    errorMessage: job.error_message ?? null,
+  };
+}
+
 exports.toSnakeCase = toSnakeCase;
 exports._transformAPIAutoModerationAction = _transformAPIAutoModerationAction;
 exports._transformAPIMessageInteractionMetadata = _transformAPIMessageInteractionMetadata;
 exports._transformGuildScheduledEventRecurrenceRule = _transformGuildScheduledEventRecurrenceRule;
 exports._transformAPIIncidentsData = _transformAPIIncidentsData;
 exports._transformCollectibles = _transformCollectibles;
+exports._transformAPIInviteTargetUsersJobStatus = _transformAPIInviteTargetUsersJobStatus;

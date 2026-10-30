@@ -255,9 +255,13 @@ export class ExportAnalyzer {
 		importOrExportDeclaration: ts.ExportDeclaration | ts.ImportDeclaration | ts.ImportTypeNode,
 		moduleSpecifier: string,
 	): boolean {
-		const specifier: ts.Expression | ts.TypeNode | undefined = ts.isImportTypeNode(importOrExportDeclaration)
+		let specifier: ts.Expression | ts.TypeNode | undefined = ts.isImportTypeNode(importOrExportDeclaration)
 			? importOrExportDeclaration.argument
 			: importOrExportDeclaration.moduleSpecifier;
+		if (specifier && ts.isLiteralTypeNode(specifier)) {
+			specifier = specifier.literal;
+		}
+
 		const mode: ts.ModuleKind.CommonJS | ts.ModuleKind.ESNext | undefined =
 			specifier && ts.isStringLiteralLike(specifier)
 				? this._program.getModeForUsageLocation(importOrExportDeclaration.getSourceFile(), specifier)
@@ -476,7 +480,7 @@ export class ExportAnalyzer {
 			const followedSymbolNode: ts.ImportTypeNode | ts.Node | undefined =
 				followedSymbol.declarations && (followedSymbol.declarations[0] as ts.Node | undefined);
 
-			if (followedSymbolNode && followedSymbolNode.kind === ts.SyntaxKind.ImportType) {
+			if (followedSymbolNode?.kind === ts.SyntaxKind.ImportType) {
 				return this.fetchReferencedAstEntityFromImportTypeNode(
 					followedSymbolNode as ts.ImportTypeNode,
 					referringModuleIsExternal,

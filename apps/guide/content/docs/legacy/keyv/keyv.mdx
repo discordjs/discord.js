@@ -80,7 +80,7 @@ For a more detailed setup, check out the [Keyv readme](https://github.com/jaredw
 
 ## Usage
 
-Keyv exposes a familiar [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)-like API. However, it only has `set`, `get`, `delete`, and `clear` methods. Additionally, instead of immediately returning data, these methods return [Promises](../additional-info/async-await) that resolve with the data.
+Keyv exposes a familiar [Map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map)-like API. However, it only has `set`, `get`, `delete`, and `clear` methods. Additionally, instead of immediately returning data, these methods return [Promises](../additional-info/async-await) that resolve with the data.
 
 ```js
 (async () => {
@@ -105,7 +105,7 @@ Although Keyv can assist in any scenario where you need key-value data, we will 
 <Callout>
 	This section will still work with any provider supported by Keyv. We recommend PostgreSQL for larger applications.
 
-    Do note that "large" here should be interpreted as absolutely massive. Sqlite is used at scale by many companies and products you use every single day. The slight overhead should not be noticable for the application of a Discord bot at all unless you are dealing with super complicated queries or are using specific features that do not exist in sqlite.
+    Do note that "large" here should be interpreted as absolutely massive. Sqlite is used at scale by many companies and products you use every single day. The slight overhead should not be noticeable for the application of a Discord bot at all unless you are dealing with super complicated queries or are using specific features that do not exist in sqlite.
 
     You can find out if sqlite might be a good choice for your project (it very likely is) by reading [their own article](https://www.sqlite.org/whentouse.html) on the topic.
 

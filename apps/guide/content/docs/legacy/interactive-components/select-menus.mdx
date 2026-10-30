@@ -2,12 +2,16 @@
 title: Select Menus
 ---
 
-Select menus are one of the `MessageComponent` classes, which can be sent via messages or interaction responses.
+Select menus are interactive components which can be sent via messages, interaction responses, or in modals.
 
 <Callout>
 	This page is a follow-up to the [slash commands](../slash-commands/advanced-creation) section and [action
 	rows](../interactive-components/action-rows) page. Please carefully read those pages first so that you can understand
 	the methods used here.
+</Callout>
+<Callout>
+	This page is for using select menus in messages. For using [select menus in
+	modals](../interactions/modals#select-menu) visit the modal page
 </Callout>
 
 ## Building string select menus
@@ -22,13 +26,17 @@ const { StringSelectMenuBuilder, StringSelectMenuOptionBuilder, SlashCommandBuil
 module.exports = {
 	// data: new SlashCommandBuilder()...
 	async execute(interaction) {
-		const select = new StringSelectMenuBuilder()
+		const favoriteStarterSelect = new StringSelectMenuBuilder()
 			.setCustomId('starter')
 			.setPlaceholder('Make a selection!')
 			.addOptions(
+				// String select menu options
 				new StringSelectMenuOptionBuilder()
+					// Label displayed to user
 					.setLabel('Bulbasaur')
+					// Description of option
 					.setDescription('The dual-type Grass/Poison Seed Pokémon.')
+					// Value returned in select menu interaction
 					.setValue('bulbasaur'),
 				new StringSelectMenuOptionBuilder()
 					.setLabel('Charmander')
@@ -59,17 +67,21 @@ const {
 	StringSelectMenuOptionBuilder,
 	SlashCommandBuilder,
 } = require('discord.js');
-// [!code focus:30]
+// [!code focus:33]
 module.exports = {
 	// data: new SlashCommandBuilder()...
 	async execute(interaction) {
-		const select = new StringSelectMenuBuilder()
+		const favoriteStarterSelect = new StringSelectMenuBuilder()
 			.setCustomId('starter')
 			.setPlaceholder('Make a selection!')
 			.addOptions(
+				// String select menu options
 				new StringSelectMenuOptionBuilder()
+					// Label displayed to user
 					.setLabel('Bulbasaur')
+					// Description of option
 					.setDescription('The dual-type Grass/Poison Seed Pokémon.')
+					// Value returned in select menu interaction
 					.setValue('bulbasaur'),
 				new StringSelectMenuOptionBuilder()
 					.setLabel('Charmander')
@@ -81,9 +93,11 @@ module.exports = {
 					.setValue('squirtle'),
 			);
 
-		// [!code ++:6]
-		const row = new ActionRowBuilder().addComponents(select);
+		// [!code ++:8]
+		// Adding a string select menu to an action row
+		const row = new ActionRowBuilder().addComponents(favoriteStarterSelect);
 
+		// Reply with the action row
 		await interaction.reply({
 			content: 'Choose your starter!',
 			components: [row],
@@ -99,7 +113,7 @@ module.exports = {
 	components](../popular-topics/display-components) system.
 </Callout>
 
-### String select menu options
+## String select menu options
 
 String select menu options are custom-defined by the user, as shown in the example above. At a minimum, each option must have it's `label` and `value` defined. The label is shown to the user, while the value is included in the interaction sent to the bot.
 

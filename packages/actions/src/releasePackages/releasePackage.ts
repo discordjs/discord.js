@@ -1,9 +1,10 @@
 import process from 'node:process';
-import { setInterval, clearInterval } from 'node:timers';
 import { info, warning } from '@actions/core';
 import { getOctokit, context } from '@actions/github';
 import { $ } from 'bun';
 import type { ReleaseEntry } from './generateReleaseTree.js';
+
+const REGISTRY_CHECK_TIMEOUT_MS = 15 * 60 * 1_000;
 
 let octokit: ReturnType<typeof getOctokit> | undefined;
 
@@ -41,22 +42,23 @@ async function gitTagAndRelease(release: ReleaseEntry, dry: boolean) {
 	}
 }
 
-export async function releasePackage(release: ReleaseEntry, dev: boolean, dry: boolean) {
+export async function releasePackage(release: ReleaseEntry, dry: boolean, devTag?: string, doGitRelease = !devTag) {
 	// Sanity check against the registry first
 	if (await checkRegistry(release)) {
 		info(`${release.name}@${release.version} already published, skipping.`);
-		return;
+		return false;
 	}
 
 	if (dry) {
 		info(`[DRY] Releasing ${release.name}@${release.version}`);
 	} else {
-		await $`pnpm --filter=${release.name} publish --provenance --no-git-checks ${dev ? '--tag=dev' : ''}`;
+		await $`pnpm --filter=${release.name} publish --provenance --no-git-checks ${devTag ? `--tag=${devTag}` : ''}`;
 	}
 
-	if (!dev) await gitTagAndRelease(release, dry);
+	// && !devTag just to be sure
+	if (doGitRelease && !devTag) await gitTagAndRelease(release, dry);
 
-	if (dry) return;
+	if (dry) return true;
 
 	const before = performance.now();
 
@@ -69,18 +71,28 @@ export async function releasePackage(release: ReleaseEntry, dev: boolean, dry: b
 				return;
 			}
 
-			if (performance.now() > before + 5 * 60 * 1_000) {
+			if (performance.now() > before + REGISTRY_CHECK_TIMEOUT_MS) {
 				clearInterval(interval);
 				reject(new Error(`Release for ${release.name} failed.`));
 			}
 		}, 15_000);
 	});
 
-	if (dev) {
+	if (devTag) {
 		// Send and forget, deprecations are less important than releasing other dev versions and can be done manually
-		void $`pnpm exec npm-deprecate --name "*dev*" --message "This version is deprecated. Please use a newer version." --package ${release.name}`
+		void $`pnpm exec npm-deprecate --name "*${devTag}*" --message "This version is deprecated. Please use a newer version." --package ${release.name}`
 			.nothrow()
 			// eslint-disable-next-line promise/prefer-await-to-then
 			.then(() => {});
 	}
+
+	// Evil, but I can't think of a cleaner mechanism
+	if (release.name === 'create-discord-bot') {
+		await $`pnpm --filter=create-discord-bot run rename-to-app`;
+		// eslint-disable-next-line require-atomic-updates
+		release.name = 'create-discord-app';
+		await releasePackage(release, dry, devTag, false);
+	}
+
+	return true;
 }

@@ -1,7 +1,7 @@
 import { loader } from 'fumadocs-core/source';
 import { icons } from 'lucide-react';
 import { createElement } from 'react';
-import { docs } from '../../.source';
+import { docs } from '../../.source/server';
 
 export const source = loader({
 	icon(icon) {
@@ -15,6 +15,6 @@ export const source = loader({
 
 		return undefined;
 	},
-	baseUrl: '/guide/',
+	baseUrl: '/',
 	source: docs.toFumadocsSource(),
 });

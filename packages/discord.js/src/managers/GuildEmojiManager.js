@@ -251,8 +251,8 @@ class GuildEmojiManager extends CachedManager {
 
     const { me } = this.guild.members;
     if (!me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
-    if (!me.permissions.has(PermissionFlagsBits.ManageGuildExpressions)) {
-      throw new DiscordjsError(ErrorCodes.MissingManageGuildExpressionsPermission, this.guild);
+    if (!me.permissions.any(PermissionFlagsBits.CreateGuildExpressions | PermissionFlagsBits.ManageGuildExpressions)) {
+      throw new DiscordjsError(ErrorCodes.MissingGuildExpressionsPermission, this.guild);
     }
 
     const data = await this.client.rest.get(Routes.guildEmoji(this.guild.id, resolvedEmoji.id));

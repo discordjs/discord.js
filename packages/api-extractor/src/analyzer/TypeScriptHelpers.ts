@@ -85,7 +85,7 @@ export class TypeScriptHelpers {
 				firstDeclaration,
 				ts.SyntaxKind.ModuleDeclaration,
 			);
-			if (highestModuleDeclaration && highestModuleDeclaration.name.getText().trim() === 'global') {
+			if (highestModuleDeclaration?.name.getText().trim() === 'global') {
 				return true;
 			}
 
@@ -176,7 +176,7 @@ export class TypeScriptHelpers {
 			}
 
 			// If we ran out of items, or if the kind doesn't match, then fail
-			if (!current || current.kind !== parentKind) {
+			if (current?.kind !== parentKind) {
 				return undefined;
 			}
 		}

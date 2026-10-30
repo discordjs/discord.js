@@ -1,6 +1,6 @@
 import { ComponentType, TextInputStyle, type APIModalInteractionResponseCallbackData } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import { ModalBuilder, TextInputBuilder, LabelBuilder } from '../../src/index.js';
+import { ModalBuilder, TextInputBuilder, LabelBuilder, TextDisplayBuilder } from '../../src/index.js';
 
 const modal = () => new ModalBuilder();
 
@@ -9,19 +9,27 @@ const label = () =>
 		.setLabel('label')
 		.setTextInputComponent(new TextInputBuilder().setCustomId('text').setStyle(TextInputStyle.Short));
 
+const textDisplay = () => new TextDisplayBuilder().setContent('text');
+
 describe('Modals', () => {
 	test('GIVEN valid fields THEN builder does not throw', () => {
 		expect(() =>
-			modal().setTitle('test').setCustomId('foobar').setLabelComponents(label()).toJSON(),
+			modal().setTitle('test').setCustomId('foobar').addLabelComponents(label()).toJSON(),
 		).not.toThrowError();
+
 		expect(() =>
-			modal().setTitle('test').setCustomId('foobar').setLabelComponents(label()).toJSON(),
+			modal().setTitle('test').setCustomId('foobar').addLabelComponents(label()).toJSON(),
+		).not.toThrowError();
+
+		expect(() =>
+			modal().setTitle('test').setCustomId('foobar').addTextDisplayComponents(textDisplay()).toJSON(),
 		).not.toThrowError();
 	});
 
 	test('GIVEN invalid fields THEN builder does throw', () => {
 		expect(() => modal().setTitle('test').setCustomId('foobar').toJSON()).toThrowError();
-		// @ts-expect-error: CustomId is invalid
+
+		// @ts-expect-error: Custom id is invalid
 		expect(() => modal().setTitle('test').setCustomId(42).toJSON()).toThrowError();
 	});
 
@@ -42,14 +50,8 @@ describe('Modals', () => {
 					},
 				},
 				{
-					type: ComponentType.Label,
-					label: 'label',
-					description: 'description',
-					component: {
-						type: ComponentType.TextInput,
-						style: TextInputStyle.Paragraph,
-						custom_id: 'custom id',
-					},
+					type: ComponentType.TextDisplay,
+					content: 'yooooooooo',
 				},
 			],
 		} satisfies APIModalInteractionResponseCallbackData;
@@ -60,19 +62,14 @@ describe('Modals', () => {
 			modal()
 				.setTitle(modalData.title)
 				.setCustomId('custom id')
-				.setLabelComponents(
+				.addLabelComponents(
 					new LabelBuilder()
 						.setId(33)
 						.setLabel('label')
 						.setDescription('description')
 						.setTextInputComponent(new TextInputBuilder().setCustomId('custom id').setStyle(TextInputStyle.Paragraph)),
 				)
-				.addLabelComponents(
-					new LabelBuilder()
-						.setLabel('label')
-						.setDescription('description')
-						.setTextInputComponent(new TextInputBuilder().setCustomId('custom id').setStyle(TextInputStyle.Paragraph)),
-				)
+				.addTextDisplayComponents((textDisplay) => textDisplay.setContent('yooooooooo'))
 				.toJSON(),
 		).toEqual(modalData);
 	});

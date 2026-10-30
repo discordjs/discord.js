@@ -1,4 +1,4 @@
-import type { JSONEncodable } from '@discordjs/util';
+import type { FileBodyEncodable, FileBodyEncodableResult, JSONEncodable, RawFile } from '@discordjs/util';
 import type {
 	APIActionRowComponent,
 	APIAllowedMentions,
@@ -17,6 +17,7 @@ import type {
 	APISeparatorComponent,
 	APITextDisplayComponent,
 	APIMessageTopLevelComponent,
+	APIMessageSharedClientTheme,
 } from 'discord-api-types/v10';
 import { ActionRowBuilder } from '../components/ActionRow.js';
 import { ComponentBuilder } from '../components/Component.js';
@@ -32,31 +33,34 @@ import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
 import { resolveBuilder } from '../util/resolveBuilder.js';
 import { validate } from '../util/validation.js';
 import { AllowedMentionsBuilder } from './AllowedMentions.js';
-import { messagePredicate } from './Assertions.js';
+import { fileBodyMessagePredicate, messagePredicate } from './Assertions.js';
 import { AttachmentBuilder } from './Attachment.js';
 import { MessageReferenceBuilder } from './MessageReference.js';
+import { SharedClientThemeBuilder } from './SharedClientTheme.js';
 import { EmbedBuilder } from './embed/Embed.js';
 import { PollBuilder } from './poll/Poll.js';
 
-export interface MessageBuilderData
-	extends Partial<
-		Omit<
-			RESTPostAPIChannelMessageJSONBody,
-			'allowed_mentions' | 'attachments' | 'components' | 'embeds' | 'message_reference' | 'poll'
-		>
-	> {
+export interface MessageBuilderData extends Partial<
+	Omit<
+		RESTPostAPIChannelMessageJSONBody,
+		'allowed_mentions' | 'attachments' | 'components' | 'embeds' | 'message_reference' | 'poll' | 'shared_client_theme'
+	>
+> {
 	allowed_mentions?: AllowedMentionsBuilder;
 	attachments: AttachmentBuilder[];
 	components: MessageTopLevelComponentBuilder[];
 	embeds: EmbedBuilder[];
 	message_reference?: MessageReferenceBuilder;
 	poll?: PollBuilder;
+	shared_client_theme?: SharedClientThemeBuilder;
 }
 
 /**
  * A builder that creates API-compatible JSON data for messages.
  */
-export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJSONBody> {
+export class MessageBuilder
+	implements JSONEncodable<RESTPostAPIChannelMessageJSONBody>, FileBodyEncodable<RESTPostAPIChannelMessageJSONBody>
+{
 	/**
 	 * The API data associated with this message.
 	 */
@@ -89,7 +93,16 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	 * @param data - The API data to create this message with
 	 */
 	public constructor(data: Partial<RESTPostAPIChannelMessageJSONBody> = {}) {
-		const { attachments = [], embeds = [], components = [], message_reference, poll, allowed_mentions, ...rest } = data;
+		const {
+			attachments = [],
+			embeds = [],
+			components = [],
+			message_reference,
+			poll,
+			allowed_mentions,
+			shared_client_theme,
+			...rest
+		} = data;
 
 		this.data = {
 			...structuredClone(rest),
@@ -99,6 +112,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 			poll: poll && new PollBuilder(poll),
 			components: components.map((component) => createComponentBuilder(component)),
 			message_reference: message_reference && new MessageReferenceBuilder(message_reference),
+			shared_client_theme: shared_client_theme && new SharedClientThemeBuilder(shared_client_theme),
 		};
 	}
 
@@ -238,7 +252,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 		allowedMentions:
 			| AllowedMentionsBuilder
 			| APIAllowedMentions
-			| ((builder: AllowedMentionsBuilder) => AllowedMentionsBuilder),
+			| ((builder: AllowedMentionsBuilder) => AllowedMentionsBuilder) = new AllowedMentionsBuilder(),
 	): this {
 		this.data.allowed_mentions = resolveBuilder(allowedMentions, AllowedMentionsBuilder);
 		return this;
@@ -636,6 +650,39 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	}
 
 	/**
+	 * Sets the shared client theme for this message.
+	 *
+	 * @param theme - The shared client theme to set
+	 */
+	public setSharedClientTheme(
+		theme:
+			| APIMessageSharedClientTheme
+			| SharedClientThemeBuilder
+			| ((builder: SharedClientThemeBuilder) => SharedClientThemeBuilder),
+	): this {
+		this.data.shared_client_theme = resolveBuilder(theme, SharedClientThemeBuilder);
+		return this;
+	}
+
+	/**
+	 * Updates the shared client theme for this message (and creates it if it doesn't exist).
+	 *
+	 * @param updater - The function to update the shared client theme with
+	 */
+	public updateSharedClientTheme(updater: (builder: SharedClientThemeBuilder) => void): this {
+		updater((this.data.shared_client_theme ??= new SharedClientThemeBuilder()));
+		return this;
+	}
+
+	/**
+	 * Clears the shared client theme for this message.
+	 */
+	public clearSharedClientTheme(): this {
+		this.data.shared_client_theme = undefined;
+		return this;
+	}
+
+	/**
 	 * Serializes this builder to API-compatible JSON data.
 	 *
 	 * Note that by disabling validation, there is no guarantee that the resulting object will be valid.
@@ -643,7 +690,8 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	 * @param validationOverride - Force validation to run/not run regardless of your global preference
 	 */
 	public toJSON(validationOverride?: boolean): RESTPostAPIChannelMessageJSONBody {
-		const { poll, allowed_mentions, attachments, embeds, components, message_reference, ...rest } = this.data;
+		const { poll, allowed_mentions, attachments, embeds, components, message_reference, shared_client_theme, ...rest } =
+			this.data;
 
 		const data = {
 			...structuredClone(rest),
@@ -655,10 +703,36 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 			// Here, the messagePredicate does specific constraints rather than using the componentPredicate
 			components: components.map((component) => component.toJSON(validationOverride)),
 			message_reference: message_reference?.toJSON(false),
+			shared_client_theme: shared_client_theme?.toJSON(false),
 		};
 
 		validate(messagePredicate, data, validationOverride);
 
 		return data as RESTPostAPIChannelMessageJSONBody;
+	}
+
+	/**
+	 * Serializes this builder to both JSON body and file data for multipart/form-data requests.
+	 *
+	 * @param validationOverride - Force validation to run/not run regardless of your global preference
+	 * @remarks
+	 * This method extracts file data from attachments that have files set via {@link AttachmentBuilder.setFileData}.
+	 * The returned body includes attachment metadata, while files contains the binary data for upload.
+	 */
+	public toFileBody(validationOverride?: boolean): FileBodyEncodableResult<RESTPostAPIChannelMessageJSONBody> {
+		const body = this.toJSON(false);
+
+		const files: RawFile[] = [];
+		for (const attachment of this.data.attachments) {
+			const rawFile = attachment.getRawFile();
+			if (rawFile !== undefined) {
+				files.push(rawFile as RawFile);
+			}
+		}
+
+		const combined = { body, files };
+		validate(fileBodyMessagePredicate, combined, validationOverride);
+
+		return combined as FileBodyEncodableResult<RESTPostAPIChannelMessageJSONBody>;
 	}
 }

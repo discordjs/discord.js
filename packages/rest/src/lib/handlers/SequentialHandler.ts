@@ -247,7 +247,7 @@ export class SequentialHandler implements IHandler {
 			// Let library users know they have hit a rate limit
 			this.manager.emit(RESTEvents.RateLimited, rateLimitData);
 			// Determine whether a RateLimitError should be thrown
-			await onRateLimit(this.manager, rateLimitData);
+			await onRateLimit(this.manager, rateLimitData, requestData);
 
 			// When not erroring, emit debug for what is happening
 			if (isGlobal) {
@@ -300,21 +300,26 @@ export class SequentialHandler implements IHandler {
 		// Amount of time in milliseconds until we should retry if rate limited (globally or otherwise)
 		if (retry) retryAfter = Number(retry) * 1_000 + offset;
 
+		// Rate limits are tracked per token, but Discord reports the same bucket hash for every token on a given route,
+		// so requests made with a custom token need the token in their hash to avoid sharing a handler
+		const authPartition = typeof requestData.auth === 'string' ? `:${requestData.auth}` : '';
+		const partitionedHash = hash && `${hash}${authPartition}`;
+
 		// Handle buckets via the hash header retroactively
-		if (hash && hash !== this.hash) {
+		if (partitionedHash && partitionedHash !== this.hash) {
 			// Let library users know when rate limit buckets have been updated
-			this.debug(['Received bucket hash update', `  Old Hash  : ${this.hash}`, `  New Hash  : ${hash}`].join('\n'));
-			// This queue will eventually be eliminated via attrition
-			this.manager.hashes.set(
-				`${method}:${routeId.bucketRoute}${typeof requestData.auth === 'string' ? `:${requestData.auth}` : ''}`,
-				{ value: hash, lastAccess: Date.now() },
+			this.debug(
+				['Received bucket hash update', `  Old Hash  : ${this.hash}`, `  New Hash  : ${partitionedHash}`].join('\n'),
 			);
-		} else if (hash) {
+			// This queue will eventually be eliminated via attrition
+			this.manager.hashes.set(`${method}:${routeId.bucketRoute}${authPartition}`, {
+				value: partitionedHash,
+				lastAccess: Date.now(),
+			});
+		} else if (partitionedHash) {
 			// Handle the case where hash value doesn't change
 			// Fetch the hash data from the manager
-			const hashData = this.manager.hashes.get(
-				`${method}:${routeId.bucketRoute}${typeof requestData.auth === 'string' ? `:${requestData.auth}` : ''}`,
-			);
+			const hashData = this.manager.hashes.get(`${method}:${routeId.bucketRoute}${authPartition}`);
 
 			// When fetched, update the last access of the hash
 			if (hashData) {
@@ -363,19 +368,23 @@ export class SequentialHandler implements IHandler {
 				timeout = this.getTimeToReset(routeId);
 			}
 
-			await onRateLimit(this.manager, {
-				global: isGlobal,
-				method,
-				url,
-				route: routeId.bucketRoute,
-				majorParameter: this.majorParameter,
-				hash: this.hash,
-				limit,
-				timeToReset: timeout,
-				retryAfter,
-				sublimitTimeout: sublimitTimeout ?? 0,
-				scope,
-			});
+			await onRateLimit(
+				this.manager,
+				{
+					global: isGlobal,
+					method,
+					url,
+					route: routeId.bucketRoute,
+					majorParameter: this.majorParameter,
+					hash: this.hash,
+					limit,
+					timeToReset: timeout,
+					retryAfter,
+					sublimitTimeout: sublimitTimeout ?? 0,
+					scope,
+				},
+				requestData,
+			);
 
 			this.debug(
 				[
@@ -420,7 +429,7 @@ export class SequentialHandler implements IHandler {
 			// Since this is not a server side issue, the next request should pass, so we don't bump the retries counter
 			return this.runRequest(routeId, url, options, requestData, retries);
 		} else {
-			const handled = await handleErrors(this.manager, res, method, url, requestData, retries);
+			const handled = await handleErrors(this.manager, res, method, url, requestData, retries, routeId);
 			if (handled === null) {
 				// eslint-disable-next-line no-param-reassign
 				return this.runRequest(routeId, url, options, requestData, ++retries);

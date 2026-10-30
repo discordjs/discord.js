@@ -269,6 +269,15 @@ export class DtsRollupGenerator {
 				break;
 
 			case ts.SyntaxKind.ExportKeyword:
+				if (DtsEmitHelpers.isExportKeywordInNamespaceExportDeclaration(span.node)) {
+					// This is an export declaration inside a namespace - preserve the export keyword
+					break;
+				}
+
+				// Otherwise, delete the export keyword -- we will re-add it below
+				span.modification.skipAll();
+				break;
+
 			case ts.SyntaxKind.DefaultKeyword:
 			case ts.SyntaxKind.DeclareKeyword:
 				// Delete any explicit "export" or "declare" keywords -- we will re-add them below
@@ -294,7 +303,7 @@ export class DtsRollupGenerator {
 					replacedModifiers = 'export ' + replacedModifiers;
 				}
 
-				if (previousSpan && previousSpan.kind === ts.SyntaxKind.SyntaxList) {
+				if (previousSpan?.kind === ts.SyntaxKind.SyntaxList) {
 					// If there is a previous span of type SyntaxList, then apply it before any other modifiers
 					// (e.g. "abstract") that appear there.
 					previousSpan.modification.prefix = replacedModifiers + previousSpan.modification.prefix;
@@ -426,14 +435,18 @@ export class DtsRollupGenerator {
 							modification.suffix = nodeToTrim.children[nodeToTrim.children.length - 1]!.separator;
 						}
 
-						if (
-							nodeToTrim.nextSibling && // If the thing we are trimming is followed by a comma, then trim the comma also.
-							// An example would be an enum member.
-							nodeToTrim.nextSibling.kind === ts.SyntaxKind.CommaToken
-						) {
+						// If the thing we are trimming is followed by a comma, then trim the comma also.
+						// An example would be an enum member.
+						if (nodeToTrim.nextSibling?.kind === ts.SyntaxKind.CommaToken) {
 							// Keep its separator since it often has useful whitespace
 							modification.suffix += nodeToTrim.nextSibling.separator;
 							nodeToTrim.nextSibling.modification.skipAll();
+						}
+
+						if (modification.suffix.trim().length === 0 && modification.prefix.trim().length === 0) {
+							// In case of blank prefix and suffix, remove indentation to avoid blank lines in place of removed members
+							modification.suffix = '';
+							modification.prefix = '';
 						}
 
 						trimmed = true;

@@ -16,7 +16,9 @@ pids
 .env*.local
 
 # Dist
+.open-next
 .next
+.wrangler
 .source
 
 # Miscellaneous

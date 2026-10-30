@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { describe, test, expect } from 'vitest';
 import { findPipeline, StreamType, TransformerType, type Edge } from '../src/audio/TransformerGraph';
 
@@ -10,12 +9,12 @@ const noConstraint = () => true;
  * @param pipeline - The pipeline of edges returned by findPipeline(...)
  */
 function reducePath(pipeline: Edge[]) {
-	const streams = [pipeline[0].from.type];
+	const streams = [pipeline[0]!.from.type];
 	for (const edge of pipeline.slice(1)) {
 		streams.push(edge.from.type);
 	}
 
-	streams.push(pipeline[pipeline.length - 1].to.type);
+	streams.push(pipeline[pipeline.length - 1]!.to.type);
 	return streams;
 }
 

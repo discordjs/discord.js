@@ -3,12 +3,15 @@
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
+const { GatewayRateLimitError } = require('@discordjs/util');
+const { WebSocketShardEvents } = require('@discordjs/ws');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes, GatewayOpcodes } = require('discord-api-types/v10');
+const { Routes, GatewayOpcodes, GatewayDispatchEvents } = require('discord-api-types/v10');
 const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 const { BaseGuildVoiceChannel } = require('../structures/BaseGuildVoiceChannel.js');
 const { GuildMember } = require('../structures/GuildMember.js');
 const { Role } = require('../structures/Role.js');
+const { resolveImage } = require('../util/DataResolver.js');
 const { Events } = require('../util/Events.js');
 const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField.js');
 const { Partials } = require('../util/Partials.js');
@@ -245,24 +248,27 @@ class GuildMemberManager extends CachedManager {
     const query = initialQuery ?? (users ? undefined : '');
 
     return new Promise((resolve, reject) => {
-      this.guild.client.ws.send(this.guild.shardId, {
-        op: GatewayOpcodes.RequestGuildMembers,
-        // eslint-disable-next-line id-length
-        d: {
-          guild_id: this.guild.id,
-          presences,
-          user_ids: users,
-          query,
-          nonce,
-          limit,
-        },
-      });
       const fetchedMembers = new Collection();
       let index = 0;
+
+      const cleanup = () => {
+        /* eslint-disable no-use-before-define */
+        clearTimeout(timeout);
+
+        this.client.ws.removeListener(WebSocketShardEvents.Dispatch, rateLimitHandler);
+        this.client.removeListener(Events.GuildMembersChunk, handler);
+        this.client.decrementMaxListeners();
+        /* eslint-enable no-use-before-define */
+      };
+
+      const timeout = setTimeout(() => {
+        cleanup();
+        reject(new DiscordjsError(ErrorCodes.GuildMembersTimeout));
+      }, time).unref();
+
       const handler = (members, _, chunk) => {
         if (chunk.nonce !== nonce) return;
 
-        // eslint-disable-next-line no-use-before-define
         timeout.refresh();
         index++;
         for (const member of members.values()) {
@@ -270,21 +276,37 @@ class GuildMemberManager extends CachedManager {
         }
 
         if (members.size < 1_000 || (limit && fetchedMembers.size >= limit) || index === chunk.count) {
-          // eslint-disable-next-line no-use-before-define
-          clearTimeout(timeout);
-          this.client.removeListener(Events.GuildMembersChunk, handler);
-          this.client.decrementMaxListeners();
+          cleanup();
           resolve(users && !Array.isArray(users) && fetchedMembers.size ? fetchedMembers.first() : fetchedMembers);
         }
       };
 
-      const timeout = setTimeout(() => {
-        this.client.removeListener(Events.GuildMembersChunk, handler);
-        this.client.decrementMaxListeners();
-        reject(new DiscordjsError(ErrorCodes.GuildMembersTimeout));
-      }, time).unref();
+      const requestData = {
+        guild_id: this.guild.id,
+        presences,
+        user_ids: users,
+        query,
+        nonce,
+        limit,
+      };
+
+      const rateLimitHandler = payload => {
+        if (payload.t === GatewayDispatchEvents.RateLimited && payload.d.meta.nonce === nonce) {
+          cleanup();
+          reject(new GatewayRateLimitError(payload.d, requestData));
+        }
+      };
+
+      this.client.ws.on(WebSocketShardEvents.Dispatch, rateLimitHandler);
+
       this.client.incrementMaxListeners();
       this.client.on(Events.GuildMembersChunk, handler);
+
+      this.guild.client.ws.send(this.guild.shardId, {
+        op: GatewayOpcodes.RequestGuildMembers,
+        // eslint-disable-next-line id-length
+        d: requestData,
+      });
     });
   }
 
@@ -358,8 +380,7 @@ class GuildMemberManager extends CachedManager {
    */
 
   /**
-   * Edits a member of the guild.
-   * <info>The user must be a member of the guild</info>
+   * Edits a member of a guild.
    *
    * @param {UserResolvable} user The member to edit
    * @param {GuildMemberEditOptions} options The options to provide
@@ -396,18 +417,40 @@ class GuildMemberManager extends CachedManager {
       options.flags = GuildMemberFlagsBitField.resolve(options.flags);
     }
 
-    let endpoint;
-    if (id === this.client.user.id) {
-      const keys = Object.keys(options);
-      if (keys.length === 1 && keys[0] === 'nick') endpoint = Routes.guildMember(this.guild.id);
-      else endpoint = Routes.guildMember(this.guild.id, id);
-    } else {
-      endpoint = Routes.guildMember(this.guild.id, id);
-    }
-
-    const data = await this.client.rest.patch(endpoint, { body: options, reason });
-
+    const data = await this.client.rest.patch(Routes.guildMember(this.guild.id, id), { body: options, reason });
     const clone = this.cache.get(id)?._clone();
+    clone?._patch(data);
+    return clone ?? this._add(data, false);
+  }
+
+  /**
+   * The data for editing the current application's guild member.
+   *
+   * @typedef {Object} GuildMemberEditMeOptions
+   * @property {?string} [nick] The nickname to set
+   * @property {?(BufferResolvable|Base64Resolvable)} [banner] The banner to set
+   * @property {?(BufferResolvable|Base64Resolvable)} [avatar] The avatar to set
+   * @property {?string} [bio] The bio to set
+   * @property {string} [reason] The reason to use
+   */
+
+  /**
+   * Edits the current application's guild member in a guild.
+   *
+   * @param {GuildMemberEditMeOptions} options The options to provide
+   * @returns {Promise<GuildMember>}
+   */
+  async editMe({ reason, ...options }) {
+    const data = await this.client.rest.patch(Routes.guildMember(this.guild.id, '@me'), {
+      body: {
+        ...options,
+        banner: options.banner && (await resolveImage(options.banner)),
+        avatar: options.avatar && (await resolveImage(options.avatar)),
+      },
+      reason,
+    });
+
+    const clone = this.me?._clone();
     clone?._patch(data);
     return clone ?? this._add(data, false);
   }

@@ -74,7 +74,7 @@ export class ChatInputCommandSubcommandGroupBuilder
 		const data = {
 			...(structuredClone(rest) as Omit<APIApplicationCommandSubcommandGroupOption, 'type'>),
 			type: ApplicationCommandOptionType.SubcommandGroup as const,
-			options: options?.map((option) => option.toJSON(validationOverride)) ?? [],
+			options: options?.map((option) => option.toJSON(false)) ?? [],
 		};
 
 		validate(chatInputCommandSubcommandGroupPredicate, data, validationOverride);
@@ -107,7 +107,7 @@ export class ChatInputCommandSubcommandBuilder
 		const data = {
 			...(structuredClone(rest) as Omit<APIApplicationCommandSubcommandOption, 'type'>),
 			type: ApplicationCommandOptionType.Subcommand as const,
-			options: options?.map((option) => option.toJSON(validationOverride)) ?? [],
+			options: options?.map((option) => option.toJSON(false)) ?? [],
 		};
 
 		validate(chatInputCommandSubcommandPredicate, data, validationOverride);

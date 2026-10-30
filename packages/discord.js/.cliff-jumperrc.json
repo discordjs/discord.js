@@ -1,4 +1,5 @@
 {
+  "$schema": "./node_modules/@favware/cliff-jumper/assets/cliff-jumper.schema.json",
   "name": "discord.js",
   "packagePath": "packages/discord.js",
   "tagTemplate": "{{new-version}}",

@@ -84,13 +84,23 @@ export class ApiItemMetadata {
 	public docCommentEnhancerVisitorState: VisitorState = VisitorState.Unvisited;
 
 	public constructor(options: IApiItemMetadataOptions) {
-		this.declaredReleaseTag = options.declaredReleaseTag;
-		this.effectiveReleaseTag = options.effectiveReleaseTag;
-		this.releaseTagSameAsParent = options.releaseTagSameAsParent;
-		this.isEventProperty = options.isEventProperty;
-		this.isOverride = options.isOverride;
-		this.isSealed = options.isSealed;
-		this.isVirtual = options.isVirtual;
-		this.isPreapproved = options.isPreapproved;
+		const {
+			declaredReleaseTag,
+			effectiveReleaseTag,
+			releaseTagSameAsParent,
+			isEventProperty,
+			isOverride,
+			isSealed,
+			isVirtual,
+			isPreapproved,
+		} = options;
+		this.declaredReleaseTag = declaredReleaseTag;
+		this.effectiveReleaseTag = effectiveReleaseTag;
+		this.releaseTagSameAsParent = releaseTagSameAsParent;
+		this.isEventProperty = isEventProperty;
+		this.isOverride = isOverride;
+		this.isSealed = isSealed;
+		this.isVirtual = isVirtual;
+		this.isPreapproved = isPreapproved;
 	}
 }

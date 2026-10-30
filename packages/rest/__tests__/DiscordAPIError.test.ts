@@ -1,4 +1,3 @@
-import { URLSearchParams } from 'node:url';
 import { test, expect } from 'vitest';
 import { DiscordAPIError } from '../src/index.js';
 

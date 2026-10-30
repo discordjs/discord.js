@@ -6,6 +6,7 @@ export default createTsupConfig({
 		'src/formatTag/index.ts',
 		'src/releasePackages/index.ts',
 		'src/uploadDocumentation/index.ts',
+		'src/uploadReadmeFiles/index.ts',
 		'src/uploadSearchIndices/index.ts',
 		'src/uploadSplitDocumentation/index.ts',
 	],

@@ -88,19 +88,29 @@ export class MessageRouter {
 	public readonly showDiagnostics: boolean;
 
 	public constructor(options: IMessageRouterOptions) {
-		this._workingPackageFolder = options.workingPackageFolder;
-		this._messageCallback = options.messageCallback;
+		const {
+			workingPackageFolder,
+			messageCallback,
+			sourceMapper,
+			tsdocConfiguration,
+			showVerboseMessages,
+			showDiagnostics,
+			messagesConfig,
+		} = options;
+
+		this._workingPackageFolder = workingPackageFolder;
+		this._messageCallback = messageCallback;
 
 		this._messages = [];
 		this._associatedMessagesForAstDeclaration = new Map<AstDeclaration, ExtractorMessage[]>();
-		this._sourceMapper = options.sourceMapper;
-		this._tsdocConfiguration = options.tsdocConfiguration;
+		this._sourceMapper = sourceMapper;
+		this._tsdocConfiguration = tsdocConfiguration;
 
 		// showDiagnostics implies showVerboseMessages
-		this.showVerboseMessages = options.showVerboseMessages || options.showDiagnostics;
-		this.showDiagnostics = options.showDiagnostics;
+		this.showVerboseMessages = showVerboseMessages || showDiagnostics;
+		this.showDiagnostics = showDiagnostics;
 
-		this._applyMessagesConfig(options.messagesConfig);
+		this._applyMessagesConfig(messagesConfig);
 	}
 
 	/**
@@ -421,7 +431,7 @@ export class MessageRouter {
 
 	/**
 	 * This returns all remaining messages that were flagged with `addToApiReportFile`, but which were not
-	 * retreieved using `fetchAssociatedMessagesForReviewFile()`.
+	 * retrieved using `fetchAssociatedMessagesForReviewFile()`.
 	 */
 	public fetchUnassociatedMessagesForReviewFile(): ExtractorMessage[] {
 		const messagesForApiReportFile: ExtractorMessage[] = [];

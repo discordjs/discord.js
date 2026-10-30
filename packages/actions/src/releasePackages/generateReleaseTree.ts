@@ -1,8 +1,7 @@
+import process from 'node:process';
 import { info, warning } from '@actions/core';
 import type { PackageJSON, PackumentVersion } from '@npm/types';
 import { $, file, write } from 'bun';
-
-const nonNodePackages = new Set(['@discordjs/proxy-container']);
 
 interface pnpmTreeDependency {
 	from: string;
@@ -26,9 +25,9 @@ export interface ReleaseEntry {
 	version: string;
 }
 
-async function fetchDevVersion(pkg: string) {
+async function fetchDevVersion(pkg: string, tag: string) {
 	try {
-		const res = await fetch(`https://registry.npmjs.org/${pkg}/dev`);
+		const res = await fetch(`https://registry.npmjs.org/${pkg}/${tag}`);
 		if (!res.ok) return null;
 		const packument = (await res.json()) as PackumentVersion;
 		return packument.version;
@@ -37,7 +36,7 @@ async function fetchDevVersion(pkg: string) {
 	}
 }
 
-async function getReleaseEntries(dev: boolean, dry: boolean) {
+async function getReleaseEntries(dry: boolean, devTag?: string) {
 	const releaseEntries: ReleaseEntry[] = [];
 	const packageList: pnpmTree[] =
 		await $`pnpm list --recursive --only-projects --filter {packages/\*} --prod --json`.json();
@@ -45,20 +44,29 @@ async function getReleaseEntries(dev: boolean, dry: boolean) {
 	const commitHash = (await $`git rev-parse --short HEAD`.text()).trim();
 	const timestamp = Math.round(Date.now() / 1_000);
 
+	// We intentionally pin workspace dependencies in package.json for dev releases below,
+	// which causes pnpm's dependency validations to fail since the lockfile gets out of sync
+	if (devTag && !dry) process.env.pnpm_config_verify_deps_before_run = 'false';
+
 	for (const pkg of packageList) {
 		// Don't release private packages ever (npm will error anyways)
 		if (pkg.private) continue;
 		// Just in case
 		if (!pkg.version || !pkg.name) continue;
-		if (nonNodePackages.has(pkg.name)) continue;
 
 		const release: ReleaseEntry = {
 			name: pkg.name,
 			version: pkg.version,
 		};
 
-		if (dev) {
-			const devVersion = await fetchDevVersion(pkg.name);
+		if (devTag) {
+			// Replace workspace dependencies with * to pin to associated dev versions
+			if (!dry) {
+				const pkgJsonString = await file(`${pkg.path}/package.json`).text();
+				await write(`${pkg.path}/package.json`, pkgJsonString.replaceAll(/workspace:[\^~]/g, 'workspace:*'));
+			}
+
+			const devVersion = await fetchDevVersion(pkg.name, devTag);
 			if (devVersion?.endsWith(commitHash)) {
 				// Write the currently released dev version so when pnpm publish runs on dependents they depend on the dev versions
 				if (dry) {
@@ -72,9 +80,9 @@ async function getReleaseEntries(dev: boolean, dry: boolean) {
 				release.version = devVersion;
 			} else if (dry) {
 				info(`[DRY] Bumping ${pkg.name} via git-cliff.`);
-				release.version = `${pkg.version}.DRY-dev.${timestamp}-${commitHash}`;
+				release.version = `${pkg.version}.DRY-${devTag}.${timestamp}-${commitHash}`;
 			} else {
-				await $`pnpm --filter=${pkg.name} run release --preid "dev.${timestamp}-${commitHash}" --skip-changelog`;
+				await $`pnpm --filter=${pkg.name} run release --preid "${devTag}.${timestamp}-${commitHash}" --skip-changelog`;
 				// Read again instead of parsing the output to be sure we're matching when checking against npm
 				const pkgJson = (await file(`${pkg.path}/package.json`).json()) as PackageJSON;
 				release.version = pkgJson.version;
@@ -129,8 +137,8 @@ async function getReleaseEntries(dev: boolean, dry: boolean) {
 	return releaseEntries;
 }
 
-export async function generateReleaseTree(dev: boolean, dry: boolean, packageName?: string, exclude?: string[]) {
-	let releaseEntries = await getReleaseEntries(dev, dry);
+export async function generateReleaseTree(dry: boolean, devTag?: string, packageName?: string, exclude?: string[]) {
+	let releaseEntries = await getReleaseEntries(dry, devTag);
 	// Try to early return if the package doesn't have deps
 	if (packageName && packageName !== 'all') {
 		const releaseEntry = releaseEntries.find((entry) => entry.name === packageName);

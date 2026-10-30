@@ -6,11 +6,10 @@ import { Channel } from './Channel.js';
 import { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
 import { GuildChannelMixin } from './mixins/GuildChannelMixin.js';
 
-export interface CategoryChannel<Omitted extends keyof APIGuildCategoryChannel | '' = ''>
-	extends MixinTypes<
-		Channel<ChannelType.GuildCategory>,
-		[ChannelPermissionMixin<ChannelType.GuildCategory>, GuildChannelMixin<ChannelType.GuildCategory>]
-	> {}
+export interface CategoryChannel<Omitted extends keyof APIGuildCategoryChannel | '' = ''> extends MixinTypes<
+	Channel<ChannelType.GuildCategory>,
+	[ChannelPermissionMixin<ChannelType.GuildCategory>, GuildChannelMixin<ChannelType.GuildCategory>]
+> {}
 
 /**
  * Sample Implementation of a structure for category channels, usable by direct end consumers.

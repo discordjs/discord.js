@@ -6,6 +6,11 @@
  */
 
 /**
+ * @external ActivityLocationKind
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ActivityLocationKind}
+ */
+
+/**
  * @external ActivityType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ActivityType}
  */
@@ -33,11 +38,6 @@
 /**
  * @external ApplicationIntegrationType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationIntegrationType}
- */
-
-/**
- * @external APIAuthorizingIntegrationOwnersMap
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIAuthorizingIntegrationOwnersMap}
  */
 
 /**
@@ -236,6 +236,11 @@
  */
 
 /**
+ * @external APISelectMenuDefaultValue
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISelectMenuDefaultValue}
+ */
+
+/**
  * @external APISectionComponent
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISectionComponent}
  */
@@ -341,6 +346,11 @@
  */
 
 /**
+ * @external BaseThemeType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/BaseThemeType}
+ */
+
+/**
  * @external ButtonStyle
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ButtonStyle}
  */
@@ -368,6 +378,11 @@
 /**
  * @external EntryPointCommandHandlerType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/EntryPointCommandHandlerType}
+ */
+
+/**
+ * @external FileUploadType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#FileUploadType}
  */
 
 /**
@@ -520,6 +535,11 @@
  */
 
 /**
+ * @external InviteTargetUsersJobStatus
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InviteTargetUsersJobStatus}
+ */
+
+/**
  * @external InviteType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InviteType}
  */
@@ -532,6 +552,11 @@
 /**
  * @external Locale
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/Locale}
+ */
+
+/**
+ * @external LocalizationMap
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#LocalizationMap}
  */
 
 /**
@@ -650,6 +675,11 @@
  */
 
 /**
+ * @external ThreadMemberFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ThreadMemberFlags}
+ */
+
+/**
  * @external UserFlags
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/UserFlags}
  */
@@ -667,4 +697,14 @@
 /**
  * @external WebhookType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/WebhookType}
+ */
+
+/**
+ * @external RESTPatchAPIChannelMessageJSONBody
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/RESTPatchAPIChannelMessageJSONBody}
+ */
+
+/**
+ * @external RESTPostAPIChannelMessageJSONBody
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/RESTPostAPIChannelMessageJSONBody}
  */

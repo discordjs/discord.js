@@ -11,7 +11,7 @@ const { BitField } = require('./BitField.js');
  */
 class GuildMemberFlagsBitField extends BitField {
   /**
-   * Numeric guild guild member flags.
+   * Numeric guild member flags.
    *
    * @type {GuildMemberFlags}
    * @memberof GuildMemberFlagsBitField

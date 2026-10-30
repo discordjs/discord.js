@@ -8,7 +8,6 @@ import { Fragment } from 'react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/Collapsible';
 
 export async function Outline({ node }: { readonly node: any }) {
-	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 	const hasAny = node.members?.properties?.length || node.members?.events?.length || node.members?.methods?.length;
 
 	return hasAny ? (

@@ -1,5 +1,5 @@
+import { embedLength } from '@discordjs/util';
 import { z } from 'zod';
-import { embedLength } from '../../util/componentUtil.js';
 
 const namePredicate = z.string().max(256);
 

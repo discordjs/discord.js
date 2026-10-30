@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { makeURLSearchParams, type RawFile, type REST, type RequestData } from '@discordjs/rest';
+import { makeURLSearchParams, type REST, type RawFile, type RequestData } from '@discordjs/rest';
 import {
 	Routes,
 	type GuildWidgetStyle,
@@ -21,12 +21,15 @@ import {
 	type RESTGetAPIGuildMembersResult,
 	type RESTGetAPIGuildMembersSearchQuery,
 	type RESTGetAPIGuildMembersSearchResult,
+	type RESTGetAPIGuildMessagesSearchQuery,
+	type RESTGetAPIGuildMessagesSearchResult,
 	type RESTGetAPIGuildOnboardingResult,
 	type RESTGetAPIGuildPreviewResult,
 	type RESTGetAPIGuildPruneCountQuery,
 	type RESTGetAPIGuildPruneCountResult,
 	type RESTGetAPIGuildQuery,
 	type RESTGetAPIGuildResult,
+	type RESTGetAPIGuildRoleMemberCountsResult,
 	type RESTGetAPIGuildRoleResult,
 	type RESTGetAPIGuildRolesResult,
 	type RESTGetAPIGuildScheduledEventQuery,
@@ -35,6 +38,8 @@ import {
 	type RESTGetAPIGuildScheduledEventUsersResult,
 	type RESTGetAPIGuildScheduledEventsQuery,
 	type RESTGetAPIGuildScheduledEventsResult,
+	type RESTGetAPIGuildSoundboardSoundResult,
+	type RESTGetAPIGuildSoundboardSoundsResult,
 	type RESTGetAPIGuildStickerResult,
 	type RESTGetAPIGuildStickersResult,
 	type RESTGetAPIGuildTemplatesResult,
@@ -62,6 +67,8 @@ import {
 	type RESTPatchAPIGuildRoleResult,
 	type RESTPatchAPIGuildScheduledEventJSONBody,
 	type RESTPatchAPIGuildScheduledEventResult,
+	type RESTPatchAPIGuildSoundboardSoundJSONBody,
+	type RESTPatchAPIGuildSoundboardSoundResult,
 	type RESTPatchAPIGuildStickerJSONBody,
 	type RESTPatchAPIGuildStickerResult,
 	type RESTPatchAPIGuildTemplateJSONBody,
@@ -84,22 +91,20 @@ import {
 	type RESTPostAPIGuildRoleResult,
 	type RESTPostAPIGuildScheduledEventJSONBody,
 	type RESTPostAPIGuildScheduledEventResult,
+	type RESTPostAPIGuildSoundboardSoundJSONBody,
+	type RESTPostAPIGuildSoundboardSoundResult,
 	type RESTPostAPIGuildStickerFormDataBody,
 	type RESTPostAPIGuildStickerResult,
 	type RESTPostAPIGuildTemplatesJSONBody,
 	type RESTPostAPIGuildTemplatesResult,
 	type RESTPutAPIGuildBanJSONBody,
+	type RESTPutAPIGuildIncidentActionsJSONBody,
+	type RESTPutAPIGuildIncidentActionsResult,
 	type RESTPutAPIGuildMemberJSONBody,
 	type RESTPutAPIGuildMemberResult,
 	type RESTPutAPIGuildOnboardingJSONBody,
 	type RESTPutAPIGuildOnboardingResult,
 	type RESTPutAPIGuildTemplateSyncResult,
-	type RESTGetAPIGuildSoundboardSoundResult,
-	type RESTGetAPIGuildSoundboardSoundsResult,
-	type RESTPatchAPIGuildSoundboardSoundJSONBody,
-	type RESTPatchAPIGuildSoundboardSoundResult,
-	type RESTPostAPIGuildSoundboardSoundJSONBody,
-	type RESTPostAPIGuildSoundboardSoundResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
@@ -180,11 +185,14 @@ export class GuildsAPI {
 		body: RESTPutAPIGuildMemberJSONBody,
 		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
-		return this.rest.put(Routes.guildMember(guildId, userId), {
+		const response = await this.rest.put(Routes.guildMember(guildId, userId), {
 			auth,
 			body,
 			signal,
-		}) as Promise<RESTPutAPIGuildMemberResult>;
+		});
+
+		// Data is an empty array buffer if the member is already part of the guild.
+		return response instanceof ArrayBuffer ? undefined : (response as RESTPutAPIGuildMemberResult);
 	}
 
 	/**
@@ -1199,6 +1207,26 @@ export class GuildsAPI {
 	}
 
 	/**
+	 * Searches for messages.
+	 *
+	 * @see {@link https://docs.discord.com/developers/resources/message#search-guild-messages}
+	 * @param guildId - The id of the guild to search in
+	 * @param query - The query to search for
+	 * @param options - The options for searching for messages
+	 */
+	public async searchForMessages(
+		guildId: Snowflake,
+		query: RESTGetAPIGuildMessagesSearchQuery,
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+	) {
+		return this.rest.get(Routes.guildMessagesSearch(guildId), {
+			auth,
+			query: makeURLSearchParams(query),
+			signal,
+		}) as Promise<RESTGetAPIGuildMessagesSearchResult>;
+	}
+
+	/**
 	 * Edits a guild member
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild-member}
@@ -1234,7 +1262,7 @@ export class GuildsAPI {
 		userId: Snowflake,
 		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
-		return this.rest.delete(Routes.guildMember(guildId, userId), { auth, reason, signal });
+		await this.rest.delete(Routes.guildMember(guildId, userId), { auth, reason, signal });
 	}
 
 	/**
@@ -1438,5 +1466,39 @@ export class GuildsAPI {
 		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.guildSoundboardSound(guildId, soundId), { auth, reason, signal });
+	}
+
+	/**
+	 * Modifies incident actions for a guild.
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild-incident-actions}
+	 * @param guildId - The id of the guild
+	 * @param body - The data for modifying guild incident actions
+	 * @param options - The options for modifying guild incident actions
+	 */
+	public async editIncidentActions(
+		guildId: Snowflake,
+		body: RESTPutAPIGuildIncidentActionsJSONBody,
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+	) {
+		return this.rest.put(Routes.guildIncidentActions(guildId), {
+			auth,
+			body,
+			signal,
+		}) as Promise<RESTPutAPIGuildIncidentActionsResult>;
+	}
+
+	/**
+	 * Fetches role member counts for a guild.
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-role-member-counts}
+	 * @param guildId - The id of the guild to fetch role member counts for
+	 * @param options - The options for fetching role member counts
+	 */
+	public async getRoleMemberCounts(guildId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
+		return this.rest.get(Routes.guildRoleMemberCounts(guildId), {
+			auth,
+			signal,
+		}) as Promise<RESTGetAPIGuildRoleMemberCountsResult>;
 	}
 }

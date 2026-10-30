@@ -105,19 +105,23 @@ export class BurstHandler implements IHandler {
 			const isGlobal = res.headers.has('X-RateLimit-Global');
 			const scope = (res.headers.get('X-RateLimit-Scope') ?? 'user') as RateLimitData['scope'];
 
-			await onRateLimit(this.manager, {
-				global: isGlobal,
-				method,
-				url,
-				route: routeId.bucketRoute,
-				majorParameter: this.majorParameter,
-				hash: this.hash,
-				limit: Number.POSITIVE_INFINITY,
-				timeToReset: retryAfter,
-				retryAfter,
-				sublimitTimeout: 0,
-				scope,
-			});
+			await onRateLimit(
+				this.manager,
+				{
+					global: isGlobal,
+					method,
+					url,
+					route: routeId.bucketRoute,
+					majorParameter: this.majorParameter,
+					hash: this.hash,
+					limit: Number.POSITIVE_INFINITY,
+					timeToReset: retryAfter,
+					retryAfter,
+					sublimitTimeout: 0,
+					scope,
+				},
+				requestData,
+			);
 
 			this.debug(
 				[
@@ -141,7 +145,7 @@ export class BurstHandler implements IHandler {
 			// Since this is not a server side issue, the next request should pass, so we don't bump the retries counter
 			return this.runRequest(routeId, url, options, requestData, retries);
 		} else {
-			const handled = await handleErrors(this.manager, res, method, url, requestData, retries);
+			const handled = await handleErrors(this.manager, res, method, url, requestData, retries, routeId);
 			if (handled === null) {
 				// eslint-disable-next-line no-param-reassign
 				return this.runRequest(routeId, url, options, requestData, ++retries);

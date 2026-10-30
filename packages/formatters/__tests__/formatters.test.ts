@@ -1,5 +1,4 @@
 /* eslint-disable no-template-curly-in-string */
-import { URL } from 'node:url';
 import { describe, test, expect, vitest } from 'vitest';
 import {
 	applicationDirectory,
@@ -11,6 +10,7 @@ import {
 	codeBlock,
 	Faces,
 	formatEmoji,
+	gameProfileMention,
 	heading,
 	HeadingLevel,
 	hideLinkEmbed,
@@ -151,6 +151,12 @@ describe('Message formatters', () => {
 		describe('linkedRoleMention', () => {
 			test('GIVEN roleId THEN returns "<id:linked-roles:[roleId]>"', () => {
 				expect(linkedRoleMention('815434166602170409')).toEqual('<id:linked-roles:815434166602170409>');
+			});
+		});
+
+		describe('gameProfileMention', () => {
+			test('GIVEN gameId THEN returns "<@$[gameId]>"', () => {
+				expect<'<@$1402418491272986635>'>(gameProfileMention('1402418491272986635')).toEqual('<@$1402418491272986635>');
 			});
 		});
 
@@ -331,8 +337,18 @@ describe('Message formatters', () => {
 			expect<'<t:1867424897:d>'>(time(1_867_424_897, 'd')).toEqual('<t:1867424897:d>');
 		});
 
-		test('GIVEN a date and a format from enum THEN returns "<t:${time}:${style}>"', () => {
-			expect<'<t:1867424897:R>'>(time(1_867_424_897, TimestampStyles.RelativeTime)).toEqual('<t:1867424897:R>');
+		test.each([
+			[TimestampStyles.ShortTime, 't'],
+			[TimestampStyles.MediumTime, 'T'],
+			[TimestampStyles.ShortDate, 'd'],
+			[TimestampStyles.LongDate, 'D'],
+			[TimestampStyles.LongDateShortTime, 'f'],
+			[TimestampStyles.FullDateShortTime, 'F'],
+			[TimestampStyles.ShortDateShortTime, 's'],
+			[TimestampStyles.ShortDateMediumTime, 'S'],
+			[TimestampStyles.RelativeTime, 'R'],
+		])('GIVEN a date and style from enum THEN returns "<t:${time}:${style}>"', (style, expectedStyle) => {
+			expect<`<t:1867424897:${typeof style}>`>(time(1_867_424_897, style)).toEqual(`<t:1867424897:${expectedStyle}>`);
 		});
 	});
 

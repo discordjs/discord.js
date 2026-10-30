@@ -207,6 +207,23 @@ describe('equals() tests', () => {
 		const coll3 = createCollectionFrom(['a', 2], ['b', 3], ['c', 3]);
 		expect(coll2.equals(coll3)).toBeFalsy();
 	});
+
+	test('collections with undefined values should be compared correctly', () => {
+		const collWithUndefined1 = new Collection<string, number | undefined>([
+			['a', 1],
+			['b', undefined],
+		]);
+		const collWithUndefined2 = new Collection<string, number | undefined>([
+			['a', 1],
+			['b', undefined],
+		]);
+		const collWithDifferentKeys = new Collection<string, number | undefined>([
+			['a', 1],
+			['c', undefined],
+		]);
+		expect(collWithUndefined1.equals(collWithUndefined2)).toBeTruthy();
+		expect(collWithUndefined1.equals(collWithDifferentKeys)).toBeFalsy();
+	});
 });
 
 describe('every() tests', () => {

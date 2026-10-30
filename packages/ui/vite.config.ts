@@ -37,11 +37,11 @@ export default defineConfig({
 			formats: ['es'],
 			name: 'ui',
 		},
-		rollupOptions: {
+		rolldownOptions: {
 			external: [
 				'react',
 				'react-dom',
-				'ariakit/disclosure',
+				'@ariakit/react/disclosure',
 				'@react-icons/all-files/vsc/VscFlame',
 				'@react-icons/all-files/vsc/VscInfo',
 				'@react-icons/all-files/vsc/VscWarning',

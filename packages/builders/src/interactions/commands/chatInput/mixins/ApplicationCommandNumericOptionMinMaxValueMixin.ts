@@ -1,7 +1,9 @@
 import type { APIApplicationCommandIntegerOption } from 'discord-api-types/v10';
 
-export interface ApplicationCommandNumericOptionMinMaxValueData
-	extends Pick<APIApplicationCommandIntegerOption, 'max_value' | 'min_value'> {}
+export interface ApplicationCommandNumericOptionMinMaxValueData extends Pick<
+	APIApplicationCommandIntegerOption,
+	'max_value' | 'min_value'
+> {}
 
 /**
  * This mixin holds minimum and maximum symbols used for options.

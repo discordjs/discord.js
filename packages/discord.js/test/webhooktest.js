@@ -7,8 +7,8 @@ const { setTimeout: sleep } = require('node:timers/promises');
 const util = require('node:util');
 const { GatewayIntentBits } = require('discord-api-types/v10');
 const { fetch } = require('undici');
+const { Client, MessageAttachment, Embed } = require('../src/index.js');
 const { owner, token, webhookChannel, webhookToken } = require('./auth.js');
-const { Client, MessageAttachment, Embed, WebhookClient } = require('../src/index.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 
@@ -84,30 +84,26 @@ client.on('messageCreate', async message => {
   if (message.author.id !== owner) return;
   const match = message.content.match(/^do (.+)$/);
   const hooks = [
-    { type: 'WebhookClient', hook: new WebhookClient({ id: webhookChannel, token: webhookToken }) },
     { type: 'TextChannel#fetchWebhooks', hook: await message.channel.fetchWebhooks().then(x => x.first()) },
     { type: 'Guild#fetchWebhooks', hook: await message.guild.fetchWebhooks().then(x => x.first()) },
   ];
   if (match?.[1] === 'it') {
-    /* eslint-disable no-await-in-loop */
     for (const { type, hook } of hooks) {
       for (const [i, test] of tests.entries()) {
         await message.channel.send(`**#${i}-Hook: ${type}**\n\`\`\`js\n${test.toString()}\`\`\``);
-        await test(message, hook).catch(e => message.channel.send(`Error!\n\`\`\`\n${e}\`\`\``));
+        await test(message, hook).catch(error => message.channel.send(`Error!\n\`\`\`\n${error}\`\`\``));
         await sleep(1_000);
       }
     }
-    /* eslint-enable no-await-in-loop */
   } else if (match) {
-    const n = parseInt(match[1]) || 0;
+    const n = Number.parseInt(match[1]) || 0;
     const test = tests.slice(n)[0];
     const i = tests.indexOf(test);
-    /* eslint-disable no-await-in-loop */
+
     for (const { type, hook } of hooks) {
       await message.channel.send(`**#${i}-Hook: ${type}**\n\`\`\`js\n${test.toString()}\`\`\``);
-      await test(message, hook).catch(e => message.channel.send(`Error!\n\`\`\`\n${e}\`\`\``));
+      await test(message, hook).catch(error => message.channel.send(`Error!\n\`\`\`\n${error}\`\`\``));
     }
-    /* eslint-enable no-await-in-loop */
   }
 });
 

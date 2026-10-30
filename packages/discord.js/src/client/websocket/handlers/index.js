@@ -52,6 +52,7 @@ const PacketHandlers = Object.fromEntries([
   ['MESSAGE_REACTION_REMOVE_EMOJI', require('./MESSAGE_REACTION_REMOVE_EMOJI.js')],
   ['MESSAGE_UPDATE', require('./MESSAGE_UPDATE.js')],
   ['PRESENCE_UPDATE', require('./PRESENCE_UPDATE.js')],
+  ['RATE_LIMITED', require('./RATE_LIMITED.js')],
   ['READY', require('./READY.js')],
   ['SOUNDBOARD_SOUNDS', require('./SOUNDBOARD_SOUNDS.js')],
   ['STAGE_INSTANCE_CREATE', require('./STAGE_INSTANCE_CREATE.js')],

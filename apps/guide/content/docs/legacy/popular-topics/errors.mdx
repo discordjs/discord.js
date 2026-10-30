@@ -20,7 +20,7 @@ Example: `The messages must be an Array, Collection, or number.`
 
 ### JavaScript errors
 
-JavaScript errors are thrown by node itself or by discord.js. These errors can easily be fixed by looking at the type of error and the stack trace. You can find a full list of types [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error) and a list of common JavaScript errors [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors).
+JavaScript errors are thrown by node itself or by discord.js. These errors can easily be fixed by looking at the type of error and the stack trace. You can find a full list of types [here](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error) and a list of common JavaScript errors [here](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Errors).
 
 Examples:
 
@@ -189,11 +189,17 @@ This error originates from an invalid call to `bulkDelete()`. Make sure you are 
 
 This error happens when fetching multiple members via `GuildMemberManager#fetch()` and:
 
-- The `GuildMembers` intent is not specified or enabled in the dev dashboard
-- The internet connection is somewhat bad
-- The amount of members fetched is large (about 50 thousand and upwards)
+- The `GuildMembers` intent is not specified or enabled in the [developer portal](https://discord.com/developers/applications).
+- The internet connection is somewhat bad.
 
 You can specify the time to wait for with the `time` option in the `.fetch()` call. Another solution could be to move your bot to a faster infrastructure, if available.
+
+### Request with opcode 8 was rate limited.
+
+You are requesting all guild members too frequently on the same guild.
+
+- Look for instances of `GuildMemberManager#fetch()` that do not specify users.
+- Make sure to handle the returned promise gracefully. Discord may change the exact values of this rate limit in the future. You can find all relevant details in the caught error.
 
 ### MaxListenersExceededWarning: Possible EventEmitter memory leak detected...
 

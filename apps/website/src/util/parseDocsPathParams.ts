@@ -9,7 +9,7 @@ export function parseDocsPathParams(item: string[] | undefined): {
 	}
 
 	const lastElement = item.at(-1);
-	const hasTypeMarker = lastElement?.includes('%3A');
+	const hasTypeMarker = lastElement?.includes(':') || lastElement?.includes('%3A');
 
 	return {
 		entryPoints: hasTypeMarker ? item.slice(0, -1) : lastElement?.length === 0 ? DEFAULT_ENTRY_POINT : item,

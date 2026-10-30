@@ -95,7 +95,7 @@ console.log('Hello'); // [!code --]
 console.log('Hello World'); // [!code ++]
 ```
 
-You can put the transformer syntax above the respective line and declare ranges instead of repeating formatting intsructions. You can also combine different transformers on the same line. Note that word highlights highlight the word across the code block by default, but do respect ranges.
+You can put the transformer syntax above the respective line and declare ranges instead of repeating formatting instructions. You can also combine different transformers on the same line. Note that word highlights highlight the word across the code block by default, but do respect ranges.
 
 ```js
 console.log('Hello'); // [!code --:2]
@@ -118,7 +118,7 @@ When introducing new functions in a paragraph, consider highlighting them in the
 console.log('Hello World'); // [!code word:log]
 ```
 
-Make sure to denote the file names or paths if you describe progress in a specific code sample. When descrbing multiple files, use [tab groups](https://fumadocs.dev/docs/ui/markdown#tab-groups).
+Make sure to denote the file names or paths if you describe progress in a specific code sample. When describing multiple files, use [tab groups](https://fumadocs.dev/docs/ui/markdown#tab-groups).
 
 ````md
 ```json title="package.json" tab="Configuration"

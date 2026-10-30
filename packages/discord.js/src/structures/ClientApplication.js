@@ -9,6 +9,7 @@ const { SubscriptionManager } = require('../managers/SubscriptionManager.js');
 const { ApplicationFlagsBitField } = require('../util/ApplicationFlagsBitField.js');
 const { resolveImage } = require('../util/DataResolver.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
+const { ActivityInstance } = require('./ActivityInstance.js');
 const { ApplicationRoleConnectionMetadata } = require('./ApplicationRoleConnectionMetadata.js');
 const { SKU } = require('./SKU.js');
 const { Team } = require('./Team.js');
@@ -98,6 +99,7 @@ class ClientApplication extends Application {
      * Scopes and permissions regarding the installation context
      */
 
+    /* eslint-disable jsdoc/valid-types */
     /**
      * The application's supported installation context data.
      *
@@ -107,6 +109,7 @@ class ClientApplication extends Application {
      * @property {IntegrationTypesConfigurationContext} [1] Scopes and permissions
      * regarding the user-installation context
      */
+    /* eslint-enable jsdoc/valid-types */
 
     if ('integration_types_config' in data) {
       /**
@@ -407,9 +410,9 @@ class ClientApplication extends Application {
    *
    * @typedef {Object} ApplicationRoleConnectionMetadataEditOptions
    * @property {string} name The name of the metadata field
-   * @property {?Object<Locale, string>} [nameLocalizations] The name localizations for the metadata field
+   * @property {?LocalizationMap} [nameLocalizations] The name localizations for the metadata field
    * @property {string} description The description of the metadata field
-   * @property {?Object<Locale, string>} [descriptionLocalizations] The description localizations for the metadata field
+   * @property {?LocalizationMap} [descriptionLocalizations] The description localizations for the metadata field
    * @property {string} key The dictionary key of the metadata field
    * @property {ApplicationRoleConnectionMetadataType} type The type of the metadata field
    */
@@ -443,6 +446,17 @@ class ClientApplication extends Application {
   async fetchSKUs() {
     const skus = await this.client.rest.get(Routes.skus(this.id));
     return skus.reduce((coll, sku) => coll.set(sku.id, new SKU(this.client, sku)), new Collection());
+  }
+
+  /**
+   * Fetches an activity instance for this application.
+   *
+   * @param {string} instanceId The id of the activity instance
+   * @returns {Promise<ActivityInstance>}
+   */
+  async fetchActivityInstance(instanceId) {
+    const data = await this.client.rest.get(Routes.applicationActivityInstance(this.id, instanceId));
+    return new ActivityInstance(this.client, data);
   }
 }
 

@@ -5,6 +5,7 @@ const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { GuildMemberRoleManager } = require('../managers/GuildMemberRoleManager.js');
 const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
+const { _transformCollectibles } = require('../util/Transformers.js');
 const { Base } = require('./Base.js');
 const { VoiceState } = require('./VoiceState.js');
 
@@ -23,13 +24,6 @@ class GuildMember extends Base {
      * @type {Guild}
      */
     this.guild = guild;
-
-    /**
-     * The timestamp the member joined the guild at
-     *
-     * @type {?number}
-     */
-    this.joinedTimestamp = null;
 
     /**
      * The last timestamp this member started boosting the guild
@@ -68,7 +62,7 @@ class GuildMember extends Base {
      */
     Object.defineProperty(this, '_roles', { value: [], writable: true });
 
-    if (data) this._patch(data);
+    this._patch(data);
   }
 
   _patch(data) {
@@ -104,7 +98,17 @@ class GuildMember extends Base {
       this.banner ??= null;
     }
 
-    if ('joined_at' in data) this.joinedTimestamp = Date.parse(data.joined_at);
+    if ('joined_at' in data) {
+      /**
+       * The timestamp the member joined the guild at
+       *
+       * @type {?number}
+       */
+      this.joinedTimestamp = data.joined_at && Date.parse(data.joined_at);
+    } else {
+      this.joinedTimestamp ??= null;
+    }
+
     if ('premium_since' in data) {
       this.premiumSinceTimestamp = data.premium_since ? Date.parse(data.premium_since) : null;
     }
@@ -146,6 +150,17 @@ class GuildMember extends Base {
       };
     } else {
       this.avatarDecorationData = null;
+    }
+
+    if ('collectibles' in data) {
+      /**
+       * The member's collectibles
+       *
+       * @type {?Collectibles}
+       */
+      this.collectibles = data.collectibles ? _transformCollectibles(data.collectibles) : null;
+    } else {
+      this.collectibles ??= null;
     }
   }
 
@@ -357,7 +372,6 @@ class GuildMember extends Base {
   get manageable() {
     if (this.user.id === this.guild.ownerId) return false;
     if (this.user.id === this.client.user.id) return false;
-    if (this.client.user.id === this.guild.ownerId) return true;
     if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
     return this.guild.members.me.roles.highest.comparePositionTo(this.roles.highest) > 0;
   }
@@ -459,7 +473,9 @@ class GuildMember extends Base {
    *   .catch(console.error);
    */
   async setNickname(nick, reason) {
-    return this.edit({ nick, reason });
+    return this.user.id === this.client.user.id
+      ? this.guild.members.editMe({ nick, reason })
+      : this.edit({ nick, reason });
   }
 
   /**
@@ -589,13 +605,18 @@ class GuildMember extends Base {
       this.avatar === member.avatar &&
       this.banner === member.banner &&
       this.pending === member.pending &&
+      this.premiumSinceTimestamp === member.premiumSinceTimestamp &&
       this.communicationDisabledUntilTimestamp === member.communicationDisabledUntilTimestamp &&
       this.flags.bitfield === member.flags.bitfield &&
       (this._roles === member._roles ||
         (this._roles.length === member._roles.length &&
           this._roles.every((role, index) => role === member._roles[index]))) &&
       this.avatarDecorationData?.asset === member.avatarDecorationData?.asset &&
-      this.avatarDecorationData?.skuId === member.avatarDecorationData?.skuId
+      this.avatarDecorationData?.skuId === member.avatarDecorationData?.skuId &&
+      this.collectibles?.nameplate?.skuId === member.collectibles?.nameplate?.skuId &&
+      this.collectibles?.nameplate?.asset === member.collectibles?.nameplate?.asset &&
+      this.collectibles?.nameplate?.label === member.collectibles?.nameplate?.label &&
+      this.collectibles?.nameplate?.palette === member.collectibles?.nameplate?.palette
     );
   }
 

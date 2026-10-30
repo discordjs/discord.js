@@ -2,12 +2,17 @@
 
 const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
-const { ChannelType, RouteBases, Routes } = require('discord-api-types/v10');
+const { lazy } = require('@discordjs/util');
+const { APIVersion, ChannelType, Routes } = require('discord-api-types/v10');
 const { fetch } = require('undici');
-// eslint-disable-next-line import-x/order
 const { Colors } = require('./Colors.js');
 // eslint-disable-next-line import-x/order
 const { DiscordjsError, DiscordjsRangeError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+
+// Fixes circular dependencies.
+const getAttachment = lazy(() => require('../structures/Attachment.js').Attachment);
+const getGuildChannel = lazy(() => require('../structures/GuildChannel.js').GuildChannel);
+const getSKU = lazy(() => require('../structures/SKU.js').SKU);
 
 const isObject = data => typeof data === 'object' && data !== null;
 
@@ -62,6 +67,8 @@ function flatten(obj, ...props) {
  * @typedef {Object} FetchRecommendedShardCountOptions
  * @property {number} [guildsPerShard=1000] Number of guilds assigned per shard
  * @property {number} [multipleOf=1] The multiple the shard count should round up to. (16 for large bot sharding)
+ * @property {string} [api='https://discord.com/api'] The base API URL
+ * @property {string} [version='10'] The API version to use
  */
 
 /**
@@ -71,9 +78,12 @@ function flatten(obj, ...props) {
  * @param {FetchRecommendedShardCountOptions} [options] Options for fetching the recommended shard count
  * @returns {Promise<number>} The recommended number of shards
  */
-async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multipleOf = 1 } = {}) {
+async function fetchRecommendedShardCount(
+  token,
+  { guildsPerShard = 1_000, multipleOf = 1, api = 'https://discord.com/api', version = APIVersion } = {},
+) {
   if (!token) throw new DiscordjsError(ErrorCodes.TokenMissing);
-  const response = await fetch(RouteBases.api + Routes.gatewayBot(), {
+  const response = await fetch(`${api}/v${version}${Routes.gatewayBot()}`, {
     method: 'GET',
     headers: { Authorization: `Bot ${token.replace(/^bot\s*/i, '')}` },
   });
@@ -352,8 +362,7 @@ function resolveColor(color) {
  * @returns {Collection}
  */
 function discordSort(collection) {
-  // eslint-disable-next-line no-use-before-define
-  const isGuildChannel = collection.first() instanceof GuildChannel;
+  const isGuildChannel = collection.first() instanceof getGuildChannel();
   return collection.toSorted(
     isGuildChannel
       ? (a, b) => a.rawPosition - b.rawPosition || Number(BigInt(a.id) - BigInt(b.id))
@@ -470,10 +479,18 @@ function cleanCodeBlockContent(text) {
 }
 
 /**
+ * Represents the credentials used for a webhook in the form of its id and token.
+ *
+ * @typedef {Object} WebhookDataIdWithToken
+ * @property {Snowflake} id The webhook's id
+ * @property {string} token The webhook's token
+ */
+
+/**
  * Parses a webhook URL for the id and token.
  *
  * @param {string} url The URL to parse
- * @returns {?WebhookClientDataIdWithToken} `null` if the URL is invalid, otherwise the id and the token
+ * @returns {?WebhookDataIdWithToken} `null` if the URL is invalid, otherwise the id and the token
  */
 function parseWebhookURL(url) {
   const matches =
@@ -547,8 +564,7 @@ function transformResolved(
   if (attachments) {
     result.attachments = new Collection();
     for (const attachment of Object.values(attachments)) {
-      // eslint-disable-next-line no-use-before-define
-      const patched = new Attachment(attachment);
+      const patched = new (getAttachment())(attachment);
       result.attachments.set(attachment.id, patched);
     }
   }
@@ -564,8 +580,7 @@ function transformResolved(
  */
 function resolveSKUId(resolvable) {
   if (typeof resolvable === 'string') return resolvable;
-  // eslint-disable-next-line no-use-before-define
-  if (resolvable instanceof SKU) return resolvable.id;
+  if (resolvable instanceof getSKU()) return resolvable.id;
   return null;
 }
 
@@ -592,8 +607,3 @@ exports.setPosition = setPosition;
 exports.basename = basename;
 exports.findName = findName;
 exports.transformResolved = transformResolved;
-
-// Fixes Circular
-const { Attachment } = require('../structures/Attachment.js');
-const { GuildChannel } = require('../structures/GuildChannel.js');
-const { SKU } = require('../structures/SKU.js');

@@ -10,6 +10,7 @@ const {
   MessageFlags,
   MessageReferenceType,
   PermissionFlagsBits,
+  GuildFeature,
 } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { ReactionManager } = require('../managers/ReactionManager.js');
@@ -414,13 +415,17 @@ class Message extends Base {
        * @property {Snowflake} id The interaction's id
        * @property {InteractionType} type The type of the interaction
        * @property {User} user The user that invoked the interaction
-       * @property {APIAuthorizingIntegrationOwnersMap} authorizingIntegrationOwners
-       * Ids for installation context(s) related to an interaction
+       * @property {AuthorizingIntegrationOwners} authorizingIntegrationOwners
+       * Mapping of integration types that the application was authorized for the related user or guild ids
        * @property {?Snowflake} originalResponseMessageId
        * Id of the original response message. Present only on follow-up messages
        * @property {?Snowflake} interactedMessageId
        * Id of the message that contained interactive component.
        * Present only on messages created from component interactions
+       * @property {?User} targetUser
+       * The user the command was run on. Present only on user context menu command interactions
+       * @property {?Snowflake} targetMessageId
+       * Id of the message the command was run on. Present only on message context menu command interactions
        * @property {?MessageInteractionMetadata} triggeringInteractionMetadata
        * Metadata for the interaction that was used to open the modal. Present only on modal submit interactions
        */
@@ -498,6 +503,34 @@ class Message extends Base {
       };
     } else {
       this.call ??= null;
+    }
+
+    /**
+     * The shared client theme sent with this message
+     *
+     * @typedef {Object} SharedClientTheme
+     * @property {string[]} colors The hexadecimal-encoded colors of the theme (max of 5)
+     * @property {number} gradientAngle The direction of the theme's colors (0–360)
+     * @property {number} baseMix The intensity of the theme's colors (0–100)
+     * @property {?BaseThemeType} [baseTheme] The mode of the theme
+     */
+    if (data.shared_client_theme) {
+      /**
+       * The shared client theme sent with this message
+       *
+       * @type {?SharedClientTheme}
+       */
+      this.sharedClientTheme = {
+        colors: data.shared_client_theme.colors,
+        gradientAngle: data.shared_client_theme.gradient_angle,
+        baseMix: data.shared_client_theme.base_mix,
+      };
+
+      if ('base_theme' in data.shared_client_theme) {
+        this.sharedClientTheme.baseTheme = data.shared_client_theme.base_theme;
+      }
+    } else {
+      this.sharedClientTheme ??= null;
     }
   }
 
@@ -634,7 +667,7 @@ class Message extends Base {
    * Resolves with a collection of reactions that pass the specified filter.
    *
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
-   * @returns {Promise<Collection<string | Snowflake, MessageReaction>>}
+   * @returns {Promise<Collection<string|Snowflake, MessageReaction>>}
    * @example
    * // Create a reaction collector
    * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someId'
@@ -725,8 +758,8 @@ class Message extends Base {
   get editable() {
     const precheck = Boolean(
       this.author.id === this.client.user.id &&
-        (!this.guild || this.channel?.viewable) &&
-        this.reference?.type !== MessageReferenceType.Forward,
+      (!this.guild || this.channel?.viewable) &&
+      this.reference?.type !== MessageReferenceType.Forward,
     );
 
     // Regardless of permissions thread messages cannot be edited if
@@ -799,12 +832,15 @@ class Message extends Base {
    */
   get pinnable() {
     const { channel } = this;
-    return Boolean(
-      !this.system &&
-        (!this.guild ||
-          (channel?.viewable &&
-            channel?.permissionsFor(this.client.user)?.has(PermissionFlagsBits.ManageMessages, false))),
-    );
+
+    if (this.system) return false;
+    if (!this.guild) return true;
+    if (!channel || channel.isVoiceBased() || !channel.viewable) return false;
+
+    const permissions = channel.permissionsFor(this.client.user);
+    if (!permissions) return false;
+
+    return permissions.has(PermissionFlagsBits.ReadMessageHistory | PermissionFlagsBits.PinMessages);
   }
 
   /**
@@ -834,19 +870,20 @@ class Message extends Base {
     const { channel } = this;
     return Boolean(
       channel?.type === ChannelType.GuildAnnouncement &&
-        !this.flags.has(MessageFlags.Crossposted) &&
-        this.reference?.type !== MessageReferenceType.Forward &&
-        this.type === MessageType.Default &&
-        !this.poll &&
-        channel.viewable &&
-        channel.permissionsFor(this.client.user)?.has(bitfield, false),
+      !this.flags.has(MessageFlags.Crossposted) &&
+      this.reference?.type !== MessageReferenceType.Forward &&
+      this.type === MessageType.Default &&
+      !this.poll &&
+      this.guild.features.includes(GuildFeature.News) &&
+      channel.viewable &&
+      channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );
   }
 
   /**
    * Edits the content of the message.
    *
-   * @param {string|MessagePayload|MessageEditOptions} options The options to provide
+   * @param {string|MessageEditOptions|MessagePayload|FileBodyEncodable<RESTPatchAPIChannelMessageJSONBody>|JSONEncodable<RESTPatchAPIChannelMessageJSONBody>} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
@@ -1106,7 +1143,7 @@ class Message extends Base {
    * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
    *
    * @param {Message} message The message to compare it to
-   * @param {APIMessage} rawData Raw data passed through the WebSocket about this message
+   * @param {APIMessage} [rawData] Raw data passed through the WebSocket about this message
    * @returns {boolean}
    */
   equals(message, rawData) {

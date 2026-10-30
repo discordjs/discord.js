@@ -2,6 +2,7 @@ import { REST } from '@discordjs/rest';
 import type {
 	APIActionRowComponent,
 	APIComponentInModalActionRow,
+	RESTGetAPIChannelThreadMemberResult,
 	RESTPostAPIInteractionCallbackWithResponseResult,
 } from 'discord-api-types/v10';
 import { expectTypeOf, describe, test } from 'vitest';
@@ -157,4 +158,21 @@ describe('Interaction with_response overloads.', () => {
 		expectTypeOf(api.interactions.launchActivity(SNOWFLAKE, TOKEN, { with_response: boolValue })).toEqualTypeOf<
 			Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>
 		>());
+});
+
+describe('Thread member overloads.', () => {
+	test('Getting a thread member with with_member makes the guild member present.', () =>
+		expectTypeOf(api.threads.getMember(SNOWFLAKE, SNOWFLAKE, { with_member: true })).toEqualTypeOf<
+			Promise<Required<Pick<RESTGetAPIChannelThreadMemberResult, 'member'>> & RESTGetAPIChannelThreadMemberResult>
+		>());
+
+	test('Getting a thread member without with_member returns RESTGetAPIChannelThreadMemberResult.', () => {
+		expectTypeOf(api.threads.getMember(SNOWFLAKE, SNOWFLAKE, { with_member: false })).toEqualTypeOf<
+			Promise<RESTGetAPIChannelThreadMemberResult>
+		>();
+
+		expectTypeOf(api.threads.getMember(SNOWFLAKE, SNOWFLAKE)).toEqualTypeOf<
+			Promise<RESTGetAPIChannelThreadMemberResult>
+		>();
+	});
 });

@@ -11,19 +11,20 @@ import { GuildChannelMixin } from './mixins/GuildChannelMixin.js';
 import { TextChannelMixin } from './mixins/TextChannelMixin.js';
 import { ThreadChannelMixin } from './mixins/ThreadChannelMixin.js';
 
-export interface AnnouncementThreadChannel<Omitted extends keyof APIAnnouncementThreadChannel | '' = ''>
-	extends MixinTypes<
-		Channel<ChannelType.AnnouncementThread>,
-		[
-			TextChannelMixin<ChannelType.AnnouncementThread>,
-			ChannelOwnerMixin<ChannelType.AnnouncementThread>,
-			ChannelParentMixin<ChannelType.AnnouncementThread>,
-			ChannelPinMixin<ChannelType.AnnouncementThread>,
-			ChannelSlowmodeMixin<ChannelType.AnnouncementThread>,
-			GuildChannelMixin<ChannelType.AnnouncementThread>,
-			ThreadChannelMixin<ChannelType.AnnouncementThread>,
-		]
-	> {}
+export interface AnnouncementThreadChannel<
+	Omitted extends keyof APIAnnouncementThreadChannel | '' = '',
+> extends MixinTypes<
+	Channel<ChannelType.AnnouncementThread>,
+	[
+		TextChannelMixin<ChannelType.AnnouncementThread>,
+		ChannelOwnerMixin<ChannelType.AnnouncementThread>,
+		ChannelParentMixin<ChannelType.AnnouncementThread>,
+		ChannelPinMixin<ChannelType.AnnouncementThread>,
+		ChannelSlowmodeMixin<ChannelType.AnnouncementThread>,
+		GuildChannelMixin<ChannelType.AnnouncementThread>,
+		ThreadChannelMixin<ChannelType.AnnouncementThread>,
+	]
+> {}
 
 /**
  * Sample Implementation of a structure for announcement threads, usable by direct end consumers.

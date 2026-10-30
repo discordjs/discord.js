@@ -1,3 +1,5 @@
+/* eslint-disable n/prefer-global/process */
+
 import type { RequestInit } from 'undici';
 import type { REST } from '../REST.js';
 import type { DiscordErrorData, OAuthErrorData } from '../errors/DiscordAPIError.js';
@@ -5,7 +7,7 @@ import { DiscordAPIError } from '../errors/DiscordAPIError.js';
 import { HTTPError } from '../errors/HTTPError.js';
 import { RESTEvents } from '../utils/constants.js';
 import type { ResponseLike, HandlerRequestData, RouteData } from '../utils/types.js';
-import { parseResponse, shouldRetry } from '../utils/utils.js';
+import { normalizeRetryBackoff, normalizeTimeout, parseResponse, shouldRetry, sleep } from '../utils/utils.js';
 
 let authFalseWarningEmitted = false;
 
@@ -65,13 +67,21 @@ export async function makeNetworkRequest(
 	retries: number,
 ) {
 	const controller = new AbortController();
-	const timeout = setTimeout(() => controller.abort(), manager.options.timeout);
-	if (requestData.signal) {
+	const timeout = setTimeout(
+		() => controller.abort(),
+		normalizeTimeout(manager.options.timeout, routeId.bucketRoute, requestData.body),
+	);
+	const userSignal = requestData.signal;
+	let onUserAbort: (() => void) | undefined;
+	if (userSignal) {
 		// If the user signal was aborted, abort the controller, else abort the local signal.
 		// The reason why we don't re-use the user's signal, is because users may use the same signal for multiple
 		// requests, and we do not want to cause unexpected side-effects.
-		if (requestData.signal.aborted) controller.abort();
-		else requestData.signal.addEventListener('abort', () => controller.abort());
+		if (userSignal.aborted) controller.abort();
+		else {
+			onUserAbort = () => controller.abort();
+			userSignal.addEventListener('abort', onUserAbort);
+		}
 	}
 
 	let res: ResponseLike;
@@ -81,6 +91,21 @@ export async function makeNetworkRequest(
 		if (!(error instanceof Error)) throw error;
 		// Retry the specified number of times if needed
 		if (shouldRetry(error) && retries !== manager.options.retries) {
+			const backoff = normalizeRetryBackoff(
+				manager.options.retryBackoff,
+				routeId.bucketRoute,
+				null,
+				retries,
+				requestData.body,
+			);
+			if (backoff === null) {
+				throw error;
+			}
+
+			if (backoff > 0) {
+				await sleep(backoff);
+			}
+
 			// Retry is handled by the handler upon receiving null
 			return null;
 		}
@@ -88,6 +113,7 @@ export async function makeNetworkRequest(
 		throw error;
 	} finally {
 		clearTimeout(timeout);
+		if (onUserAbort) userSignal!.removeEventListener('abort', onUserAbort);
 	}
 
 	if (manager.listenerCount(RESTEvents.Response)) {
@@ -101,7 +127,7 @@ export async function makeNetworkRequest(
 				data: requestData,
 				retries,
 			},
-			res instanceof Response ? res.clone() : { ...res },
+			res.clone?.() ?? { ...res },
 		);
 	}
 
@@ -117,6 +143,7 @@ export async function makeNetworkRequest(
  * @param url - The fully resolved url to make the request to
  * @param requestData - Extra data from the user's request needed for errors and additional processing
  * @param retries - The number of retries this request has already attempted (recursion occurs on the handler)
+ * @param routeId - The generalized API route with literal ids for major parameters
  * @returns The response if the status code is not handled or null to request a retry
  */
 export async function handleErrors(
@@ -126,11 +153,27 @@ export async function handleErrors(
 	url: string,
 	requestData: HandlerRequestData,
 	retries: number,
+	routeId: RouteData,
 ) {
 	const status = res.status;
 	if (status >= 500 && status < 600) {
 		// Retry the specified number of times for possible server side issues
 		if (retries !== manager.options.retries) {
+			const backoff = normalizeRetryBackoff(
+				manager.options.retryBackoff,
+				routeId.bucketRoute,
+				status,
+				retries,
+				requestData.body,
+			);
+			if (backoff === null) {
+				throw new HTTPError(status, res.statusText, method, url, requestData);
+			}
+
+			if (backoff > 0) {
+				await sleep(backoff);
+			}
+
 			return null;
 		}
 

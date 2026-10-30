@@ -1,8 +1,8 @@
 import type { Readable } from 'node:stream';
 import type { ReadableStream } from 'node:stream/web';
 import type { Collection } from '@discordjs/collection';
-import type { Awaitable } from '@discordjs/util';
-import type { Agent, Dispatcher, RequestInit, BodyInit, Response } from 'undici';
+import type { Awaitable, RawFile } from '@discordjs/util';
+import type { Agent, Dispatcher, Headers, RequestInit, BodyInit, Response } from 'undici';
 import type { IHandler } from '../interfaces/Handler.js';
 
 export interface RestEvents {
@@ -99,14 +99,16 @@ export interface RESTOptions {
 	 */
 	offset: GetRateLimitOffsetFunction | number;
 	/**
-	 * Determines how rate limiting and pre-emptive throttling should be handled.
-	 * When an array of strings, each element is treated as a prefix for the request route
-	 * (e.g. `/channels` to match any route starting with `/channels` such as `/channels/:id/messages`)
-	 * for which to throw {@link RateLimitError}s. All other request routes will be queued normally
+	 * The default policy determining how rate limiting and pre-emptive throttling should be handled.
 	 *
-	 * @defaultValue `null`
+	 * Pass `true` to throw a {@link RateLimitError} on every rate limit, `false` to wait every
+	 * rate limit out, or a filter to decide per rate limit.
+	 *
+	 * This can be overridden per request via the {@link RequestData.rejectOnRateLimit | rejectOnRateLimit} request option.
+	 *
+	 * @defaultValue `false`
 	 */
-	rejectOnRateLimit: RateLimitQueueFilter | string[] | null;
+	rejectOnRateLimit: RateLimitQueueFilter | boolean;
 	/**
 	 * The number of retries for errors with the 500 code, or errors
 	 * that timeout
@@ -115,11 +117,17 @@ export interface RESTOptions {
 	 */
 	retries: number;
 	/**
+	 * The time to exponentially add before retrying a 5xx or aborted request
+	 *
+	 * @defaultValue `0`
+	 */
+	retryBackoff: GetRetryBackoffFunction | number;
+	/**
 	 * The time to wait in milliseconds before a request is aborted
 	 *
 	 * @defaultValue `15_000`
 	 */
-	timeout: number;
+	timeout: GetTimeoutFunction | number;
 	/**
 	 * Extra information to add to the user agent
 	 *
@@ -203,6 +211,30 @@ export type RateLimitQueueFilter = (rateLimitData: RateLimitData) => Awaitable<b
  */
 export type GetRateLimitOffsetFunction = (route: string) => number;
 
+/**
+ * A function that determines the backoff for a retry for a given request.
+ *
+ * @param route - The route that has encountered a server-side error
+ * @param statusCode - The status code received or `null` if aborted
+ * @param retryCount - The number of retries that have been attempted so far. The first call will be `0`
+ * @param requestBody - The body that was sent with the request
+ * @returns The delay for the current request or `null` to throw an error instead of retrying
+ */
+export type GetRetryBackoffFunction = (
+	route: string,
+	statusCode: number | null,
+	retryCount: number,
+	requestBody: unknown,
+) => number | null;
+
+/**
+ * A function that determines the timeout for a given request.
+ *
+ * @param route - The route that is being processed
+ * @param body - The body that will be sent with the request
+ */
+export type GetTimeoutFunction = (route: string, body: unknown) => number;
+
 export interface APIRequest {
 	/**
 	 * The data that was used to form the body of this request
@@ -230,9 +262,13 @@ export interface APIRequest {
 	route: string;
 }
 
-export interface ResponseLike
-	extends Pick<Response, 'arrayBuffer' | 'bodyUsed' | 'headers' | 'json' | 'ok' | 'status' | 'statusText' | 'text'> {
+export interface ResponseLike extends Pick<
+	Response,
+	'arrayBuffer' | 'bodyUsed' | 'json' | 'ok' | 'status' | 'statusText' | 'text'
+> {
 	body: Readable | ReadableStream | null;
+	clone?(): ResponseLike;
+	headers: Pick<Headers, typeof Symbol.iterator | 'get' | 'has'>;
 }
 
 export interface InvalidRequestWarningData {
@@ -246,29 +282,7 @@ export interface InvalidRequestWarningData {
 	remainingTime: number;
 }
 
-/**
- * Represents a file to be added to the request
- */
-export interface RawFile {
-	/**
-	 * Content-Type of the file
-	 */
-	contentType?: string;
-	/**
-	 * The actual data for the file
-	 */
-	data: Buffer | Uint8Array | boolean | number | string;
-	/**
-	 * An explicit key to use for key of the formdata field for this file.
-	 * When not provided, the index of the file in the files array is used in the form `files[${index}]`.
-	 * If you wish to alter the placeholder snowflake, you must provide this property in the same form (`files[${placeholder}]`)
-	 */
-	key?: string;
-	/**
-	 * The name of the file
-	 */
-	name: string;
-}
+export type { RawFile } from '@discordjs/util';
 
 export interface AuthData {
 	/**
@@ -330,6 +344,32 @@ export interface RequestData {
 	 */
 	reason?: string | undefined;
 	/**
+	 * Determines how a rate limit encountered while making this request should be handled.
+	 *
+	 * Pass `true` to throw a {@link RateLimitError} rather than wait, `false` to wait it out, or
+	 * a filter to decide based on rate limit data. Takes precedence over {@link RESTOptions.rejectOnRateLimit}, so
+	 * `false` opts this request out of an instance-wide policy. Leave it unset to inherit.
+	 *
+	 * @example
+	 * ```ts
+	 * // Fail rather than wait, no matter the rate limit
+	 * await rest.get(Routes.channel(channelId), { rejectOnRateLimit: true });
+	 *
+	 * // Give up rather than wait out a sublimit, which may be several minutes long
+	 * await rest.patch(Routes.channel(channelId), {
+	 * 	body: { name },
+	 * 	rejectOnRateLimit: (rateLimitData) => rateLimitData.sublimitTimeout > 0,
+	 * });
+	 *
+	 * // Spend at most 10 seconds waiting on rate limits
+	 * const deadline = Date.now() + 10_000;
+	 * await rest.get(Routes.channel(channelId), {
+	 * 	rejectOnRateLimit: (rateLimitData) => Date.now() + rateLimitData.retryAfter > deadline,
+	 * });
+	 * ```
+	 */
+	rejectOnRateLimit?: RateLimitQueueFilter | boolean | undefined;
+	/**
 	 * The signal to abort the queue entry or the REST call, where applicable
 	 */
 	signal?: AbortSignal | undefined;
@@ -371,7 +411,7 @@ export interface InternalRequest extends RequestData {
 	method: RequestMethod;
 }
 
-export interface HandlerRequestData extends Pick<InternalRequest, 'body' | 'files' | 'signal'> {
+export interface HandlerRequestData extends Pick<InternalRequest, 'body' | 'files' | 'rejectOnRateLimit' | 'signal'> {
 	auth: boolean | string;
 }
 

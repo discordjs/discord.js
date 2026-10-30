@@ -233,6 +233,8 @@ export class VoiceConnection extends EventEmitter {
 	/**
 	 * The receiver of this voice connection. You should join the voice channel with `selfDeaf` set
 	 * to false for this feature to work properly.
+	 *
+	 * @beta
 	 */
 	public readonly receiver: VoiceReceiver;
 
@@ -376,6 +378,15 @@ export class VoiceConnection extends EventEmitter {
 			as it may have disconnected due to network failure. This will be gracefully handled once the voice websocket
 			dies, and then it is up to the user to decide how they wish to handle this.
 		*/
+
+		/*
+		  deals with race condition when VOICE_SERVER_UPDATE arrives before VOICE_STATE_UPDATE and connection stays
+			stuck in signalling state
+			gh issue #11553
+		*/
+		if (packet.channel_id && this.state.status === VoiceConnectionStatus.Signalling) {
+			this.configureNetworking();
+		}
 	}
 
 	/**
@@ -449,21 +460,23 @@ export class VoiceConnection extends EventEmitter {
 	}
 
 	/**
-	 * Called when the networking instance for this connection closes. If the close code is 4014 (do not reconnect),
-	 * the voice connection will transition to the Disconnected state which will store the close code. You can
-	 * decide whether or not to reconnect when this occurs by listening for the state change and calling reconnect().
+	 * Called when the networking instance for this connection closes. If the close code is 4014, 4021, or 4022
+	 * (do not reconnect), the voice connection will transition to the Disconnected state which will store the
+	 * close code. You can decide whether or not to reconnect when this occurs by listening for the state change
+	 * and calling reconnect().
 	 *
 	 * @remarks
-	 * If the close code was anything other than 4014, it is likely that the closing was not intended, and so the
-	 * VoiceConnection will signal to Discord that it would like to rejoin the channel. This automatically attempts
-	 * to re-establish the connection. This would be seen as a transition from the Ready state to the Signalling state.
+	 * If the close code was anything other than 4014, 4021, or 4022, it is likely that the closing was not intended,
+	 * and so the VoiceConnection will signal to Discord that it would like to rejoin the channel. This automatically
+	 * attempts to re-establish the connection. This would be seen as a transition from the Ready state to the
+	 * Signalling state.
 	 * @param code - The close code
 	 */
 	private onNetworkingClose(code: number) {
 		if (this.state.status === VoiceConnectionStatus.Destroyed) return;
 		// If networking closes, try to connect to the voice channel again.
-		if (code === 4_014) {
-			// Disconnected - networking is already destroyed here
+		if (code === 4_014 || code === 4_021 || code === 4_022) {
+			// Disconnected - these close codes should not trigger a reconnect
 			this.state = {
 				...this.state,
 				status: VoiceConnectionStatus.Disconnected,

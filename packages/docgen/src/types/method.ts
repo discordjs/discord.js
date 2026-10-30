@@ -43,7 +43,6 @@ export class DocumentedMethod extends DocumentedItem<DeclarationReflection | Met
 						? 'private'
 						: undefined,
 				examples,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				abstract: signature.comment?.blockTags?.some((block) => block.tag === '@abstract') || undefined,
 				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
 					? (signature.comment.blockTags

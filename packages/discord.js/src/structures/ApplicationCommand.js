@@ -83,7 +83,7 @@ class ApplicationCommand extends Base {
       /**
        * The name localizations for this command
        *
-       * @type {?Object<Locale, string>}
+       * @type {?LocalizationMap}
        */
       this.nameLocalizations = data.name_localizations;
     } else {
@@ -114,7 +114,7 @@ class ApplicationCommand extends Base {
       /**
        * The description localizations for this command
        *
-       * @type {?Object<Locale, string>}
+       * @type {?LocalizationMap}
        */
       this.descriptionLocalizations = data.description_localizations;
     } else {
@@ -136,11 +136,11 @@ class ApplicationCommand extends Base {
       /**
        * The options of this command
        *
-       * @type {ApplicationCommandOption[]}
+       * @type {?ApplicationCommandOption[]}
        */
       this.options = data.options.map(option => this.constructor.transformOption(option, true));
     } else {
-      this.options ??= [];
+      this.options ??= null;
     }
 
     if ('default_member_permissions' in data) {
@@ -239,11 +239,11 @@ class ApplicationCommand extends Base {
    * @typedef {Object} ApplicationCommandData
    * @property {string} name The name of the command, must be in all lowercase if type is
    * {@link ApplicationCommandType.ChatInput}
-   * @property {Object<Locale, string>} [nameLocalizations] The localizations for the command name
+   * @property {LocalizationMap} [nameLocalizations] The localizations for the command name
    * @property {string} description The description of the command,
    * if type is {@link ApplicationCommandType.ChatInput} or {@link ApplicationCommandType.PrimaryEntryPoint}
    * @property {boolean} [nsfw] Whether the command is age-restricted
-   * @property {Object<Locale, string>} [descriptionLocalizations] The localizations for the command description,
+   * @property {LocalizationMap} [descriptionLocalizations] The localizations for the command description,
    * if type is {@link ApplicationCommandType.ChatInput} or {@link ApplicationCommandType.PrimaryEntryPoint}
    * @property {ApplicationCommandType} [type=ApplicationCommandType.ChatInput] The type of the command
    * @property {ApplicationCommandOptionData[]} [options] Options for the command
@@ -265,9 +265,9 @@ class ApplicationCommand extends Base {
    * @typedef {Object} ApplicationCommandOptionData
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string} name The name of the option
-   * @property {Object<Locale, string>} [nameLocalizations] The name localizations for the option
+   * @property {LocalizationMap} [nameLocalizations] The name localizations for the option
    * @property {string} description The description of the option
-   * @property {Object<Locale, string>} [descriptionLocalizations] The description localizations for the option
+   * @property {LocalizationMap} [descriptionLocalizations] The description localizations for the option
    * @property {boolean} [autocomplete] Whether the autocomplete interaction is enabled for a
    * {@link ApplicationCommandOptionType.String}, {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
@@ -276,6 +276,9 @@ class ApplicationCommand extends Base {
    * @property {ApplicationCommandOptionData[]} [options] Additional options if this option is a subcommand (group)
    * @property {ChannelType[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
+   * @property {FileUploadType[]} [fileTypes] When the option type is attachment,
+   * the allowed types of files that can be uploaded. When only using extensions, include `.jpg`
+   * for images and both `.mp4` and `.mov` for videos for mobile compatibility
    * @property {number} [minValue] The minimum value for an {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
    * @property {number} [maxValue] The maximum value for an {@link ApplicationCommandOptionType.Integer} or
@@ -289,7 +292,7 @@ class ApplicationCommand extends Base {
   /**
    * @typedef {Object} ApplicationCommandOptionChoiceData
    * @property {string} name The name of the choice
-   * @property {Object<Locale, string>} [nameLocalizations] The localized names for this choice
+   * @property {LocalizationMap} [nameLocalizations] The localized names for this choice
    * @property {string|number} value The value of the choice
    */
 
@@ -323,7 +326,7 @@ class ApplicationCommand extends Base {
   /**
    * Edits the localized names of this ApplicationCommand
    *
-   * @param {Object<Locale, string>} nameLocalizations The new localized names for the command
+   * @param {LocalizationMap} nameLocalizations The new localized names for the command
    * @returns {Promise<ApplicationCommand>}
    * @example
    * // Edit the name localizations of this command
@@ -351,7 +354,7 @@ class ApplicationCommand extends Base {
   /**
    * Edits the localized descriptions of this ApplicationCommand
    *
-   * @param {Object<Locale, string>} descriptionLocalizations The new localized descriptions for the command
+   * @param {LocalizationMap} descriptionLocalizations The new localized descriptions for the command
    * @returns {Promise<ApplicationCommand>}
    * @example
    * // Edit the description localizations of this command
@@ -436,9 +439,7 @@ class ApplicationCommand extends Base {
       ('version' in command && command.version !== this.version) ||
       (command.type && command.type !== this.type) ||
       ('nsfw' in command && command.nsfw !== this.nsfw) ||
-      // Future proof for options being nullable
-      // TODO: remove ?? 0 on each when nullable
-      (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
+      command.options?.length !== this.options?.length ||
       defaultMemberPermissions !== (this.defaultMemberPermissions?.bitfield ?? null) ||
       !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||
       !isEqual(
@@ -452,6 +453,7 @@ class ApplicationCommand extends Base {
       return false;
     }
 
+    // Don't need to check both because we already checked the lengths above
     if (command.options) {
       return this.constructor.optionsEqual(this.options, command.options, enforceOptionOrder);
     }
@@ -510,6 +512,7 @@ class ApplicationCommand extends Base {
       option.choices?.length !== existing.choices?.length ||
       option.options?.length !== existing.options?.length ||
       (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length ||
+      (option.fileTypes ?? option.file_types)?.length !== existing.fileTypes?.length ||
       (option.minValue ?? option.min_value) !== existing.minValue ||
       (option.maxValue ?? option.max_value) !== existing.maxValue ||
       (option.minLength ?? option.min_length) !== existing.minLength ||
@@ -555,6 +558,13 @@ class ApplicationCommand extends Base {
       }
     }
 
+    if (existing.fileTypes) {
+      const newTypes = option.fileTypes ?? option.file_types;
+      for (const type of existing.fileTypes) {
+        if (!newTypes.includes(type)) return false;
+      }
+    }
+
     if (existing.options) {
       return this.optionsEqual(existing.options, option.options, enforceOptionOrder);
     }
@@ -568,10 +578,10 @@ class ApplicationCommand extends Base {
    * @typedef {Object} ApplicationCommandOption
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string} name The name of the option
-   * @property {Object<Locale, string>} [nameLocalizations] The localizations for the option name
+   * @property {LocalizationMap} [nameLocalizations] The localizations for the option name
    * @property {string} [nameLocalized] The localized name for this option
    * @property {string} description The description of the option
-   * @property {Object<Locale, string>} [descriptionLocalizations] The localizations for the option description
+   * @property {LocalizationMap} [descriptionLocalizations] The localizations for the option description
    * @property {string} [descriptionLocalized] The localized description for this option
    * @property {boolean} [required] Whether the option is required
    * @property {boolean} [autocomplete] Whether the autocomplete interaction is enabled for a
@@ -581,6 +591,9 @@ class ApplicationCommand extends Base {
    * @property {ApplicationCommandOption[]} [options] Additional options if this option is a subcommand (group)
    * @property {ApplicationCommandOptionAllowedChannelType[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
+   * @property {FileUploadType[]} [fileTypes] When the option type is attachment,
+   * the allowed types of files that can be uploaded. When only using extensions, include `.jpg`
+   * for images and both `.mp4` and `.mov` for videos for mobile compatibility
    * @property {number} [minValue] The minimum value for an {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
    * @property {number} [maxValue] The maximum value for an {@link ApplicationCommandOptionType.Integer} or
@@ -597,7 +610,7 @@ class ApplicationCommand extends Base {
    * @typedef {Object} ApplicationCommandOptionChoice
    * @property {string} name The name of the choice
    * @property {?string} nameLocalized The localized name of the choice in the provided locale, if any
-   * @property {?Object<Locale, string>} [nameLocalizations] The localized names for this choice
+   * @property {?LocalizationMap} [nameLocalizations] The localized names for this choice
    * @property {string|number} value The value of the choice
    */
 
@@ -611,6 +624,7 @@ class ApplicationCommand extends Base {
    */
   static transformOption(option, received) {
     const channelTypesKey = received ? 'channelTypes' : 'channel_types';
+    const fileTypesKey = received ? 'fileTypes' : 'file_types';
     const minValueKey = received ? 'minValue' : 'min_value';
     const maxValueKey = received ? 'maxValue' : 'max_value';
     const minLengthKey = received ? 'minLength' : 'min_length';
@@ -642,6 +656,7 @@ class ApplicationCommand extends Base {
       })),
       options: option.options?.map(opt => this.transformOption(opt, received)),
       [channelTypesKey]: option.channelTypes ?? option.channel_types,
+      [fileTypesKey]: option.fileTypes ?? option.file_types,
       [minValueKey]: option.minValue ?? option.min_value,
       [maxValueKey]: option.maxValue ?? option.max_value,
       [minLengthKey]: option.minLength ?? option.min_length,

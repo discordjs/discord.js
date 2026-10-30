@@ -55,7 +55,7 @@ class ThreadChannel extends BaseChannel {
      * @type {ThreadMemberManager}
      */
     this.members = new ThreadMemberManager(this);
-    if (data) this._patch(data);
+    this._patch(data);
   }
 
   _patch(data) {
@@ -582,7 +582,6 @@ class ThreadChannel extends BaseChannel {
    * @readonly
    */
   get viewable() {
-    if (this.client.user.id === this.guild.ownerId) return true;
     const permissions = this.permissionsFor(this.client.user);
     if (!permissions) return false;
     return permissions.has(PermissionFlagsBits.ViewChannel, false);

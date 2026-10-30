@@ -1,0 +1,27 @@
+name: Guide content
+description: Request to add to the guide or change existing content
+labels: [apps:guide]
+type: Task
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a suggestion! If you are here to ask a question, use Discord instead: https://discord.gg/djs
+  - type: dropdown
+    id: issuetype
+    attributes:
+      label: What is your suggestion about?
+      options:
+        - Requesting new content
+        - Changing existing content
+        - Correcting wrong information
+    validations:
+      required: true
+  - type: input
+    id: section
+    attributes:
+      label: Guide section the suggestion is about.
+  - type: textarea
+    id: body
+    attributes:
+      label: Describe your suggestion in detail.

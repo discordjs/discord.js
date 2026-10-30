@@ -12,6 +12,7 @@ import { ParameterNode } from './ParameterNode';
 import { ReturnNode } from './ReturnNode';
 import { SeeNode } from './SeeNode';
 import { SummaryNode } from './SummaryNode';
+import { UnstableNode } from './UnstableNode';
 
 export async function EnumMemberNode({
 	node,
@@ -78,6 +79,10 @@ export async function EnumMemberNode({
 
 							{enumMember.summary?.deprecatedBlock.length ? (
 								<DeprecatedNode deprecatedBlock={enumMember.summary.deprecatedBlock} version={version} />
+							) : null}
+
+							{enumMember.summary?.unstableBlock?.length ? (
+								<UnstableNode unstableBlock={enumMember.summary.unstableBlock} version={version} />
 							) : null}
 
 							{enumMember.summary?.summarySection.length ? (

@@ -3,12 +3,10 @@
 const { __exportStar } = require('tslib');
 
 // "Root" classes (starting points)
-exports.BaseClient = require('./client/BaseClient.js').BaseClient;
 exports.Client = require('./client/Client.js').Client;
 exports.Shard = require('./sharding/Shard.js').Shard;
 exports.ShardClientUtil = require('./sharding/ShardClientUtil.js').ShardClientUtil;
 exports.ShardingManager = require('./sharding/ShardingManager.js').ShardingManager;
-exports.WebhookClient = require('./client/WebhookClient.js').WebhookClient;
 
 // Errors
 exports.DiscordjsError = require('./errors/DJSError.js').DiscordjsError;
@@ -105,15 +103,18 @@ exports.VoiceStateManager = require('./managers/VoiceStateManager.js').VoiceStat
 // Structures
 exports.ActionRow = require('./structures/ActionRow.js').ActionRow;
 exports.Activity = require('./structures/Presence.js').Activity;
+exports.ActivityInstance = require('./structures/ActivityInstance.js').ActivityInstance;
+exports.ActivityLocation = require('./structures/ActivityLocation.js').ActivityLocation;
 exports.AnnouncementChannel = require('./structures/AnnouncementChannel.js').AnnouncementChannel;
 exports.AnonymousGuild = require('./structures/AnonymousGuild.js').AnonymousGuild;
+exports.AuthorizingIntegrationOwners =
+  require('./structures/AuthorizingIntegrationOwners.js').AuthorizingIntegrationOwners;
 exports.Application = require('./structures/interfaces/Application.js').Application;
 exports.ApplicationCommand = require('./structures/ApplicationCommand.js').ApplicationCommand;
 exports.ApplicationEmoji = require('./structures/ApplicationEmoji.js').ApplicationEmoji;
 exports.ApplicationRoleConnectionMetadata =
   require('./structures/ApplicationRoleConnectionMetadata.js').ApplicationRoleConnectionMetadata;
 exports.Attachment = require('./structures/Attachment.js').Attachment;
-exports.AttachmentBuilder = require('./structures/AttachmentBuilder.js').AttachmentBuilder;
 exports.AutocompleteInteraction = require('./structures/AutocompleteInteraction.js').AutocompleteInteraction;
 exports.AutoModerationActionExecution =
   require('./structures/AutoModerationActionExecution.js').AutoModerationActionExecution;
@@ -126,6 +127,7 @@ exports.BaseGuildTextChannel = require('./structures/BaseGuildTextChannel.js').B
 exports.BaseGuildVoiceChannel = require('./structures/BaseGuildVoiceChannel.js').BaseGuildVoiceChannel;
 exports.BaseInteraction = require('./structures/BaseInteraction.js').BaseInteraction;
 exports.BaseInvite = require('./structures/BaseInvite.js').BaseInvite;
+exports.BaseRole = require('./structures/BaseRole.js').BaseRole;
 exports.BaseSelectMenuComponent = require('./structures/BaseSelectMenuComponent.js').BaseSelectMenuComponent;
 exports.ButtonComponent = require('./structures/ButtonComponent.js').ButtonComponent;
 exports.ButtonInteraction = require('./structures/ButtonInteraction.js').ButtonInteraction;
@@ -180,6 +182,8 @@ exports.InteractionCallbackResponse =
 exports.InteractionCollector = require('./structures/InteractionCollector.js').InteractionCollector;
 exports.InteractionWebhook = require('./structures/InteractionWebhook.js').InteractionWebhook;
 exports.InviteGuild = require('./structures/InviteGuild.js').InviteGuild;
+exports.InviteRole = require('./structures/InviteRole.js').InviteRole;
+exports.LabelComponent = require('./structures/LabelComponent.js').LabelComponent;
 exports.MediaChannel = require('./structures/MediaChannel.js').MediaChannel;
 exports.MediaGalleryComponent = require('./structures/MediaGalleryComponent.js').MediaGalleryComponent;
 exports.MediaGalleryItem = require('./structures/MediaGalleryItem.js').MediaGalleryItem;
@@ -198,7 +202,7 @@ exports.MessageContextMenuCommandInteraction =
 exports.MessageMentions = require('./structures/MessageMentions.js').MessageMentions;
 exports.MessagePayload = require('./structures/MessagePayload.js').MessagePayload;
 exports.MessageReaction = require('./structures/MessageReaction.js').MessageReaction;
-exports.ModalSubmitFields = require('./structures/ModalSubmitFields.js').ModalSubmitFields;
+exports.ModalComponentResolver = require('./structures/ModalComponentResolver.js').ModalComponentResolver;
 exports.ModalSubmitInteraction = require('./structures/ModalSubmitInteraction.js').ModalSubmitInteraction;
 exports.OAuth2Guild = require('./structures/OAuth2Guild.js').OAuth2Guild;
 exports.PartialGroupDMChannel = require('./structures/PartialGroupDMChannel.js').PartialGroupDMChannel;
@@ -254,8 +258,6 @@ exports.WidgetMember = require('./structures/WidgetMember.js').WidgetMember;
 
 // External
 __exportStar(require('discord-api-types/v10'), exports);
-__exportStar(require('@discordjs/builders'), exports);
-__exportStar(require('@discordjs/formatters'), exports);
 __exportStar(require('@discordjs/rest'), exports);
 __exportStar(require('@discordjs/util'), exports);
 __exportStar(require('@discordjs/ws'), exports);

@@ -5,11 +5,12 @@
 	</p>
 	<br />
 	<p>
-		<a href="https://discord.gg/djs"><img src="https://img.shields.io/discord/222078108977594368?color=5865F2&logo=discord&logoColor=white" alt="Discord server" /></a>
+		<a href="https://discord.gg/djs"><img src="https://img.shields.io/badge/join_us-on_discord-5865F2?logo=discord&logoColor=white" alt="Discord server" /></a>
 		<a href="https://www.npmjs.com/package/@discordjs/core"><img src="https://img.shields.io/npm/v/@discordjs/core.svg?maxAge=3600" alt="npm version" /></a>
 		<a href="https://www.npmjs.com/package/@discordjs/core"><img src="https://img.shields.io/npm/dt/@discordjs/core.svg?maxAge=3600" alt="npm downloads" /></a>
 		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/actions/workflows/tests.yml/badge.svg" alt="Build status" /></a>
 		<a href="https://github.com/discordjs/discord.js/commits/main/packages/core"><img alt="Last commit." src="https://img.shields.io/github/last-commit/discordjs/discord.js?logo=github&logoColor=ffffff&path=packages%2Fcore" /></a>
+		<a href="https://opencollective.com/discordjs"><img src="https://img.shields.io/opencollective/backers/discordjs?maxAge=3600&logo=opencollective" alt="backers" /></a>
 		<a href="https://codecov.io/gh/discordjs/discord.js"><img src="https://codecov.io/gh/discordjs/discord.js/branch/main/graph/badge.svg?precision=2&flag=core" alt="Code coverage" /></a>
 	</p>
 	<p>
@@ -24,7 +25,7 @@
 
 ## Installation
 
-**Node.js 22.12.0 or newer is required.**
+**Node.js 24.17.0 or newer is required.**
 
 ```sh
 npm install @discordjs/core
@@ -54,7 +55,6 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 const gateway = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: GatewayIntentBits.GuildMessages | GatewayIntentBits.MessageContent,
-	fetchGatewayInformation: () => rest.get('/gateway/bot') as Promise<RESTGetAPIGatewayBotResult>,
 });
 
 // Create a client to emit relevant events.
@@ -74,7 +74,9 @@ client.on(GatewayDispatchEvents.InteractionCreate, async ({ data: interaction, a
 client.once(GatewayDispatchEvents.Ready, () => console.log('Ready!'));
 
 // Start the WebSocket connection.
-gateway.connect();
+await gateway.connect({
+	gatewayInformation: (await rest.get('/gateway/bot')) as RESTGetAPIGatewayBotResult,
+});
 ```
 
 ## Independent REST API Usage
@@ -118,12 +120,12 @@ If you don't understand something in the documentation, you are experiencing pro
 [website]: https://discord.js.org
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
 [documentation]: https://discord.js.org/docs/packages/core/stable
-[guide]: https://discordjs.guide/
-[guide-source]: https://github.com/discordjs/guide
-[guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
+[guide]: https://discordjs.guide
+[guide-source]: https://github.com/discordjs/discord.js/tree/main/apps/guide
+[guide-update]: https://discordjs.guide/legacy/additional-info/changes-in-v14
 [discord]: https://discord.gg/djs
 [discord-developers]: https://discord.gg/discord-developers
 [source]: https://github.com/discordjs/discord.js/tree/main/packages/core
 [npm]: https://www.npmjs.com/package/@discordjs/core
-[related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
+[related-libs]: https://docs.discord.com/developers/developer-tools/community-resources#libraries
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md

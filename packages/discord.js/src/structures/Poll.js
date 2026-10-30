@@ -179,7 +179,7 @@ class Poll extends Base {
    * @returns {Promise<Message>}
    */
   async end() {
-    if (Date.now() > this.expiresTimestamp) {
+    if (this.expiresTimestamp !== null && Date.now() > this.expiresTimestamp) {
       throw new DiscordjsError(ErrorCodes.PollAlreadyExpired);
     }
 

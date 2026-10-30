@@ -12,15 +12,19 @@ const { Messages } = require('./Messages.js');
  * @ignore
  */
 function makeDiscordjsError(Base) {
-  return class DiscordjsError extends Base {
+  return class extends Base {
+    static {
+      Object.defineProperty(this, 'name', { value: `Discordjs${Base.name}` });
+    }
+
     constructor(code, ...args) {
       super(message(code, args));
       this.code = code;
-      Error.captureStackTrace?.(this, DiscordjsError);
+      Error.captureStackTrace(this, this.constructor);
     }
 
     get name() {
-      return `${super.name} [${this.code}]`;
+      return `${this.constructor.name} [${this.code}]`;
     }
   };
 }

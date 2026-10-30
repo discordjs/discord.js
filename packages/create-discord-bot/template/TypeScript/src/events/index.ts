@@ -1,6 +1,6 @@
 import type { ClientEvents } from 'discord.js';
 import { z } from 'zod';
-import type { StructurePredicate } from '../util/loaders.[REPLACE_IMPORT_EXT]';
+import type { StructurePredicate } from '../util/loaders.ts';
 
 /**
  * Defines the structure of an event.
@@ -19,7 +19,7 @@ export type Event<EventName extends keyof ClientEvents = keyof ClientEvents> = {
 	/**
 	 * Whether or not the event should only be listened to once
 	 *
-	 * @defaultValue false
+	 * @defaultValue `false`
 	 */
 	once?: boolean;
 };

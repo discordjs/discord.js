@@ -1,11 +1,8 @@
-/* eslint-disable id-length */
 /* eslint-disable promise/prefer-await-to-then */
-// @ts-nocheck
-import { performance } from 'node:perf_hooks';
-import { MockAgent, setGlobalDispatcher } from 'undici';
+import { MockAgent, Response, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
-import { beforeEach, afterEach, test, expect } from 'vitest';
-import { DiscordAPIError, REST, BurstHandlerMajorIdKey } from '../src/index.js';
+import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
+import { DiscordAPIError, RateLimitError, REST, BurstHandlerMajorIdKey } from '../src/index.js';
 import { BurstHandler } from '../src/lib/handlers/BurstHandler.js';
 import { genPath } from './util.js';
 
@@ -16,6 +13,7 @@ const api = new REST();
 
 let mockAgent: MockAgent;
 let mockPool: Interceptable;
+let serverOutage = true;
 
 beforeEach(() => {
 	mockAgent = new MockAgent();
@@ -52,32 +50,35 @@ test('Interaction callback creates burst handler', async () => {
 });
 
 test('Requests are handled in bursts', async () => {
-	mockPool.intercept({ path: callbackPath, method: 'POST' }).reply(200).delay(100).times(3);
+	const { promise: responsesReady, resolve: releaseResponses } = Promise.withResolvers<undefined>();
+	const makeRequest = vitest.fn(async () => {
+		await responsesReady;
+		return new Response(null, { status: 200 });
+	});
+	const burstApi = new REST({ makeRequest });
 
-	// Return the current time on these results as their response does not indicate anything
-	const [a, b, c] = await Promise.all([
-		api
-			.post('/interactions/1234567890123456789/totallyarealtoken/callback', {
-				auth: false,
-				body: { type: 4, data: { content: 'Reply1' } },
-			})
-			.then(() => performance.now()),
-		api
-			.post('/interactions/2345678901234567890/anotherveryrealtoken/callback', {
-				auth: false,
-				body: { type: 4, data: { content: 'Reply2' } },
-			})
-			.then(() => performance.now()),
-		api
-			.post('/interactions/3456789012345678901/nowaytheresanotherone/callback', {
-				auth: false,
-				body: { type: 4, data: { content: 'Reply3' } },
-			})
-			.then(() => performance.now()),
+	const requests = Promise.all([
+		burstApi.post('/interactions/1234567890123456789/totallyarealtoken/callback', {
+			auth: false,
+			body: { type: 4, data: { content: 'Reply1' } },
+		}),
+		burstApi.post('/interactions/2345678901234567890/anotherveryrealtoken/callback', {
+			auth: false,
+			body: { type: 4, data: { content: 'Reply2' } },
+		}),
+		burstApi.post('/interactions/3456789012345678901/nowaytheresanotherone/callback', {
+			auth: false,
+			body: { type: 4, data: { content: 'Reply3' } },
+		}),
 	]);
 
-	expect(b - a).toBeLessThan(10);
-	expect(c - a).toBeLessThan(10);
+	try {
+		// All requests must start while every response is still pending.
+		await vitest.waitFor(() => expect(makeRequest).toHaveBeenCalledTimes(3));
+	} finally {
+		releaseResponses(undefined);
+		await requests;
+	}
 });
 
 test('Handle 404', async () => {
@@ -136,5 +137,86 @@ test('Handle unexpected 429', async () => {
 		});
 
 	expect(await unexpectedLimit).toStrictEqual({ test: true });
-	expect(performance.now()).toBeGreaterThanOrEqual(previous + 1_000);
+	expect(firstResolvedTime!).toBeGreaterThanOrEqual(previous + 1_000);
+});
+
+test('rejectOnRateLimit rejects on an unexpected 429', async () => {
+	mockPool
+		.intercept({
+			path: callbackPath,
+			method: 'POST',
+		})
+		.reply(() => ({
+			statusCode: 429,
+			data: '',
+			responseOptions: {
+				headers: {
+					'retry-after': '1',
+					via: '1.1 google',
+				},
+			},
+		}))
+		.times(1);
+
+	const promise = api.post('/interactions/1234567890123456789/totallyarealtoken/callback', {
+		auth: false,
+		body: { type: 4, data: { content: 'Reply' } },
+		rejectOnRateLimit: true,
+	});
+
+	await expect(promise).rejects.toBeInstanceOf(RateLimitError);
+});
+
+test('server responding too slow', async () => {
+	const api2 = new REST({ timeout: 1 }).setToken('A-Very-Really-Real-Token');
+
+	api2.setAgent(mockAgent);
+
+	mockPool
+		.intercept({
+			path: callbackPath,
+			method: 'POST',
+		})
+		.reply(200, '')
+		.delay(100)
+		.times(10);
+
+	const promise = api2.post('/interactions/1234567890123456789/totallyarealtoken/callback', {
+		auth: false,
+		body: { type: 4, data: { content: 'Reply' } },
+	});
+
+	await expect(promise).rejects.toThrowError('aborted');
+}, 1_000);
+
+test('Handle temp server outage', async () => {
+	mockPool
+		.intercept({
+			path: callbackPath,
+			method: 'POST',
+		})
+		.reply(() => {
+			if (serverOutage) {
+				serverOutage = false;
+
+				return {
+					statusCode: 500,
+					data: '',
+				};
+			}
+
+			return {
+				statusCode: 200,
+				data: { test: true },
+				responseOptions,
+			};
+		})
+		.times(2);
+
+	expect(
+		await api.post('/interactions/1234567890123456789/totallyarealtoken/callback', {
+			auth: false,
+			body: { type: 4, data: { content: 'Reply' } },
+		}),
+	).toStrictEqual({ test: true });
 });

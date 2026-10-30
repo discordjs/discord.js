@@ -1,8 +1,16 @@
+import type { Buffer } from 'node:buffer';
 import type { RESTPatchAPIChannelJSONBody, Snowflake } from 'discord-api-types/v10';
 import type { REST } from '../REST.js';
 import { RateLimitError } from '../errors/RateLimitError.js';
 import { RequestMethod } from './types.js';
-import type { GetRateLimitOffsetFunction, RateLimitData, ResponseLike } from './types.js';
+import type {
+	GetRateLimitOffsetFunction,
+	GetRetryBackoffFunction,
+	GetTimeoutFunction,
+	HandlerRequestData,
+	RateLimitData,
+	ResponseLike,
+} from './types.js';
 
 function serializeSearchParam(value: unknown): string | null {
 	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
@@ -28,17 +36,59 @@ function serializeSearchParam(value: unknown): string | null {
 }
 
 /**
+ * Options for serializing URL search parameters.
+ */
+export interface MakeURLSearchParamsOptions {
+	/**
+	 * How array values should be serialized.
+	 *
+	 * @defaultValue `'repeat'`
+	 * @see {@link https://docs.discord.com/developers/reference#array-query-strings}
+	 */
+	arrayFormat?: 'comma' | 'repeat';
+}
+
+/**
  * Creates and populates an URLSearchParams instance from an object, stripping
  * out null and undefined values, while also coercing non-strings to strings.
  *
- * @param options - The options to use
+ * @param parameters - The parameters to use
+ * @param options - The options for serializing URL search parameters
  * @returns A populated URLSearchParams instance
  */
-export function makeURLSearchParams<OptionsType extends object>(options?: Readonly<OptionsType>) {
+export function makeURLSearchParams<ParametersType extends object>(
+	parameters?: Readonly<ParametersType>,
+	options: MakeURLSearchParamsOptions = {},
+) {
 	const params = new URLSearchParams();
-	if (!options) return params;
+	if (!parameters) return params;
+	const { arrayFormat = 'repeat' } = options;
 
-	for (const [key, value] of Object.entries(options)) {
+	for (const [key, value] of Object.entries(parameters)) {
+		if (Array.isArray(value)) {
+			const commaSeparatedElements: string[] | null = arrayFormat === 'comma' ? [] : null;
+
+			for (const element of value) {
+				const serialized = serializeSearchParam(element);
+
+				if (serialized === null) {
+					continue;
+				}
+
+				if (commaSeparatedElements) {
+					commaSeparatedElements.push(serialized);
+				} else {
+					params.append(key, serialized);
+				}
+			}
+
+			if (commaSeparatedElements?.length) {
+				params.append(key, commaSeparatedElements.join(','));
+			}
+
+			continue;
+		}
+
 		const serialized = serializeSearchParam(value);
 		if (serialized !== null) params.append(key, serialized);
 	}
@@ -101,15 +151,13 @@ export function shouldRetry(error: Error | NodeJS.ErrnoException) {
  *
  * @internal
  */
-export async function onRateLimit(manager: REST, rateLimitData: RateLimitData) {
-	const { options } = manager;
-	if (!options.rejectOnRateLimit) return;
+export async function onRateLimit(manager: REST, rateLimitData: RateLimitData, requestData: HandlerRequestData) {
+	// Explicit false opts out of `REST` level `rejectOnRateLimit`, only `undefined` falls back.
+	const policy = requestData.rejectOnRateLimit ?? manager.options.rejectOnRateLimit;
 
-	const shouldThrow =
-		typeof options.rejectOnRateLimit === 'function'
-			? await options.rejectOnRateLimit(rateLimitData)
-			: options.rejectOnRateLimit.some((route) => rateLimitData.route.startsWith(route.toLowerCase()));
-	if (shouldThrow) {
+	if (!policy) return;
+
+	if (policy === true || (await policy(rateLimitData))) {
 		throw new RateLimitError(rateLimitData);
 	}
 }
@@ -155,5 +203,41 @@ export function normalizeRateLimitOffset(offset: GetRateLimitOffsetFunction | nu
 	}
 
 	const result = offset(route);
+	return Math.max(0, result);
+}
+
+/**
+ * Normalizes the retry backoff used to add delay to retrying 5xx and aborted requests.
+ * Applies a Math.max(0, N) to prevent negative backoffs, also deals with callbacks.
+ *
+ * @internal
+ */
+export function normalizeRetryBackoff(
+	retryBackoff: GetRetryBackoffFunction | number,
+	route: string,
+	statusCode: number | null,
+	retryCount: number,
+	requestBody: unknown,
+): number | null {
+	if (typeof retryBackoff === 'number') {
+		return Math.max(0, retryBackoff) * (1 << retryCount);
+	}
+
+	// No need to Math.max as we'll only set the sleep timer if the value is > 0 (and not equal)
+	return retryBackoff(route, statusCode, retryCount, requestBody);
+}
+
+/**
+ * Normalizes the timeout for aborting requests. Applies a Math.max(0, N) to prevent negative timeouts,
+ * also deals with callbacks.
+ *
+ * @internal
+ */
+export function normalizeTimeout(timeout: GetTimeoutFunction | number, route: string, requestBody: unknown): number {
+	if (typeof timeout === 'number') {
+		return Math.max(0, timeout);
+	}
+
+	const result = timeout(route, requestBody);
 	return Math.max(0, result);
 }
