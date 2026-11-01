@@ -1,16 +1,16 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, extname, basename, relative } from 'node:path';
 import jsdoc2md from 'jsdoc-to-markdown';
-import { type JSONOutput, Application, TSConfigReader } from 'typedoc';
+// import { type JSONOutput, Application, TSConfigReader } from 'typedoc';
 import type { CLIOptions } from '../bin/index.js';
 import { Documentation } from './documentation.js';
 import type { RootTypes, ChildTypes, CustomDocs } from './interfaces/index.js';
 
-export type DeclarationReflection = JSONOutput.DeclarationReflection;
-export type SignatureReflection = JSONOutput.SignatureReflection;
-export type SourceReference = JSONOutput.SourceReference;
-export type ParameterReflection = JSONOutput.ParameterReflection;
-export type LiteralType = JSONOutput.LiteralType;
+// export type DeclarationReflection = JSONOutput.DeclarationReflection;
+// export type SignatureReflection = JSONOutput.SignatureReflection;
+// export type SourceReference = JSONOutput.SourceReference;
+// export type ParameterReflection = JSONOutput.ParameterReflection;
+// export type LiteralType = JSONOutput.LiteralType;
 interface CustomFiles {
 	files: {
 		id?: string;
@@ -23,15 +23,16 @@ interface CustomFiles {
 }
 
 export async function build({ input, custom: customDocs, root, output, newOutput, typescript }: CLIOptions) {
-	let data: (ChildTypes & RootTypes)[] | DeclarationReflection[] = [];
+	let data: (ChildTypes & RootTypes)[] /* | DeclarationReflection[] */ = [];
 	if (typescript) {
+		/*
 		console.log('Parsing Typescript in source files...');
 		const app = await Application.bootstrap({ entryPoints: input }, [new TSConfigReader()]);
 		const project = await app.convert();
 		if (project) {
 			data = app.serializer.toObject(project).children!;
 			console.log(`${data.length} items parsed.`);
-		}
+		} */
 	} else {
 		console.log('Parsing JSDocs in source files...');
 

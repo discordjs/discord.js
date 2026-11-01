@@ -1,14 +1,15 @@
-import type { DeclarationReflection, SignatureReflection } from '../index.js';
+// import type { DeclarationReflection, SignatureReflection } from '../index.js';
 import type { Event } from '../interfaces/index.js';
-import { parseType } from '../util/parseType.js';
+// import { parseType } from '../util/parseType.js';
 import { DocumentedItemMeta } from './item-meta.js';
 import { DocumentedItem } from './item.js';
 import { DocumentedParam } from './param.js';
-import { DocumentedVarType } from './var-type.js';
+// import { DocumentedVarType } from './var-type.js';
 
-export class DocumentedEvent extends DocumentedItem<DeclarationReflection | Event> {
+export class DocumentedEvent extends DocumentedItem</* DeclarationReflection | */ Event> {
 	public override serializer() {
 		if (this.config.typescript) {
+			/*
 			const data = this.data as DeclarationReflection;
 			const signature = (data.signatures ?? [])[0] ?? data;
 			let meta;
@@ -79,7 +80,7 @@ export class DocumentedEvent extends DocumentedItem<DeclarationReflection | Even
 						?.content.reduce((prev, curr) => (prev += curr.text), '')
 						.trim() || undefined,
 				meta,
-			};
+			}; */
 		}
 
 		const data = this.data as Event;

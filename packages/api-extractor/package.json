@@ -55,7 +55,7 @@
 		"resolve": "~1.22.12",
 		"semver": "~7.7.4",
 		"source-map": "~0.6.1",
-		"typescript": "npm:@typescript/typescript6@~6.0.2"
+		"typescript": "~7.1.0-beta"
 	},
 	"devDependencies": {
 		"@types/node": "^24.13.3",
@@ -66,7 +66,6 @@
 		"oxfmt": "^0.74.0",
 		"oxlint": "^1.89.0",
 		"terser": "^5.51.2",
-		"turbo": "^2.10.12",
-		"typescript-native": "npm:typescript@~7.0.2"
+		"turbo": "^2.10.12"
 	}
 }

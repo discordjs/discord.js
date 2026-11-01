@@ -614,8 +614,6 @@ export class ExtractorConfig {
 		// If there is no package, then just use the starting folder
 		const baseFolder: string = packageFolder ?? startingFolder;
 
-		let projectFolderLookupToken: string | undefined;
-
 		// First try the standard "config" subfolder:
 		let configFilename: string = path.join(baseFolder, 'config', ExtractorConfig.FILENAME);
 		if (FileSystem.exists(configFilename)) {
@@ -639,7 +637,6 @@ export class ExtractorConfig {
 			configObject,
 			configObjectFullPath,
 			packageJsonFullPath,
-			projectFolderLookupToken,
 		};
 	}
 
@@ -777,7 +774,10 @@ export class ExtractorConfig {
 					currentConfigFolderPath,
 				);
 
-				entryPointWithAbsolutePath.push({ ...entryPoint, filePath: absoluteFilePath });
+				entryPointWithAbsolutePath.push({
+					...entryPoint,
+					filePath: absoluteFilePath,
+				});
 			}
 
 			configFile.additionalEntryPoints = entryPointWithAbsolutePath;
@@ -1033,7 +1033,10 @@ export class ExtractorConfig {
 					throw new Error('The "additionalEntryPoints" path does not exist: ' + absoluteEntryPointFilePath);
 				}
 
-				additionalEntryPoints.push({ ...entryPoint, filePath: absoluteEntryPointFilePath });
+				additionalEntryPoints.push({
+					...entryPoint,
+					filePath: absoluteEntryPointFilePath,
+				});
 			}
 
 			const bundledPackages: string[] = configObject.bundledPackages ?? [];
@@ -1360,7 +1363,11 @@ export class ExtractorConfig {
 			throw new Error(tsdocConfigFile.getErrorSummary());
 		}
 
-		return new ExtractorConfig({ ...extractorConfigParameters, tsdocConfigFile, tsdocConfiguration });
+		return new ExtractorConfig({
+			...extractorConfigParameters,
+			tsdocConfigFile,
+			tsdocConfiguration,
+		});
 	}
 
 	/**

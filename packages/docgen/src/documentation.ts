@@ -1,7 +1,7 @@
-import { dirname, join, relative } from 'node:path';
-import { ReflectionKind } from 'typedoc';
+import { /* dirname, */ join, relative } from 'node:path';
+// import { ReflectionKind } from 'typedoc';
 import packageFile from '../package.json' with { type: 'json' };
-import type { DeclarationReflection } from './index.js';
+// import type { DeclarationReflection } from "./index.js";
 import type { ChildTypes, Class, Config, CustomDocs, RootTypes } from './interfaces/index.js';
 import { DocumentedClass } from './types/class.js';
 import { DocumentedConstructor } from './types/constructor.js';
@@ -11,6 +11,7 @@ import { DocumentedInterface } from './types/interface.js';
 import { DocumentedMember } from './types/member.js';
 import { DocumentedMethod } from './types/method.js';
 import { DocumentedTypeDef } from './types/typedef.js';
+// import type { DeclarationReflection } from './index.js';
 
 export class Documentation {
 	public readonly classes = new Map<string, DocumentedClass>();
@@ -24,11 +25,12 @@ export class Documentation {
 	public readonly externals = new Map<string, DocumentedExternal>();
 
 	public constructor(
-		data: DeclarationReflection[] | RootTypes[],
+		data: /* DeclarationReflection[] | */ RootTypes[],
 		private readonly config: Config,
 		private readonly custom?: Record<string, CustomDocs>,
 	) {
 		if (config.typescript) {
+			/*
 			const items = data as DeclarationReflection[];
 
 			for (const item of items) {
@@ -60,7 +62,7 @@ export class Documentation {
 					default:
 						break;
 				}
-			}
+			} */
 		} else {
 			let items = data as RootTypes[];
 			items = items.filter((item) => !item.ignore);
@@ -109,8 +111,9 @@ export class Documentation {
 		}
 	}
 
-	public parse(items: ChildTypes[] | DeclarationReflection[], prop?: DeclarationReflection) {
+	public parse(items: ChildTypes[] /* | DeclarationReflection[], prop?: DeclarationReflection */) {
 		if (this.config.typescript) {
+			/*
 			const it = items as DeclarationReflection[];
 
 			for (const member of it) {
@@ -184,7 +187,7 @@ export class Documentation {
 				if (!name && !info.length) {
 					console.warn('Raw object:', member);
 				}
-			}
+			} */
 		} else {
 			const it = items as ChildTypes[];
 
@@ -213,8 +216,10 @@ export class Documentation {
 					}
 
 					default: {
-						// @ts-expect-error: This is a valid case
-						console.warn(`- Unknown documentation kind "${member.kind}" - \n${JSON.stringify(member)}\n`);
+						console.warn(
+							// @ts-expect-error: This is a valid case
+							`- Unknown documentation kind "${member.kind}" - \n${JSON.stringify(member)}\n`,
+						);
 					}
 				}
 
@@ -233,7 +238,7 @@ export class Documentation {
 
 				const info = [];
 				const name = (member.name || item?.data.name) ?? 'UNKNOWN';
-				// @ts-expect-error: Typescript can't infer this
+				// @ ts-expect-error: Typescript can't infer this
 				const memberof = member.memberof ?? item?.data?.memberof;
 				const meta =
 					member.kind === 'constructor'
