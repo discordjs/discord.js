@@ -30,7 +30,7 @@
 		"directory": "packages/create-discord-bot"
 	},
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
-	"bin": "./dist/index.js",
+	"bin": "./dist/bin/index.js",
 	"directories": {
 		"lib": "src",
 		"bin": "bin"
