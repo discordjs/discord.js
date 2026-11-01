@@ -169,13 +169,14 @@ class BaseInvite extends Base {
     return this.url;
   }
 
-  toJSON() {
+  toJSON({ ...props } = {}) {
     return super.toJSON({
       url: true,
       expiresTimestamp: true,
       uses: false,
       channel: 'channelId',
       inviter: 'inviterId',
+      ...props,
     });
   }
 

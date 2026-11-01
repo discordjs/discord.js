@@ -10,6 +10,7 @@ const {
   MessageFlags,
   MessageReferenceType,
   PermissionFlagsBits,
+  GuildFeature,
 } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { ReactionManager } = require('../managers/ReactionManager.js');
@@ -421,6 +422,10 @@ class Message extends Base {
        * @property {?Snowflake} interactedMessageId
        * Id of the message that contained interactive component.
        * Present only on messages created from component interactions
+       * @property {?User} targetUser
+       * The user the command was run on. Present only on user context menu command interactions
+       * @property {?Snowflake} targetMessageId
+       * Id of the message the command was run on. Present only on message context menu command interactions
        * @property {?MessageInteractionMetadata} triggeringInteractionMetadata
        * Metadata for the interaction that was used to open the modal. Present only on modal submit interactions
        */
@@ -869,6 +874,7 @@ class Message extends Base {
       this.reference?.type !== MessageReferenceType.Forward &&
       this.type === MessageType.Default &&
       !this.poll &&
+      this.guild.features.includes(GuildFeature.News) &&
       channel.viewable &&
       channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );

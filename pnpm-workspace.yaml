@@ -19,6 +19,9 @@ allowBuilds:
 
 autoInstallPeers: false
 
+minimumReleaseAgeExclude:
+  - '@discordjs/opus@0.11.0'
+
 patchedDependencies:
   '@microsoft/tsdoc-config@0.17.1': patches/@microsoft__tsdoc-config@0.17.1.patch
 

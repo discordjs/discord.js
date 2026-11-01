@@ -3,6 +3,7 @@
 import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/rest';
 import {
 	Routes,
+	type Locale,
 	type RESTGetAPIApplicationCommandPermissionsResult,
 	type RESTGetAPIApplicationCommandResult,
 	type RESTGetAPIApplicationCommandsQuery,
@@ -42,10 +43,11 @@ export class ApplicationCommandsAPI {
 	public async getGlobalCommands(
 		applicationId: Snowflake,
 		query: RESTGetAPIApplicationCommandsQuery = {},
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, locale, signal }: Pick<RequestData, 'auth' | 'signal'> & { locale?: Locale } = {},
 	) {
 		return this.rest.get(Routes.applicationCommands(applicationId), {
 			auth,
+			headers: locale ? { 'X-Discord-Locale': locale } : {},
 			query: makeURLSearchParams(query),
 			signal,
 		}) as Promise<RESTGetAPIApplicationCommandsResult>;
@@ -161,10 +163,11 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		query: RESTGetAPIApplicationGuildCommandsQuery = {},
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, locale, signal }: Pick<RequestData, 'auth' | 'signal'> & { locale?: Locale } = {},
 	) {
 		return this.rest.get(Routes.applicationGuildCommands(applicationId, guildId), {
 			auth,
+			headers: locale ? { 'X-Discord-Locale': locale } : {},
 			query: makeURLSearchParams(query),
 			signal,
 		}) as Promise<RESTGetAPIApplicationGuildCommandsResult>;

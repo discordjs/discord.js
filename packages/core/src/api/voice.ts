@@ -8,9 +8,7 @@ import {
 	type RESTGetAPIGuildVoiceStateUserResult,
 	type RESTGetAPIGuildVoiceStateCurrentMemberResult,
 	type RESTPatchAPIGuildVoiceStateUserJSONBody,
-	type RESTPatchAPIGuildVoiceStateCurrentMemberResult,
 	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
-	type RESTPatchAPIGuildVoiceStateUserResult,
 } from 'discord-api-types/v10';
 
 export class VoiceAPI {
@@ -71,12 +69,12 @@ export class VoiceAPI {
 		body: RESTPatchAPIGuildVoiceStateUserJSONBody,
 		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
-		return this.rest.patch(Routes.guildVoiceState(guildId, userId), {
+		await this.rest.patch(Routes.guildVoiceState(guildId, userId), {
 			auth,
 			reason,
 			body,
 			signal,
-		}) as Promise<RESTPatchAPIGuildVoiceStateUserResult>;
+		});
 	}
 
 	/**
@@ -92,10 +90,10 @@ export class VoiceAPI {
 		body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {},
 		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
-		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
+		await this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
 			auth,
 			body,
 			signal,
-		}) as Promise<RESTPatchAPIGuildVoiceStateCurrentMemberResult>;
+		});
 	}
 }

@@ -92,9 +92,8 @@ export class SoundboardSound<Omitted extends keyof APISoundboardSound | '' = ''>
 	 *
 	 * @remarks only available for guild soundboard sounds
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
-
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
 }

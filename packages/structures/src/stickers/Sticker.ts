@@ -82,7 +82,7 @@ export class Sticker<Omitted extends keyof APISticker | '' = ''> extends Structu
 	/**
 	 * The time the sticker was created at
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}

@@ -139,6 +139,7 @@ import type {
   GuildMessageManager,
   GuildOnboarding,
   GuildResolvable,
+  GuildScheduledEventCreateOptions,
   GuildScheduledEventManager,
   GuildScheduledEventRecurrenceRuleOptions,
   GuildTextBasedChannel,
@@ -383,7 +384,7 @@ client.on('interactionCreate', async interaction => {
   // @ts-expect-error double nested components array
   await interaction.reply({ content: 'Hi!', components: [[button]] });
 
-  void new ActionRowBuilder({});
+  new ActionRowBuilder({});
 
   // @ts-expect-error button as top-level component
   await interaction.reply({ content: 'Hi!', components: [button] });
@@ -832,6 +833,14 @@ client.on('presenceUpdate', (oldPresence, { client }) => {
 declare const slashCommandBuilder: ChatInputCommandBuilder;
 declare const contextMenuCommandBuilder: ContextMenuCommandBuilder;
 declare const guild: Guild;
+
+await guild.soundboardSounds.create({
+  file: './sound.mp3',
+  name: 'sound',
+  emojiId: null,
+  emojiName: null,
+  volume: null,
+});
 
 client.on('clientReady', async client => {
   expectType<Client<true>>(client);
@@ -1796,6 +1805,11 @@ declare const guildChannelManager: GuildChannelManager;
     expectType<Guild>(message.guild);
     expectType<Snowflake>(message.guildId);
     expectType<GuildTextBasedChannel>(message.channel.messages.channel);
+
+    if (message.interactionMetadata) {
+      expectType<User | null>(message.interactionMetadata.targetUser);
+      expectType<Snowflake | null>(message.interactionMetadata.targetMessageId);
+    }
   }
 }
 
@@ -2999,6 +3013,14 @@ client.on('interactionCreate', async interaction => {
 
 declare const guildScheduledEventManager: GuildScheduledEventManager;
 await guildScheduledEventManager.edit(snowflake, { recurrenceRule: null });
+await guildScheduledEventManager.edit(snowflake, { description: null });
+
+{
+  const event = await guildScheduledEventManager.fetch(snowflake);
+  await event.setDescription(null);
+  await event.edit({ description: null });
+  expectNotAssignable<GuildScheduledEventCreateOptions['description']>(null);
+}
 
 {
   expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
