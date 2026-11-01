@@ -72,7 +72,7 @@
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
-		"@discordjs/opus": "^0.10.0",
+		"@discordjs/opus": "^0.11.0",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^6.1.0",
 		"@noble/ciphers": "^2.4.0",

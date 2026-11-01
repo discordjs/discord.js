@@ -1878,7 +1878,7 @@ importers:
         version: 0.38.54
       prism-media:
         specifier: ^1.3.5
-        version: 1.3.5(@discordjs/opus@0.10.0(encoding@0.1.13)(supports-color@10.2.2))
+        version: 1.3.5(@discordjs/opus@0.11.0(encoding@0.1.13)(supports-color@10.2.2))
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
@@ -1890,8 +1890,8 @@ importers:
         specifier: workspace:^
         version: link:../api-extractor
       '@discordjs/opus':
-        specifier: ^0.10.0
-        version: 0.10.0(encoding@0.1.13)(supports-color@10.2.2)
+        specifier: ^0.11.0
+        version: 0.11.0(encoding@0.1.13)(supports-color@10.2.2)
       '@discordjs/scripts':
         specifier: workspace:^
         version: link:../scripts
@@ -2728,9 +2728,9 @@ packages:
     resolution: {integrity: sha512-YJOVVZ545x24mHzANfYoy0BJX5PDyeZlpiJjDkUBM/V/Ao7TFX9lcUvCN4nr0tbr5ubeaXxtEBILUrHtTphVeQ==}
     hasBin: true
 
-  '@discordjs/opus@0.10.0':
-    resolution: {integrity: sha512-HHEnSNrSPmFEyndRdQBJN2YE6egyXS9JUnJWyP6jficK0Y+qKMEZXyYTgmzpjrxXP1exM/hKaNP7BRBUEWkU5w==}
-    engines: {node: '>=12.0.0'}
+  '@discordjs/opus@0.11.0':
+    resolution: {integrity: sha512-f7w9QxyheGD6rwVuS68EAeF8S+5WhodQd9mol39RxmFmOj0jStSD/RvFGfF3KJIxb/4RZwCV6a0SOGrbXKKXdw==}
+    engines: {node: '>=22'}
 
   '@discordjs/rest@2.6.3':
     resolution: {integrity: sha512-wvOylxNYJkwKjctS/Mn5GP1w9r3/rzyH+ThD1JlAca6zEdlHs8QWBBUQJpU5Q+W6DoIj/Ljh1IPlZs7hTU+UAg==}
@@ -11620,8 +11620,8 @@ packages:
       sass:
         optional: true
 
-  node-addon-api@8.9.1:
-    resolution: {integrity: sha512-4eUQWVPCUUUiBjLnHS3cXWeC6ryoPUc0U3rP7IuzapoGbzMqd/r6KKO0clr0b+snQhsrueFEhCZDdK+LK7hxKg==}
+  node-addon-api@8.9.2:
+    resolution: {integrity: sha512-VijLXbi3UACN69I0JVXJsX4tjACjNoQDgv2gTF6sx2wWEi8tkSg2eX8p5gSIFi8z2+DL3oHmY6OyKce38SDolg==}
     engines: {node: ^18 || ^20 || >= 21}
 
   node-domexception@1.0.0:
@@ -15285,10 +15285,10 @@ snapshots:
       - encoding
       - supports-color
 
-  '@discordjs/opus@0.10.0(encoding@0.1.13)(supports-color@10.2.2)':
+  '@discordjs/opus@0.11.0(encoding@0.1.13)(supports-color@10.2.2)':
     dependencies:
       '@discordjs/node-pre-gyp': 0.4.5(encoding@0.1.13)(supports-color@10.2.2)
-      node-addon-api: 8.9.1
+      node-addon-api: 8.9.2
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -24512,7 +24512,7 @@ snapshots:
       - '@types/node'
       - babel-plugin-macros
 
-  node-addon-api@8.9.1: {}
+  node-addon-api@8.9.2: {}
 
   node-domexception@1.0.0: {}
 
@@ -25188,9 +25188,9 @@ snapshots:
     dependencies:
       parse-ms: 4.0.0
 
-  prism-media@1.3.5(@discordjs/opus@0.10.0(encoding@0.1.13)(supports-color@10.2.2)):
+  prism-media@1.3.5(@discordjs/opus@0.11.0(encoding@0.1.13)(supports-color@10.2.2)):
     optionalDependencies:
-      '@discordjs/opus': 0.10.0(encoding@0.1.13)(supports-color@10.2.2)
+      '@discordjs/opus': 0.11.0(encoding@0.1.13)(supports-color@10.2.2)
 
   proc-log@4.2.0: {}
 
