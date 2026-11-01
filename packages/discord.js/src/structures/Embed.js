@@ -2,6 +2,8 @@
 
 const { embedLength } = require('@discordjs/util');
 const isEqual = require('fast-deep-equal');
+const { EmbedFlagsBitField } = require('../util/EmbedFlagsBitField.js');
+const { EmbedMediaFlagsBitField } = require('../util/EmbedMediaFlagsBitField.js');
 
 /**
  * Represents an embed.
@@ -78,11 +80,26 @@ class Embed {
   }
 
   /**
+   * The flags of this embed.
+   *
+   * @type {Readonly<EmbedFlagsBitField>}
+   * @readonly
+   */
+  get flags() {
+    return new EmbedFlagsBitField(this.data.flags ?? 0).freeze();
+  }
+
+  /**
    * @typedef {Object} EmbedAssetData
-   * @property {?string} url The URL of the image
-   * @property {?string} proxyURL The proxy URL of the image
-   * @property {?number} height The height of the image
-   * @property {?number} width The width of the image
+   * @property {?string} url The URL of the image or video
+   * @property {?string} proxyURL The proxy URL of the image or video
+   * @property {?number} height The height of the image or video
+   * @property {?number} width The width of the image or video
+   * @property {?string} contentType The media type of the image or video
+   * @property {?string} placeholder The thumbhash placeholder of the image or video
+   * @property {?number} placeholderVersion The version of the placeholder
+   * @property {?string} description The description (alt text) of the image or video
+   * @property {Readonly<EmbedMediaFlagsBitField>} flags The media flags of the image or video
    */
 
   /**
@@ -98,6 +115,11 @@ class Embed {
       proxyURL: this.data.thumbnail.proxy_url,
       height: this.data.thumbnail.height,
       width: this.data.thumbnail.width,
+      contentType: this.data.thumbnail.content_type,
+      placeholder: this.data.thumbnail.placeholder,
+      placeholderVersion: this.data.thumbnail.placeholder_version,
+      description: this.data.thumbnail.description,
+      flags: new EmbedMediaFlagsBitField(this.data.thumbnail.flags ?? 0).freeze(),
     };
   }
 
@@ -114,6 +136,11 @@ class Embed {
       proxyURL: this.data.image.proxy_url,
       height: this.data.image.height,
       width: this.data.image.width,
+      contentType: this.data.image.content_type,
+      placeholder: this.data.image.placeholder,
+      placeholderVersion: this.data.image.placeholder_version,
+      description: this.data.image.description,
+      flags: new EmbedMediaFlagsBitField(this.data.image.flags ?? 0).freeze(),
     };
   }
 
@@ -130,6 +157,11 @@ class Embed {
       proxyURL: this.data.video.proxy_url,
       height: this.data.video.height,
       width: this.data.video.width,
+      contentType: this.data.video.content_type,
+      placeholder: this.data.video.placeholder,
+      placeholderVersion: this.data.video.placeholder_version,
+      description: this.data.video.description,
+      flags: new EmbedMediaFlagsBitField(this.data.video.flags ?? 0).freeze(),
     };
   }
 
@@ -240,6 +272,7 @@ class Embed {
       this.footer?.iconURL === other.footer?.icon_url &&
       this.footer?.text === other.footer?.text &&
       this.image?.url === other.image?.url &&
+      this.flags?.bitfield === (other.flags ?? 0) &&
       this.thumbnail?.url === other.thumbnail?.url &&
       (this.timestamp && Date.parse(this.timestamp)) === (other.timestamp ? Date.parse(other.timestamp) : null) &&
       this.title === (other.title ?? null) &&
