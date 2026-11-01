@@ -19,6 +19,9 @@ allowBuilds:
 
 autoInstallPeers: false
 
+minimumReleaseAgeExclude:
+  - '@discordjs/opus@0.11.0'
+
 peerDependencyRules:
   allowAny:
     - '*'
