@@ -1,21 +1,19 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import { Buffer } from 'node:buffer';
 import crypto from 'node:crypto';
 import type { VoiceReceivePayload } from 'discord-api-types/voice/v8';
 import { VoiceOpcodes } from 'discord-api-types/voice/v8';
-import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection.js';
 import { NetworkingStatusCode, type ConnectionData } from '../networking/Networking.js';
-import { methods } from '../util/Secretbox.js';
 import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants.js';
+import { methods } from '../util/Secretbox.js';
+import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection.js';
 import {
 	AudioReceiveStream,
 	createDefaultAudioReceiveStreamOptions,
 	AudioPacket,
 	type AudioReceiveStreamOptions,
 } from './AudioReceiveStream.js';
-import { SSRCMap } from './SSRCMap.js';
 import { SpeakingMap } from './SpeakingMap.js';
+import { SSRCMap } from './SSRCMap.js';
 
 const UNPADDED_NONCE_LENGTH = 4;
 const AUTH_TAG_LENGTH = 16;
@@ -75,7 +73,10 @@ export class VoiceReceiver {
 		if (packet.op === VoiceOpcodes.ClientDisconnect) {
 			this.ssrcMap.delete(packet.d.user_id);
 		} else if (packet.op === VoiceOpcodes.Speaking) {
-			this.ssrcMap.update({ userId: packet.d.user_id, audioSSRC: packet.d.ssrc });
+			this.ssrcMap.update({
+				userId: packet.d.user_id,
+				audioSSRC: packet.d.ssrc,
+			});
 		}
 	}
 

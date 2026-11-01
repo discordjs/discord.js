@@ -1,43 +1,40 @@
 {
 	"name": "@discordjs/api-extractor-model",
 	"version": "7.33.8",
-	"description": "A helper library for loading and saving the .api.json files created by API Extractor",
 	"private": true,
+	"description": "A helper library for loading and saving the .api.json files created by API Extractor",
+	"homepage": "https://discord.js.org",
+	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/discordjs/discord.js.git",
 		"directory": "packages/api-extractor-model"
 	},
-	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
-	"license": "MIT",
+	"type": "module",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
-	"type": "module",
-	"scripts": {
-		"build": "tsc",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
-		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src"
-	},
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
 			"default": "./dist/index.js"
 		}
 	},
+	"scripts": {
+		"build": "tsc",
+		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
+		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions"
+	},
 	"dependencies": {
-		"@microsoft/tsdoc": "~0.16.0",
+		"@microsoft/tsdoc": "~0.17.1",
 		"@microsoft/tsdoc-config": "~0.18.1",
 		"@rushstack/node-core-library": "5.23.1"
 	},
 	"devDependencies": {
 		"@types/node": "^24.13.3",
-		"cross-env": "^10.1.0",
-		"eslint": "^9.39.5",
 		"eslint-config-neon": "^0.5.4",
-		"eslint-formatter-compact": "^9.0.1",
-		"eslint-formatter-pretty": "^7.1.0",
-		"prettier": "~3.8.1",
+		"oxfmt": "^0.74.0",
+		"oxlint": "^1.89.0",
 		"terser": "^5.51.2",
 		"turbo": "^2.10.12",
 		"typescript": "npm:@typescript/typescript6@~6.0.2",

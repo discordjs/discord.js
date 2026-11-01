@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
 import { dirname, join, relative } from 'node:path';
 import { ReflectionKind } from 'typedoc';
 import packageFile from '../package.json' with { type: 'json' };
+import type { DeclarationReflection } from './index.js';
 import type { ChildTypes, Class, Config, CustomDocs, RootTypes } from './interfaces/index.js';
 import { DocumentedClass } from './types/class.js';
 import { DocumentedConstructor } from './types/constructor.js';
@@ -11,7 +11,6 @@ import { DocumentedInterface } from './types/interface.js';
 import { DocumentedMember } from './types/member.js';
 import { DocumentedMethod } from './types/method.js';
 import { DocumentedTypeDef } from './types/typedef.js';
-import type { DeclarationReflection } from './index.js';
 
 export class Documentation {
 	public readonly classes = new Map<string, DocumentedClass>();
@@ -239,7 +238,11 @@ export class Documentation {
 				const meta =
 					member.kind === 'constructor'
 						? null
-						: { file: member.meta.filename, line: member.meta.lineno, path: member.meta.path };
+						: {
+								file: member.meta.filename,
+								line: member.meta.lineno,
+								path: member.meta.path,
+							};
 
 				if (memberof) {
 					info.push(`member of "${memberof as string}"`);

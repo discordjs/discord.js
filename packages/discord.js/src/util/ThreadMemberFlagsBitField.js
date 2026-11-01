@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/check-values */
 import { ThreadMemberFlags } from 'discord-api-types/v10';
 import { BitField } from './BitField.js';
 

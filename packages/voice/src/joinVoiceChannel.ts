@@ -1,6 +1,6 @@
 import type { JoinConfig } from './DataStore.js';
-import { createVoiceConnection } from './VoiceConnection.js';
 import type { DiscordGatewayAdapterCreator } from './util/adapter.js';
+import { createVoiceConnection } from './VoiceConnection.js';
 
 /**
  * The options that can be given when creating a voice connection.

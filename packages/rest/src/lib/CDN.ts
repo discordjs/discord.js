@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
 import { CDNRoutes } from 'discord-api-types/v10';
 import {
 	ALLOWED_EXTENSIONS,

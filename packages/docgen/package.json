@@ -2,58 +2,63 @@
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/docgen",
 	"version": "0.12.1",
-	"description": "The docs.json generator for discord.js and its related projects",
 	"private": true,
-	"scripts": {
-		"build": "tsc",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
-		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
-		"fmt": "pnpm run format",
-		"prepack": "pnpm run format && pnpm run build"
-	},
-	"bin": "./bin/index.js",
-	"exports": {
-		".": {
-			"types": "./dist/src/index.d.ts",
-			"default": "./dist/src/index.js"
-		}
-	},
-	"main": "./dist/src/index.js",
-	"types": "./dist/src/index.d.ts",
-	"type": "module",
-	"directories": {
-		"bin": "bin",
-		"lib": "src"
-	},
-	"files": [
-		"bin/index.js",
-		"dist"
+	"description": "The docs.json generator for discord.js and its related projects",
+	"keywords": [
+		"discordjs",
+		"docgen",
+		"docs",
+		"docsgen",
+		"documentation",
+		"generator",
+		"node"
 	],
+	"homepage": "https://discord.js.org",
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"license": "Apache-2.0",
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
 		"Amish Shah <amishshah.2k@gmail.com>",
 		"Schuyler Cebulskie <Gawdl3y@Gawdl3y.com>"
-	],
-	"license": "Apache-2.0",
-	"keywords": [
-		"documentation",
-		"docs",
-		"generator",
-		"docgen",
-		"docsgen",
-		"node",
-		"discordjs"
 	],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/discordjs/discord.js.git",
 		"directory": "packages/docgen"
 	},
-	"bugs": {
-		"url": "https://github.com/discordjs/discord.js/issues"
-	},
-	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
+	"bin": "./bin/index.js",
+	"directories": {
+		"lib": "src",
+		"bin": "bin"
+	},
+	"files": [
+		"bin/index.js",
+		"dist"
+	],
+	"type": "module",
+	"main": "./dist/src/index.js",
+	"module": "./dist/src/index.mjs",
+	"types": "./dist/src/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/src/index.d.ts",
+			"default": "./dist/src/index.js"
+		}
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"scripts": {
+		"build": "tsc",
+		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
+		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions",
+		"fmt": "pnpm run format",
+		"prepack": "pnpm run format && pnpm run build"
+	},
 	"dependencies": {
 		"commander": "^15.0.0",
 		"jsdoc-to-markdown": "^8.0.3",
@@ -63,12 +68,9 @@
 	"devDependencies": {
 		"@types/jsdoc-to-markdown": "^7.0.6",
 		"@types/node": "^24.13.3",
-		"cross-env": "^10.1.0",
-		"eslint": "^9.39.5",
 		"eslint-config-neon": "^0.5.4",
-		"eslint-formatter-compact": "^9.0.1",
-		"eslint-formatter-pretty": "^7.1.0",
-		"prettier": "~3.8.1",
+		"oxfmt": "^0.74.0",
+		"oxlint": "^1.89.0",
 		"terser": "^5.51.2",
 		"turbo": "^2.10.12",
 		"typescript": "npm:@typescript/typescript6@~6.0.2",
@@ -76,9 +78,5 @@
 	},
 	"engines": {
 		"node": ">=24.17.0"
-	},
-	"publishConfig": {
-		"access": "public",
-		"provenance": true
 	}
 }

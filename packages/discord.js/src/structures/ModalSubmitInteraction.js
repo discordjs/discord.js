@@ -3,9 +3,9 @@ import { transformResolved } from '../util/Util.js';
 import { Attachment } from './Attachment.js';
 import { BaseInteraction } from './BaseInteraction.js';
 import { InteractionWebhook } from './InteractionWebhook.js';
+import { InteractionResponses } from './interfaces/InteractionResponses.js';
 import { Message } from './Message.js';
 import { ModalComponentResolver } from './ModalComponentResolver.js';
-import { InteractionResponses } from './interfaces/InteractionResponses.js';
 
 /**
  * @typedef {Object} BaseModalData

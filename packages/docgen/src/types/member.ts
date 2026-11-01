@@ -27,7 +27,7 @@ export class DocumentedMember extends DocumentedItem<DeclarationReflection | Mem
 
 			const base = {
 				name: signature.name,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+				// eslint-disable-next-line no-param-reassign
 				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				see,
 				scope: data.flags.isStatic ? 'static' : undefined,
@@ -51,7 +51,6 @@ export class DocumentedMember extends DocumentedItem<DeclarationReflection | Mem
 						?.find((block) => block.tag === '@default')
 						// eslint-disable-next-line no-param-reassign
 						?.content.reduce((prev, curr) => (prev += curr.text), '')
-						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 						.trim() ||
 						undefined),
 				type: signature.type
@@ -80,7 +79,7 @@ export class DocumentedMember extends DocumentedItem<DeclarationReflection | Mem
 
 				return {
 					...base,
-					// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+					// eslint-disable-next-line no-param-reassign
 					description: getter.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 					see,
 					access:
@@ -103,7 +102,6 @@ export class DocumentedMember extends DocumentedItem<DeclarationReflection | Mem
 							?.find((block) => block.tag === '@default')
 							// eslint-disable-next-line no-param-reassign
 							?.content.reduce((prev, curr) => (prev += curr.text), '')
-							// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 							.trim() ||
 							undefined),
 					type: getter.type ? parseType(getter.type) : undefined,

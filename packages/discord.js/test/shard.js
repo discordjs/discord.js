@@ -1,8 +1,8 @@
 import process from 'node:process';
 import { setTimeout } from 'node:timers';
 import { GatewayIntentBits } from 'discord-api-types/v10';
-import { token } from './auth.json';
 import { Client, Events } from '../src/index.js';
+import { token } from './auth.json';
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],

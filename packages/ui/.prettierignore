@@ -1,5 +1,0 @@
-.turbo
-coverage
-dist
-storybook-static
-vite.config.ts.timestamp*

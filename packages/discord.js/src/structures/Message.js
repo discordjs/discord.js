@@ -8,6 +8,7 @@ import {
   MessageFlags,
   MessageReferenceType,
   PermissionFlagsBits,
+  GuildFeature,
 } from 'discord-api-types/v10';
 import { DiscordjsError, ErrorCodes } from '../errors/index.js';
 import { ReactionManager } from '../managers/ReactionManager.js';
@@ -871,6 +872,7 @@ export class Message extends Base {
       this.reference?.type !== MessageReferenceType.Forward &&
       this.type === MessageType.Default &&
       !this.poll &&
+      this.guild.features.includes(GuildFeature.News) &&
       channel.viewable &&
       channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );

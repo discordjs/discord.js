@@ -2,63 +2,64 @@
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/scripts",
 	"version": "0.1.0",
-	"description": "A set of scripts that we use for our workflows",
 	"private": true,
-	"scripts": {
-		"build": "tsc",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src turbo/generators/config.ts",
-		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src turbo/generators/config.ts",
-		"fmt": "pnpm run format"
-	},
-	"bin": {
-		"generate-split-documentation": "./bin/generateSplitDocumentation.js",
-		"sort-labels": "./bin/sortLabels.js",
-		"inject-version": "./bin/injectVersion.js"
-	},
-	"exports": {
-		".": {
-			"types": "./dist/src/index.d.ts",
-			"default": "./dist/src/index.js"
-		}
-	},
-	"main": "./dist/src/index.js",
-	"types": "./dist/src/index.d.ts",
-	"type": "module",
-	"directories": {
-		"bin": "bin",
-		"lib": "src",
-		"example": "turbo"
-	},
-	"files": [
-		"bin/generateSplitDocumentation.js",
-		"dist"
-	],
-	"contributors": [
-		"Crawl <icrawltogo@gmail.com>"
-	],
-	"license": "Apache-2.0",
+	"description": "A set of scripts that we use for our workflows",
 	"keywords": [
 		"api",
 		"bot",
 		"client",
-		"node",
-		"discordjs"
+		"discordjs",
+		"node"
+	],
+	"homepage": "https://discord.js.org",
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"license": "Apache-2.0",
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>"
 	],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/discordjs/discord.js.git",
 		"directory": "packages/scripts"
 	},
-	"bugs": {
-		"url": "https://github.com/discordjs/discord.js/issues"
-	},
-	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
+	"bin": {
+		"generate-split-documentation": "./bin/generateSplitDocumentation.js",
+		"inject-version": "./bin/injectVersion.js",
+		"sort-labels": "./bin/sortLabels.js"
+	},
+	"directories": {
+		"lib": "src",
+		"bin": "bin",
+		"example": "turbo"
+	},
+	"files": [
+		"bin/generateSplitDocumentation.js",
+		"dist"
+	],
+	"type": "module",
+	"main": "./dist/src/index.js",
+	"module": "./dist/src/index.mjs",
+	"types": "./dist/src/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/src/index.d.ts",
+			"default": "./dist/src/index.js"
+		}
+	},
+	"scripts": {
+		"build": "tsc",
+		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src turbo/generators/config.ts",
+		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src turbo/generators/config.ts --fix --fix-suggestions",
+		"fmt": "pnpm run format"
+	},
 	"dependencies": {
 		"@actions/glob": "^0.7.0",
 		"@discordjs/api-extractor-model": "workspace:^",
 		"@discordjs/api-extractor-utils": "workspace:^",
-		"@microsoft/tsdoc": "~0.16.0",
+		"@microsoft/tsdoc": "~0.17.1",
 		"@microsoft/tsdoc-config": "~0.18.1",
 		"@vercel/blob": "^2.8.0",
 		"@vercel/postgres": "^0.10.0",
@@ -70,12 +71,9 @@
 	"devDependencies": {
 		"@turbo/gen": "^2.10.12",
 		"@types/node": "^24.13.3",
-		"cross-env": "^10.1.0",
-		"eslint": "^9.39.5",
 		"eslint-config-neon": "^0.5.4",
-		"eslint-formatter-compact": "^9.0.1",
-		"eslint-formatter-pretty": "^7.1.0",
-		"prettier": "~3.8.1",
+		"oxfmt": "^0.74.0",
+		"oxlint": "^1.89.0",
 		"terser": "^5.51.2",
 		"turbo": "^2.10.12",
 		"typescript": "npm:@typescript/typescript6@~6.0.2",

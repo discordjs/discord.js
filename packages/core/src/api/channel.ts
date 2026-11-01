@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import { makeURLSearchParams, type RawFile, type RequestData, type REST } from '@discordjs/rest';
 import {
 	Routes,
@@ -393,9 +391,9 @@ export class ChannelsAPI {
 	public async deleteMessage(
 		channelId: Snowflake,
 		messageId: Snowflake,
-		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
-		await this.rest.delete(Routes.channelMessage(channelId, messageId), { auth, reason, signal });
+		await this.rest.delete(Routes.channelMessage(channelId, messageId), { auth, signal });
 	}
 
 	/**

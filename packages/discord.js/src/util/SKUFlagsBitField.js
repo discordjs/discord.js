@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/check-values */
 import { SKUFlags } from 'discord-api-types/v10';
 import { BitField } from './BitField.js';
 

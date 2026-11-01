@@ -1,17 +1,15 @@
-/* eslint-disable @typescript-eslint/dot-notation */
-
 import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import process from 'node:process';
 import { Readable } from 'node:stream';
 import { describe, test, expect, vitest, type MockedFunction, beforeEach, afterEach } from 'vitest';
-import { addAudioPlayer, deleteAudioPlayer } from '../src/DataStore';
-import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
 import type { AudioPlayer } from '../src/audio/AudioPlayer';
 import { createAudioPlayer, AudioPlayerStatus, SILENCE_FRAME } from '../src/audio/AudioPlayer';
 import { AudioPlayerError } from '../src/audio/AudioPlayerError';
 import { AudioResource } from '../src/audio/AudioResource';
+import { addAudioPlayer, deleteAudioPlayer } from '../src/DataStore';
 import { NoSubscriberBehavior } from '../src/index';
+import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
 
 vitest.mock('../src/DataStore', () => ({
 	addAudioPlayer: vitest.fn(),
@@ -164,7 +162,9 @@ describe('State transitions', () => {
 			}
 
 			const resource = await started(new AudioResource([], [Readable.from(silence())], null, 5));
-			player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Pause } });
+			player = createAudioPlayer({
+				behaviors: { noSubscriber: NoSubscriberBehavior.Pause },
+			});
 			connection.subscribe(player);
 
 			player.play(resource);
@@ -185,7 +185,9 @@ describe('State transitions', () => {
 
 		test('NoSubscriberBehavior.Play', async () => {
 			const resource = await started(new AudioResource([], [Readable.from(silence())], null, 5));
-			player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Play } });
+			player = createAudioPlayer({
+				behaviors: { noSubscriber: NoSubscriberBehavior.Play },
+			});
 
 			player.play(resource);
 			expect(player.checkPlayable()).toEqual(true);
@@ -195,7 +197,9 @@ describe('State transitions', () => {
 
 		test('NoSubscriberBehavior.Stop', async () => {
 			const resource = await started(new AudioResource([], [Readable.from(silence())], null, 5));
-			player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Stop } });
+			player = createAudioPlayer({
+				behaviors: { noSubscriber: NoSubscriberBehavior.Stop },
+			});
 
 			player.play(resource);
 			expect(addAudioPlayer).toBeCalledTimes(1);
@@ -409,4 +413,42 @@ test('Propagates errors from streams', async () => {
 	expect(playerError).toBeInstanceOf(AudioPlayerError);
 	expect(AudioPlayerError).toHaveBeenCalledWith(error, resource);
 	expect(player.state.status).toEqual(AudioPlayerStatus.Idle);
+});
+
+describe('Buffering cleanup', () => {
+	test('should remove AudioPlayer from DataStore when stopped during Buffering state', async () => {
+		const player = createAudioPlayer();
+		const readable = new Readable({
+			read() {},
+		});
+
+		const resource = new AudioResource([], [readable], null, 5);
+		player.play(resource);
+
+		expect(player.state.status).toEqual(AudioPlayerStatus.Buffering);
+		expect(addAudioPlayer).toHaveBeenCalledWith(player);
+
+		player.stop();
+
+		expect(player.state.status).toEqual(AudioPlayerStatus.Idle);
+		expect(deleteAudioPlayer).toHaveBeenCalledTimes(1);
+		expect(deleteAudioPlayer).toHaveBeenCalledWith(player);
+	});
+
+	test('does not remain stuck in Buffering after stop() when stream never becomes readable', async () => {
+		const player = createAudioPlayer();
+		const readable = new Readable({ read() {} });
+		const resource = new AudioResource([], [readable], null, 5);
+
+		player.play(resource);
+		expect(player.state.status).toEqual(AudioPlayerStatus.Buffering);
+
+		player.stop();
+
+		await wait();
+		await wait();
+
+		expect(player.state.status).toEqual(AudioPlayerStatus.Idle);
+		expect(player.state.status).not.toEqual(AudioPlayerStatus.Buffering);
+	});
 });

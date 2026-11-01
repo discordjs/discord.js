@@ -1,8 +1,8 @@
 import { ChannelType } from 'discord-api-types/v10';
 import { AnnouncementChannel } from '../structures/AnnouncementChannel.js';
 import { CategoryChannel } from '../structures/CategoryChannel.js';
-import { DMChannel } from '../structures/DMChannel.js';
 import { DirectoryChannel } from '../structures/DirectoryChannel.js';
+import { DMChannel } from '../structures/DMChannel.js';
 import { ForumChannel } from '../structures/ForumChannel.js';
 import { MediaChannel } from '../structures/MediaChannel.js';
 import { PartialGroupDMChannel } from '../structures/PartialGroupDMChannel.js';

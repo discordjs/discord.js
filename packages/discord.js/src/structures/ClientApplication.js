@@ -9,9 +9,9 @@ import { resolveImage } from '../util/DataResolver.js';
 import { PermissionsBitField } from '../util/PermissionsBitField.js';
 import { ActivityInstance } from './ActivityInstance.js';
 import { ApplicationRoleConnectionMetadata } from './ApplicationRoleConnectionMetadata.js';
+import { Application } from './interfaces/Application.js';
 import { SKU } from './SKU.js';
 import { Team } from './Team.js';
-import { Application } from './interfaces/Application.js';
 
 /**
  * @typedef {Object} ClientApplicationInstallParams
@@ -97,7 +97,6 @@ export class ClientApplication extends Application {
      * Scopes and permissions regarding the installation context
      */
 
-    /* eslint-disable jsdoc/valid-types */
     /**
      * The application's supported installation context data.
      *
@@ -107,7 +106,6 @@ export class ClientApplication extends Application {
      * @property {IntegrationTypesConfigurationContext} [1] Scopes and permissions
      * regarding the user-installation context
      */
-    /* eslint-enable jsdoc/valid-types */
 
     if ('integration_types_config' in data) {
       /**

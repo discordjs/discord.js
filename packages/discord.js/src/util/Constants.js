@@ -200,7 +200,6 @@ export const UndeletableMessageTypes = [
   MessageType.ThreadStarterMessage,
 ];
 
-/* eslint-disable jsdoc/valid-types */
 /**
  * A mapping between sticker formats and their respective image formats.
  * - {@link StickerFormatType.PNG} -> {@link ImageFormat.PNG}
@@ -220,7 +219,6 @@ export const StickerFormatExtensionMap = {
   [StickerFormatType.Lottie]: ImageFormat.Lottie,
   [StickerFormatType.GIF]: ImageFormat.GIF,
 };
-/* eslint-enable jsdoc/valid-types */
 
 /**
  * Holographic color values for role styling.

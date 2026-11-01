@@ -1,6 +1,6 @@
 import { GatewayIntentBits } from 'discord-api-types/v10';
-import { token, guildId, channelId, messageId } from './auth.js';
 import { Client, Events, ReactionCollector } from '../src/index.js';
+import { token, guildId, channelId, messageId } from './auth.js';
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],

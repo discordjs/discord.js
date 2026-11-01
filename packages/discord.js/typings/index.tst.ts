@@ -1,4 +1,4 @@
-/* eslint-disable no-lone-blocks, @typescript-eslint/unbound-method, no-param-reassign, id-length */
+/* eslint-disable no-lone-blocks, no-param-reassign, promise/prefer-await-to-then, id-length */
 import type { ChildProcess } from 'node:child_process';
 import type { Worker } from 'node:worker_threads';
 import {
@@ -374,20 +374,34 @@ client.on('interactionCreate', async interaction => {
 
   if (interaction.type !== InteractionType.ApplicationCommand) return;
 
-  const button = { custom_id: '123', label: 'test', style: ButtonStyle.Primary, type: ComponentType.Button } as const;
+  const button = {
+    custom_id: '123',
+    label: 'test',
+    style: ButtonStyle.Primary,
+    type: ComponentType.Button,
+  } as const;
 
   const actionRow = new ActionRowBuilder({
     type: ComponentType.ActionRow,
     components: [button],
   });
 
-  expect(interaction.reply).type.toBeCallableWith({ content: 'Hi!', components: [actionRow] });
+  expect(interaction.reply).type.toBeCallableWith({
+    content: 'Hi!',
+    components: [actionRow],
+  });
 
-  expect(interaction.reply).type.not.toBeCallableWith({ content: 'Hi!', components: [[button]] });
+  expect(interaction.reply).type.not.toBeCallableWith({
+    content: 'Hi!',
+    components: [[button]],
+  });
 
   expect(ActionRowBuilder).type.toBeConstructableWith({});
 
-  expect(interaction.reply).type.not.toBeCallableWith({ content: 'Hi!', components: [button] });
+  expect(interaction.reply).type.not.toBeCallableWith({
+    content: 'Hi!',
+    components: [button],
+  });
 
   expect(interaction.reply).type.toBeCallableWith({
     content: 'test',
@@ -469,11 +483,15 @@ client.on('messageCreate', async message => {
 
   if (message.inGuild()) {
     expect(message).type.toBeAssignableTo<Message<true>>();
-    const component = await message.awaitMessageComponent({ componentType: ComponentType.Button });
+    const component = await message.awaitMessageComponent({
+      componentType: ComponentType.Button,
+    });
     expect(component).type.toBe<ButtonInteraction<'cached'>>();
     expect(await component.reply({ withResponse: true })).type.toBe<InteractionCallbackResponse<true>>();
 
-    const buttonCollector = message.createMessageComponentCollector({ componentType: ComponentType.Button });
+    const buttonCollector = message.createMessageComponentCollector({
+      componentType: ComponentType.Button,
+    });
     expect(buttonCollector).type.toBe<InteractionCollector<ButtonInteraction<'cached'>>>();
     expect(buttonCollector.filter).type.toBeAssignableTo<
       (
@@ -496,12 +514,16 @@ client.on('messageCreate', async message => {
   expect(channel.send).type.not.toBeCallableWith();
   expect(client.channels.createMessage).type.not.toBeCallableWith();
   expect(channel.send).type.not.toBeCallableWith({ another: 'property' });
-  expect(client.channels.createMessage).type.not.toBeCallableWith({ another: 'property' });
+  expect(client.channels.createMessage).type.not.toBeCallableWith({
+    another: 'property',
+  });
   expect(client.channels.createMessage).type.not.toBeCallableWith('string');
   // Check collector creations.
 
   // Verify that buttons interactions are inferred.
-  const buttonCollector = message.createMessageComponentCollector({ componentType: ComponentType.Button });
+  const buttonCollector = message.createMessageComponentCollector({
+    componentType: ComponentType.Button,
+  });
   expect(message.awaitMessageComponent({ componentType: ComponentType.Button })).type.toBeAssignableTo<
     Promise<ButtonInteraction>
   >();
@@ -520,12 +542,16 @@ client.on('messageCreate', async message => {
   const stringSelectMenuCollector = message.createMessageComponentCollector({
     componentType: ComponentType.StringSelect,
   });
-  expect(message.awaitMessageComponent({ componentType: ComponentType.StringSelect })).type.toBeAssignableTo<
-    Promise<StringSelectMenuInteraction>
-  >();
-  expect(channel.awaitMessageComponent({ componentType: ComponentType.StringSelect })).type.toBeAssignableTo<
-    Promise<StringSelectMenuInteraction>
-  >();
+  expect(
+    message.awaitMessageComponent({
+      componentType: ComponentType.StringSelect,
+    }),
+  ).type.toBeAssignableTo<Promise<StringSelectMenuInteraction>>();
+  expect(
+    channel.awaitMessageComponent({
+      componentType: ComponentType.StringSelect,
+    }),
+  ).type.toBeAssignableTo<Promise<StringSelectMenuInteraction>>();
   expect(stringSelectMenuCollector).type.toBeAssignableTo<InteractionCollector<StringSelectMenuInteraction>>();
 
   stringSelectMenuCollector.on('collect', (...args) => expect(args).type.toBe<[StringSelectMenuInteraction]>());
@@ -547,9 +573,13 @@ client.on('messageCreate', async message => {
   );
 
   // Verify that additional options don't affect default collector types.
-  const semiDefaultCollector = message.createMessageComponentCollector({ time: 10_000 });
+  const semiDefaultCollector = message.createMessageComponentCollector({
+    time: 10_000,
+  });
   expect(semiDefaultCollector).type.toBe<InteractionCollector<CollectedMessageInteraction>>();
-  const semiDefaultCollectorChannel = channel.createMessageComponentCollector({ time: 10_000 });
+  const semiDefaultCollectorChannel = channel.createMessageComponentCollector({
+    time: 10_000,
+  });
   expect(semiDefaultCollectorChannel).type.toBe<InteractionCollector<CollectedMessageInteraction>>();
 
   // Verify that interaction collector options can't be used.
@@ -648,7 +678,12 @@ client.on('messageCreate', async message => {
   const rawButtonsRow: ActionRowData<ButtonComponentData> = {
     type: ComponentType.ActionRow,
     components: [
-      { type: ComponentType.Button, label: 'test', style: ButtonStyle.Primary, customId: 'test' },
+      {
+        type: ComponentType.Button,
+        label: 'test',
+        style: ButtonStyle.Primary,
+        customId: 'test',
+      },
       {
         type: ComponentType.Button,
         label: 'another test',
@@ -735,7 +770,10 @@ client.on('messageCreate', async message => {
     spoiler: true,
   };
 
-  await channel.send({ flags: MessageFlags.IsComponentsV2, components: [rawContainer] });
+  await channel.send({
+    flags: MessageFlags.IsComponentsV2,
+    components: [rawContainer],
+  });
 });
 
 client.on('messageDelete', ({ client }) => expect(client).type.toBe<Client<true>>());
@@ -856,7 +894,10 @@ client.on('clientReady', async client => {
 
   // Test command manager methods
   const globalCommand = await client.application!.commands.fetch(globalCommandId);
-  const guildCommandFromGlobal = await client.application!.commands.fetch({ id: guildCommandId, guildId: testGuildId });
+  const guildCommandFromGlobal = await client.application!.commands.fetch({
+    id: guildCommandId,
+    guildId: testGuildId,
+  });
   const guildCommandFromGuild = await client.guilds.cache.get(testGuildId)!.commands.fetch({ id: guildCommandId });
 
   await client.application?.commands.create(slashCommandBuilder);
@@ -869,7 +910,9 @@ client.on('clientReady', async client => {
   await guild.commands.edit(guildCommandId, slashCommandBuilder);
   await guild.commands.edit(guildCommandId, contextMenuCommandBuilder);
 
-  await client.application?.commands.edit(globalCommandId, { defaultMemberPermissions: null });
+  await client.application?.commands.edit(globalCommandId, {
+    defaultMemberPermissions: null,
+  });
   await globalCommand.edit({ defaultMemberPermissions: null });
   await globalCommand.setDefaultMemberPermissions(null);
 
@@ -885,12 +928,25 @@ client.on('clientReady', async client => {
   await globalPermissionsManager.add({
     command: globalCommandId,
     guild: testGuildId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
-  await globalPermissionsManager.has({ command: globalCommandId, guild: testGuildId, permissionId: testGuildId });
+  await globalPermissionsManager.has({
+    command: globalCommandId,
+    guild: testGuildId,
+    permissionId: testGuildId,
+  });
   await globalPermissionsManager.fetch({ guild: testGuildId });
-  await globalPermissionsManager.fetch({ command: globalCommandId, guild: testGuildId });
+  await globalPermissionsManager.fetch({
+    command: globalCommandId,
+    guild: testGuildId,
+  });
   await globalPermissionsManager.remove({
     command: globalCommandId,
     guild: testGuildId,
@@ -920,13 +976,25 @@ client.on('clientReady', async client => {
   await globalPermissionsManager.set({
     command: globalCommandId,
     guild: testGuildId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
 
   expect(globalPermissionsManager.add).type.not.toBeCallableWith({
     command: globalCommandId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
 
@@ -935,7 +1003,9 @@ client.on('clientReady', async client => {
     permissionId: testGuildId,
   });
   expect(globalPermissionsManager.fetch).type.not.toBeCallableWith();
-  expect(globalPermissionsManager.fetch).type.not.toBeCallableWith({ command: globalCommandId });
+  expect(globalPermissionsManager.fetch).type.not.toBeCallableWith({
+    command: globalCommandId,
+  });
   expect(globalPermissionsManager.remove).type.not.toBeCallableWith({
     command: globalCommandId,
     roles: [testGuildId],
@@ -954,16 +1024,31 @@ client.on('clientReady', async client => {
   });
   expect(globalPermissionsManager.set).type.not.toBeCallableWith({
     command: globalCommandId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
 
   expect(globalPermissionsManager.add).type.not.toBeCallableWith({
     guild: testGuildId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
-  expect(globalPermissionsManager.has).type.not.toBeCallableWith({ guild: testGuildId, permissionId: testGuildId });
+  expect(globalPermissionsManager.has).type.not.toBeCallableWith({
+    guild: testGuildId,
+    permissionId: testGuildId,
+  });
   expect(globalPermissionsManager.remove).type.not.toBeCallableWith({
     guild: testGuildId,
     roles: [testGuildId],
@@ -982,22 +1067,49 @@ client.on('clientReady', async client => {
   });
   expect(globalPermissionsManager.set).type.not.toBeCallableWith({
     guild: testGuildId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
 
   // Permissions from guild manager
   await guildPermissionsManager.add({
     command: globalCommandId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
-  await guildPermissionsManager.has({ command: globalCommandId, permissionId: testGuildId });
+  await guildPermissionsManager.has({
+    command: globalCommandId,
+    permissionId: testGuildId,
+  });
   await guildPermissionsManager.fetch({});
   await guildPermissionsManager.fetch({ command: globalCommandId });
-  await guildPermissionsManager.remove({ command: globalCommandId, roles: [testGuildId], token: 'VeryRealToken' });
-  await guildPermissionsManager.remove({ command: globalCommandId, users: [testUserId], token: 'VeryRealToken' });
-  await guildPermissionsManager.remove({ command: globalCommandId, channels: [testGuildId], token: 'VeryRealToken' });
+  await guildPermissionsManager.remove({
+    command: globalCommandId,
+    roles: [testGuildId],
+    token: 'VeryRealToken',
+  });
+  await guildPermissionsManager.remove({
+    command: globalCommandId,
+    users: [testUserId],
+    token: 'VeryRealToken',
+  });
+  await guildPermissionsManager.remove({
+    command: globalCommandId,
+    channels: [testGuildId],
+    token: 'VeryRealToken',
+  });
   await guildPermissionsManager.remove({
     command: globalCommandId,
     roles: [testGuildId],
@@ -1007,14 +1119,26 @@ client.on('clientReady', async client => {
   });
   await guildPermissionsManager.set({
     command: globalCommandId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
 
   expect(guildPermissionsManager.add).type.not.toBeCallableWith({
     command: globalCommandId,
     guild: testGuildId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
   expect(guildPermissionsManager.has).type.not.toBeCallableWith({
@@ -1022,8 +1146,13 @@ client.on('clientReady', async client => {
     guild: testGuildId,
     permissionId: testGuildId,
   });
-  expect(guildPermissionsManager.fetch).type.not.toBeCallableWith({ guild: testGuildId });
-  expect(guildPermissionsManager.fetch).type.not.toBeCallableWith({ command: globalCommandId, guild: testGuildId });
+  expect(guildPermissionsManager.fetch).type.not.toBeCallableWith({
+    guild: testGuildId,
+  });
+  expect(guildPermissionsManager.fetch).type.not.toBeCallableWith({
+    command: globalCommandId,
+    guild: testGuildId,
+  });
   expect(guildPermissionsManager.remove).type.not.toBeCallableWith({
     command: globalCommandId,
     guild: testGuildId,
@@ -1046,37 +1175,80 @@ client.on('clientReady', async client => {
   expect(guildPermissionsManager.set).type.not.toBeCallableWith({
     command: globalCommandId,
     guild: testGuildId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
 
   expect(guildPermissionsManager.add).type.not.toBeCallableWith({
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
-  expect(guildPermissionsManager.has).type.not.toBeCallableWith({ permissionId: testGuildId });
-  expect(guildPermissionsManager.remove).type.not.toBeCallableWith({ roles: [testGuildId], token: 'VeryRealToken' });
-  expect(guildPermissionsManager.remove).type.not.toBeCallableWith({ users: [testUserId], token: 'VeryRealToken' });
+  expect(guildPermissionsManager.has).type.not.toBeCallableWith({
+    permissionId: testGuildId,
+  });
+  expect(guildPermissionsManager.remove).type.not.toBeCallableWith({
+    roles: [testGuildId],
+    token: 'VeryRealToken',
+  });
+  expect(guildPermissionsManager.remove).type.not.toBeCallableWith({
+    users: [testUserId],
+    token: 'VeryRealToken',
+  });
   expect(guildPermissionsManager.remove).type.not.toBeCallableWith({
     roles: [testGuildId],
     users: [testUserId],
     token: 'VeryRealToken',
   });
   expect(guildPermissionsManager.set).type.not.toBeCallableWith({
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
 
   // Permissions from cached global ApplicationCommand
   await globalCommand.permissions.add({
     guild: testGuildId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
-  await globalCommand.permissions.has({ guild: testGuildId, permissionId: testGuildId });
+  await globalCommand.permissions.has({
+    guild: testGuildId,
+    permissionId: testGuildId,
+  });
   await globalCommand.permissions.fetch({ guild: testGuildId });
-  await globalCommand.permissions.remove({ guild: testGuildId, roles: [testGuildId], token: 'VeryRealToken' });
-  await globalCommand.permissions.remove({ guild: testGuildId, users: [testUserId], token: 'VeryRealToken' });
+  await globalCommand.permissions.remove({
+    guild: testGuildId,
+    roles: [testGuildId],
+    token: 'VeryRealToken',
+  });
+  await globalCommand.permissions.remove({
+    guild: testGuildId,
+    users: [testUserId],
+    token: 'VeryRealToken',
+  });
   await globalCommand.permissions.remove({
     guild: testGuildId,
     roles: [testGuildId],
@@ -1085,14 +1257,26 @@ client.on('clientReady', async client => {
   });
   await globalCommand.permissions.set({
     guild: testGuildId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
 
   expect(globalCommand.permissions.add).type.not.toBeCallableWith({
     command: globalCommandId,
     guild: testGuildId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
   expect(globalCommand.permissions.has).type.not.toBeCallableWith({
@@ -1128,49 +1312,99 @@ client.on('clientReady', async client => {
   expect(globalCommand.permissions.set).type.not.toBeCallableWith({
     command: globalCommandId,
     guild: testGuildId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
 
   expect(globalCommand.permissions.add).type.not.toBeCallableWith({
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
-  expect(globalCommand.permissions.has).type.not.toBeCallableWith({ permissionId: testGuildId });
+  expect(globalCommand.permissions.has).type.not.toBeCallableWith({
+    permissionId: testGuildId,
+  });
   expect(globalCommand.permissions.fetch).type.not.toBeCallableWith({});
-  expect(globalCommand.permissions.remove).type.not.toBeCallableWith({ roles: [testGuildId], token: 'VeryRealToken' });
-  expect(globalCommand.permissions.remove).type.not.toBeCallableWith({ users: [testUserId], token: 'VeryRealToken' });
+  expect(globalCommand.permissions.remove).type.not.toBeCallableWith({
+    roles: [testGuildId],
+    token: 'VeryRealToken',
+  });
+  expect(globalCommand.permissions.remove).type.not.toBeCallableWith({
+    users: [testUserId],
+    token: 'VeryRealToken',
+  });
   expect(globalCommand.permissions.remove).type.not.toBeCallableWith({
     roles: [testGuildId],
     users: [testUserId],
     token: 'VeryRealToken',
   });
   expect(globalCommand.permissions.set).type.not.toBeCallableWith({
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
   });
 
   // Permissions from cached guild ApplicationCommand
   await guildCommandFromGlobal.permissions.add({
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
   await guildCommandFromGlobal.permissions.has({ permissionId: testGuildId });
   await guildCommandFromGlobal.permissions.fetch({});
-  await guildCommandFromGlobal.permissions.remove({ roles: [testGuildId], token: 'VeryRealToken' });
-  await guildCommandFromGlobal.permissions.remove({ users: [testUserId], token: 'VeryRealToken' });
+  await guildCommandFromGlobal.permissions.remove({
+    roles: [testGuildId],
+    token: 'VeryRealToken',
+  });
+  await guildCommandFromGlobal.permissions.remove({
+    users: [testUserId],
+    token: 'VeryRealToken',
+  });
   await guildCommandFromGlobal.permissions.remove({
     roles: [testGuildId],
     users: [testUserId],
     token: 'VeryRealToken',
   });
   await guildCommandFromGlobal.permissions.set({
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
 
   expect(guildCommandFromGlobal.permissions.add).type.not.toBeCallableWith({
     command: globalCommandId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
   expect(guildCommandFromGlobal.permissions.has).type.not.toBeCallableWith({
@@ -1195,13 +1429,25 @@ client.on('clientReady', async client => {
   });
   expect(guildCommandFromGlobal.permissions.set).type.not.toBeCallableWith({
     command: guildCommandId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
 
   expect(guildCommandFromGlobal.permissions.add).type.not.toBeCallableWith({
     guild: testGuildId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
   expect(guildCommandFromGlobal.permissions.has).type.not.toBeCallableWith({
@@ -1226,31 +1472,61 @@ client.on('clientReady', async client => {
   });
   expect(guildCommandFromGlobal.permissions.set).type.not.toBeCallableWith({
     guild: testGuildId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
 
   await guildCommandFromGuild.permissions.add({
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
   await guildCommandFromGuild.permissions.has({ permissionId: testGuildId });
   await guildCommandFromGuild.permissions.fetch({});
-  await guildCommandFromGuild.permissions.remove({ roles: [testGuildId], token: 'VeryRealToken' });
-  await guildCommandFromGuild.permissions.remove({ users: [testUserId], token: 'VeryRealToken' });
+  await guildCommandFromGuild.permissions.remove({
+    roles: [testGuildId],
+    token: 'VeryRealToken',
+  });
+  await guildCommandFromGuild.permissions.remove({
+    users: [testUserId],
+    token: 'VeryRealToken',
+  });
   await guildCommandFromGuild.permissions.remove({
     roles: [testGuildId],
     users: [testUserId],
     token: 'VeryRealToken',
   });
   await guildCommandFromGuild.permissions.set({
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
 
   expect(guildCommandFromGuild.permissions.add).type.not.toBeCallableWith({
     command: globalCommandId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
   expect(guildCommandFromGuild.permissions.has).type.not.toBeCallableWith({
@@ -1275,13 +1551,25 @@ client.on('clientReady', async client => {
   });
   expect(guildCommandFromGuild.permissions.set).type.not.toBeCallableWith({
     command: guildCommandId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
 
   expect(guildCommandFromGuild.permissions.add).type.not.toBeCallableWith({
     guild: testGuildId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
   expect(guildCommandFromGuild.permissions.has).type.not.toBeCallableWith({
@@ -1306,7 +1594,13 @@ client.on('clientReady', async client => {
   });
   expect(guildCommandFromGuild.permissions.set).type.not.toBeCallableWith({
     guild: testGuildId,
-    permissions: [{ type: ApplicationCommandPermissionType.Role, id: testGuildId, permission: true }],
+    permissions: [
+      {
+        type: ApplicationCommandPermissionType.Role,
+        id: testGuildId,
+        permission: true,
+      },
+    ],
     token: 'VeryRealToken',
   });
 });
@@ -1411,9 +1705,23 @@ client.on('guildCreate', async g => {
       type: ComponentType.ActionRow,
       components: [
         new PrimaryButtonBuilder(),
-        { type: ComponentType.Button, style: ButtonStyle.Primary, label: 'string', customId: 'foo' },
-        { type: ComponentType.Button, style: ButtonStyle.Link, label: 'test', url: 'test' },
-        { type: ComponentType.StringSelect, customId: 'foo', options: [{ label: 'label', value: 'value' }] },
+        {
+          type: ComponentType.Button,
+          style: ButtonStyle.Primary,
+          label: 'string',
+          customId: 'foo',
+        },
+        {
+          type: ComponentType.Button,
+          style: ButtonStyle.Link,
+          label: 'test',
+          url: 'test',
+        },
+        {
+          type: ComponentType.StringSelect,
+          customId: 'foo',
+          options: [{ label: 'label', value: 'value' }],
+        },
         new StringSelectMenuBuilder(),
         // @ts-expect-error Type 'TextInputBuilder' is not assignable to type '...'.
         new TextInputBuilder(),
@@ -1421,15 +1729,34 @@ client.on('guildCreate', async g => {
     };
 
     expect(row.components).type.not.toBeAssignableFrom([
-      { type: ComponentType.TextInput, style: TextInputStyle.Paragraph, customId: 'foo', label: 'test' },
+      {
+        type: ComponentType.TextInput,
+        style: TextInputStyle.Paragraph,
+        customId: 'foo',
+        label: 'test',
+      },
     ]);
 
     const row2 = new ActionRowBuilder({
       type: ComponentType.ActionRow,
       components: [
-        { type: ComponentType.Button, style: ButtonStyle.Primary, label: 'string', custom_id: 'foo' },
-        { type: ComponentType.Button, style: ButtonStyle.Link, label: 'test', url: 'test' },
-        { type: ComponentType.StringSelect, custom_id: 'foo', options: [{ label: 'label', value: 'value' }] },
+        {
+          type: ComponentType.Button,
+          style: ButtonStyle.Primary,
+          label: 'string',
+          custom_id: 'foo',
+        },
+        {
+          type: ComponentType.Button,
+          style: ButtonStyle.Link,
+          label: 'test',
+          url: 'test',
+        },
+        {
+          type: ComponentType.StringSelect,
+          custom_id: 'foo',
+          options: [{ label: 'label', value: 'value' }],
+        },
       ],
     });
 
@@ -1449,9 +1776,12 @@ client.on('guildCreate', async g => {
     roles: [g.roles.cache],
   });
 
-  expect(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken', fetchWhenExisting: false })).type.toBe<
-    Promise<GuildMember | null>
-  >();
+  expect(
+    g.members.add(testUserId, {
+      accessToken: 'totallyRealAccessToken',
+      fetchWhenExisting: false,
+    }),
+  ).type.toBe<Promise<GuildMember | null>>();
 
   expect(g.members.add(testUserId, { accessToken: 'totallyRealAccessToken' })).type.toBe<Promise<GuildMember>>();
 
@@ -1489,7 +1819,6 @@ expect(loggedOutClient.token).type.toBe<string | null>();
 expect(loggedOutClient.uptime).type.toBe<null>();
 expect(loggedOutClient.user).type.toBe<null>();
 
-// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 expect(serialize(undefined)).type.toBe<undefined>();
 expect(serialize(null)).type.toBe<null>();
 expect(serialize([1, 2, 3])).type.toBe<number[]>();
@@ -1651,11 +1980,28 @@ declare const applicationCommandPermissionsManager: ApplicationCommandPermission
   Snowflake
 >;
 {
-  await applicationCommandPermissionsManager.add({ permissions: [], token: '' });
-  await applicationCommandPermissionsManager.add({ permissions: [] as const, token: '' });
-  await applicationCommandPermissionsManager.set({ permissions: [], token: '' });
-  await applicationCommandPermissionsManager.set({ permissions: [] as const, token: '' });
-  await applicationCommandPermissionsManager.remove({ channels: [], roles: [], users: [], token: '' });
+  await applicationCommandPermissionsManager.add({
+    permissions: [],
+    token: '',
+  });
+  await applicationCommandPermissionsManager.add({
+    permissions: [] as const,
+    token: '',
+  });
+  await applicationCommandPermissionsManager.set({
+    permissions: [],
+    token: '',
+  });
+  await applicationCommandPermissionsManager.set({
+    permissions: [] as const,
+    token: '',
+  });
+  await applicationCommandPermissionsManager.remove({
+    channels: [],
+    roles: [],
+    users: [],
+    token: '',
+  });
 
   await applicationCommandPermissionsManager.remove({
     channels: [] as const,
@@ -1737,21 +2083,33 @@ declare const autoModerationRuleManager: AutoModerationRuleManager;
   expect(autoModerationRuleManager.fetch({ autoModerationRule: '1234567890' })).type.toBe<
     Promise<AutoModerationRule>
   >();
-  expect(autoModerationRuleManager.fetch({ autoModerationRule: '1234567890', cache: false })).type.toBe<
-    Promise<AutoModerationRule>
-  >();
-  expect(autoModerationRuleManager.fetch({ autoModerationRule: '1234567890', force: true })).type.toBe<
-    Promise<AutoModerationRule>
-  >();
-  expect(autoModerationRuleManager.fetch({ autoModerationRule: '1234567890', cache: false, force: true })).type.toBe<
-    Promise<AutoModerationRule>
-  >();
+  expect(
+    autoModerationRuleManager.fetch({
+      autoModerationRule: '1234567890',
+      cache: false,
+    }),
+  ).type.toBe<Promise<AutoModerationRule>>();
+  expect(
+    autoModerationRuleManager.fetch({
+      autoModerationRule: '1234567890',
+      force: true,
+    }),
+  ).type.toBe<Promise<AutoModerationRule>>();
+  expect(
+    autoModerationRuleManager.fetch({
+      autoModerationRule: '1234567890',
+      cache: false,
+      force: true,
+    }),
+  ).type.toBe<Promise<AutoModerationRule>>();
   expect(autoModerationRuleManager.fetch()).type.toBe<Promise<Collection<Snowflake, AutoModerationRule>>>();
   expect(autoModerationRuleManager.fetch({})).type.toBe<Promise<Collection<Snowflake, AutoModerationRule>>>();
   expect(autoModerationRuleManager.fetch({ cache: false })).type.toBe<
     Promise<Collection<Snowflake, AutoModerationRule>>
   >();
-  expect(autoModerationRuleManager.fetch).type.not.toBeCallableWith({ force: false });
+  expect(autoModerationRuleManager.fetch).type.not.toBeCallableWith({
+    force: false,
+  });
 }
 
 declare const guildApplicationCommandManager: GuildApplicationCommandManager;
@@ -1761,18 +2119,30 @@ expect(guildApplicationCommandManager.fetch()).type.toBe<Promise<Collection<Snow
 
 declare const categoryChannelChildManager: CategoryChannelChildManager;
 {
-  expect(categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildVoice })).type.toBe<
-    Promise<VoiceChannel>
-  >();
-  expect(categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildText })).type.toBe<
-    Promise<TextChannel>
-  >();
-  expect(categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildAnnouncement })).type.toBe<
-    Promise<AnnouncementChannel>
-  >();
-  expect(categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildStageVoice })).type.toBe<
-    Promise<StageChannel>
-  >();
+  expect(
+    categoryChannelChildManager.create({
+      name: 'name',
+      type: ChannelType.GuildVoice,
+    }),
+  ).type.toBe<Promise<VoiceChannel>>();
+  expect(
+    categoryChannelChildManager.create({
+      name: 'name',
+      type: ChannelType.GuildText,
+    }),
+  ).type.toBe<Promise<TextChannel>>();
+  expect(
+    categoryChannelChildManager.create({
+      name: 'name',
+      type: ChannelType.GuildAnnouncement,
+    }),
+  ).type.toBe<Promise<AnnouncementChannel>>();
+  expect(
+    categoryChannelChildManager.create({
+      name: 'name',
+      type: ChannelType.GuildStageVoice,
+    }),
+  ).type.toBe<Promise<StageChannel>>();
   expect(categoryChannelChildManager.create({ name: 'name' })).type.toBe<Promise<TextChannel>>();
   expect(categoryChannelChildManager.create({ name: 'name' })).type.toBe<Promise<TextChannel>>();
 }
@@ -1782,16 +2152,25 @@ declare const guildChannelManager: GuildChannelManager;
   expect(guildChannelManager.create({ name: 'name' })).type.toBe<Promise<TextChannel>>();
   expect(guildChannelManager.create({ name: 'name' })).type.toBe<Promise<TextChannel>>();
   expect(guildChannelManager.create({ name: 'name', type: ChannelType.GuildVoice })).type.toBe<Promise<VoiceChannel>>();
-  expect(guildChannelManager.create({ name: 'name', type: ChannelType.GuildCategory })).type.toBe<
-    Promise<CategoryChannel>
-  >();
+  expect(
+    guildChannelManager.create({
+      name: 'name',
+      type: ChannelType.GuildCategory,
+    }),
+  ).type.toBe<Promise<CategoryChannel>>();
   expect(guildChannelManager.create({ name: 'name', type: ChannelType.GuildText })).type.toBe<Promise<TextChannel>>();
-  expect(guildChannelManager.create({ name: 'name', type: ChannelType.GuildAnnouncement })).type.toBe<
-    Promise<AnnouncementChannel>
-  >();
-  expect(guildChannelManager.create({ name: 'name', type: ChannelType.GuildStageVoice })).type.toBe<
-    Promise<StageChannel>
-  >();
+  expect(
+    guildChannelManager.create({
+      name: 'name',
+      type: ChannelType.GuildAnnouncement,
+    }),
+  ).type.toBe<Promise<AnnouncementChannel>>();
+  expect(
+    guildChannelManager.create({
+      name: 'name',
+      type: ChannelType.GuildStageVoice,
+    }),
+  ).type.toBe<Promise<StageChannel>>();
   expect(guildChannelManager.create({ name: 'name', type: ChannelType.GuildForum })).type.toBe<Promise<ForumChannel>>();
   expect(guildChannelManager.create({ name: 'name', type: ChannelType.GuildMedia })).type.toBe<Promise<MediaChannel>>();
 
@@ -1869,27 +2248,45 @@ declare const guildMemberManager: GuildMemberManager;
 {
   expect(guildMemberManager.fetch('12345678901234567')).type.toBe<Promise<GuildMember>>();
   expect(guildMemberManager.fetch({ user: '12345678901234567' })).type.toBe<Promise<GuildMember>>();
-  expect(guildMemberManager.fetch({ user: '12345678901234567', cache: true, force: false })).type.toBe<
-    Promise<GuildMember>
-  >();
-  expect(guildMemberManager.fetch({ user: '12345678901234567', cache: true, force: false })).type.toBe<
-    Promise<GuildMember>
-  >();
+  expect(
+    guildMemberManager.fetch({
+      user: '12345678901234567',
+      cache: true,
+      force: false,
+    }),
+  ).type.toBe<Promise<GuildMember>>();
+  expect(
+    guildMemberManager.fetch({
+      user: '12345678901234567',
+      cache: true,
+      force: false,
+    }),
+  ).type.toBe<Promise<GuildMember>>();
   expect(guildMemberManager.fetch()).type.toBe<Promise<Collection<Snowflake, GuildMember>>>();
   expect(guildMemberManager.fetch({})).type.toBe<Promise<Collection<Snowflake, GuildMember>>>();
   expect(guildMemberManager.fetch({ user: ['12345678901234567'] })).type.toBe<
     Promise<Collection<Snowflake, GuildMember>>
   >();
   expect(guildMemberManager.fetch({ withPresences: false })).type.toBe<Promise<Collection<Snowflake, GuildMember>>>();
-  expect(guildMemberManager.fetch({ user: '12345678901234567', withPresences: true })).type.toBe<
-    Promise<GuildMember>
-  >();
+  expect(
+    guildMemberManager.fetch({
+      user: '12345678901234567',
+      withPresences: true,
+    }),
+  ).type.toBe<Promise<GuildMember>>();
 
-  expect(guildMemberManager.fetch({ query: 'test', user: ['12345678901234567'], nonce: 'test' })).type.toBe<
-    Promise<Collection<Snowflake, GuildMember>>
-  >();
+  expect(
+    guildMemberManager.fetch({
+      query: 'test',
+      user: ['12345678901234567'],
+      nonce: 'test',
+    }),
+  ).type.toBe<Promise<Collection<Snowflake, GuildMember>>>();
 
-  expect(guildMemberManager.fetch).type.not.toBeCallableWith({ cache: true, force: false });
+  expect(guildMemberManager.fetch).type.not.toBeCallableWith({
+    cache: true,
+    force: false,
+  });
   expect(guildMemberManager.fetch).type.not.toBeCallableWith({
     user: ['12345678901234567'],
     cache: true,
@@ -1907,7 +2304,10 @@ declare const messageManager: MessageManager;
   expect(messageManager.fetch({ limit: 100, before: '1234567890', cache: false })).type.toBe<
     Promise<Collection<Snowflake, Message>>
   >();
-  expect(messageManager.fetch).type.not.toBeCallableWith({ cache: true, force: false });
+  expect(messageManager.fetch).type.not.toBeCallableWith({
+    cache: true,
+    force: false,
+  });
   expect(messageManager.fetch).type.not.toBeCallableWith({
     message: '1234567890',
     after: '1234567890',
@@ -1947,7 +2347,10 @@ declare const guildBanManager: GuildBanManager;
   expect(guildBanManager.fetch({ limit: 100, before: '1234567890' })).type.toBe<
     Promise<Collection<Snowflake, GuildBan>>
   >();
-  expect(guildBanManager.fetch).type.not.toBeCallableWith({ cache: true, force: false });
+  expect(guildBanManager.fetch).type.not.toBeCallableWith({
+    cache: true,
+    force: false,
+  });
   expect(guildBanManager.fetch).type.not.toBeCallableWith({
     user: '1234567890',
     after: '1234567890',
@@ -1963,21 +2366,32 @@ declare const threadMemberManager: ThreadMemberManager;
   expect(threadMemberManager.fetch({ member: '12345678', cache: false })).type.toBe<Promise<ThreadMember>>();
   expect(threadMemberManager.fetch({ member: '12345678', force: true })).type.toBe<Promise<ThreadMember>>();
   expect(threadMemberManager.fetch({ member: threadMemberWithGuildMember })).type.toBe<Promise<ThreadMember<true>>>();
-  expect(threadMemberManager.fetch({ member: '12345678901234567', withMember: true })).type.toBe<
-    Promise<ThreadMember<true>>
-  >();
+  expect(
+    threadMemberManager.fetch({
+      member: '12345678901234567',
+      withMember: true,
+    }),
+  ).type.toBe<Promise<ThreadMember<true>>>();
   expect(threadMemberManager.fetch()).type.toBe<Promise<Collection<Snowflake, ThreadMember>>>();
   expect(threadMemberManager.fetch({})).type.toBe<Promise<Collection<Snowflake, ThreadMember>>>();
 
-  expect(threadMemberManager.fetch({ cache: true, limit: 50, withMember: true, after: '12345678901234567' })).type.toBe<
-    Promise<Collection<Snowflake, ThreadMember<true>>>
-  >();
+  expect(
+    threadMemberManager.fetch({
+      cache: true,
+      limit: 50,
+      withMember: true,
+      after: '12345678901234567',
+    }),
+  ).type.toBe<Promise<Collection<Snowflake, ThreadMember<true>>>>();
 
   expect(threadMemberManager.fetch({ cache: true, withMember: false })).type.toBe<
     Promise<Collection<Snowflake, ThreadMember>>
   >();
 
-  expect(threadMemberManager.fetch).type.not.toBeCallableWith({ cache: true, force: false });
+  expect(threadMemberManager.fetch).type.not.toBeCallableWith({
+    cache: true,
+    force: false,
+  });
   expect(threadMemberManager.fetch).type.not.toBeCallableWith({
     withMember: false,
     limit: 5,
@@ -2923,7 +3337,9 @@ declare const emojiResolvable: Emoji | GuildEmoji | string;
   await guild.editOnboarding({ prompts: [prompt] });
   await guild.editOnboarding({ prompts: [{ ...prompt, options: [option] }] });
 
-  await guild.editOnboarding({ prompts: [{ ...prompt, options: [{ ...option, emoji: emojiResolvable }] }] });
+  await guild.editOnboarding({
+    prompts: [{ ...prompt, options: [{ ...option, emoji: emojiResolvable }] }],
+  });
 }
 
 declare const partialDMChannel: PartialDMChannel;

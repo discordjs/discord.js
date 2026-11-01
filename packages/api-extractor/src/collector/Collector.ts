@@ -343,7 +343,6 @@ export class Collector {
 
 		Sort.sortSet(this._dtsTypeReferenceDirectives);
 		Sort.sortSet(this._dtsLibReferenceDirectives);
-		// eslint-disable-next-line @typescript-eslint/require-array-sort-compare
 		this._starExportedExternalModulePaths.sort();
 	}
 

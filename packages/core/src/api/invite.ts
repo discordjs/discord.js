@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import { makeURLSearchParams, type RawFile, type RequestData, type REST } from '@discordjs/rest';
 import {
 	Routes,
@@ -7,7 +5,6 @@ import {
 	type RESTDeleteAPIInviteResult,
 	type RESTGetAPIInviteQuery,
 	type RESTGetAPIInviteResult,
-	type RESTPutAPIInviteTargetUsersResult,
 	type RESTGetAPIInviteTargetUsersJobStatusResult,
 } from 'discord-api-types/v10';
 
@@ -75,11 +72,11 @@ export class InvitesAPI {
 		targetUsersFile: RawFile,
 		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
-		return this.rest.put(Routes.inviteTargetUsers(code), {
+		await this.rest.put(Routes.inviteTargetUsers(code), {
 			files: [{ key: 'target_users_file', contentType: 'text/csv', ...targetUsersFile }],
 			signal,
 			auth,
-		}) as Promise<RESTPutAPIInviteTargetUsersResult>;
+		});
 	}
 
 	/**

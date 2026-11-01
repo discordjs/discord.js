@@ -2,8 +2,8 @@
 import { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
 import { addAudioPlayer, deleteAudioPlayer } from '../DataStore.js';
-import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection.js';
 import { noop } from '../util/util.js';
+import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection.js';
 import { AudioPlayerError } from './AudioPlayerError.js';
 import type { AudioResource } from './AudioResource.js';
 import { PlayerSubscription } from './PlayerSubscription.js';
@@ -491,7 +491,8 @@ export class AudioPlayer extends EventEmitter {
 	 */
 	public stop(force = false) {
 		if (this.state.status === AudioPlayerStatus.Idle) return false;
-		if (force || this.state.resource.silencePaddingFrames === 0) {
+
+		if (this.state.status === AudioPlayerStatus.Buffering || force || this.state.resource.silencePaddingFrames === 0) {
 			this.state = {
 				status: AudioPlayerStatus.Idle,
 			};

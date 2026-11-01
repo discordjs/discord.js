@@ -28,7 +28,7 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 
 			const baseReturn = {
 				name: signature.name,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+				// eslint-disable-next-line no-param-reassign
 				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				see,
 				access:
@@ -64,7 +64,6 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 									child.comment?.summary
 										// eslint-disable-next-line no-param-reassign
 										?.reduce((prev, curr) => (prev += curr.text), '')
-										// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 										.trim() || undefined,
 								type: [[[(child.type as LiteralType | undefined)?.value]]],
 							}))
@@ -82,9 +81,8 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 							child.comment?.summary
 								// eslint-disable-next-line no-param-reassign
 								?.reduce((prev, curr) => (prev += curr.text), '')
-								// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 								.trim() ||
-							// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+							// eslint-disable-next-line no-param-reassign
 							child.signatures?.[0]?.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() ||
 							undefined,
 						optional: child.flags.isOptional || child.defaultValue !== undefined,
@@ -94,7 +92,6 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 								?.find((block) => block.tag === '@default')
 								// eslint-disable-next-line no-param-reassign
 								?.content.reduce((prev, curr) => (prev += curr.text), '')
-								// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 								.trim() ||
 								undefined),
 						type: child.type
@@ -130,7 +127,7 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 
 					const params = sig?.parameters?.map((param) => ({
 						name: param.name,
-						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+						// eslint-disable-next-line no-param-reassign
 						description: param.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 						optional: param.flags.isOptional || param.defaultValue !== undefined,
 						default:
@@ -139,7 +136,6 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 								?.find((block) => block.tag === '@default')
 								// eslint-disable-next-line no-param-reassign
 								?.content.reduce((prev, curr) => (prev += curr.text), '')
-								// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 								.trim() ||
 								undefined),
 						type: param.type
@@ -155,7 +151,7 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 
 					return {
 						...baseReturn,
-						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+						// eslint-disable-next-line no-param-reassign
 						description: sig?.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 						see,
 						access:
@@ -181,7 +177,6 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 													?.find((block) => block.tag === '@returns')
 													// eslint-disable-next-line no-param-reassign
 													?.content.reduce((prev, curr) => (prev += curr.text), '')
-													// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 													.trim() || undefined,
 										},
 										this.config,
@@ -193,7 +188,6 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 								?.find((block) => block.tag === '@returns')
 								// eslint-disable-next-line no-param-reassign
 								?.content.reduce((prev, curr) => (prev += curr.text), '')
-								// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 								.trim() || undefined,
 						meta,
 					};

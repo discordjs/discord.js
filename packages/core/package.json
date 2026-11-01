@@ -3,17 +3,35 @@
 	"name": "@discordjs/core",
 	"version": "2.1.0",
 	"description": "A thinly abstracted wrapper around the rest API, and gateway.",
-	"scripts": {
-		"test": "vitest run --config ../../vitest.config.ts",
-		"build": "tsc && inject-version",
-		"build:docs": "tsc -p tsconfig.docs.json",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
-		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
-		"docs": "pnpm run build:docs && api-extractor run --local --minify && generate-split-documentation",
-		"prepack": "pnpm run build && pnpm run lint",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/core/*'",
-		"release": "cliff-jumper"
+	"keywords": [],
+	"homepage": "https://discord.js.org",
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
 	},
+	"license": "Apache-2.0",
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <me@vladfrangu.dev>",
+		"Aura Román <kyradiscord@gmail.com>",
+		"Suneet Tipirneni <suneettipirneni@icloud.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/core"
+	},
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
+	"directories": {
+		"lib": "src"
+	},
+	"files": [
+		"dist"
+	],
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
@@ -24,34 +42,21 @@
 			"default": "./dist/http-only/index.js"
 		}
 	},
-	"main": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"type": "module",
-	"directories": {
-		"lib": "src"
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
 	},
-	"files": [
-		"dist"
-	],
-	"contributors": [
-		"Crawl <icrawltogo@gmail.com>",
-		"SpaceEEC <spaceeec@yahoo.com>",
-		"Vlad Frangu <me@vladfrangu.dev>",
-		"Aura Román <kyradiscord@gmail.com>",
-		"Suneet Tipirneni <suneettipirneni@icloud.com>"
-	],
-	"license": "Apache-2.0",
-	"keywords": [],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git",
-		"directory": "packages/core"
+	"scripts": {
+		"test": "vitest run --config ../../vitest.config.ts",
+		"build": "tsc && inject-version",
+		"build:docs": "tsc -p tsconfig.docs.json",
+		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
+		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions",
+		"docs": "pnpm run build:docs && api-extractor run --local --minify && generate-split-documentation",
+		"prepack": "pnpm run build && pnpm run lint",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/core/*'",
+		"release": "cliff-jumper"
 	},
-	"bugs": {
-		"url": "https://github.com/discordjs/discord.js/issues"
-	},
-	"homepage": "https://discord.js.org",
-	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
@@ -66,12 +71,9 @@
 		"@favware/cliff-jumper": "^6.1.0",
 		"@types/node": "^24.13.3",
 		"@vitest/coverage-v8": "^4.1.11",
-		"cross-env": "^10.1.0",
-		"eslint": "^9.39.5",
 		"eslint-config-neon": "^0.5.4",
-		"eslint-formatter-compact": "^9.0.1",
-		"eslint-formatter-pretty": "^7.1.0",
-		"prettier": "~3.8.1",
+		"oxfmt": "^0.74.0",
+		"oxlint": "^1.89.0",
 		"turbo": "^2.10.12",
 		"typescript": "npm:@typescript/typescript6@~6.0.2",
 		"typescript-native": "npm:typescript@~7.0.2",
@@ -79,9 +81,5 @@
 	},
 	"engines": {
 		"node": ">=24.17.0"
-	},
-	"publishConfig": {
-		"access": "public",
-		"provenance": true
 	}
 }

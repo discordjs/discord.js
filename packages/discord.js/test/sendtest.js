@@ -6,8 +6,8 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import util from 'node:util';
 import { GatewayIntentBits } from 'discord-api-types/v10';
 import { fetch } from 'undici';
-import { owner, token } from './auth.js';
 import { Client, MessageAttachment, Embed, Events } from '../src/index.js';
+import { owner, token } from './auth.js';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 

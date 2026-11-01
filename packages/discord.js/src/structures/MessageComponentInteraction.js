@@ -1,8 +1,8 @@
 import { findComponentByCustomId } from '../util/Components.js';
 import { BaseInteraction } from './BaseInteraction.js';
 import { InteractionWebhook } from './InteractionWebhook.js';
-import { Message } from './Message.js';
 import { InteractionResponses } from './interfaces/InteractionResponses.js';
+import { Message } from './Message.js';
 
 /**
  * Represents a message component interaction.

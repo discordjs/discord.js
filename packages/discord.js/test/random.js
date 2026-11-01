@@ -1,8 +1,8 @@
 /* eslint-disable */
 
-import { token, owner } from './auth.js';
-import { Client, Events } from '../src/index.js';
 import { ChannelType, GatewayIntentBits } from 'discord-api-types/v10';
+import { Client, Events } from '../src/index.js';
+import { token, owner } from './auth.js';
 
 console.time('magic');
 

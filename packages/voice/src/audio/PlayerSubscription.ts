@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/dot-notation */
 import type { VoiceConnection } from '../VoiceConnection.js';
 import type { AudioPlayer } from './AudioPlayer.js';
 

@@ -1,7 +1,7 @@
 import assert from 'node:assert';
 import { ChannelType, GatewayIntentBits } from 'discord-api-types/v10';
-import { token } from './auth.js';
 import { Client, Events } from '../src/index.js';
+import { token } from './auth.js';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 

@@ -25,7 +25,6 @@ export class PermissionsBitField extends BitField {
    * @memberof PermissionsBitField
    */
 
-  // eslint-disable-next-line unicorn/consistent-function-scoping
   static All = Object.values(PermissionFlagsBits).reduce((all, perm) => all | perm, 0n);
 
   /**
