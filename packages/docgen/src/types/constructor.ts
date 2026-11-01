@@ -17,7 +17,7 @@ export class DocumentedConstructor extends DocumentedItem<Constructor | Declarat
 
 			return {
 				name: signature.name,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+				// eslint-disable-next-line no-param-reassign
 				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				see,
 				access:

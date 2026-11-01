@@ -9,8 +9,8 @@ import { ExcerptNode } from './ExcerptNode';
 import { InheritedFromNode } from './InheritedFromNode';
 import { SeeNode } from './SeeNode';
 import { SummaryNode } from './SummaryNode';
-import { UnstableNode } from './UnstableNode';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/Collapsible';
+import { UnstableNode } from './UnstableNode';
 
 export async function PropertyNode({
 	node,

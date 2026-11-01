@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { SKUFlags } = require('discord-api-types/v10');

@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { ChannelFlags } = require('discord-api-types/v10');
