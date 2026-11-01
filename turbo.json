@@ -6,7 +6,7 @@
 	"globalDependencies": [
 		"oxfmt.config.ts",
 		"oxlint.config.ts",
-		"packages/discord.js/scripts/oxlint-plugin.mjs",
+		"packages/discord.js/scripts/oxlint-plugin.js",
 		"tsconfig.base.json"
 	],
 	"tasks": {
