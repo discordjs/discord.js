@@ -110,7 +110,7 @@ export class TypeScriptHelpers {
 	public static getSymbolForDeclaration(declaration: ts.Declaration, checker: tsAPI.Checker): tsAPI.Symbol {
 		const symbol: tsAPI.Symbol | undefined = TypeScriptInternals.tryGetSymbolForDeclaration(declaration, checker);
 		if (!symbol) {
-			const symbols: Array<[string, boolean]> = [];
+			const symbols: [string, boolean][] = [];
 			const adder = (child: ts.Node) => {
 				symbols.push([ts.SyntaxKind[child.kind], checker.getSymbolAtLocation(child) instanceof tsAPI.Symbol]);
 				child.forEachChild(adder);
@@ -123,7 +123,7 @@ export class TypeScriptHelpers {
 				parent = parent.parent;
 			}
 			throw new InternalError(
-				`Unable to determine semantic information for declaration:${ts.SyntaxKind[declaration.kind]}, ${symbols}, ${declaration.getText()}, ${declaration.pos}, ${checker.getSymbolAtLocation(declaration.parent)?.name}, ${declaration.parent.parent ? checker.getSymbolAtLocation(declaration.parent.parent)?.name : 'Nö'}, ${checker.getSymbolsInScope(declaration, tsAPI.SymbolFlags.All).map((symbol) => symbol.name)}\n` +
+				`Unable to determine semantic information for declaration:\n` +
 					SourceFileLocationFormatter.formatDeclaration(declaration),
 			);
 		}
