@@ -172,6 +172,7 @@ export class DAVESession extends EventEmitter {
 	 * Re-initializes (or initializes) the underlying session.
 	 */
 	public reinit() {
+		this.pendingTransitions.clear();
 		if (this.protocolVersion > 0) {
 			if (this.session) {
 				this.session.reinit(this.protocolVersion, this.userId, this.channelId);
@@ -246,10 +247,12 @@ export class DAVESession extends EventEmitter {
 		if (transitionId !== 0) {
 			try {
 				if (!this.session?.executeTransition(transitionId)) {
+					this.pendingTransitions.delete(transitionId);
 					this.emit('debug', `Failed to execute transition ${transitionId}: davey did not execute it`);
 					return false;
 				}
 			} catch (error) {
+				this.pendingTransitions.delete(transitionId);
 				this.emit('debug', `Failed to execute transition ${transitionId}: ${error}`);
 				return false;
 			}
