@@ -581,7 +581,10 @@ export class Networking extends EventEmitter {
 	 * @param message - The received message
 	 */
 	private onWsBinary(message: BinaryWebSocketMessage) {
-		if (this.state.code === NetworkingStatusCode.Ready && this.state.dave) {
+		if (
+			(this.state.code === NetworkingStatusCode.Ready || this.state.code === NetworkingStatusCode.Resuming) &&
+			this.state.dave
+		) {
 			if (message.op === VoiceOpcodes.DaveMlsExternalSender) {
 				this.state.dave.setExternalSender(message.payload);
 			} else if (message.op === VoiceOpcodes.DaveMlsProposals) {
@@ -620,7 +623,11 @@ export class Networking extends EventEmitter {
 	 * @param keyPackage - The new key package
 	 */
 	private onDaveKeyPackage(keyPackage: Buffer) {
-		if (this.state.code === NetworkingStatusCode.SelectingProtocol || this.state.code === NetworkingStatusCode.Ready)
+		if (
+			this.state.code === NetworkingStatusCode.SelectingProtocol ||
+			this.state.code === NetworkingStatusCode.Ready ||
+			this.state.code === NetworkingStatusCode.Resuming
+		)
 			this.state.ws.sendBinaryMessage(VoiceOpcodes.DaveMlsKeyPackage, keyPackage);
 	}
 
@@ -630,7 +637,11 @@ export class Networking extends EventEmitter {
 	 * @param transitionId - The transition to invalidate
 	 */
 	private onDaveInvalidateTransition(transitionId: number) {
-		if (this.state.code === NetworkingStatusCode.SelectingProtocol || this.state.code === NetworkingStatusCode.Ready)
+		if (
+			this.state.code === NetworkingStatusCode.SelectingProtocol ||
+			this.state.code === NetworkingStatusCode.Ready ||
+			this.state.code === NetworkingStatusCode.Resuming
+		)
 			this.state.ws.sendPacket({
 				op: VoiceOpcodes.DaveMlsInvalidCommitWelcome,
 				d: { transition_id: transitionId },
