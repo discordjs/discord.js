@@ -15,7 +15,7 @@ export interface SessionMethods {
 	prepareTransition(transitionId: number, protocolVersion: number): void;
 	processCommit(commit: Buffer): boolean;
 	processProposals(optype: 0 | 1, proposals: Buffer, recognizedUserIds?: string[]): ProposalsResult;
-	processWelcome(welcome: Buffer): void;
+	processWelcome(welcome: Buffer, recognizedUserIds?: string[] | null): void;
 	protocolVersion: number;
 	ready: boolean;
 	reinit(protocolVersion: number, userId: string, channelId: string): void;
