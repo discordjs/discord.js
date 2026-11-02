@@ -220,11 +220,12 @@ export class DAVESession extends EventEmitter {
 			this.emit('debug', `Failed to prepare transition ${data.transition_id}: ${error}`);
 		}
 
+		if (data.protocol_version === 0) this.session?.setPassthroughMode(true);
+
 		// When the included transition id is 0, the transition is for (re)initialization and it can be executed immediately.
 		if (data.transition_id === 0) {
 			this.executeTransition(data.transition_id);
 		} else {
-			if (data.protocol_version === 0) this.session?.setPassthroughMode(true);
 			return true;
 		}
 
