@@ -298,7 +298,6 @@ export class DAVESession extends EventEmitter {
 	 * @param transitionId - The transition id to invalidate
 	 */
 	public recoverFromInvalidTransition(transitionId: number) {
-		if (this.reinitializing) return;
 		this.emit('debug', `Invalidating transition ${transitionId}`);
 		this.reinitializing = true;
 		this.consecutiveFailures = 0;
