@@ -17,8 +17,8 @@
 	"files.exclude": {
 		"**/.next": true,
 		"**/coverage": true,
-		"**/dist": true,
-		"**/node_modules": true,
+		// "**/dist": true,
+		// "**/node_modules": true,
 		"**/test-results": true
 	},
 	"files.insertFinalNewline": true,

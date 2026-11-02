@@ -1919,7 +1919,7 @@ export class ApiModelGenerator {
 					external?.see?.[0] ?? '',
 				);
 				if (match) {
-					target = `discord-api-types#${match.groups!.name}`;
+					target = `discord-api-types/${match.groups!.type}#(${match.groups!.name}:${match.groups!.kind})`;
 				}
 
 				return `{@link ${target}${groups.prop ? `.${groups.prop}` : ''}${groups.name ? ` |${groups.name}` : ''}}`;

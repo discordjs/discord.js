@@ -356,7 +356,10 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 
 					return {
 						kind: DocNodeKind.LinkTag,
-						text: linkText ?? foundItem?.displayName ?? resolved!.item.displayName,
+						text:
+							linkText ??
+							foundItem?.displayName ??
+							[resolved!.item.displayName, ...(resolved?.item.members?.map((mem) => mem.displayName) ?? [])].join('.'),
 						uri: resolveItemURI(foundItem ?? resolved!.item),
 						resolvedPackage: {
 							packageName: resolved?.package ?? apiItem.getAssociatedPackage()?.displayName.replace('@discordjs/', ''),
