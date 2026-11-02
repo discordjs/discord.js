@@ -218,6 +218,7 @@ export class DAVESession extends EventEmitter {
 			this.session?.prepareTransition(data.transition_id, data.protocol_version);
 		} catch (error) {
 			this.emit('debug', `Failed to prepare transition ${data.transition_id}: ${error}`);
+			return false;
 		}
 
 		if (data.protocol_version === 0) this.session?.setPassthroughMode(true);
