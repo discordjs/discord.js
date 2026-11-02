@@ -201,25 +201,25 @@ class Collector extends AsyncEventEmitter {
     if (this.ended) return Promise.reject(this.collected);
 
     return new Promise((resolve, reject) => {
-      const cleanup = () => {
-        // eslint-disable-next-line no-use-before-define
-        this.removeListener('collect', onCollect);
-        // eslint-disable-next-line no-use-before-define
-        this.removeListener('end', onEnd);
-      };
+      const controller = new AbortController();
 
-      const onCollect = item => {
-        cleanup();
-        resolve(item);
-      };
+      this.on(
+        'collect',
+        item => {
+          controller.abort();
+          resolve(item);
+        },
+        { signal: controller.signal },
+      );
 
-      const onEnd = () => {
-        cleanup();
-        reject(this.collected);
-      };
-
-      this.on('collect', onCollect);
-      this.on('end', onEnd);
+      this.on(
+        'end',
+        () => {
+          controller.abort();
+          reject(this.collected);
+        },
+        { signal: controller.signal },
+      );
     });
   }
 
@@ -306,8 +306,8 @@ class Collector extends AsyncEventEmitter {
    */
   async *[Symbol.asyncIterator]() {
     const queue = [];
-    const onCollect = (...item) => queue.push(item);
-    this.on('collect', onCollect);
+    const mainController = new AbortController();
+    this.on('collect', (...item) => queue.push(item), { signal: mainController.signal });
 
     try {
       while (queue.length || !this.ended) {
@@ -315,19 +315,19 @@ class Collector extends AsyncEventEmitter {
           yield queue.shift();
         } else {
           await new Promise(resolve => {
+            const tickController = new AbortController();
             const tick = () => {
-              this.removeListener('collect', tick);
-              this.removeListener('end', tick);
+              tickController.abort();
               resolve();
             };
 
-            this.on('collect', tick);
-            this.on('end', tick);
+            this.on('collect', tick, { signal: tickController.signal });
+            this.on('end', tick, { signal: tickController.signal });
           });
         }
       }
     } finally {
-      this.removeListener('collect', onCollect);
+      mainController.abort();
     }
   }
 
