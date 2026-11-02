@@ -20,6 +20,7 @@ allowBuilds:
 autoInstallPeers: false
 
 minimumReleaseAgeExclude:
+  - '@discordjs/opus@0.11.0'
   # This is here temporarily as the package needs to be out for 24 hours
   - '@snazzah/davey-android-arm-eabi@0.2.0'
   - '@snazzah/davey-android-arm64@0.2.0'
@@ -37,9 +38,6 @@ minimumReleaseAgeExclude:
   - '@snazzah/davey-win32-x64-msvc@0.2.0'
   - '@snazzah/davey@0.2.0'
 
-patchedDependencies:
-  '@microsoft/tsdoc-config@0.17.1': patches/@microsoft__tsdoc-config@0.17.1.patch
-
 peerDependencyRules:
   allowAny:
     - '*'
@@ -47,8 +45,6 @@ peerDependencyRules:
     - '*'
 
 publicHoistPattern:
-  - '*eslint*'
-  - '*prettier*'
   - '*@rushstack/node-core-library*'
   - '*jju*'
 

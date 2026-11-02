@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/dot-notation */
 import { GatewayOpcodes } from 'discord-api-types/v10';
 import { describe, test, expect, vitest, type Mocked, beforeEach } from 'vitest';
+import * as _AudioPlayer from '../src/audio/AudioPlayer';
 import * as DataStore from '../src/DataStore';
 import type { VoiceConnection } from '../src/VoiceConnection';
-import * as _AudioPlayer from '../src/audio/AudioPlayer';
 
 vitest.mock('../src/VoiceConnection');
 vitest.mock('../src/audio/AudioPlayer');
@@ -77,7 +76,6 @@ describe('DataStore', () => {
 		expect(DataStore.hasAudioPlayer(player)).toEqual(true);
 		expect(DataStore.addAudioPlayer(player)).toEqual(player);
 		DataStore.deleteAudioPlayer(player);
-		// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 		expect(DataStore.deleteAudioPlayer(player)).toBeUndefined();
 		expect(DataStore.hasAudioPlayer(player)).toEqual(false);
 		// Tests audio cycle with nextTime === -1
