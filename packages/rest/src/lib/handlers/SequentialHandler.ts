@@ -207,7 +207,6 @@ export class SequentialHandler implements IHandler {
 			const isGlobal = this.globalLimited;
 			let limit: number;
 			let timeout: number;
-			let delay: Promise<void>;
 
 			if (isGlobal) {
 				const offset = normalizeRateLimitOffset(this.manager.options.offset, routeId.bucketRoute);
@@ -215,19 +214,13 @@ export class SequentialHandler implements IHandler {
 				// Set RateLimitData based on the global limit
 				limit = this.manager.options.globalRequestsPerSecond;
 				timeout = this.manager.globalReset + offset - Date.now();
-				// If this is the first task to reach the global timeout, set the global delay
-				if (!this.manager.globalDelay) {
-					// The global delay function clears the global delay state when it is resolved
-					this.manager.globalDelay = this.globalDelayFor(timeout);
-				}
-
-				delay = this.manager.globalDelay;
 			} else {
 				// Set RateLimitData based on the route-specific limit
 				limit = this.limit;
 				timeout = this.getTimeToReset(routeId);
-				delay = sleep(timeout);
 			}
+
+			const timeToReset = Date.now() + timeout;
 
 			const rateLimitData: RateLimitData = {
 				global: isGlobal,
@@ -255,8 +248,21 @@ export class SequentialHandler implements IHandler {
 				this.debug(`Waiting ${timeout}ms for rate limit to pass`);
 			}
 
-			// Wait the remaining time left before the rate limit resets
-			await delay;
+			// Only create a delay for requests that are allowed to wait
+			const remaining = timeToReset - Date.now();
+			if (remaining <= 0) continue;
+
+			if (isGlobal) {
+				// If this is the first task to reach the global timeout, set the global delay
+				if (!this.manager.globalDelay) {
+					// The global delay function clears the global delay state when it is resolved
+					this.manager.globalDelay = this.globalDelayFor(remaining);
+				}
+
+				await this.manager.globalDelay;
+			} else {
+				await sleep(remaining);
+			}
 		}
 
 		// As the request goes out, update the global usage information
