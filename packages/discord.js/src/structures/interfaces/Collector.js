@@ -200,17 +200,26 @@ class Collector extends AsyncEventEmitter {
   get next() {
     if (this.ended) return Promise.reject(this.collected);
 
-    let onCollect;
-    let onEnd;
     return new Promise((resolve, reject) => {
-      onCollect = item => resolve(item);
-      onEnd = () => reject(this.collected);
+      const cleanup = () => {
+        // eslint-disable-next-line no-use-before-define
+        this.removeListener('collect', onCollect);
+        // eslint-disable-next-line no-use-before-define
+        this.removeListener('end', onEnd);
+      };
+
+      const onCollect = item => {
+        cleanup();
+        resolve(item);
+      };
+
+      const onEnd = () => {
+        cleanup();
+        reject(this.collected);
+      };
 
       this.on('collect', onCollect);
       this.on('end', onEnd);
-    }).finally(() => {
-      this.removeListener('collect', onCollect);
-      this.removeListener('end', onEnd);
     });
   }
 
@@ -305,14 +314,15 @@ class Collector extends AsyncEventEmitter {
         if (queue.length) {
           yield queue.shift();
         } else {
-          let tick;
           await new Promise(resolve => {
-            tick = resolve;
+            const tick = () => {
+              this.removeListener('collect', tick);
+              this.removeListener('end', tick);
+              resolve();
+            };
+
             this.on('collect', tick);
             this.on('end', tick);
-          }).finally(() => {
-            this.removeListener('collect', tick);
-            this.removeListener('end', tick);
           });
         }
       }
