@@ -245,9 +245,13 @@ export class DAVESession extends EventEmitter {
 		// ID 0 already gets executed by davey
 		if (transitionId !== 0) {
 			try {
-				this.session?.executeTransition(transitionId);
+				if (!this.session?.executeTransition(transitionId)) {
+					this.emit('debug', `Failed to execute transition ${transitionId}: davey did not execute it`);
+					return false;
+				}
 			} catch (error) {
 				this.emit('debug', `Failed to execute transition ${transitionId}: ${error}`);
+				return false;
 			}
 		}
 
