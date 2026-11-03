@@ -173,10 +173,12 @@ export function calculateUserDefaultAvatarIndex(userId: Snowflake) {
  * Sleeps for a given amount of time.
  *
  * @param ms - The amount of time (in milliseconds) to sleep for
+ * @param options - Whether the timeout should keep the process alive
  */
-export async function sleep(ms: number): Promise<void> {
+export async function sleep(ms: number, options?: { ref?: boolean }): Promise<void> {
 	return new Promise<void>((resolve) => {
-		setTimeout(() => resolve(), ms);
+		const timeout = setTimeout(() => resolve(), ms);
+		if (options?.ref === false) timeout.unref?.();
 	});
 }
 
