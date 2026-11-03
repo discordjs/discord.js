@@ -6,7 +6,7 @@ const BaseInteraction = require('./BaseInteraction');
 const InteractionWebhook = require('./InteractionWebhook');
 const ModalSubmitFields = require('./ModalSubmitFields');
 const InteractionResponses = require('./interfaces/InteractionResponses');
-const { transformResolved } = require('../util/Util');
+const { resolveInteractionChannel, transformResolved } = require('../util/Util');
 
 const getMessage = lazy(() => require('./Message').Message);
 const getAttachment = lazy(() => require('./Attachment'));
@@ -206,7 +206,7 @@ class ModalSubmitInteraction extends BaseInteraction {
 
           for (const [id, apiChannel] of Object.entries(channels)) {
             if (valueSet.has(id)) {
-              data.channels.set(id, client.channels._add(apiChannel, guild) ?? apiChannel);
+              data.channels.set(id, resolveInteractionChannel(client, guild, apiChannel));
             }
           }
         }

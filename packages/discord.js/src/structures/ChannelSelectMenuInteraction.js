@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const MessageComponentInteraction = require('./MessageComponentInteraction');
+const { resolveInteractionChannel } = require('../util/Util');
 
 /**
  * Represents a {@link ComponentType.ChannelSelect} select menu interaction.
@@ -25,7 +26,7 @@ class ChannelSelectMenuInteraction extends MessageComponentInteraction {
     this.channels = new Collection();
 
     for (const channel of Object.values(resolved?.channels ?? {})) {
-      this.channels.set(channel.id, this.client.channels._add(channel, this.guild) ?? channel);
+      this.channels.set(channel.id, resolveInteractionChannel(this.client, this.guild, channel));
     }
   }
 }
