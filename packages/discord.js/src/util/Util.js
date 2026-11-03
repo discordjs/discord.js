@@ -6,6 +6,7 @@ const { Collection } = require('@discordjs/collection');
 const { ChannelType, RouteBases, Routes } = require('discord-api-types/v10');
 const { fetch } = require('undici');
 const Colors = require('./Colors');
+const PermissionsBitField = require('./PermissionsBitField');
 const { DiscordjsError, DiscordjsRangeError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const isObject = d => typeof d === 'object' && d !== null;
 
@@ -433,6 +434,27 @@ function parseWebhookURL(url) {
  */
 
 /**
+ * Resolves a channel from an interaction's resolved data.
+ * The cached channel is patched without the permissions of the user who invoked the interaction, as those are specific
+ * to the interaction. They are set on a clone of the channel owned by the interaction instead.
+ * @param {Client} client The client
+ * @param {?Guild} guild The guild the interaction was received in
+ * @param {APIInteractionDataResolvedChannel} apiChannel The received channel
+ * @returns {BaseChannel|APIInteractionDataResolvedChannel}
+ * @private
+ */
+function resolveInteractionChannel(client, guild, apiChannel) {
+  const { permissions, app_permissions, ...data } = apiChannel;
+  const cachedChannel = client.channels._add(data, guild);
+  if (!cachedChannel) return apiChannel;
+
+  const channel = cachedChannel._clone();
+  channel.permissions = permissions === undefined ? null : new PermissionsBitField(permissions).freeze();
+  channel.appPermissions = app_permissions === undefined ? null : new PermissionsBitField(app_permissions).freeze();
+  return channel;
+}
+
+/**
  * Transforms the resolved data received from the API.
  * @param {SupportingInteractionResolvedData} supportingData Data to support the transformation
  * @param {APIInteractionDataResolved} [data] The received resolved objects
@@ -470,7 +492,7 @@ function transformResolved(
   if (channels) {
     result.channels = new Collection();
     for (const apiChannel of Object.values(channels)) {
-      result.channels.set(apiChannel.id, client.channels._add(apiChannel, guild) ?? apiChannel);
+      result.channels.set(apiChannel.id, resolveInteractionChannel(client, guild, apiChannel));
     }
   }
 
@@ -546,6 +568,7 @@ module.exports = {
   cleanContent,
   cleanCodeBlockContent,
   parseWebhookURL,
+  resolveInteractionChannel,
   transformResolved,
   resolveSKUId,
   emitDeprecationWarningForUserFetchFlags,
