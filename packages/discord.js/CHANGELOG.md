@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.28.1](https://github.com/discordjs/discord.js/compare/14.28.0...14.28.1) - (2026-11-03)
+
+## Bug Fixes
+
+- **BaseChannel:** Scope resolved permissions to the interaction (#11680) ([cfb23d2](https://github.com/discordjs/discord.js/commit/cfb23d20980c537c4d018f8e5f5e1829638041bb))
+
 # [14.28.0](https://github.com/discordjs/discord.js/compare/14.27.0...14.28.0) - (2026-10-30)
 
 ## Features
