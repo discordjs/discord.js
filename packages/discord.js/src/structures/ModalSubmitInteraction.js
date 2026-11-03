@@ -1,5 +1,5 @@
 import { Collection } from '@discordjs/collection';
-import { transformResolved } from '../util/Util.js';
+import { resolveInteractionChannel, transformResolved } from '../util/Util.js';
 import { Attachment } from './Attachment.js';
 import { BaseInteraction } from './BaseInteraction.js';
 import { InteractionWebhook } from './InteractionWebhook.js';
@@ -195,7 +195,7 @@ export class ModalSubmitInteraction extends BaseInteraction {
 
           for (const [id, apiChannel] of Object.entries(channels)) {
             if (valueSet.has(id)) {
-              data.channels.set(id, this.client.channels._add(apiChannel, this.guild) ?? apiChannel);
+              data.channels.set(id, resolveInteractionChannel(this.client, this.guild, apiChannel));
             }
           }
         }
