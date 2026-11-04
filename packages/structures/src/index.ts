@@ -5,6 +5,7 @@ export * from './emojis/index.js';
 export * from './entitlements/index.js';
 export * from './interactions/index.js';
 export * from './invites/index.js';
+export * from './lobbies/index.js';
 export * from './messages/index.js';
 export * from './polls/index.js';
 export * from './presences/index.js';
