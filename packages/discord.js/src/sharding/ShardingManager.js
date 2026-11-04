@@ -73,7 +73,6 @@ class ShardingManager extends AsyncEventEmitter {
     this.file = file;
     if (!file) throw new DiscordjsError(ErrorCodes.ClientInvalidOption, 'File', 'specified.');
     if (!path.isAbsolute(file)) this.file = path.resolve(process.cwd(), file);
-    // eslint-disable-next-line n/no-sync
     const stats = fs.statSync(this.file);
     if (!stats.isFile()) throw new DiscordjsError(ErrorCodes.ClientInvalidOption, 'File', 'a file');
 
@@ -233,7 +232,6 @@ class ShardingManager extends AsyncEventEmitter {
     // Obtain/verify the number of shards to spawn
     let shardAmount = amount;
     if (shardAmount === 'auto') {
-      // eslint-disable-next-line require-atomic-updates
       shardAmount = await fetchRecommendedShardCount(this.token, {
         api: this.api,
         version: this.version,

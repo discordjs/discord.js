@@ -1,7 +1,7 @@
 import type { Buffer } from 'node:buffer';
 import type { RESTPatchAPIChannelJSONBody, Snowflake } from 'discord-api-types/v10';
-import type { REST } from '../REST.js';
 import { RateLimitError } from '../errors/RateLimitError.js';
+import type { REST } from '../REST.js';
 import { RequestMethod } from './types.js';
 import type {
 	GetRateLimitOffsetFunction,
@@ -13,7 +13,6 @@ import type {
 } from './types.js';
 
 function serializeSearchParam(value: unknown): string | null {
-	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (typeof value) {
 		case 'string':
 			return value;
@@ -27,7 +26,6 @@ function serializeSearchParam(value: unknown): string | null {
 				return Number.isNaN(value.getTime()) ? null : value.toISOString();
 			}
 
-			// eslint-disable-next-line @typescript-eslint/no-base-to-string
 			if (typeof value.toString === 'function' && value.toString !== Object.prototype.toString) return value.toString();
 			return null;
 		default:
