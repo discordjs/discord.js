@@ -197,7 +197,7 @@ export abstract class BitField<Flags extends string> {
 
 		if (typeof bit === 'string') {
 			if (!Number.isNaN(Number(bit))) return BigInt(bit);
-			if (bit in this.Flags) return this.Flags[bit as keyof typeof this.Flags];
+			if (bit in this.Flags) return BigInt(this.Flags[bit as keyof typeof this.Flags]);
 		}
 
 		throw new Error(`BitFieldInvalid: ${JSON.stringify(bit)}`);
