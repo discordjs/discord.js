@@ -16,6 +16,7 @@ export const kCanceledTimestamp = Symbol.for('djs.structures.canceledTimestamp')
 
 export const kAllow = Symbol.for('djs.structures.allow');
 export const kDeny = Symbol.for('djs.structures.deny');
+export const kAppPermissions = Symbol.for('djs.structures.appPermissions');
 
 export const kBurstColors = Symbol.for('djs.structures.burstColors');
 
