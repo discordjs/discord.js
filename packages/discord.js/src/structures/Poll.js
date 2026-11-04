@@ -1,16 +1,14 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { Base } = require('./Base.js');
-const { PollAnswer } = require('./PollAnswer.js');
+import { Collection } from '@discordjs/collection';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { Base } from './Base.js';
+import { PollAnswer } from './PollAnswer.js';
 
 /**
  * Represents a Poll
  *
  * @extends {Base}
  */
-class Poll extends Base {
+export class Poll extends Base {
   constructor(client, data, message, channel) {
     super(client);
 
@@ -186,5 +184,3 @@ class Poll extends Base {
     return this.channel.messages.endPoll(this.messageId);
   }
 }
-
-exports.Poll = Poll;

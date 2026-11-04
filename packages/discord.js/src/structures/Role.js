@@ -1,17 +1,15 @@
-'use strict';
-
-const { PermissionFlagsBits } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { PermissionsBitField } = require('../util/PermissionsBitField.js');
-const { RoleFlagsBitField } = require('../util/RoleFlagsBitField.js');
-const { BaseRole } = require('./BaseRole.js');
+import { PermissionFlagsBits } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { PermissionsBitField } from '../util/PermissionsBitField.js';
+import { RoleFlagsBitField } from '../util/RoleFlagsBitField.js';
+import { BaseRole } from './BaseRole.js';
 
 /**
  * Represents a role on Discord.
  *
  * @extends {BaseRole}
  */
-class Role extends BaseRole {
+export class Role extends BaseRole {
   constructor(client, data, guild) {
     super(client, data);
 
@@ -420,5 +418,3 @@ class Role extends BaseRole {
     };
   }
 }
-
-exports.Role = Role;

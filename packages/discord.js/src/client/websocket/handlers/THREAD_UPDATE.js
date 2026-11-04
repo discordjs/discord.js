@@ -1,8 +1,6 @@
-'use strict';
+import { Events } from '../../../util/Events.js';
 
-const { Events } = require('../../../util/Events.js');
-
-module.exports = (client, packet) => {
+export default (client, packet) => {
   const { old, updated } = client.actions.ChannelUpdate.handle(packet.d);
   if (old && updated) {
     /**

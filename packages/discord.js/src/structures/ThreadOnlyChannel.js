@@ -1,9 +1,7 @@
-'use strict';
-
-const { GuildForumThreadManager } = require('../managers/GuildForumThreadManager.js');
-const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require('../util/Channels.js');
-const { GuildChannel } = require('./GuildChannel.js');
-const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
+import { GuildForumThreadManager } from '../managers/GuildForumThreadManager.js';
+import { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } from '../util/Channels.js';
+import { GuildChannel } from './GuildChannel.js';
+import { TextBasedChannel } from './interfaces/TextBasedChannel.js';
 
 /**
  * @typedef {Object} GuildForumTagEmoji
@@ -42,7 +40,7 @@ const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
  * @implements {TextBasedChannel}
  * @abstract
  */
-class ThreadOnlyChannel extends GuildChannel {
+export class ThreadOnlyChannel extends GuildChannel {
   constructor(guild, data, client) {
     super(guild, data, client, false);
 
@@ -266,5 +264,3 @@ TextBasedChannel.applyToClass(ThreadOnlyChannel, [
   'createMessageComponentCollector',
   'awaitMessageComponent',
 ]);
-
-exports.ThreadOnlyChannel = ThreadOnlyChannel;

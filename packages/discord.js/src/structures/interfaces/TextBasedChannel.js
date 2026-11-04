@@ -1,30 +1,25 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { lazy } = require('@discordjs/util');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { InteractionType, Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../../errors/index.js');
-const { MaxBulkDeletableMessageAge } = require('../../util/Constants.js');
-const { InteractionCollector } = require('../InteractionCollector.js');
-const { MessageCollector } = require('../MessageCollector.js');
-
-// Fixes circular dependencies.
-const getGuildMessageManager = lazy(() => require('../../managers/GuildMessageManager.js').GuildMessageManager);
+import { Collection } from '@discordjs/collection';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { InteractionType, Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, DiscordjsError, ErrorCodes } from '../../errors/index.js';
+import { GuildMessageManager } from '../../managers/GuildMessageManager.js';
+import { MaxBulkDeletableMessageAge } from '../../util/Constants.js';
+import { InteractionCollector } from '../InteractionCollector.js';
+import { MessageCollector } from '../MessageCollector.js';
 
 /**
  * Interface for classes that have text-channel-like features.
  *
  * @interface
  */
-class TextBasedChannel {
+export class TextBasedChannel {
   constructor() {
     /**
      * A manager of the messages sent to this channel
      *
      * @type {GuildMessageManager}
      */
-    this.messages = new (getGuildMessageManager())(this);
+    this.messages = new GuildMessageManager(this);
 
     /**
      * The channel's last message id, if one was sent
@@ -427,5 +422,3 @@ class TextBasedChannel {
     }
   }
 }
-
-exports.TextBasedChannel = TextBasedChannel;

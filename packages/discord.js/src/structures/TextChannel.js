@@ -1,13 +1,11 @@
-'use strict';
-
-const { BaseGuildTextChannel } = require('./BaseGuildTextChannel.js');
+import { BaseGuildTextChannel } from './BaseGuildTextChannel.js';
 
 /**
  * Represents a guild text channel on Discord.
  *
  * @extends {BaseGuildTextChannel}
  */
-class TextChannel extends BaseGuildTextChannel {
+export class TextChannel extends BaseGuildTextChannel {
   _patch(data) {
     super._patch(data);
 
@@ -32,5 +30,3 @@ class TextChannel extends BaseGuildTextChannel {
     return this.edit({ rateLimitPerUser, reason });
   }
 }
-
-exports.TextChannel = TextChannel;

@@ -1,16 +1,14 @@
-'use strict';
-
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { GuildScheduledEventStatus, GuildScheduledEventEntityType, RouteBases } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { Base } = require('./Base.js');
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { GuildScheduledEventStatus, GuildScheduledEventEntityType, RouteBases } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { Base } from './Base.js';
 
 /**
  * Represents a scheduled event in a {@link Guild}.
  *
  * @extends {Base}
  */
-class GuildScheduledEvent extends Base {
+export class GuildScheduledEvent extends Base {
   constructor(client, data) {
     super(client);
 
@@ -575,5 +573,3 @@ class GuildScheduledEvent extends Base {
     return this.status === GuildScheduledEventStatus.Scheduled;
   }
 }
-
-exports.GuildScheduledEvent = GuildScheduledEvent;

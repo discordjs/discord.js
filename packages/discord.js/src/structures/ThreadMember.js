@@ -1,14 +1,12 @@
-'use strict';
-
-const { ThreadMemberFlagsBitField } = require('../util/ThreadMemberFlagsBitField.js');
-const { Base } = require('./Base.js');
+import { ThreadMemberFlagsBitField } from '../util/ThreadMemberFlagsBitField.js';
+import { Base } from './Base.js';
 
 /**
  * Represents a Member for a Thread.
  *
  * @extends {Base}
  */
-class ThreadMember extends Base {
+export class ThreadMember extends Base {
   constructor(thread, data, extra = {}) {
     super(thread.client);
 
@@ -120,5 +118,3 @@ class ThreadMember extends Base {
     return this;
   }
 }
-
-exports.ThreadMember = ThreadMember;

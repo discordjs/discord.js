@@ -1,14 +1,12 @@
-'use strict';
-
-const { GuildChannel } = require('../structures/GuildChannel.js');
-const { DataManager } = require('./DataManager.js');
+import { GuildChannel } from '../structures/GuildChannel.js';
+import { DataManager } from './DataManager.js';
 
 /**
  * Manages API methods for CategoryChannels' children.
  *
  * @extends {DataManager}
  */
-class CategoryChannelChildManager extends DataManager {
+export class CategoryChannelChildManager extends DataManager {
   constructor(channel) {
     super(channel.client, GuildChannel);
     /**
@@ -81,5 +79,3 @@ class CategoryChannelChildManager extends DataManager {
     });
   }
 }
-
-exports.CategoryChannelChildManager = CategoryChannelChildManager;

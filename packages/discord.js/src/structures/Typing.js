@@ -1,13 +1,11 @@
-'use strict';
-
-const { Base } = require('./Base.js');
+import { Base } from './Base.js';
 
 /**
  * Represents a typing state for a user in a channel.
  *
  * @extends {Base}
  */
-class Typing extends Base {
+export class Typing extends Base {
   constructor(channel, user, data) {
     super(channel.client);
 
@@ -78,5 +76,3 @@ class Typing extends Base {
     return this.guild?.members.resolve(this.user) ?? null;
   }
 }
-
-exports.Typing = Typing;

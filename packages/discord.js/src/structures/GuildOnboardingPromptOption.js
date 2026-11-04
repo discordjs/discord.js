@@ -1,15 +1,13 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { Base } = require('./Base.js');
-const { Emoji } = require('./Emoji.js');
+import { Collection } from '@discordjs/collection';
+import { Base } from './Base.js';
+import { Emoji } from './Emoji.js';
 
 /**
  * Represents the data of an option from a prompt of a guilds onboarding.
  *
  * @extends {Base}
  */
-class GuildOnboardingPromptOption extends Base {
+export class GuildOnboardingPromptOption extends Base {
   constructor(client, data, guildId) {
     super(client);
 
@@ -92,5 +90,3 @@ class GuildOnboardingPromptOption extends Base {
     return this.guild.emojis.cache.get(this._emoji.id) ?? new Emoji(this.client, this._emoji);
   }
 }
-
-exports.GuildOnboardingPromptOption = GuildOnboardingPromptOption;

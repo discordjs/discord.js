@@ -1,14 +1,12 @@
-'use strict';
-
-const process = require('node:process');
-const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { Role } = require('../structures/Role.js');
-const { resolveImage } = require('../util/DataResolver.js');
-const { PermissionsBitField } = require('../util/PermissionsBitField.js');
-const { setPosition, resolveColor } = require('../util/Util.js');
-const { CachedManager } = require('./CachedManager.js');
+import process from 'node:process';
+import { Collection } from '@discordjs/collection';
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { Role } from '../structures/Role.js';
+import { resolveImage } from '../util/DataResolver.js';
+import { PermissionsBitField } from '../util/PermissionsBitField.js';
+import { setPosition, resolveColor } from '../util/Util.js';
+import { CachedManager } from './CachedManager.js';
 
 let cacheWarningEmitted = false;
 
@@ -17,7 +15,7 @@ let cacheWarningEmitted = false;
  *
  * @extends {CachedManager}
  */
-class RoleManager extends CachedManager {
+export class RoleManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, Role, iterable);
     if (!cacheWarningEmitted && this._cache.constructor.name !== 'Collection') {
@@ -442,5 +440,3 @@ class RoleManager extends CachedManager {
     return this.cache.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev), this.cache.first());
   }
 }
-
-exports.RoleManager = RoleManager;

@@ -1,11 +1,9 @@
-'use strict';
-
 /**
  * Manages the API methods of a data model.
  *
  * @abstract
  */
-class BaseManager {
+export class BaseManager {
   constructor(client) {
     /**
      * The client that instantiated this Manager
@@ -17,5 +15,3 @@ class BaseManager {
     Object.defineProperty(this, 'client', { value: client });
   }
 }
-
-exports.BaseManager = BaseManager;

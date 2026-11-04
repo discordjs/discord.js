@@ -27,6 +27,7 @@
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"bin": {
 		"generate-split-documentation": "./bin/generateSplitDocumentation.js",
+		"inject-version": "./bin/injectVersion.js",
 		"sort-labels": "./bin/sortLabels.js"
 	},
 	"directories": {
@@ -38,23 +39,18 @@
 		"bin/generateSplitDocumentation.js",
 		"dist"
 	],
+	"type": "module",
 	"main": "./dist/src/index.js",
 	"module": "./dist/src/index.mjs",
 	"types": "./dist/src/index.d.ts",
 	"exports": {
 		".": {
-			"require": {
-				"types": "./dist/src/index.d.ts",
-				"default": "./dist/src/index.js"
-			},
-			"import": {
-				"types": "./dist/src/index.d.mts",
-				"default": "./dist/src/index.mjs"
-			}
+			"types": "./dist/src/index.d.ts",
+			"default": "./dist/src/index.js"
 		}
 	},
 	"scripts": {
-		"build": "tsc --noEmit --lib ESNext,DOM && tsup",
+		"build": "tsc",
 		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src turbo/generators/config.ts",
 		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src turbo/generators/config.ts --fix --fix-suggestions",
 		"fmt": "pnpm run format"
@@ -63,7 +59,7 @@
 		"@actions/glob": "^0.7.0",
 		"@discordjs/api-extractor-model": "workspace:^",
 		"@discordjs/api-extractor-utils": "workspace:^",
-		"@microsoft/tsdoc": "~0.16.0",
+		"@microsoft/tsdoc": "~0.17.1",
 		"@microsoft/tsdoc-config": "~0.18.1",
 		"@vercel/blob": "^2.8.0",
 		"@vercel/postgres": "^0.10.0",
@@ -79,9 +75,8 @@
 		"oxfmt": "^0.74.0",
 		"oxlint": "^1.89.0",
 		"terser": "^5.51.2",
-		"tsup": "^8.5.1",
 		"turbo": "^2.10.12",
-		"typescript": "~5.9.3"
+		"typescript": "~7.0.2"
 	},
 	"engines": {
 		"node": ">=24.17.0"

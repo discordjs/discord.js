@@ -1,26 +1,22 @@
-'use strict';
-
-const { Buffer } = require('node:buffer');
-const { Collection } = require('@discordjs/collection');
-const { lazy } = require('@discordjs/util');
-const { Routes, PermissionFlagsBits, InviteType } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { resolveInviteTargetUsersFile } = require('../util/DataResolver.js');
-const { InviteFlagsBitField } = require('../util/InviteFlagsBitField.js');
-const { _transformAPIInviteTargetUsersJobStatus } = require('../util/Transformers.js');
-const { BaseInvite } = require('./BaseInvite.js');
-const { GuildScheduledEvent } = require('./GuildScheduledEvent.js');
-const { IntegrationApplication } = require('./IntegrationApplication.js');
-const { InviteGuild } = require('./InviteGuild.js');
-
-const getInviteRole = lazy(() => require('./InviteRole.js').InviteRole);
+import { Buffer } from 'node:buffer';
+import { Collection } from '@discordjs/collection';
+import { Routes, PermissionFlagsBits, InviteType } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { resolveInviteTargetUsersFile } from '../util/DataResolver.js';
+import { InviteFlagsBitField } from '../util/InviteFlagsBitField.js';
+import { _transformAPIInviteTargetUsersJobStatus } from '../util/Transformers.js';
+import { BaseInvite } from './BaseInvite.js';
+import { GuildScheduledEvent } from './GuildScheduledEvent.js';
+import { IntegrationApplication } from './IntegrationApplication.js';
+import { InviteGuild } from './InviteGuild.js';
+import { InviteRole } from './InviteRole.js';
 
 /**
  * A channel invite leading to a guild.
  *
  * @extends {BaseInvite}
  */
-class GuildInvite extends BaseInvite {
+export class GuildInvite extends BaseInvite {
   constructor(client, data) {
     super(client, data);
 
@@ -193,10 +189,7 @@ class GuildInvite extends BaseInvite {
        * @type {?Collection<Snowflake, Role|InviteRole>}
        */
       this.roles = new Collection(
-        data.roles?.map(role => [
-          role.id,
-          this.guild?.roles?._add(role, false) ?? new (getInviteRole())(this.client, role),
-        ]) ??
+        data.roles?.map(role => [role.id, this.guild?.roles?._add(role, false) ?? new InviteRole(this.client, role)]) ??
           // `role_ids` is only received from gateway `INVITE_CREATE` event, so `this.guild` should be "Guild" instance
           data.role_ids?.map(roleId => [roleId, this.guild.roles.resolve(roleId)]),
       );
@@ -280,5 +273,3 @@ class GuildInvite extends BaseInvite {
     });
   }
 }
-
-exports.GuildInvite = GuildInvite;

@@ -1,15 +1,13 @@
-'use strict';
-
-const { formatEmoji } = require('@discordjs/formatters');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Base } = require('./Base.js');
+import { formatEmoji } from '@discordjs/formatters';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { Base } from './Base.js';
 
 /**
  * Represents an emoji, see {@link ApplicationEmoji}, {@link GuildEmoji} and {@link ReactionEmoji}.
  *
  * @extends {Base}
  */
-class Emoji extends Base {
+export class Emoji extends Base {
   constructor(client, emoji) {
     super(client);
     /**
@@ -111,5 +109,3 @@ class Emoji extends Base {
     return json;
   }
 }
-
-exports.Emoji = Emoji;

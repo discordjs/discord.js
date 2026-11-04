@@ -1,7 +1,5 @@
-'use strict';
-
-const { MakeCacheOverrideSymbol } = require('../util/Symbols.js');
-const { DataManager } = require('./DataManager.js');
+import { MakeCacheOverrideSymbol } from '../util/Symbols.js';
+import { DataManager } from './DataManager.js';
 
 /**
  * Manages the API methods of a data model with a mutable cache of instances.
@@ -9,7 +7,7 @@ const { DataManager } = require('./DataManager.js');
  * @extends {DataManager}
  * @abstract
  */
-class CachedManager extends DataManager {
+export class CachedManager extends DataManager {
   constructor(client, holds, iterable) {
     super(client, holds);
 
@@ -64,5 +62,3 @@ class CachedManager extends DataManager {
     return entry;
   }
 }
-
-exports.CachedManager = CachedManager;

@@ -1,13 +1,11 @@
-'use strict';
-
-const { Base } = require('./Base.js');
+import { Base } from './Base.js';
 
 /**
  * Represents a Client OAuth2 Application Team Member.
  *
  * @extends {Base}
  */
-class TeamMember extends Base {
+export class TeamMember extends Base {
   constructor(team, data) {
     super(team.client);
 
@@ -73,5 +71,3 @@ class TeamMember extends Base {
     return this.user.toString();
   }
 }
-
-exports.TeamMember = TeamMember;

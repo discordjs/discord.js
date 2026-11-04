@@ -1,14 +1,12 @@
-'use strict';
-
-const { CategoryChannelChildManager } = require('../managers/CategoryChannelChildManager.js');
-const { GuildChannel } = require('./GuildChannel.js');
+import { CategoryChannelChildManager } from '../managers/CategoryChannelChildManager.js';
+import { GuildChannel } from './GuildChannel.js';
 
 /**
  * Represents a guild category channel on Discord.
  *
  * @extends {GuildChannel}
  */
-class CategoryChannel extends GuildChannel {
+export class CategoryChannel extends GuildChannel {
   /**
    * The id of the parent of this channel.
    *
@@ -46,5 +44,3 @@ class CategoryChannel extends GuildChannel {
     return new CategoryChannelChildManager(this);
   }
 }
-
-exports.CategoryChannel = CategoryChannel;

@@ -1,9 +1,7 @@
-'use strict';
+import { GuildInvite } from '../../../structures/GuildInvite.js';
+import { Events } from '../../../util/Events.js';
 
-const { GuildInvite } = require('../../../structures/GuildInvite.js');
-const { Events } = require('../../../util/Events.js');
-
-module.exports = (client, { d: data }) => {
+export default (client, { d: data }) => {
   const channel = client.channels.cache.get(data.channel_id);
   const guild = client.guilds.cache.get(data.guild_id);
   if (!channel) return;

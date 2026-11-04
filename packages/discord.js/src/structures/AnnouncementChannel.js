@@ -1,13 +1,11 @@
-'use strict';
-
-const { BaseGuildTextChannel } = require('./BaseGuildTextChannel.js');
+import { BaseGuildTextChannel } from './BaseGuildTextChannel.js';
 
 /**
  * Represents a guild announcement channel on Discord.
  *
  * @extends {BaseGuildTextChannel}
  */
-class AnnouncementChannel extends BaseGuildTextChannel {
+export class AnnouncementChannel extends BaseGuildTextChannel {
   /**
    * Adds the target to this channel's followers.
    *
@@ -25,5 +23,3 @@ class AnnouncementChannel extends BaseGuildTextChannel {
     return this.guild.channels.addFollower(this, channel, reason);
   }
 }
-
-exports.AnnouncementChannel = AnnouncementChannel;

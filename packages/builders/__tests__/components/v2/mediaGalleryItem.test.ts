@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { MediaGalleryItemBuilder } from '../../../src/components/v2/MediaGalleryItem';
+import { MediaGalleryItemBuilder } from '../../../src/components/v2/MediaGalleryItem.js';
 
 const dummy = {
 	media: { url: 'https://google.com' },

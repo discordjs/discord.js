@@ -1,8 +1,7 @@
-'use strict';
-
-const { ButtonStyle } = require('discord-api-types/v10');
-const { token, owner, skuId } = require('./auth.js');
-const { Client, Events, codeBlock, GatewayIntentBits, ActionRowBuilder, ButtonBuilder } = require('../src/index.js');
+import { inspect } from 'node:util';
+import { ButtonStyle } from 'discord-api-types/v10';
+import { Client, Events, codeBlock, GatewayIntentBits, ActionRowBuilder, ButtonBuilder } from '../src/index.js';
+import { token, owner, skuId } from './auth.js';
 
 const client = new Client({ intents: GatewayIntentBits.Guilds | GatewayIntentBits.GuildMessages });
 
@@ -53,12 +52,12 @@ client.on(Events.MessageCreate, async message => {
   if (message.author.id !== owner || !message.content.startsWith(prefix)) return;
   let res;
   try {
+    // eslint-disable-next-line no-eval
     res = await eval(message.content.slice(prefix.length));
-    if (typeof res !== 'string') res = require('node:util').inspect(res);
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error(err.stack);
-    res = err.message;
+    if (typeof res !== 'string') res = inspect(res);
+  } catch (error) {
+    console.error(error.stack);
+    res = error.message;
   }
 
   await message.channel.send(codeBlock('js', res));

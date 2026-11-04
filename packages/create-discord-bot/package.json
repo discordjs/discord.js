@@ -30,7 +30,7 @@
 		"directory": "packages/create-discord-bot"
 	},
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
-	"bin": "./dist/index.js",
+	"bin": "./dist/bin/index.js",
 	"directories": {
 		"lib": "src",
 		"bin": "bin"
@@ -45,7 +45,7 @@
 		"provenance": true
 	},
 	"scripts": {
-		"build": "tsc --noEmit && tsup",
+		"build": "tsc",
 		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
 		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions",
 		"prepack": "pnpm run build && pnpm run lint",
@@ -68,8 +68,7 @@
 		"oxfmt": "^0.74.0",
 		"oxlint": "^1.89.0",
 		"terser": "^5.51.2",
-		"tsup": "^8.5.1",
-		"typescript": "~5.9.3"
+		"typescript": "~7.0.2"
 	},
 	"engines": {
 		"node": ">=24.17.0"

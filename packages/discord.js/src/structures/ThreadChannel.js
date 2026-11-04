@@ -1,15 +1,13 @@
-'use strict';
+import { lazy } from '@discordjs/util';
+import { ChannelFlags, ChannelType, PermissionFlagsBits, Routes } from 'discord-api-types/v10';
+import { DiscordjsRangeError, ErrorCodes } from '../errors/index.js';
+import { GuildMessageManager } from '../managers/GuildMessageManager.js';
+import { ThreadMemberManager } from '../managers/ThreadMemberManager.js';
+import { ChannelFlagsBitField } from '../util/ChannelFlagsBitField.js';
+import { BaseChannel } from './BaseChannel.js';
+import { TextBasedChannel } from './interfaces/TextBasedChannel.js';
 
-const { lazy } = require('@discordjs/util');
-const { ChannelFlags, ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
-const { DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
-const { GuildMessageManager } = require('../managers/GuildMessageManager.js');
-const { ThreadMemberManager } = require('../managers/ThreadMemberManager.js');
-const { ChannelFlagsBitField } = require('../util/ChannelFlagsBitField.js');
-const { BaseChannel } = require('./BaseChannel.js');
-const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
-
-const getThreadOnlyChannel = lazy(() => require('./ThreadOnlyChannel.js'));
+const getThreadOnlyChannel = lazy(async () => (await import('./ThreadOnlyChannel.js')).ThreadOnlyChannel);
 
 /**
  * Represents a thread channel on Discord.
@@ -17,7 +15,7 @@ const getThreadOnlyChannel = lazy(() => require('./ThreadOnlyChannel.js'));
  * @extends {BaseChannel}
  * @implements {TextBasedChannel}
  */
-class ThreadChannel extends BaseChannel {
+export class ThreadChannel extends BaseChannel {
   constructor(guild, data, client) {
     super(guild?.client ?? client, data, false);
 
@@ -340,7 +338,7 @@ class ThreadChannel extends BaseChannel {
    * @returns {Promise<?Message<true>>}
    */
   async fetchStarterMessage(options) {
-    const channel = this.parent instanceof getThreadOnlyChannel() ? this : this.parent;
+    const channel = this.parent instanceof (await getThreadOnlyChannel()) ? this : this.parent;
     return channel?.messages.fetch({ message: this.id, ...options }) ?? null;
   }
 
@@ -658,5 +656,3 @@ class ThreadChannel extends BaseChannel {
 }
 
 TextBasedChannel.applyToClass(ThreadChannel, ['fetchWebhooks', 'setRateLimitPerUser', 'setNSFW']);
-
-exports.ThreadChannel = ThreadChannel;

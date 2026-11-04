@@ -1,6 +1,4 @@
-'use strict';
-
-const { createEnum } = require('./Enums.js');
+import { createEnum } from './Enums.js';
 
 /**
  * @typedef {Object} Status
@@ -14,4 +12,4 @@ const { createEnum } = require('./Enums.js');
  * @type {Status}
  * @ignore
  */
-exports.Status = createEnum(['Ready', 'Idle', 'WaitingForGuilds']);
+export const Status = createEnum(['Ready', 'Idle', 'WaitingForGuilds']);

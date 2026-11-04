@@ -374,7 +374,7 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 	public saveToJsonFile(apiJsonFilename: string, options?: IApiPackageSaveOptions): void {
 		const ioptions = options ?? {};
 
-		const packageJson: IPackageJson = PackageJsonLookup.loadOwnPackageJson(__dirname);
+		const packageJson: IPackageJson = PackageJsonLookup.loadOwnPackageJson(import.meta.dirname);
 
 		const tsdocConfigFile: TSDocConfigFile = TSDocConfigFile.loadFromParser(this.tsdocConfiguration);
 		const tsdocConfig: JsonObject = tsdocConfigFile.saveToObject();
