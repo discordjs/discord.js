@@ -19,8 +19,8 @@ allowBuilds:
 
 autoInstallPeers: false
 
-patchedDependencies:
-  '@microsoft/tsdoc-config@0.17.1': patches/@microsoft__tsdoc-config@0.17.1.patch
+minimumReleaseAgeExclude:
+  - '@discordjs/opus@0.11.0'
 
 peerDependencyRules:
   allowAny:
@@ -29,8 +29,6 @@ peerDependencyRules:
     - '*'
 
 publicHoistPattern:
-  - '*eslint*'
-  - '*prettier*'
   - '*@rushstack/node-core-library*'
   - '*jju*'
 

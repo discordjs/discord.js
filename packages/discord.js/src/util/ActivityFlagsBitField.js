@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { ActivityFlags } = require('discord-api-types/v10');
