@@ -1,17 +1,13 @@
 {
 	"recommendations": [
-		"oxc.oxc-vscode",
+		"esbenp.prettier-vscode",
+		"dbaeumer.vscode-eslint",
+		"tamasfe.even-better-toml",
+		"github.vscode-pull-request-github",
 		"codezombiech.gitignore",
 		"eamodio.gitlens",
 		"christian-kohler.npm-intellisense",
 		"christian-kohler.path-intellisense",
-		"stylelint.vscode-stylelint",
-		"bradlc.vscode-tailwindcss",
-		"naumovs.color-highlight",
-		"mikestead.dotenv",
-		"ms-playwright.playwright",
-		"ZixuanChen.vitest-explorer",
-		"redhat.vscode-yaml",
 		"unifiedjs.vscode-mdx"
 	]
 }

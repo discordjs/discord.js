@@ -3,6 +3,5 @@
 	"name": "collection",
 	"org": "discordjs",
 	"packagePath": "packages/collection",
-	"identifierBase": false,
-	"skipTag": true
+	"identifierBase": false
 }

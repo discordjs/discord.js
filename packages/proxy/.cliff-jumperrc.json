@@ -3,6 +3,5 @@
 	"name": "proxy",
 	"org": "discordjs",
 	"packagePath": "packages/proxy",
-	"identifierBase": false,
-	"skipTag": true
+	"identifierBase": false
 }

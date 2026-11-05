@@ -3,6 +3,5 @@
 	"name": "builders",
 	"org": "discordjs",
 	"packagePath": "packages/builders",
-	"identifierBase": false,
-	"skipTag": true
+	"identifierBase": false
 }

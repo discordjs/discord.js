@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
+/* eslint-disable sonarjs/no-nested-switch */
 import path from 'node:path';
 import {
 	type PackageJsonLookup,

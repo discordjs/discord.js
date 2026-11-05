@@ -3,6 +3,5 @@
 	"name": "voice",
 	"org": "discordjs",
 	"packagePath": "packages/voice",
-	"identifierBase": false,
-	"skipTag": true
+	"identifierBase": false
 }

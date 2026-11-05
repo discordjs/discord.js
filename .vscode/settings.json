@@ -1,27 +1,30 @@
 {
-	"bun.test.enable": false,
-	"editor.codeActionsOnSave": {
-		"source.fixAll": "explicit",
-		"source.fixAll.oxc": "explicit",
-		"source.organizeImports": "never"
-	},
-	"editor.defaultFormatter": "oxc.oxc-vscode",
+	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+	"eslint.useESLintClass": true,
+	"eslint.useFlatConfig": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
-	"editor.trimAutoWhitespace": false,
-	"editor.unicodeHighlight.invisibleCharacters": true,
-	"files.associations": {
-		"tsconfig.eslint.json": "jsonc",
-		"tsconfig.json": "jsonc"
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": "never",
+		"source.fixAll.eslint": "always",
+		"source.fixAll": "always"
 	},
-	"files.eol": "\n",
-	"files.exclude": {
-		"**/.next": true,
-		"**/coverage": true,
-		"**/dist": true,
-		"**/node_modules": true,
-		"**/test-results": true
+	"editor.trimAutoWhitespace": false,
+	"files.associations": {
+		"tsconfig.json": "jsonc",
+		"tsconfig.eslint.json": "jsonc"
 	},
 	"files.insertFinalNewline": true,
+	"files.eol": "\n",
+	"search.exclude": {
+		"**/.yarn": true,
+		"**/.next": true,
+		"**/dist": true,
+		"**/coverage": true,
+		"**/test-results": true
+	},
+	"search.followSymlinks": false,
+	"search.useParentIgnoreFiles": true,
 	"files.watcherExclude": {
 		"**/.next/*/**": true,
 		"**/.yarn/*/**": true,
@@ -29,37 +32,21 @@
 		"**/dist/*/**": true,
 		"**/test-results/*/**": true
 	},
+	"unocss.disable": true,
 	"npm.packageManager": "pnpm",
-	"oxc.requireConfig": true,
-	"oxc.typeAware": false,
-	"search.exclude": {
-		"**/.next": true,
-		"**/.yarn": true,
-		"**/coverage": true,
-		"**/dist": true,
-		"**/node_modules": true,
-		"**/test-results": true
-	},
-	"search.followSymlinks": true,
-	"search.useParentIgnoreFiles": true,
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.enablePromptUseWorkspaceTsdk": true,
 	"tailwindCSS.experimental.classRegex": [
 		["cva\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]?([^\"'`]+)[\"'`]?"],
 		["cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
-		["class:\\s*?[\"'`]([^\"'`]*).*?,"],
-		["className:\\s*?[\"'`]([^\"'`]*).*?,"]
+		["class:\\s*?[\"'`]([^\"'`]*).*?,"]
 	],
-	"js/ts.experimental.useTsgo": false,
-	"js/ts.preferences.importModuleSpecifier": "project-relative",
-	"js/ts.preferences.importModuleSpecifierEnding": "index",
-	"js/ts.preferences.includePackageJsonAutoImports": "on",
-	"js/ts.preferences.preferTypeOnlyAutoImports": true,
-	"js/ts.tsdk.path": "./node_modules/typescript/lib",
 	"workbench.editor.customLabels.patterns": {
-		"**/app/**/error.tsx": "${dirname} (${filename}.${extname}) - Error",
-		"**/app/**/layout.tsx": "${dirname} (${filename}.${extname}) - Layout",
-		"**/app/**/not-found.tsx": "${dirname} (${filename}.${extname}) - Not Found",
 		"**/app/**/page.tsx": "${dirname} (${filename}.${extname}) - Page",
+		"**/app/**/layout.tsx": "${dirname} (${filename}.${extname}) - Layout",
 		"**/app/**/template.tsx": "${dirname} (${filename}.${extname}) - Template",
+		"**/app/**/error.tsx": "${dirname} (${filename}.${extname}) - Error",
+		"**/app/**/not-found.tsx": "${dirname} (${filename}.${extname}) - Not Found",
 		"**/components/**/page.tsx": "${dirname} (${filename}.${extname}) - Component"
 	},
 	"deno.enable": false,

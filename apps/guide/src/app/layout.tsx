@@ -10,6 +10,7 @@ import { Body } from '@/app/layout.client';
 import { source } from '@/lib/source';
 import { ENV } from '@/util/env';
 import { baseOptions } from './layout.config';
+
 import '@/styles/base.css';
 
 export const viewport: Viewport = {

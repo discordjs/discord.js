@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { MessageFlags } = require('discord-api-types/v10');

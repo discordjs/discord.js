@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/check-param-names */
+
 import type { RequestData, REST } from '@discordjs/rest';
 import {
 	Routes,
@@ -6,7 +8,9 @@ import {
 	type RESTGetAPIGuildVoiceStateUserResult,
 	type RESTGetAPIGuildVoiceStateCurrentMemberResult,
 	type RESTPatchAPIGuildVoiceStateUserJSONBody,
+	type RESTPatchAPIGuildVoiceStateCurrentMemberResult,
 	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
+	type RESTPatchAPIGuildVoiceStateUserResult,
 } from 'discord-api-types/v10';
 
 export class VoiceAPI {
@@ -67,12 +71,12 @@ export class VoiceAPI {
 		body: RESTPatchAPIGuildVoiceStateUserJSONBody,
 		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
-		await this.rest.patch(Routes.guildVoiceState(guildId, userId), {
+		return this.rest.patch(Routes.guildVoiceState(guildId, userId), {
 			auth,
 			reason,
 			body,
 			signal,
-		});
+		}) as Promise<RESTPatchAPIGuildVoiceStateUserResult>;
 	}
 
 	/**
@@ -88,10 +92,10 @@ export class VoiceAPI {
 		body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {},
 		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
-		await this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
+		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
 			auth,
 			body,
 			signal,
-		});
+		}) as Promise<RESTPatchAPIGuildVoiceStateCurrentMemberResult>;
 	}
 }

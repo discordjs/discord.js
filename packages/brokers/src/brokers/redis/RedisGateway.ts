@@ -15,6 +15,7 @@ export interface BrokerProps<Payload> {
 }
 
 export interface Events extends DiscordEvents {
+	// eslint-disable-next-line @typescript-eslint/no-use-before-define
 	[RedisGateway.GatewaySendEvent]: GatewaySendPayload;
 }
 

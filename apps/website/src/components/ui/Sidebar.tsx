@@ -71,7 +71,7 @@ export function SidebarProvider({
 				setInternalOpenState(openState);
 			}
 
-			// oxlint-disable-next-line unicorn/no-document-cookie
+			// eslint-disable-next-line react-compiler/react-compiler
 			document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
 		},
 		[setOpenProp, open, isMobile, setOpenMobile],
@@ -413,6 +413,7 @@ export function SidebarTrigger({ onPress, children, ...props }: ButtonProps) {
 	return (
 		<Button
 			{...props}
+			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 			aria-label={props['aria-label'] || 'Toggle Sidebar'}
 			data-sidebar-trigger="true"
 			onPress={(event) => {

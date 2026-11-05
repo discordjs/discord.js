@@ -10,7 +10,6 @@ const {
   MessageFlags,
   MessageReferenceType,
   PermissionFlagsBits,
-  GuildFeature,
 } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { ReactionManager } = require('../managers/ReactionManager.js');
@@ -874,7 +873,6 @@ class Message extends Base {
       this.reference?.type !== MessageReferenceType.Forward &&
       this.type === MessageType.Default &&
       !this.poll &&
-      this.guild.features.includes(GuildFeature.News) &&
       channel.viewable &&
       channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );

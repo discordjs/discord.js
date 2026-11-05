@@ -6,6 +6,7 @@ const { lazy } = require('@discordjs/util');
 const { APIVersion, ChannelType, Routes } = require('discord-api-types/v10');
 const { fetch } = require('undici');
 const { Colors } = require('./Colors.js');
+// eslint-disable-next-line import-x/order
 const { DiscordjsError, DiscordjsRangeError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 
 // Fixes circular dependencies.

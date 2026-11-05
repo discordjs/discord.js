@@ -3,6 +3,5 @@
 	"name": "brokers",
 	"org": "discordjs",
 	"packagePath": "packages/brokers",
-	"identifierBase": false,
-	"skipTag": true
+	"identifierBase": false
 }

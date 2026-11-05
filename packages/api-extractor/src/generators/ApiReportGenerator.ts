@@ -1,4 +1,5 @@
 /* eslint-disable no-case-declarations */
+/* eslint-disable @typescript-eslint/require-array-sort-compare */
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 

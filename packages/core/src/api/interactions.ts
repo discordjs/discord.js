@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/check-param-names */
+
 import { makeURLSearchParams, type RawFile, type RequestData, type REST } from '@discordjs/rest';
 import {
 	InteractionResponseType,

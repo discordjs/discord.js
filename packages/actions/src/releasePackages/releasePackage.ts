@@ -89,6 +89,7 @@ export async function releasePackage(release: ReleaseEntry, dry: boolean, devTag
 	// Evil, but I can't think of a cleaner mechanism
 	if (release.name === 'create-discord-bot') {
 		await $`pnpm --filter=create-discord-bot run rename-to-app`;
+		// eslint-disable-next-line require-atomic-updates
 		release.name = 'create-discord-app';
 		await releasePackage(release, dry, devTag, false);
 	}

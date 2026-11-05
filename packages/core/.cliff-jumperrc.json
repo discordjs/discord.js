@@ -3,6 +3,5 @@
 	"name": "core",
 	"org": "discordjs",
 	"packagePath": "packages/core",
-	"identifierBase": false,
-	"skipTag": true
+	"identifierBase": false
 }

@@ -1,11 +1,11 @@
 {
-	"editor.defaultFormatter": "oxc.oxc-vscode",
+	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
-		"source.fixAll.oxc": "explicit",
-		"source.organizeImports": "never"
+		"source.fixAll": true,
+		"source.organizeImports": false
 	},
-	"oxc.requireConfig": true,
 	"editor.trimAutoWhitespace": false,
 	"files.insertFinalNewline": true,
 	"files.eol": "\n",

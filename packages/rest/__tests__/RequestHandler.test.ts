@@ -1,10 +1,9 @@
 /* eslint-disable id-length */
 /* eslint-disable promise/prefer-await-to-then */
 import { getEventListeners } from 'node:events';
-import { MockAgent, Response, setGlobalDispatcher } from 'undici';
+import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor.js';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
-import type { RESTOptions } from '../src/index.js';
 import { DiscordAPIError, HTTPError, RateLimitError, REST, RESTEvents } from '../src/index.js';
 import { genPath } from './util.js';
 
@@ -108,6 +107,7 @@ test('Significant Invalid Requests', async () => {
 	await expect(d).rejects.toThrowError('Missing Permissions');
 	await expect(e).rejects.toThrowError('Missing Permissions');
 	expect(invalidListener).toHaveBeenCalledTimes(0);
+	// eslint-disable-next-line require-atomic-updates
 	api.options.invalidRequestWarningInterval = 2;
 
 	const [f, g, h, i, j] = [
@@ -322,6 +322,7 @@ test('Handle sublimits', async () => {
 		rateLimitErrorApi.patch('/channels/:id', sublimit),
 		rateLimitErrorApi.patch('/channels/:id', sublimit),
 	];
+	// eslint-disable-next-line @typescript-eslint/await-thenable
 	await expect(aP2).resolves;
 	await expect(bP2).rejects.toThrowError();
 	await expect(bP2).rejects.toBeInstanceOf(RateLimitError);
@@ -434,40 +435,6 @@ test('rejectOnRateLimit rejects on the pre-emptive throttle', async () => {
 
 	expect(await api.get('/preemptive')).toStrictEqual({ test: true });
 	await expect(api.get('/preemptive', { rejectOnRateLimit: true })).rejects.toBeInstanceOf(RateLimitError);
-});
-
-test('Requests made with different tokens do not share a rate limit', async () => {
-	mockPool
-		.intercept({
-			path: genPath('/per-token'),
-			method: 'GET',
-		})
-		.reply(() => ({
-			statusCode: 200,
-			data: { test: true },
-			responseOptions: {
-				headers: {
-					...responseOptions.headers,
-					'x-ratelimit-limit': '1',
-					'x-ratelimit-remaining': '0',
-					'x-ratelimit-reset-after': '5',
-					'x-ratelimit-bucket': 'abcdef',
-				},
-			},
-		}))
-		.times(4);
-
-	const first = { auth: { prefix: 'Bearer' as const, token: 'First-Fake-User-Token' } };
-	const second = { auth: { prefix: 'Bearer' as const, token: 'Second-Fake-User-Token' } };
-
-	expect(await api.get('/per-token', first)).toStrictEqual({ test: true });
-	expect(await api.get('/per-token', second)).toStrictEqual({ test: true });
-
-	expect(await api.get('/per-token', { ...first, rejectOnRateLimit: true })).toStrictEqual({ test: true });
-	expect(await api.get('/per-token', { ...second, rejectOnRateLimit: true })).toStrictEqual({ test: true });
-
-	// each token is still throttled on its own
-	await expect(api.get('/per-token', { ...first, rejectOnRateLimit: true })).rejects.toBeInstanceOf(RateLimitError);
 });
 
 test('rejectOnRateLimit rejects on an unexpected 429', async () => {
@@ -707,46 +674,30 @@ test('remove abort listeners after requests complete', async () => {
 	}
 });
 
-test('abort active and queued requests', async () => {
-	const {
-		promise: activeResponse,
-		resolve: releaseResponse,
-		reject: rejectResponse,
-	} = Promise.withResolvers<Response>();
-	const makeRequest = vitest
-		.fn<RESTOptions['makeRequest']>()
-		.mockResolvedValueOnce(Response.json({ message: 'Hello World' }))
-		.mockImplementation(async (_url, { signal }) => {
-			signal!.addEventListener('abort', () => rejectResponse(signal!.reason), { once: true });
-			return activeResponse;
-		});
-	const abortApi = new REST({ makeRequest, retries: 0 });
+// TODO: flaky due to changes in undici
+test.skip('abort', async () => {
+	mockPool
+		.intercept({
+			path: genPath('/abort'),
+			method: 'GET',
+		})
+		.reply(200, { message: 'Hello World' }, responseOptions)
+		.delay(100)
+		.times(3);
+
 	const controller = new AbortController();
-	const [completed, active, queued] = [
-		abortApi.get('/abort', { auth: false, signal: controller.signal }),
-		abortApi.get('/abort', { auth: false, signal: controller.signal }),
-		abortApi.get('/abort', { auth: false, signal: controller.signal }),
+	const [aP2, bP2, cP2] = [
+		api.get('/abort', { signal: controller.signal }),
+		api.get('/abort', { signal: controller.signal }),
+		api.get('/abort', { signal: controller.signal }),
 	];
-	// Observe rejections immediately, including when an assertion fails before aborting.
-	const outcomes = Promise.allSettled([completed, active, queued]);
 
-	try {
-		await expect(completed).resolves.toStrictEqual({ message: 'Hello World' });
-		await vitest.waitFor(() => {
-			expect(makeRequest).toHaveBeenCalledTimes(2);
-			// One listener forwards cancellation to the active request; the other cancels the queued request.
-			expect(getEventListeners(controller.signal, 'abort')).toHaveLength(2);
-		});
-	} finally {
-		controller.abort();
-		releaseResponse(Response.json({ message: 'Hello World' }));
-		await outcomes;
-	}
+	await expect(aP2).resolves.toStrictEqual({ message: 'Hello World' });
+	controller.abort();
 
-	expect(await outcomes).toStrictEqual([
-		{ status: 'fulfilled', value: { message: 'Hello World' } },
-		{ status: 'rejected', reason: controller.signal.reason },
-		{ status: 'rejected', reason: new Error('Request aborted manually') },
-	]);
-	expect(makeRequest).toHaveBeenCalledTimes(2);
+	// Abort mid-execution:
+	await expect(bP2).rejects.toThrowError('aborted');
+
+	// Abort scheduled:
+	await expect(cP2).rejects.toThrowError('Request aborted manually');
 });

@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/check-param-names */
+
 import { makeURLSearchParams, type REST, type RawFile, type RequestData } from '@discordjs/rest';
 import {
 	Routes,
@@ -183,14 +185,11 @@ export class GuildsAPI {
 		body: RESTPutAPIGuildMemberJSONBody,
 		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
-		const response = await this.rest.put(Routes.guildMember(guildId, userId), {
+		return this.rest.put(Routes.guildMember(guildId, userId), {
 			auth,
 			body,
 			signal,
-		});
-
-		// Data is an empty array buffer if the member is already part of the guild.
-		return response instanceof ArrayBuffer ? undefined : (response as RESTPutAPIGuildMemberResult);
+		}) as Promise<RESTPutAPIGuildMemberResult>;
 	}
 
 	/**

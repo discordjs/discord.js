@@ -3,12 +3,7 @@
 	"remoteCache": {
 		"enabled": true
 	},
-	"globalDependencies": [
-		"oxfmt.config.ts",
-		"oxlint.config.ts",
-		"packages/discord.js/scripts/oxlint-plugin.mjs",
-		"tsconfig.json"
-	],
+	"globalDependencies": ["tsconfig.json"],
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
@@ -103,7 +98,6 @@
 				"__mocks__/**",
 				"__tests__/**",
 				"src/**",
-				"scripts/**",
 				"package.json",
 				"tsconfig.json",
 				"vitest.config.ts"
@@ -114,9 +108,10 @@
 		"lint": {
 			"dependsOn": ["^build"],
 			"inputs": [
-				"../../oxfmt.config.ts",
-				"../../oxlint.config.ts",
+				"../../eslint.config.js",
+				"../../.prettierrc.json",
 				"../../tsconfig.eslint.json",
+				".prettierrc.js",
 				"bin/**",
 				"src/**",
 				"scripts/**",
@@ -129,9 +124,10 @@
 		"@discordjs/guide#lint": {
 			"dependsOn": ["^build", "build:local"],
 			"inputs": [
-				"../../oxfmt.config.ts",
-				"../../oxlint.config.ts",
+				"../../eslint.config.js",
+				"../../.prettierrc.json",
 				"../../tsconfig.eslint.json",
+				".prettierrc.js",
 				"src/**",
 				"!src/styles/unocss.css",
 				"tsconfig.eslint.json"
@@ -142,9 +138,10 @@
 		"@discordjs/website#lint": {
 			"dependsOn": ["^build", "build:local"],
 			"inputs": [
-				"../../oxfmt.config.ts",
-				"../../oxlint.config.ts",
+				"../../eslint.config.js",
+				"../../.prettierrc.json",
 				"../../tsconfig.eslint.json",
+				".prettierrc.js",
 				"src/**",
 				"!src/styles/unocss.css",
 				"tsconfig.eslint.json"
@@ -155,9 +152,10 @@
 		"format": {
 			"dependsOn": ["^build"],
 			"inputs": [
-				"../../oxfmt.config.ts",
-				"../../oxlint.config.ts",
+				"../../eslint.config.js",
+				"../../.prettierrc.json",
 				"../../tsconfig.eslint.json",
+				".prettierrc.js",
 				"bin/**",
 				"src/**",
 				"scripts/**",
@@ -170,9 +168,10 @@
 		"@discordjs/guide#format": {
 			"dependsOn": ["^build"],
 			"inputs": [
-				"../../oxfmt.config.ts",
-				"../../oxlint.config.ts",
+				"../../eslint.config.js",
+				"../../.prettierrc.json",
 				"../../tsconfig.eslint.json",
+				".prettierrc.js",
 				"src/**",
 				"!src/styles/unocss.css",
 				"package.json",

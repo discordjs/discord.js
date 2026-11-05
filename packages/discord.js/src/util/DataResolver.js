@@ -12,26 +12,6 @@ const { BaseInvite } = require('../structures/BaseInvite.js');
 const getGuildTemplate = lazy(() => require('../structures/GuildTemplate.js').GuildTemplate);
 
 /**
- * Resolves target users file to CSV.
- *
- * @param {Client} client The client
- * @param {UserResolvable[]|BufferResolvable} targetUsersFile The target users file for invite
- * @returns {Promise<string>}
- * @ignore
- */
-async function resolveInviteTargetUsersFile(client, targetUsersFile) {
-  let usersCsv;
-  if (Array.isArray(targetUsersFile)) {
-    usersCsv = targetUsersFile.map(user => client.users.resolveId(user)).join('\n');
-  } else {
-    const resolved = await resolveFile(targetUsersFile);
-    usersCsv = resolved.data.toString('utf8');
-  }
-
-  return usersCsv;
-}
-
-/**
  * Data that can be resolved to give an invite code. This can be:
  * - An invite code
  * - An invite URL
@@ -179,4 +159,3 @@ exports.resolveGuildTemplateCode = resolveGuildTemplateCode;
 exports.resolveImage = resolveImage;
 exports.resolveBase64 = resolveBase64;
 exports.resolveFile = resolveFile;
-exports.resolveInviteTargetUsersFile = resolveInviteTargetUsersFile;

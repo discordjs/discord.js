@@ -3,6 +3,5 @@
 	"name": "next",
 	"org": "discordjs",
 	"packagePath": "packages/next",
-	"identifierBase": false,
-	"skipTag": true
+	"identifierBase": false
 }

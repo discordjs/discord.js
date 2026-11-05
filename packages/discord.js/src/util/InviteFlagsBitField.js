@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { InviteFlags } = require('discord-api-types/v10');
