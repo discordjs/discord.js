@@ -223,6 +223,8 @@ import type {
   GuildInvite,
   AuthorizingIntegrationOwners,
   VoiceServerUpdateData,
+  ApplicationCommandPermissions,
+  GuildApplicationCommandPermissionsManager,
 } from './index.js';
 import {
   Client,
@@ -1627,6 +1629,15 @@ declare const applicationCommandManager: ApplicationCommandManager;
     applicationCommandManager.set([applicationCommandData] as const, '0'),
   );
 
+  expectType<Promise<ApplicationCommandPermissions[]>>(
+    applicationCommandManager.permissions.fetch({ guild: '0', command: '0' }),
+  );
+  expectType<Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>>(
+    applicationCommandManager.permissions.fetch({ guild: '0' }),
+  );
+  // @ts-expect-error A global manager has no guild of its own to fall back on.
+  await applicationCommandManager.permissions.fetch();
+
   // Test inference of choice values.
   if ('choices' in applicationCommandOptionData) {
     if (applicationCommandOptionData.type === ApplicationCommandOptionType.String) {
@@ -1646,12 +1657,7 @@ declare const applicationCommandManager: ApplicationCommandManager;
   }
 }
 
-declare const applicationCommandPermissionsManager: ApplicationCommandPermissionsManager<
-  {},
-  {},
-  Guild | null,
-  Snowflake
->;
+declare const applicationCommandPermissionsManager: GuildApplicationCommandPermissionsManager<Snowflake>;
 {
   await applicationCommandPermissionsManager.add({ permissions: [], token: '' });
   await applicationCommandPermissionsManager.add({ permissions: [] as const, token: '' });
@@ -1665,6 +1671,18 @@ declare const applicationCommandPermissionsManager: ApplicationCommandPermission
     users: [] as const,
     token: '',
   });
+
+  expectType<Promise<ApplicationCommandPermissions[]>>(applicationCommandPermissionsManager.fetch());
+  expectType<Promise<ApplicationCommandPermissions[]>>(applicationCommandPermissionsManager.fetch({}));
+}
+
+declare const globalApplicationCommandPermissionsManager: ApplicationCommandPermissionsManager<Snowflake>;
+{
+  expectType<Promise<ApplicationCommandPermissions[]>>(
+    globalApplicationCommandPermissionsManager.fetch({ guild: '0' }),
+  );
+  // @ts-expect-error
+  await globalApplicationCommandPermissionsManager.fetch();
 }
 
 declare const chatInputApplicationCommandData: ChatInputApplicationCommandData;
@@ -1758,6 +1776,16 @@ declare const guildApplicationCommandManager: GuildApplicationCommandManager;
 expectType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch('0'));
 expectType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch({ id: '0' }));
 expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationCommandManager.fetch());
+expectType<Promise<ApplicationCommandPermissions[]>>(
+  guildApplicationCommandManager.permissions.fetch({ command: '0' }),
+);
+expectType<Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>>(
+  guildApplicationCommandManager.permissions.fetch({}),
+);
+// https://github.com/discordjs/discord.js/issues/8096
+expectType<Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>>(
+  guildApplicationCommandManager.permissions.fetch(),
+);
 
 declare const categoryChannelChildManager: CategoryChannelChildManager;
 {
