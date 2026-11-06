@@ -1,6 +1,6 @@
 name: Feature request
 description: Request a new feature (discord.js accepts documented features of the official Discord developer API only!)
-labels: [feature request]
+type: Feature
 body:
   - type: markdown
     attributes:
