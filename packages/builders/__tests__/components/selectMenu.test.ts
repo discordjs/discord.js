@@ -80,7 +80,7 @@ describe('Select Menu Components', () => {
 				.setLabel('test')
 				.setValue('test')
 				.setDefault(true)
-				.setEmoji({ name: 'test' })
+				.setEmoji({ name: '🩵' })
 				.setDescription('description');
 			expect(() => selectMenuWithId().addOptions(option).toJSON()).not.toThrowError();
 			expect(() => selectMenuWithId().setOptions(option).toJSON()).not.toThrowError();
