@@ -5,7 +5,12 @@ import {
 	ApplicationCommandType,
 } from 'discord-api-types/v10';
 import { z } from 'zod';
-import { fileUploadTypesPredicate, localeMapPredicate, memberPermissionsPredicate } from '../../../Assertions.js';
+import {
+	checkMinMaxFields,
+	fileUploadTypesPredicate,
+	localeMapPredicate,
+	memberPermissionsPredicate,
+} from '../../../Assertions.js';
 import { ApplicationCommandOptionAllowedChannelTypes } from './mixins/ApplicationCommandOptionChannelTypesMixin.js';
 
 const namePredicate = z
@@ -122,6 +127,13 @@ export const integerOptionPredicate = z
 		...numericMixinIntegerOptionPredicate.shape,
 		type: z.literal(ApplicationCommandOptionType.Integer),
 	})
+	.check((ctx) =>
+		checkMinMaxFields(ctx, {
+			message: `The maximum value must be greater than or equal to the minimum value`,
+			maxFieldName: 'max_value',
+			minFieldName: 'min_value',
+		}),
+	)
 	.and(autocompleteOrNumberChoicesMixinOptionPredicate);
 
 export const numberOptionPredicate = z
@@ -130,6 +142,13 @@ export const numberOptionPredicate = z
 		...numericMixinNumberOptionPredicate.shape,
 		type: z.literal(ApplicationCommandOptionType.Number),
 	})
+	.check((ctx) =>
+		checkMinMaxFields(ctx, {
+			message: `The maximum value must be greater than or equal to the minimum value`,
+			maxFieldName: 'max_value',
+			minFieldName: 'min_value',
+		}),
+	)
 	.and(autocompleteOrNumberChoicesMixinOptionPredicate);
 
 export const stringOptionPredicate = z
@@ -139,6 +158,13 @@ export const stringOptionPredicate = z
 		min_length: z.number().min(0).max(6_000).optional(),
 		type: z.literal(ApplicationCommandOptionType.String),
 	})
+	.check((ctx) =>
+		checkMinMaxFields(ctx, {
+			message: `The maximum length must be greater than or equal to the minimum length`,
+			maxFieldName: 'max_length',
+			minFieldName: 'min_length',
+		}),
+	)
 	.and(autocompleteOrStringChoicesMixinOptionPredicate);
 
 const basicOptionPredicates = [

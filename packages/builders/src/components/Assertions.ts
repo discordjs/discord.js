@@ -1,6 +1,6 @@
 import { ButtonStyle, ChannelType, ComponentType, SelectMenuDefaultValueType } from 'discord-api-types/v10';
 import { z } from 'zod';
-import { idPredicate, customIdPredicate, snowflakePredicate } from '../Assertions.js';
+import { checkMinMaxValues, idPredicate, customIdPredicate, snowflakePredicate } from '../Assertions.js';
 
 export const emojiPredicate = z
 	.strictObject({
@@ -59,14 +59,16 @@ export const buttonPredicate = z.discriminatedUnion('style', [
 	buttonPremiumPredicate,
 ]);
 
-const selectMenuBasePredicate = z.object({
-	id: idPredicate,
-	placeholder: z.string().max(150).optional(),
-	min_values: z.number().min(0).max(25).optional(),
-	max_values: z.number().min(1).max(25).optional(),
-	custom_id: customIdPredicate,
-	disabled: z.boolean().optional(),
-});
+const selectMenuBasePredicate = z
+	.object({
+		id: idPredicate,
+		placeholder: z.string().max(150).optional(),
+		min_values: z.number().min(0).max(25).optional(),
+		max_values: z.number().min(1).max(25).optional(),
+		custom_id: customIdPredicate,
+		disabled: z.boolean().optional(),
+	})
+	.check((ctx) => checkMinMaxValues(ctx));
 
 export const selectMenuChannelPredicate = selectMenuBasePredicate.extend({
 	type: z.literal(ComponentType.ChannelSelect),
@@ -129,22 +131,7 @@ export const selectMenuStringPredicate = selectMenuBasePredicate
 			addIssue('min_values', ctx.value.min_values);
 		}
 
-		if (
-			ctx.value.min_values !== undefined &&
-			ctx.value.max_values !== undefined &&
-			ctx.value.min_values > ctx.value.max_values
-		) {
-			ctx.issues.push({
-				code: 'too_big',
-				message: `The maximum amount of options must be greater than or equal to the minimum amount of options`,
-				inclusive: true,
-				maximum: ctx.value.max_values,
-				type: 'number',
-				path: ['min_values'],
-				origin: 'number',
-				input: ctx.value.min_values,
-			});
-		}
+		checkMinMaxValues(ctx);
 	});
 
 export const selectMenuUserPredicate = selectMenuBasePredicate.extend({
