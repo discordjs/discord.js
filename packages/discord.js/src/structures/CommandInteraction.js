@@ -1,5 +1,6 @@
 'use strict';
 
+const { resolveInteractionChannel } = require('../util/Util.js');
 const { Attachment } = require('./Attachment.js');
 const { BaseInteraction } = require('./BaseInteraction.js');
 const { InteractionWebhook } = require('./InteractionWebhook.js');
@@ -150,7 +151,7 @@ class CommandInteraction extends BaseInteraction {
       if (member) result.member = this.guild?.members._add({ user, ...member }) ?? member;
 
       const channel = resolved.channels?.[option.value];
-      if (channel) result.channel = this.client.channels._add(channel, this.guild) ?? channel;
+      if (channel) result.channel = resolveInteractionChannel(this.client, this.guild, channel);
 
       const role = resolved.roles?.[option.value];
       if (role) result.role = this.guild?.roles._add(role) ?? role;

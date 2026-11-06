@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { lazy } = require('@discordjs/util');
-const { transformResolved } = require('../util/Util.js');
+const { resolveInteractionChannel, transformResolved } = require('../util/Util.js');
 const { BaseInteraction } = require('./BaseInteraction.js');
 const { InteractionWebhook } = require('./InteractionWebhook.js');
 const { ModalComponentResolver } = require('./ModalComponentResolver.js');
@@ -199,7 +199,7 @@ class ModalSubmitInteraction extends BaseInteraction {
 
           for (const [id, apiChannel] of Object.entries(channels)) {
             if (valueSet.has(id)) {
-              data.channels.set(id, this.client.channels._add(apiChannel, this.guild) ?? apiChannel);
+              data.channels.set(id, resolveInteractionChannel(this.client, this.guild, apiChannel));
             }
           }
         }
