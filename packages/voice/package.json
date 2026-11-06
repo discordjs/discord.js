@@ -67,7 +67,7 @@
 		"release": "cliff-jumper"
 	},
 	"dependencies": {
-		"@snazzah/davey": "^0.1.12",
+		"@snazzah/davey": "^0.2.0",
 		"@types/ws": "^8.18.1",
 		"discord-api-types": "^0.38.54",
 		"prism-media": "^1.3.5",
