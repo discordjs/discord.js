@@ -1,8 +1,9 @@
 /* eslint-disable unicorn/consistent-function-scoping */
+import process from 'node:process';
 import { describe, test, expect } from 'vitest';
 import type { GetRateLimitOffsetFunction, GetRetryBackoffFunction, GetTimeoutFunction } from '../src/index.js';
 import { makeURLSearchParams } from '../src/index.js';
-import { normalizeRateLimitOffset, normalizeRetryBackoff, normalizeTimeout } from '../src/lib/utils/utils.js';
+import { normalizeRateLimitOffset, normalizeRetryBackoff, normalizeTimeout, sleep } from '../src/lib/utils/utils.js';
 
 describe('makeURLSearchParams', () => {
 	test('GIVEN undefined THEN returns empty URLSearchParams', () => {
@@ -195,5 +196,25 @@ describe('option normalization functions', () => {
 			expect(normalizeTimeout(func, '/high', body2)).toEqual(150);
 			expect(normalizeTimeout(func, '/normal', body2)).toEqual(50);
 		});
+	});
+});
+
+describe('sleep', () => {
+	test('negative durations resolve without a TimeoutNegativeWarning', async () => {
+		const warnings: Error[] = [];
+		const onWarning = (warning: Error) => warnings.push(warning);
+		process.on('warning', onWarning);
+
+		try {
+			await sleep(-37);
+			// Warnings are emitted on process.nextTick, so let them flush before asserting
+			await new Promise<void>((resolve) => {
+				setImmediate(resolve);
+			});
+		} finally {
+			process.off('warning', onWarning);
+		}
+
+		expect(warnings.filter((warning) => warning.name === 'TimeoutNegativeWarning')).toEqual([]);
 	});
 });
