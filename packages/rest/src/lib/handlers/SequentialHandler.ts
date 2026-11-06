@@ -124,7 +124,7 @@ export class SequentialHandler implements IHandler {
 	 * @param time - The amount of time to delay all requests for
 	 */
 	private async globalDelayFor(time: number): Promise<void> {
-		await sleep(time);
+		await sleep(time, { ref: false });
 		this.manager.globalDelay = null;
 	}
 
@@ -226,7 +226,7 @@ export class SequentialHandler implements IHandler {
 				// Set RateLimitData based on the route-specific limit
 				limit = this.limit;
 				timeout = this.getTimeToReset(routeId);
-				delay = sleep(timeout);
+				delay = sleep(timeout, { ref: false });
 			}
 
 			const rateLimitData: RateLimitData = {
