@@ -12,6 +12,9 @@ import type { Partialize } from '../utils/types.js';
 export class Reaction<Omitted extends keyof APIReaction | '' = ''> extends Structure<APIReaction, Omitted> {
 	/**
 	 * The template used for removing data from the raw data stored for each Reaction.
+	 *
+	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
+	 * use `Object.defineProperties`. To override the defaults, set this value directly.
 	 */
 	public static override DataTemplate: Partial<APIReaction> = {
 		set burst_colors(_: string[]) {},
