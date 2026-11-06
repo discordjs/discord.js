@@ -1,7 +1,13 @@
 {
 	"title": "discord.js v15",
 	"description": "Work in progress...",
-	"pages": ["external:[LibraryBig][Documentation](https://discord.js.org/docs/packages/discord.js/main)", "index"],
+	"pages": [
+		"external:[LibraryBig][Documentation](https://discord.js.org/docs/packages/discord.js/main)",
+		"---Topics---",
+		"index",
+		"guild-scheduled-events",
+		"polls"
+	],
 	"icon": "FlaskConical",
 	"root": true
 }
