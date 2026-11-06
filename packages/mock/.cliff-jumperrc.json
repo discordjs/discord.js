@@ -1,0 +1,7 @@
+{
+	"$schema": "./node_modules/@favware/cliff-jumper/assets/cliff-jumper.schema.json",
+	"name": "mock",
+	"org": "discordjs",
+	"packagePath": "packages/mock",
+	"identifierBase": false
+}

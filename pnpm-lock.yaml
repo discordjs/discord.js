@@ -777,6 +777,9 @@ importers:
       '@discordjs/api-extractor':
         specifier: workspace:^
         version: link:../api-extractor
+      '@discordjs/mock':
+        specifier: workspace:^
+        version: link:../mock
       '@discordjs/scripts':
         specifier: workspace:^
         version: link:../scripts
@@ -1133,6 +1136,70 @@ importers:
       vitest:
         specifier: ^4.1.11
         version: 4.1.11(@edge-runtime/vm@3.2.0)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.1)
+
+  packages/mock:
+    dependencies:
+      '@discordjs/util':
+        specifier: workspace:^
+        version: link:../util
+      '@sapphire/snowflake':
+        specifier: ^3.5.5
+        version: 3.5.5
+      discord-api-types:
+        specifier: ^0.38.54
+        version: 0.38.54
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
+    devDependencies:
+      '@discordjs/api-extractor':
+        specifier: workspace:^
+        version: link:../api-extractor
+      '@discordjs/scripts':
+        specifier: workspace:^
+        version: link:../scripts
+      '@favware/cliff-jumper':
+        specifier: ^6.1.0
+        version: 6.1.0
+      '@types/node':
+        specifier: ^24.13.3
+        version: 24.13.3
+      '@vitest/coverage-v8':
+        specifier: ^4.1.11
+        version: 4.1.11(vitest@4.1.11)
+      cross-env:
+        specifier: ^10.1.0
+        version: 10.1.0
+      esbuild-plugin-version-injector:
+        specifier: ^1.2.1
+        version: 1.2.1
+      eslint:
+        specifier: ^9.39.5
+        version: 9.39.5(jiti@2.7.0)(supports-color@10.2.2)
+      eslint-config-neon:
+        specifier: ^0.3.2
+        version: 0.3.2(@typescript-eslint/types@8.69.0)(@typescript-eslint/utils@8.69.0(eslint@9.39.5(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3))(bluebird@3.7.2)(eslint@9.39.5(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3)
+      eslint-formatter-compact:
+        specifier: ^9.0.1
+        version: 9.0.1
+      eslint-formatter-pretty:
+        specifier: ^7.1.0
+        version: 7.1.0
+      prettier:
+        specifier: ~3.8.1
+        version: 3.8.5
+      tsup:
+        specifier: ^8.5.1
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.26)(supports-color@10.2.2)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.9.0)
+      turbo:
+        specifier: ^2.10.12
+        version: 2.10.12
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^4.1.11
+        version: 4.1.11(@edge-runtime/vm@3.2.0)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.21.0)(yaml@2.9.0)
 
   packages/next:
     dependencies:
