@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         uses: ./packages/actions/src/pnpmCache
 
+      - name: Install Bun for action tests
+        uses: oven-sh/setup-bun@v2
+
       - name: Build dependencies (PR)
         if: ${{ github.event_name != 'push' }}
         run: pnpm exec turbo run build --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=4

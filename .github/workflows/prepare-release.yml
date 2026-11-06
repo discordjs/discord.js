@@ -1,0 +1,97 @@
+name: Prepare Release
+run-name: ${{ inputs.request_id && format('[{0}] ', inputs.request_id) || '' }}Prepare release PR (${{ inputs.mode }}) for ${{ inputs.branch || github.ref_name }}
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Base branch for the release PR (defaults to the branch running this workflow)'
+        type: string
+      request_id:
+        description: 'Optional non-secret correlation ID for the Discord app'
+        type: string
+      mode:
+        description: 'Detect changed packages or select packages explicitly'
+        type: choice
+        options: [auto, manual]
+        default: auto
+        required: true
+      packages:
+        description: 'Manual mode: folder or published names, e.g. builders,@discordjs/core,discord.js'
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prepare-release-${{ inputs.branch || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    name: Prepare release versions and changelogs
+    if: github.repository_owner == 'discordjs'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create release PR token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.DISCORDJS_APP_ID }}
+          private-key: ${{ secrets.DISCORDJS_APP_KEY_RELEASE }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Checkout target branch with release history
+        uses: actions/checkout@v7
+        with:
+          ref: refs/heads/${{ inputs.branch || github.ref_name }}
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Install Node.js v24
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Checkout workflow tools
+        uses: actions/checkout@v7
+        with:
+          # Maintenance branches may not contain these actions; use the dispatch revision's tools.
+          ref: ${{ github.sha }}
+          path: workflow-source
+          persist-credentials: false
+
+      - name: Install workflow tools package manager
+        uses: pnpm/action-setup@v6.0.9
+        with:
+          package_json_file: workflow-source/package.json
+
+      - name: Install workflow tools dependencies
+        working-directory: workflow-source
+        run: pnpm install --filter @discordjs/actions --frozen-lockfile --ignore-scripts
+
+      - name: Install target dependencies
+        uses: ./workflow-source/packages/actions/src/pnpmCache
+
+      - name: Prepare releases
+        id: prepare
+        uses: ./workflow-source/packages/actions/src/prepareRelease
+        with:
+          branch: ${{ inputs.branch || github.ref_name }}
+          mode: ${{ inputs.mode }}
+          packages: ${{ inputs.packages }}
+          request_id: ${{ inputs.request_id }}
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GIT_REPO: ${{ github.repository }}
+          GITHUB_REPO: ${{ github.repository }}
+          RELEASE_WEBHOOK_URL: ${{ secrets.RELEASE_WEBHOOK_URL }}
+          RELEASE_WEBHOOK_SECRET: ${{ secrets.RELEASE_WEBHOOK_SECRET }}
+
+      - name: Upload release plan
+        if: ${{ always() && steps.prepare.outputs.plan-file }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-plan-${{ github.run_attempt }}
+          path: ${{ steps.prepare.outputs.plan-file }}

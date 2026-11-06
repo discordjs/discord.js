@@ -2,6 +2,10 @@ import process from 'node:process';
 import { info, warning } from '@actions/core';
 import type { PackageJSON, PackumentVersion } from '@npm/types';
 import { $, file, write } from 'bun';
+import type { ReleaseVersions } from '../util/releaseManifest.js';
+import { buildReleaseTree, selectReleaseTree, type ReleaseEntry } from './releaseTree.js';
+
+export type { ReleaseEntry } from './releaseTree.js';
 
 interface pnpmTreeDependency {
 	from: string;
@@ -16,13 +20,6 @@ interface pnpmTree {
 	private?: boolean;
 	unsavedDependencies?: Record<string, pnpmTreeDependency>;
 	version?: string;
-}
-
-export interface ReleaseEntry {
-	changelog?: string;
-	dependsOn?: string[];
-	name: string;
-	version: string;
 }
 
 async function fetchDevVersion(pkg: string, tag: string) {
@@ -137,103 +134,30 @@ async function getReleaseEntries(dry: boolean, devTag?: string) {
 	return releaseEntries;
 }
 
-export async function generateReleaseTree(dry: boolean, devTag?: string, packageName?: string, exclude?: string[]) {
-	let releaseEntries = await getReleaseEntries(dry, devTag);
-	// Try to early return if the package doesn't have deps
+export async function generateReleaseTree(
+	dry: boolean,
+	devTag?: string,
+	packageName?: string,
+	exclude?: string[],
+	versions?: ReleaseVersions,
+) {
+	const releaseEntries = await getReleaseEntries(dry, devTag);
+	if (versions) return selectReleaseTree(releaseEntries, versions);
 	if (packageName && packageName !== 'all') {
 		const releaseEntry = releaseEntries.find((entry) => entry.name === packageName);
 		if (!releaseEntry) {
 			throw new Error(`Package ${packageName} not releaseable`);
 		}
 
-		if (!releaseEntry.dependsOn) {
-			return [[releaseEntry]];
-		}
+		if (!releaseEntry.dependsOn) return [[releaseEntry]];
+		return selectReleaseTree(releaseEntries, { [releaseEntry.name]: releaseEntry.version });
 	}
 
-	// Generate the whole tree first, then prune if specified
-	const releaseTree: ReleaseEntry[][] = [];
-	const didRelease = new Set<string>();
-
-	while (releaseEntries.length) {
-		const nextBranch: ReleaseEntry[] = [];
-		const unreleased: ReleaseEntry[] = [];
-		for (const entry of releaseEntries) {
-			if (!entry.dependsOn) {
-				nextBranch.push(entry);
-				continue;
-			}
-
-			const allDepsReleased = entry.dependsOn.every((dep) => didRelease.has(dep));
-			if (allDepsReleased) {
-				nextBranch.push(entry);
-			} else {
-				unreleased.push(entry);
-			}
-		}
-
-		// Update didRelease in a second loop to avoid loop order issues
-		for (const release of nextBranch) {
-			didRelease.add(release.name);
-		}
-
-		if (releaseEntries.length === unreleased.length) {
-			throw new Error(
-				`One or more packages have dependents that can't be released: ${unreleased.map((entry) => entry.name).join(',')}`,
-			);
-		}
-
-		releaseTree.push(nextBranch);
-		releaseEntries = unreleased;
-	}
-
-	// Prune exclusions
-	if ((!packageName || packageName === 'all') && Array.isArray(exclude) && exclude.length) {
-		const neededPackages = new Set<string>();
-		const excludedReleaseTree: ReleaseEntry[][] = [];
-
-		for (const releaseBranch of releaseTree.reverse()) {
-			const newThisBranch: ReleaseEntry[] = [];
-
-			for (const entry of releaseBranch) {
-				if (exclude.includes(entry.name) && !neededPackages.has(entry.name)) {
-					continue;
-				}
-
-				newThisBranch.push(entry);
-				for (const dep of entry.dependsOn ?? []) {
-					neededPackages.add(dep);
-				}
-			}
-
-			if (newThisBranch.length) excludedReleaseTree.unshift(newThisBranch);
-		}
-
-		return excludedReleaseTree;
-	}
-
-	if (!packageName || packageName === 'all') {
-		return releaseTree;
-	}
-
-	// Prune the tree for the specified package
-	const neededPackages = new Set<string>([packageName]);
-	const packageReleaseTree: ReleaseEntry[][] = [];
-
-	for (const releaseBranch of releaseTree.reverse()) {
-		const newThisBranch: ReleaseEntry[] = [];
-
-		for (const entry of releaseBranch) {
-			if (neededPackages.has(entry.name)) {
-				newThisBranch.push(entry);
-				for (const dep of entry.dependsOn ?? []) {
-					neededPackages.add(dep);
-				}
-			}
-		}
-
-		if (newThisBranch.length) packageReleaseTree.unshift(newThisBranch);
-	}
-
-	return packageReleaseTree;
+	if (!exclude?.length) return buildReleaseTree(releaseEntries);
+	return selectReleaseTree(
+		releaseEntries,
+		Object.fromEntries(
+			releaseEntries.filter((entry) => !exclude.includes(entry.name)).map((entry) => [entry.name, entry.version]),
+		),
+	);
 }

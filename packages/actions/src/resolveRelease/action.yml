@@ -1,0 +1,26 @@
+name: Resolve prepared release
+description: Download and validate the preparation artifact for a merged release PR
+outputs:
+  versions:
+    description: 'Validated JSON package/version map'
+    value: ${{ steps.validate.outputs.versions }}
+runs:
+  using: composite
+  steps:
+    - uses: oven-sh/setup-bun@v2
+    - name: Locate preparation artifact
+      id: locate
+      shell: bash
+      run: bun "$GITHUB_ACTION_PATH/locate.ts"
+    - name: Download preparation artifact
+      uses: actions/download-artifact@v8
+      with:
+        artifact-ids: ${{ steps.locate.outputs.artifact-id }}
+        run-id: ${{ steps.locate.outputs.run-id }}
+        github-token: ${{ github.token }}
+        path: ${{ runner.temp }}/release-manifest
+        merge-multiple: true
+    - name: Validate merged package versions
+      id: validate
+      shell: bash
+      run: bun "$GITHUB_ACTION_PATH/validate.ts"

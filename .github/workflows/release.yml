@@ -1,11 +1,19 @@
 name: Release
+run-name: >-
+  ${{ inputs.request_id && format('[{0}] ', inputs.request_id) || '' }}Release
+  ${{ github.event.pull_request.number && format('PR #{0}', github.event.pull_request.number) || inputs.ref }}
 on:
+  pull_request_target:
+    types: [closed]
   workflow_dispatch:
     inputs:
       ref:
         description: 'The branch, tag or SHA to checkout'
         required: true
         default: 'main'
+      request_id:
+        description: 'Optional non-secret correlation ID for the Discord app'
+        type: string
       package:
         description: 'The published name of a single package to release'
         type: choice
@@ -40,26 +48,38 @@ on:
 jobs:
   npm-publish:
     name: npm publish
+    if: >-
+      github.repository_owner == 'discordjs' &&
+      (github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged == true &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      startsWith(github.event.pull_request.head.ref, 'prepare-release-')))
     runs-on: ubuntu-latest
+    concurrency:
+      group: publish-release-${{ github.event.pull_request.base.ref || inputs.ref || 'main' }}
+      cancel-in-progress: false
     permissions:
+      contents: read
+      pull-requests: read
+      actions: read
       id-token: write
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-    if: github.repository_owner == 'discordjs'
     steps:
-      - uses: actions/create-github-app-token@v3
-        id: app-token
-        with:
-          app-id: ${{ vars.DISCORDJS_APP_ID }}
-          private-key: ${{ secrets.DISCORDJS_APP_KEY_RELEASE }}
-          permission-contents: write
-
-      - name: Checkout repository
+      - name: Checkout release commit
         uses: actions/checkout@v7
         with:
-          token: ${{ steps.app-token.outputs.token }}
-          ref: ${{ inputs.ref || '' }}
+          ref: ${{ github.event.pull_request.merge_commit_sha || inputs.ref }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Checkout workflow tools
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          path: workflow-source
+          persist-credentials: false
 
       - name: Install Node.js v24
         uses: actions/setup-node@v7
@@ -68,46 +88,46 @@ jobs:
           package-manager-cache: false
           registry-url: https://registry.npmjs.org/
 
-      - name: Install dependencies
-        uses: ./packages/actions/src/pnpmCache
+      - name: Install workflow tools package manager
+        uses: pnpm/action-setup@v6.0.9
+        with:
+          package_json_file: workflow-source/package.json
+
+      - name: Install workflow tools dependencies
+        working-directory: workflow-source
+        run: pnpm install --filter @discordjs/actions --frozen-lockfile --ignore-scripts
+
+      - name: Validate merged release artifact
+        if: github.event_name == 'pull_request_target'
+        id: resolve
+        uses: ./workflow-source/packages/actions/src/resolveRelease
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Install target dependencies
+        uses: ./workflow-source/packages/actions/src/pnpmCache
 
       - name: Build dependencies
         run: pnpm run build
 
-      - name: Checkout main repository
-        if: ${{ inputs.ref && inputs.ref != 'main' }}
-        uses: actions/checkout@v7
+      - name: Create release token
+        id: app-token
+        uses: actions/create-github-app-token@v3
         with:
-          path: 'main'
+          app-id: ${{ vars.DISCORDJS_APP_ID }}
+          private-key: ${{ secrets.DISCORDJS_APP_KEY_RELEASE }}
+          permission-contents: write
 
-      - name: Install action deps (non-main ref only)
-        if: ${{ inputs.ref && inputs.ref != 'main' }}
-        shell: bash
-        working-directory: ./main
-        env:
-          COREPACK_ENABLE_STRICT: 0
-        run: |
-          pnpm self-update 11
-          pnpm install --filter @discordjs/actions --frozen-lockfile --prefer-offline --loglevel error
-
-      - name: Release packages (non-main ref)
-        if: ${{ inputs.ref && inputs.ref != 'main' }}
-        uses: ./main/packages/actions/src/releasePackages
+      - name: Release packages
+        uses: ./workflow-source/packages/actions/src/releasePackages
         with:
           package: ${{ inputs.package }}
           exclude: ${{ inputs.exclude }}
           dry: ${{ inputs.dry_run }}
+          versions: ${{ steps.resolve.outputs.versions }}
+          request_id: ${{ inputs.request_id }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-
-      - name: Release packages (main ref)
-        if: ${{ !inputs.ref || inputs.ref == 'main' }}
-        uses: ./packages/actions/src/releasePackages
-        with:
-          package: ${{ inputs.package }}
-          exclude: ${{ inputs.exclude }}
-          dry: ${{ inputs.dry_run }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          RELEASE_WEBHOOK_URL: ${{ secrets.RELEASE_WEBHOOK_URL }}
+          RELEASE_WEBHOOK_SECRET: ${{ secrets.RELEASE_WEBHOOK_SECRET }}

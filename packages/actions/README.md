@@ -24,6 +24,7 @@
 - [Discord Developers Discord server][discord-developers]
 - [GitHub][source]
 - [Related libraries][related-libs]
+- [Release preparation](src/prepareRelease/README.md)
 
 ## Contributing
 

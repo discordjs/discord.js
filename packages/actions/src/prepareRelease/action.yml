@@ -1,0 +1,30 @@
+name: Prepare releases
+description: Prepare package version and changelog bumps on a release branch and open a pull request
+inputs:
+  branch:
+    description: 'Base branch for the release pull request'
+    required: true
+  mode:
+    description: 'auto detects changed packages; manual uses the packages input'
+    default: auto
+  packages:
+    description: 'Comma or whitespace separated package names or package folder names (manual mode only)'
+  request_id:
+    description: 'Opaque correlation ID supplied by the caller, echoed in release callbacks'
+outputs:
+  plan-file:
+    description: 'Path to the JSON release plan'
+    value: ${{ steps.prepare.outputs.plan-file }}
+runs:
+  using: composite
+  steps:
+    - uses: oven-sh/setup-bun@v2
+    - name: Prepare releases
+      id: prepare
+      run: bun "$GITHUB_ACTION_PATH/index.ts"
+      shell: bash
+      env:
+        INPUT_BRANCH: ${{ inputs.branch }}
+        INPUT_MODE: ${{ inputs.mode }}
+        INPUT_PACKAGES: ${{ inputs.packages }}
+        INPUT_REQUEST_ID: ${{ inputs.request_id }}

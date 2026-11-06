@@ -9,6 +9,10 @@ inputs:
     default: 'false'
   package:
     description: 'The published name of a single package to release'
+  versions:
+    description: 'JSON package/version map from a validated preparation artifact; dependencies are included normally'
+  request_id:
+    description: 'Opaque correlation ID supplied by the caller, echoed in release callbacks'
   exclude:
     description: 'Comma separated list of packages to exclude from release (if not depended upon)'
   tag:
@@ -23,5 +27,7 @@ runs:
         INPUT_DEV: ${{ inputs.dev }}
         INPUT_DRY: ${{ inputs.dry }}
         INPUT_PACKAGE: ${{ inputs.package }}
+        INPUT_VERSIONS: ${{ inputs.versions }}
+        INPUT_REQUEST_ID: ${{ inputs.request_id }}
         INPUT_EXCLUDE: ${{ inputs.exclude }}
         INPUT_TAG: ${{ inputs.tag }}
