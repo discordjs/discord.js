@@ -1,12 +1,13 @@
 import type { JSONEncodable } from '@discordjs/util';
-import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v10';
+import type { APISelectMenuOption, APIMessageComponentEmoji } from 'discord-api-types/v10';
+import { Refineable } from '../../mixins/Refineable.js';
 import { validate } from '../../util/validation.js';
 import { selectMenuStringOptionPredicate } from '../Assertions.js';
 
 /**
  * A builder that creates API-compatible JSON data for string select menu options.
  */
-export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMenuOption> {
+export class StringSelectMenuOptionBuilder extends Refineable implements JSONEncodable<APISelectMenuOption> {
 	private readonly data: Partial<APISelectMenuOption>;
 
 	/**
@@ -32,6 +33,7 @@ export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMen
 	 * ```
 	 */
 	public constructor(data: Partial<APISelectMenuOption> = {}) {
+		super();
 		this.data = structuredClone(data);
 	}
 

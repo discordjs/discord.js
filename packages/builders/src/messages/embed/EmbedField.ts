@@ -1,24 +1,26 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APIEmbedField } from 'discord-api-types/v10';
+import { Refineable } from '../../mixins/Refineable.js';
 import { validate } from '../../util/validation.js';
 import { embedFieldPredicate } from './Assertions.js';
 
 /**
  * A builder that creates API-compatible JSON data for embed fields.
  */
-export class EmbedFieldBuilder implements JSONEncodable<APIEmbedField> {
+export class EmbedFieldBuilder extends Refineable implements JSONEncodable<APIEmbedField> {
 	/**
 	 * The API data associated with this embed field.
 	 */
 	private readonly data: Partial<APIEmbedField>;
 
 	/**
-	 * Creates a new embed field.
+	 * Creates a new embed field builder.
 	 *
 	 * @param data - The API data to create this embed field with
 	 */
 	public constructor(data: Partial<APIEmbedField> = {}) {
-		this.data = structuredClone(data);
+		super();
+		this.data = { ...structuredClone(data) };
 	}
 
 	/**
