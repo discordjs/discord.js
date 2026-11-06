@@ -469,6 +469,7 @@ class GuildChannel extends BaseChannel {
 
     // This flag allows managing even if timed out
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
+    if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
     if (this.guild.members.me.communicationDisabledUntilTimestamp > Date.now()) return false;
 
     const baseBitfield = PermissionFlagsBits.ViewChannel | PermissionFlagsBits.ManageChannels;
