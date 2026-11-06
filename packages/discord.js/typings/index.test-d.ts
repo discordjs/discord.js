@@ -1,5 +1,6 @@
 /* eslint-disable no-lone-blocks, @typescript-eslint/unbound-method, @typescript-eslint/ban-ts-comment, no-param-reassign, id-length */
 import { Buffer } from 'node:buffer';
+/* eslint-disable no-lone-blocks, @typescript-eslint/ban-ts-comment, no-param-reassign */
 import type { ChildProcess } from 'node:child_process';
 import type { Worker } from 'node:worker_threads';
 import {
@@ -1496,7 +1497,6 @@ expectType<string | null>(loggedOutClient.token);
 expectType<null>(loggedOutClient.uptime);
 expectType<null>(loggedOutClient.user);
 
-// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 expectType<undefined>(serialize(undefined));
 expectType<null>(serialize(null));
 expectType<number[]>(serialize([1, 2, 3]));

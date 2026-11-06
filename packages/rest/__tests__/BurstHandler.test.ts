@@ -1,8 +1,7 @@
-/* eslint-disable id-length */
 /* eslint-disable promise/prefer-await-to-then */
-import { MockAgent, setGlobalDispatcher } from 'undici';
+import { MockAgent, Response, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
-import { beforeEach, afterEach, test, expect } from 'vitest';
+import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
 import { DiscordAPIError, RateLimitError, REST, BurstHandlerMajorIdKey } from '../src/index.js';
 import { BurstHandler } from '../src/lib/handlers/BurstHandler.js';
 import { genPath } from './util.js';
@@ -51,32 +50,35 @@ test('Interaction callback creates burst handler', async () => {
 });
 
 test('Requests are handled in bursts', async () => {
-	mockPool.intercept({ path: callbackPath, method: 'POST' }).reply(200).delay(100).times(3);
+	const { promise: responsesReady, resolve: releaseResponses } = Promise.withResolvers<undefined>();
+	const makeRequest = vitest.fn(async () => {
+		await responsesReady;
+		return new Response(null, { status: 200 });
+	});
+	const burstApi = new REST({ makeRequest });
 
-	// Return the current time on these results as their response does not indicate anything
-	const [a, b, c] = await Promise.all([
-		api
-			.post('/interactions/1234567890123456789/totallyarealtoken/callback', {
-				auth: false,
-				body: { type: 4, data: { content: 'Reply1' } },
-			})
-			.then(() => performance.now()),
-		api
-			.post('/interactions/2345678901234567890/anotherveryrealtoken/callback', {
-				auth: false,
-				body: { type: 4, data: { content: 'Reply2' } },
-			})
-			.then(() => performance.now()),
-		api
-			.post('/interactions/3456789012345678901/nowaytheresanotherone/callback', {
-				auth: false,
-				body: { type: 4, data: { content: 'Reply3' } },
-			})
-			.then(() => performance.now()),
+	const requests = Promise.all([
+		burstApi.post('/interactions/1234567890123456789/totallyarealtoken/callback', {
+			auth: false,
+			body: { type: 4, data: { content: 'Reply1' } },
+		}),
+		burstApi.post('/interactions/2345678901234567890/anotherveryrealtoken/callback', {
+			auth: false,
+			body: { type: 4, data: { content: 'Reply2' } },
+		}),
+		burstApi.post('/interactions/3456789012345678901/nowaytheresanotherone/callback', {
+			auth: false,
+			body: { type: 4, data: { content: 'Reply3' } },
+		}),
 	]);
 
-	expect(b - a).toBeLessThan(10);
-	expect(c - a).toBeLessThan(10);
+	try {
+		// All requests must start while every response is still pending.
+		await vitest.waitFor(() => expect(makeRequest).toHaveBeenCalledTimes(3));
+	} finally {
+		releaseResponses(undefined);
+		await requests;
+	}
 });
 
 test('Handle 404', async () => {

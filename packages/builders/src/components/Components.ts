@@ -7,7 +7,6 @@ import type {
 } from 'discord-api-types/v10';
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
 import { ActionRowBuilder } from './ActionRow.js';
-import { ComponentBuilder } from './Component.js';
 import type { BaseButtonBuilder } from './button/Button.js';
 import {
 	DangerButtonBuilder,
@@ -17,6 +16,7 @@ import {
 } from './button/CustomIdButton.js';
 import { LinkButtonBuilder } from './button/LinkButton.js';
 import { PremiumButtonBuilder } from './button/PremiumButton.js';
+import { ComponentBuilder } from './Component.js';
 import { FileUploadBuilder } from './fileUpload/FileUpload.js';
 import { LabelBuilder } from './label/Label.js';
 import { ChannelSelectMenuBuilder } from './selectMenu/ChannelSelectMenu.js';
@@ -180,7 +180,6 @@ export interface MappedComponentTypes {
  * @param data - The API data to transform to a component class
  */
 export function createComponentBuilder<ComponentType extends keyof MappedComponentTypes>(
-	// eslint-disable-next-line @typescript-eslint/sort-type-constituents
 	data: (APIModalComponent | APIMessageComponent) & { type: ComponentType },
 ): MappedComponentTypes[ComponentType];
 
@@ -201,7 +200,6 @@ export function createComponentBuilder(
 		return data;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (data.type) {
 		case ComponentType.ActionRow:
 			return new ActionRowBuilder(data);
