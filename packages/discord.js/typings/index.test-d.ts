@@ -41,6 +41,7 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandPermissionType,
   ApplicationCommandType,
+  ApplicationFlags,
   ApplicationIntegrationType,
   AuditLogEvent,
   ButtonStyle,
@@ -225,6 +226,7 @@ import type {
   VoiceServerUpdateData,
 } from './index.js';
 import {
+  ApplicationFlagsBitField,
   Client,
   Collection,
   Events,
@@ -2885,6 +2887,15 @@ declare const application: ClientApplication;
 declare const entitlement: Entitlement;
 declare const sku: SKU;
 {
+  expectType<bigint>(application.flags.bitfield);
+  expectType<string>(application.flags.toJSON());
+  expectType<bigint>(ApplicationFlagsBitField.resolve(ApplicationFlags.GatewayPresenceLimited));
+  expectType<bigint>(ApplicationFlagsBitField.resolve('GatewayPresenceLimited'));
+  expectType<bigint>(ApplicationFlagsBitField.resolve(1n << 40n));
+
+  await application.edit({ flags: ApplicationFlags.GatewayPresenceLimited });
+  await application.edit({ flags: ['GatewayPresenceLimited', ApplicationFlags.GatewayGuildMembersLimited] });
+
   expectType<Collection<Snowflake, SKU>>(await application.fetchSKUs());
   expectType<Collection<Snowflake, Entitlement>>(await application.entitlements.fetch());
 
