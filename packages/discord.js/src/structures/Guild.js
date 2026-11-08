@@ -1219,7 +1219,8 @@ class Guild extends AnonymousGuild {
     let data = await this.client.rest.get(Routes.guildMessagesSearch(this.id), { query, signal });
 
     if (data.code === RESTJSONErrorCodes.IndexNotYetAvailable) {
-      if (!retryOnMissingIndex) throw new DiscordjsError(ErrorCodes.SearchIndexNotYetAvailable, {documentsIndexed: data.documents_indexed, retryAfter: data.retry_after});
+      if (!retryOnMissingIndex)
+        throw new DiscordjsError(ErrorCodes.SearchIndexNotYetAvailable, data.documents_indexed, data.retry_after);
       do {
         const retryAfter = data.retry_after || 1;
 

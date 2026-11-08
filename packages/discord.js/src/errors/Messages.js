@@ -95,7 +95,8 @@ const Messages = {
     `Soundboard sound is a default (non-guild) soundboard sound and can't be ${action}.`,
   [ErrorCodes.NotGuildSticker]: 'Sticker is a standard (non-guild) sticker and has no author.',
 
-  [ErrorCodes.SearchIndexNotYetAvailable]: 'Search index not yet available and opted out of retrying',
+  [ErrorCodes.SearchIndexNotYetAvailable]: (indexed, retryAfter) =>
+    `Search index not yet available (currently ${indexed} indexed) and opted out of retrying. You can retry in ${retryAfter}ms.`,
 
   [ErrorCodes.ReactionResolveUser]: "Couldn't resolve the user id to remove from the reaction.",
 
