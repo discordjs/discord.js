@@ -1112,7 +1112,7 @@ class Guild extends AnonymousGuild {
    * @property {boolean} [cache=true] Whether to cache the fetched messages
    * @property {AbortSignal} [signal] An {@link AbortSignal} to cancel the request, including any automatic retries
    * while the guild's messages are still being indexed
-   * @property {boolean} [retryOnMissingIndex=true] Whether to automatically retry while the guild's messages are still being indexed
+   * @property {boolean} [retryIfIndexNotYetAvailable=true] Whether to automatically retry while the guild's messages are still being indexed
    */
 
   /**
@@ -1219,7 +1219,7 @@ class Guild extends AnonymousGuild {
     let data = await this.client.rest.get(Routes.guildMessagesSearch(this.id), { query, signal });
 
     if (data.code === RESTJSONErrorCodes.IndexNotYetAvailable) {
-      if (!retryOnMissingIndex) throw new DiscordjsError(ErrorCodes.SearchIndexNotYetAvailable);
+      if (!retryOnMissingIndex) throw new DiscordjsError(ErrorCodes.SearchIndexNotYetAvailable, {documentsIndexed: data.documents_indexed, retryAfter: data.retry_after});
       do {
         const retryAfter = data.retry_after || 1;
 
