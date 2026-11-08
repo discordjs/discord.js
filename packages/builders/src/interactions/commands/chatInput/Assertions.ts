@@ -153,10 +153,29 @@ const basicOptionPredicates = [
 	userOptionPredicate,
 ];
 
+const basicOptionsPredicate = z
+	.array(z.union(basicOptionPredicates))
+	.max(25)
+	.refine(
+		(options) => {
+			let sawOptional = false;
+			for (const option of options) {
+				if (!option.required) {
+					sawOptional = true;
+				} else if (sawOptional) {
+					return false;
+				}
+			}
+
+			return true;
+		},
+		{ error: 'Required options must be listed before optional options' },
+	);
+
 export const chatInputCommandSubcommandPredicate = z.object({
 	...sharedNameAndDescriptionPredicate.shape,
 	type: z.literal(ApplicationCommandOptionType.Subcommand),
-	options: z.array(z.union(basicOptionPredicates)).max(25).optional(),
+	options: basicOptionsPredicate.optional(),
 });
 
 export const chatInputCommandSubcommandGroupPredicate = z.object({
@@ -173,7 +192,7 @@ export const chatInputCommandPredicate = z.object({
 	nsfw: z.boolean().optional(),
 	options: z
 		.union([
-			z.array(z.union(basicOptionPredicates)).max(25),
+			basicOptionsPredicate,
 			z.array(z.union([chatInputCommandSubcommandPredicate, chatInputCommandSubcommandGroupPredicate])).max(25),
 		])
 		.optional(),
