@@ -229,6 +229,7 @@ import type {
   UserSelectMenuComponent,
   UserSelectMenuInteraction,
   Webhook,
+  GuildScheduledEvent,
 } from './index.js';
 import {
   Client,
@@ -3515,6 +3516,10 @@ await guildScheduledEventManager.edit(snowflake, { description: null });
   const event = await guildScheduledEventManager.fetch(snowflake);
   await event.setDescription(null);
   await event.edit({ description: null });
+  expect(event.setImage(Buffer.from('image'))).type.toBe<Promise<GuildScheduledEvent>>();
+  expect(event.setImage('data:image/png;base64,test')).type.toBe<Promise<GuildScheduledEvent>>();
+  expect(event.setImage(null)).type.toBe<Promise<GuildScheduledEvent>>();
+  expect(event.setImage(null, 'Remove the cover image')).type.toBe<Promise<GuildScheduledEvent>>();
   expect(null).type.not.toBeAssignableTo<GuildScheduledEventCreateOptions['description']>();
 }
 
