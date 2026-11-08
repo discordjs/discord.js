@@ -54,6 +54,26 @@ describe('ChatInput Commands', () => {
 		});
 
 		describe('Builder with simple options', () => {
+			test.each([undefined, false])('rejects a required option after an optional option (required: %s)', (required) => {
+				const optionalOption = getStringOption().setName('note');
+				if (required !== undefined) optionalOption.setRequired(required);
+
+				const builder = getNamedBuilder()
+					.addStringOptions(optionalOption)
+					.addIntegerOptions(getIntegerOption().setName('minutes').setRequired(true));
+
+				expect(() => builder.toJSON()).toThrowError('Required options must be listed before optional options');
+				expect(builder.toJSON(false).options?.map(({ name }) => name)).toEqual(['note', 'minutes']);
+			});
+
+			test('preserves the order of valid required and optional options', () => {
+				const builder = getNamedBuilder()
+					.addIntegerOptions(getIntegerOption().setName('minutes').setRequired(true))
+					.addStringOptions(getStringOption().setName('note'));
+
+				expect(builder.toJSON().options?.map(({ name }) => name)).toEqual(['minutes', 'note']);
+			});
+
 			test('GIVEN valid builder THEN returns type included', () => {
 				expect(getNamedBuilder().toJSON()).includes({ type: ApplicationCommandType.ChatInput });
 			});
@@ -371,6 +391,16 @@ describe('ChatInput Commands', () => {
 		});
 
 		describe('Subcommand builder', () => {
+			test('rejects a required option after an optional option in a nested subcommand', () => {
+				const subcommand = getSubcommand()
+					.addStringOptions(getStringOption().setName('note'))
+					.addIntegerOptions(getIntegerOption().setName('minutes').setRequired(true));
+				const builder = getNamedBuilder().addSubcommands(subcommand);
+
+				expect(() => subcommand.toJSON()).toThrowError('Required options must be listed before optional options');
+				expect(() => builder.toJSON()).toThrowError('Required options must be listed before optional options');
+			});
+
 			test('GIVEN a valid subcommand with options THEN does not throw error', () => {
 				expect(() => getSubcommand().addBooleanOptions(getBooleanOption()).toJSON()).not.toThrowError();
 			});
