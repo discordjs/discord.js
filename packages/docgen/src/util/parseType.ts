@@ -91,7 +91,6 @@ export function parseType(someType: JSONOutput.SomeType | JSONOutput.Type | stri
 			return `'${someType.value}'`;
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-base-to-string
 		return `${someType.value}`;
 	}
 

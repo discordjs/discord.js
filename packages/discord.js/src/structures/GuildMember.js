@@ -605,6 +605,7 @@ class GuildMember extends Base {
       this.avatar === member.avatar &&
       this.banner === member.banner &&
       this.pending === member.pending &&
+      this.premiumSinceTimestamp === member.premiumSinceTimestamp &&
       this.communicationDisabledUntilTimestamp === member.communicationDisabledUntilTimestamp &&
       this.flags.bitfield === member.flags.bitfield &&
       (this._roles === member._roles ||

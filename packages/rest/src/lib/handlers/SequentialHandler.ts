@@ -1,7 +1,7 @@
 import { AsyncQueue } from '@sapphire/async-queue';
 import type { RequestInit } from 'undici';
-import type { REST } from '../REST.js';
 import type { IHandler } from '../interfaces/Handler.js';
+import type { REST } from '../REST.js';
 import { RESTEvents } from '../utils/constants.js';
 import type { RateLimitData, ResponseLike, HandlerRequestData, RouteData } from '../utils/types.js';
 import { hasSublimit, normalizeRateLimitOffset, onRateLimit, sleep } from '../utils/utils.js';
@@ -216,7 +216,6 @@ export class SequentialHandler implements IHandler {
 				limit = this.manager.options.globalRequestsPerSecond;
 				timeout = this.manager.globalReset + offset - Date.now();
 				// If this is the first task to reach the global timeout, set the global delay
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				if (!this.manager.globalDelay) {
 					// The global delay function clears the global delay state when it is resolved
 					this.manager.globalDelay = this.globalDelayFor(timeout);
@@ -300,21 +299,26 @@ export class SequentialHandler implements IHandler {
 		// Amount of time in milliseconds until we should retry if rate limited (globally or otherwise)
 		if (retry) retryAfter = Number(retry) * 1_000 + offset;
 
+		// Rate limits are tracked per token, but Discord reports the same bucket hash for every token on a given route,
+		// so requests made with a custom token need the token in their hash to avoid sharing a handler
+		const authPartition = typeof requestData.auth === 'string' ? `:${requestData.auth}` : '';
+		const partitionedHash = hash && `${hash}${authPartition}`;
+
 		// Handle buckets via the hash header retroactively
-		if (hash && hash !== this.hash) {
+		if (partitionedHash && partitionedHash !== this.hash) {
 			// Let library users know when rate limit buckets have been updated
-			this.debug(['Received bucket hash update', `  Old Hash  : ${this.hash}`, `  New Hash  : ${hash}`].join('\n'));
-			// This queue will eventually be eliminated via attrition
-			this.manager.hashes.set(
-				`${method}:${routeId.bucketRoute}${typeof requestData.auth === 'string' ? `:${requestData.auth}` : ''}`,
-				{ value: hash, lastAccess: Date.now() },
+			this.debug(
+				['Received bucket hash update', `  Old Hash  : ${this.hash}`, `  New Hash  : ${partitionedHash}`].join('\n'),
 			);
-		} else if (hash) {
+			// This queue will eventually be eliminated via attrition
+			this.manager.hashes.set(`${method}:${routeId.bucketRoute}${authPartition}`, {
+				value: partitionedHash,
+				lastAccess: Date.now(),
+			});
+		} else if (partitionedHash) {
 			// Handle the case where hash value doesn't change
 			// Fetch the hash data from the manager
-			const hashData = this.manager.hashes.get(
-				`${method}:${routeId.bucketRoute}${typeof requestData.auth === 'string' ? `:${requestData.auth}` : ''}`,
-			);
+			const hashData = this.manager.hashes.get(`${method}:${routeId.bucketRoute}${authPartition}`);
 
 			// When fetched, update the last access of the hash
 			if (hashData) {

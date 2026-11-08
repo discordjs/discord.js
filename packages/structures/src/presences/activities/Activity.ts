@@ -1,6 +1,6 @@
 import type { ActivityFlags, GatewayActivity, ActivityType } from 'discord-api-types/v10';
-import { Structure } from '../../Structure.js';
 import { ActivityFlagsBitField } from '../../bitfields/ActivityFlagsBitField.js';
+import { Structure } from '../../Structure.js';
 import { kData } from '../../utils/symbols.js';
 import { isFieldSet } from '../../utils/type-guards.js';
 import type { Partialize } from '../../utils/types.js';

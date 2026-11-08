@@ -168,6 +168,7 @@ import {
   InteractionType,
   InviteFlags,
   InviteTargetType,
+  InviteTargetUsersJobStatus,
   InviteType,
   Locale,
   LocalizationMap,
@@ -224,6 +225,7 @@ import {
   VideoQualityMode,
   VoiceChannelEffectSendAnimationType,
   WebhookType,
+  APIInviteRole,
 } from 'discord-api-types/v10';
 
 // #region Classes
@@ -1822,7 +1824,7 @@ export class GuildScheduledEvent<Status extends GuildScheduledEventStatus = Guil
     reason?: string,
   ): Promise<GuildScheduledEvent<Status>>;
   public setScheduledEndTime(scheduledEndTime: DateResolvable, reason?: string): Promise<GuildScheduledEvent<Status>>;
-  public setDescription(description: string, reason?: string): Promise<GuildScheduledEvent<Status>>;
+  public setDescription(description: string | null, reason?: string): Promise<GuildScheduledEvent<Status>>;
   public setStatus<AcceptableStatus extends GuildScheduledEventSetStatusArg<Status>>(
     status: AcceptableStatus,
     reason?: string,
@@ -2088,7 +2090,7 @@ export class BaseInvite<WithCounts extends boolean = boolean> extends Base {
   public get url(): string;
   public static InvitesPattern: RegExp;
   public toString(): string;
-  public toJSON(): unknown;
+  public toJSON(props?: Record<string, boolean | string>): unknown;
 }
 
 export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvite<WithCounts> {
@@ -2097,6 +2099,7 @@ export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvit
   public guild: Guild | InviteGuild | null;
   public readonly guildId: Snowflake;
   public channel: NonThreadGuildBasedChannel | null;
+  public roles: Collection<Snowflake, InviteRole | Role> | null;
   public targetType: InviteTargetType | null;
   public targetUser: User | null;
   public targetApplication: IntegrationApplication | null;
@@ -2107,6 +2110,10 @@ export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvit
   public approximatePresenceCount: WithCounts extends true ? number : null;
   public get deletable(): boolean;
   public delete(reason?: string): Promise<void>;
+  public updateTargetUsers(targetUsersFile: BufferResolvable | readonly UserResolvable[]): Promise<void>;
+  public fetchTargetUsersJobStatus(): Promise<TargetUsersJobStatusForInvite>;
+  public fetchTargetUsers(): Promise<Buffer>;
+  public toJSON(): unknown;
 }
 
 export type InviteFlagsString = keyof typeof InviteFlags;
@@ -2119,6 +2126,7 @@ export class InviteFlagsBitField extends BitField<InviteFlagsString> {
 export class GroupDMInvite<WithCounts extends boolean = boolean> extends BaseInvite<WithCounts> {
   public readonly type: InviteType.GroupDM;
   public channel: PartialGroupDMChannel | null;
+  public toJSON(): unknown;
 }
 
 export type Invite<WithCounts extends boolean = boolean> = GroupDMInvite<WithCounts> | GuildInvite<WithCounts>;
@@ -3033,32 +3041,42 @@ export interface RoleColorsEditResolvable {
   tertiaryColor?: ColorResolvable | null;
 }
 
-export class Role extends Base {
-  private constructor(client: Client<true>, data: APIRole, guild: Guild);
+export class BaseRole extends Base {
+  protected constructor(client: Client<true>, data: APIInviteRole | APIRole);
   public colors: RoleColors;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
+  public get hexColor(): HexColorString;
+  public id: Snowflake;
+  public name: string;
+  public rawPosition: number;
+  public icon: string | null;
+  public unicodeEmoji: string | null;
+  public iconURL(options?: ImageURLOptions): string | null;
+  public toJSON(): unknown;
+  public toString(): RoleMention;
+}
+
+export class InviteRole extends BaseRole {
+  private constructor(client: Client<true>, data: APIInviteRole);
+}
+
+export class Role extends BaseRole {
+  private constructor(client: Client<true>, data: APIRole, guild: Guild);
   public get editable(): boolean;
   public flags: RoleFlagsBitField;
   public guild: Guild;
-  public get hexColor(): HexColorString;
   public hoist: boolean;
-  public id: Snowflake;
   public managed: boolean;
   public get members(): Collection<Snowflake, GuildMember>;
   public mentionable: boolean;
-  public name: string;
   public permissions: Readonly<PermissionsBitField>;
   public get position(): number;
-  public rawPosition: number;
   public tags: RoleTagData | null;
   public comparePositionTo(role: RoleResolvable): number;
-  public icon: string | null;
-  public unicodeEmoji: string | null;
   public delete(reason?: string): Promise<Role>;
   public edit(options: RoleEditOptions): Promise<Role>;
   public equals(role: Role): boolean;
-  public iconURL(options?: ImageURLOptions): string | null;
   public permissionsIn(
     channel: NonThreadGuildBasedChannel | Snowflake,
     checkAdmin?: boolean,
@@ -3071,8 +3089,6 @@ export class Role extends Base {
   public setIcon(icon: Base64Resolvable | BufferResolvable | EmojiResolvable | null, reason?: string): Promise<Role>;
   public setPosition(position: number, options?: SetRolePositionOptions): Promise<Role>;
   public setUnicodeEmoji(unicodeEmoji: string | null, reason?: string): Promise<Role>;
-  public toJSON(): unknown;
-  public toString(): RoleMention;
 }
 
 export type RoleFlagsString = keyof typeof RoleFlags;
@@ -4053,7 +4069,6 @@ export const version: string;
 // #endregion
 
 // #region Errors
-/* eslint-disable typescript-sort-keys/string-enum */
 export enum DiscordjsErrorCodes {
   ClientInvalidOption = 'ClientInvalidOption',
   ClientInvalidProvidedShards = 'ClientInvalidProvidedShards',
@@ -4187,7 +4202,6 @@ export enum DiscordjsErrorCodes {
   PermissionOverwritesTypeMandatory = 'PermissionOverwritesTypeMandatory',
   PermissionOverwritesTypeMismatch = 'PermissionOverwritesTypeMismatch',
 }
-/* eslint-enable typescript-sort-keys/string-enum */
 
 export class DiscordjsError extends Error {
   private constructor(code: DiscordjsErrorCodes, ...args: unknown[]);
@@ -4595,10 +4609,24 @@ export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBan
   ): Promise<BulkBanResult>;
 }
 
+export interface TargetUsersJobStatusForInvite {
+  completedAt: Date | null;
+  createdAt: Date | null;
+  errorMessage: string | null;
+  processedUsers: number;
+  status: InviteTargetUsersJobStatus;
+  totalUsers: number;
+}
 export class GuildInviteManager extends DataManager<string, GuildInvite, GuildInviteResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<unknown>);
   public guild: Guild;
   public create(channel: GuildInvitableChannelResolvable, options?: InviteCreateOptions): Promise<GuildInvite>;
+  public updateTargetUsers(
+    invite: InviteResolvable,
+    targetUsersFile: BufferResolvable | readonly UserResolvable[],
+  ): Promise<void>;
+  public fetchTargetUsers(invite: InviteResolvable): Promise<Buffer>;
+  public fetchTargetUsersJobStatus(invite: InviteResolvable): Promise<TargetUsersJobStatusForInvite>;
   public fetch(options: FetchInviteOptions | InviteResolvable): Promise<GuildInvite>;
   public fetch(options?: FetchInvitesOptions): Promise<Collection<string, GuildInvite>>;
   public delete(invite: InviteResolvable, reason?: string): Promise<void>;
@@ -4632,12 +4660,12 @@ export class GuildScheduledEventManager extends CachedManager<
 
 export interface GuildSoundboardSoundCreateOptions {
   contentType?: string;
-  emojiId?: Snowflake;
-  emojiName?: string;
+  emojiId?: Snowflake | null;
+  emojiName?: string | null;
   file: BufferResolvable | Stream;
   name: string;
   reason?: string;
-  volume?: number;
+  volume?: number | null;
 }
 
 export interface GuildSoundboardSoundEditOptions {
@@ -6499,7 +6527,7 @@ export interface GuildListMembersOptions {
 
 export interface BaseGuildScheduledEventOptions {
   channel?: GuildVoiceChannelResolvable | null;
-  description?: string;
+  description?: string | null;
   entityMetadata?: GuildScheduledEventEntityMetadataOptions;
   entityType?: GuildScheduledEventEntityType;
   image?: Base64Resolvable | BufferResolvable | null;
@@ -6514,6 +6542,7 @@ export interface BaseGuildScheduledEventOptions {
 // TODO: use conditional types for better TS support
 export interface GuildScheduledEventCreateOptions extends BaseGuildScheduledEventOptions {
   channel?: GuildVoiceChannelResolvable;
+  description?: string;
   entityType: GuildScheduledEventEntityType;
   name: string;
   privacyLevel: GuildScheduledEventPrivacyLevel;
@@ -6724,9 +6753,11 @@ export interface InviteCreateOptions {
   maxAge?: number;
   maxUses?: number;
   reason?: string;
+  roles?: readonly RoleResolvable[];
   targetApplication?: ApplicationResolvable;
   targetType?: InviteTargetType;
   targetUser?: UserResolvable;
+  targetUsersFile?: BufferResolvable | readonly UserResolvable[];
   temporary?: boolean;
   unique?: boolean;
 }
@@ -6805,6 +6836,8 @@ export interface MessageInteractionMetadata {
   id: Snowflake;
   interactedMessageId: Snowflake | null;
   originalResponseMessageId: Snowflake | null;
+  targetMessageId: Snowflake | null;
+  targetUser: User | null;
   triggeringInteractionMetadata: MessageInteractionMetadata | null;
   type: InteractionType;
   user: User;
@@ -7146,7 +7179,7 @@ export interface PartialPoll extends Partialize<
   null,
   'answers' | 'message' | 'question'
 > {
-  // eslint-disable-next-line no-restricted-syntax
+  // oxlint-disable-next-line discordjs/readonly-collections -- Retain Poll's mutable collection when narrowing its values.
   answers: Collection<number, PartialPollAnswer>;
   message: PartialMessage;
   question: { text: null };

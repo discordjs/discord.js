@@ -1,4 +1,4 @@
-/* eslint-disable no-lone-blocks, @typescript-eslint/unbound-method, @typescript-eslint/ban-ts-comment, no-param-reassign, id-length */
+/* eslint-disable no-lone-blocks, @typescript-eslint/ban-ts-comment, no-param-reassign */
 import type { ChildProcess } from 'node:child_process';
 import type { Worker } from 'node:worker_threads';
 import {
@@ -139,6 +139,7 @@ import type {
   GuildMessageManager,
   GuildOnboarding,
   GuildResolvable,
+  GuildScheduledEventCreateOptions,
   GuildScheduledEventManager,
   GuildScheduledEventRecurrenceRuleOptions,
   GuildTextBasedChannel,
@@ -833,6 +834,14 @@ declare const slashCommandBuilder: ChatInputCommandBuilder;
 declare const contextMenuCommandBuilder: ContextMenuCommandBuilder;
 declare const guild: Guild;
 
+await guild.soundboardSounds.create({
+  file: './sound.mp3',
+  name: 'sound',
+  emojiId: null,
+  emojiName: null,
+  volume: null,
+});
+
 client.on('clientReady', async client => {
   expectType<Client<true>>(client);
   console.log(`Client is logged in as ${client.user.tag} and ready!`);
@@ -1485,7 +1494,6 @@ expectType<string | null>(loggedOutClient.token);
 expectType<null>(loggedOutClient.uptime);
 expectType<null>(loggedOutClient.user);
 
-// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 expectType<undefined>(serialize(undefined));
 expectType<null>(serialize(null));
 expectType<number[]>(serialize([1, 2, 3]));
@@ -1796,6 +1804,11 @@ declare const guildChannelManager: GuildChannelManager;
     expectType<Guild>(message.guild);
     expectType<Snowflake>(message.guildId);
     expectType<GuildTextBasedChannel>(message.channel.messages.channel);
+
+    if (message.interactionMetadata) {
+      expectType<User | null>(message.interactionMetadata.targetUser);
+      expectType<Snowflake | null>(message.interactionMetadata.targetMessageId);
+    }
   }
 }
 
@@ -2999,6 +3012,14 @@ client.on('interactionCreate', async interaction => {
 
 declare const guildScheduledEventManager: GuildScheduledEventManager;
 await guildScheduledEventManager.edit(snowflake, { recurrenceRule: null });
+await guildScheduledEventManager.edit(snowflake, { description: null });
+
+{
+  const event = await guildScheduledEventManager.fetch(snowflake);
+  await event.setDescription(null);
+  await event.edit({ description: null });
+  expectNotAssignable<GuildScheduledEventCreateOptions['description']>(null);
+}
 
 {
   expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
