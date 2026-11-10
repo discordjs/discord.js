@@ -12,6 +12,14 @@ const enum QueueType {
 	Sublimit,
 }
 
+interface GlobalDelay {
+	promise: Promise<void>;
+	requests: number;
+	cancel(): void;
+}
+
+const globalDelays = new WeakMap<REST, GlobalDelay>();
+
 /**
  * The structure used to handle sequential requests for a given bucket
  */
@@ -123,9 +131,29 @@ export class SequentialHandler implements IHandler {
 	 *
 	 * @param time - The amount of time to delay all requests for
 	 */
-	private async globalDelayFor(time: number): Promise<void> {
-		await sleep(time, { ref: false });
-		this.manager.globalDelay = null;
+	private globalDelayFor(time: number): GlobalDelay {
+		const existing = globalDelays.get(this.manager);
+		if (existing) {
+			existing.requests++;
+			return existing;
+		}
+
+		let cancel!: () => void;
+		const promise = new Promise<void>((resolve) => {
+			const timeout = setTimeout(() => {
+				this.manager.globalDelay = null;
+				globalDelays.delete(this.manager);
+				resolve();
+			}, time);
+			cancel = () => {
+				clearTimeout(timeout);
+				resolve();
+			};
+		});
+		const delay = { promise, requests: 1, cancel };
+		globalDelays.set(this.manager, delay);
+		this.manager.globalDelay = promise;
+		return delay;
 	}
 
 	/**
@@ -207,7 +235,7 @@ export class SequentialHandler implements IHandler {
 			const isGlobal = this.globalLimited;
 			let limit: number;
 			let timeout: number;
-			let delay: Promise<void>;
+			let globalDelay: GlobalDelay | undefined;
 
 			if (isGlobal) {
 				const offset = normalizeRateLimitOffset(this.manager.options.offset, routeId.bucketRoute);
@@ -215,19 +243,14 @@ export class SequentialHandler implements IHandler {
 				// Set RateLimitData based on the global limit
 				limit = this.manager.options.globalRequestsPerSecond;
 				timeout = this.manager.globalReset + offset - Date.now();
-				// If this is the first task to reach the global timeout, set the global delay
-				if (!this.manager.globalDelay) {
-					// The global delay function clears the global delay state when it is resolved
-					this.manager.globalDelay = this.globalDelayFor(timeout);
-				}
-
-				delay = this.manager.globalDelay;
+				// Share the global delay before evaluating asynchronous rate-limit policies.
+				globalDelay = this.globalDelayFor(timeout);
 			} else {
 				// Set RateLimitData based on the route-specific limit
 				limit = this.limit;
 				timeout = this.getTimeToReset(routeId);
-				delay = sleep(timeout, { ref: false });
 			}
+			const reset = Date.now() + timeout;
 
 			const rateLimitData: RateLimitData = {
 				global: isGlobal,
@@ -243,20 +266,34 @@ export class SequentialHandler implements IHandler {
 				scope: 'user',
 			};
 
-			// Let library users know they have hit a rate limit
-			this.manager.emit(RESTEvents.RateLimited, rateLimitData);
-			// Determine whether a RateLimitError should be thrown
-			await onRateLimit(this.manager, rateLimitData, requestData);
+			try {
+				// Let library users know they have hit a rate limit
+				this.manager.emit(RESTEvents.RateLimited, rateLimitData);
+				// Determine whether a RateLimitError should be thrown
+				await onRateLimit(this.manager, rateLimitData, requestData);
 
-			// When not erroring, emit debug for what is happening
-			if (isGlobal) {
-				this.debug(`Global rate limit hit, blocking all requests for ${timeout}ms`);
-			} else {
-				this.debug(`Waiting ${timeout}ms for rate limit to pass`);
+				// When not erroring, emit debug for what is happening
+				if (isGlobal) {
+					this.debug(`Global rate limit hit, blocking all requests for ${timeout}ms`);
+				} else {
+					this.debug(`Waiting ${timeout}ms for rate limit to pass`);
+				}
+
+				// Only create a route timer if the policy permits waiting, accounting for time spent in the policy.
+				if (globalDelay) {
+					await globalDelay.promise;
+				} else {
+					const remaining = reset - Date.now();
+					if (remaining > 0) await sleep(remaining);
+				}
+			} finally {
+				// A rejected request must not cancel a global delay still used by another request or policy.
+				if (globalDelay && --globalDelay.requests === 0 && globalDelays.get(this.manager) === globalDelay) {
+					globalDelay.cancel();
+					globalDelays.delete(this.manager);
+					this.manager.globalDelay = null;
+				}
 			}
-
-			// Wait the remaining time left before the rate limit resets
-			await delay;
 		}
 
 		// As the request goes out, update the global usage information
