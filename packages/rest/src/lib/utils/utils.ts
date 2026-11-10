@@ -3,7 +3,7 @@ import type { REST } from '../REST.js';
 import { RateLimitError } from '../errors/RateLimitError.js';
 import { DEPRECATION_WARNING_PREFIX } from './constants.js';
 import { RequestMethod } from './types.js';
-import type { GetRateLimitOffsetFunction, RateLimitData, ResponseLike } from './types.js';
+import type { GetRateLimitOffsetFunction, HandlerRequestData, RateLimitData, ResponseLike } from './types.js';
 
 function serializeSearchParam(value: unknown): string | null {
 	switch (typeof value) {
@@ -143,14 +143,18 @@ export function shouldRetry(error: Error | NodeJS.ErrnoException) {
  *
  * @internal
  */
-export async function onRateLimit(manager: REST, rateLimitData: RateLimitData) {
-	const { options } = manager;
-	if (!options.rejectOnRateLimit) return;
+export async function onRateLimit(manager: REST, rateLimitData: RateLimitData, requestData: HandlerRequestData) {
+	// Explicit false opts out of `REST` level `rejectOnRateLimit`, only `undefined` falls back.
+	const policy = requestData.rejectOnRateLimit ?? manager.options.rejectOnRateLimit;
+
+	if (!policy) return;
 
 	const shouldThrow =
-		typeof options.rejectOnRateLimit === 'function'
-			? await options.rejectOnRateLimit(rateLimitData)
-			: options.rejectOnRateLimit.some((route) => rateLimitData.route.startsWith(route.toLowerCase()));
+		policy === true ||
+		(typeof policy === 'function'
+			? await policy(rateLimitData)
+			: policy.some((route) => rateLimitData.route.startsWith(route.toLowerCase())));
+
 	if (shouldThrow) {
 		throw new RateLimitError(rateLimitData);
 	}
