@@ -1154,7 +1154,7 @@ class Guild extends AnonymousGuild {
    * @example
    * // Search for messages with images, excluding bots, sorted by oldest first
    * guild
-   *   .searchMessages({ has: [MessageSearchHasType.Image], authorType: [MessageSearchAuthorType.NotBot], sortOrder: 'asc' })
+   *   .searchMessages({ has: [MessageSearchHasType.Image], authorTypes: [MessageSearchAuthorType.NotBot], sortOrder: 'asc' })
    *   .then(result => {
    *     for (const message of result.messages) console.log(message.url);
    *   })
