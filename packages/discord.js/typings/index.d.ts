@@ -6481,19 +6481,19 @@ export interface GuildSearchMembersOptions {
 }
 
 export interface GuildSearchMessagesOptions {
-  attachmentExtension?: readonly string[];
-  attachmentFilename?: readonly string[];
+  attachmentExtensions?: readonly string[];
+  attachmentFilenames?: readonly string[];
   authorIds?: readonly UserResolvable[];
-  authorType?: readonly MessageSearchAuthorType[];
+  authorTypes?: readonly MessageSearchAuthorType[];
   cache?: boolean;
   channelIds?: readonly ChannelResolvable[];
   content?: string;
-  embedProvider?: readonly string[];
-  embedType?: readonly MessageSearchEmbedType[];
+  embedProviders?: readonly string[];
+  embedTypes?: readonly MessageSearchEmbedType[];
   has?: readonly MessageSearchHasType[];
   includeNsfw?: boolean;
   limit?: number;
-  linkHostname?: readonly string[];
+  linkHostnames?: readonly string[];
   maxId?: Snowflake;
   mentionEveryone?: boolean;
   mentions?: readonly UserResolvable[];
@@ -6503,7 +6503,7 @@ export interface GuildSearchMessagesOptions {
   pinned?: boolean;
   repliedToMessageIds?: readonly MessageResolvable[];
   repliedToUserIds?: readonly UserResolvable[];
-  retryOnMissingIndex?: boolean;
+  retryIfIndexNotYetAvailable?: boolean;
   signal?: AbortSignal;
   slop?: number;
   sortBy?: MessageSearchSortMode;

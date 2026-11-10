@@ -1088,7 +1088,7 @@ class Guild extends AnonymousGuild {
    * @property {Snowflake} [maxId] Get messages before a given message ID
    * @property {Snowflake} [minId] Get messages after a given message ID
    * @property {ChannelResolvable[]} [channelIds] Filter messages by given channel IDs (max 500)
-   * @property {MessageSearchAuthorType[]} [authorType] Filter messages by author type.
+   * @property {MessageSearchAuthorType[]} [authorTypes] Filter messages by author type.
    * @property {UserResolvable[]} [authorIds] Filter messages by given author IDs (max 100)
    * @property {UserResolvable[]} [mentions] Filter messages that mention given user IDs (max 100)
    * @property {RoleResolvable[]} [mentionsRoleIds] Filter messages that mention given role IDs (max 100)
@@ -1097,11 +1097,11 @@ class Guild extends AnonymousGuild {
    * @property {MessageResolvable[]} [repliedToMessageIds] Filter messages that reply to given message IDs (max 100)
    * @property {boolean} [pinned] Filter messages by whether they are pinned
    * @property {MessageSearchHasType[]} [has] Filter messages by whether they contain specific content types.
-   * @property {MessageSearchEmbedType[]} [embedType] Filter messages by embed type.
-   * @property {string[]} [embedProvider] Filter messages by embed provider, case-sensitive (max 100)
-   * @property {string[]} [linkHostname] Filter messages by link hostname (e.g. `'discord.com'`) (max 100)
-   * @property {string[]} [attachmentFilename] Filter messages by attachment filename (max 100)
-   * @property {string[]} [attachmentExtension] Filter messages by attachment extension (e.g. `'png'`) (max 100)
+   * @property {MessageSearchEmbedType[]} [embedTypes] Filter messages by embed type.
+   * @property {string[]} [embedProviders] Filter messages by embed provider, case-sensitive (max 100)
+   * @property {string[]} [linkHostnames] Filter messages by link hostname (e.g. `'discord.com'`) (max 100)
+   * @property {string[]} [attachmentFilenames] Filter messages by attachment filename (max 100)
+   * @property {string[]} [attachmentExtensions] Filter messages by attachment extension (e.g. `'png'`) (max 100)
    * @property {MessageSearchSortMode} [sortBy] The sorting algorithm to use.
    * @property {string} [sortOrder] The direction to sort. One of `'asc'` or `'desc'` (default).
    * <info>Sort order is not respected when sorting by relevance.</info>
@@ -1162,13 +1162,13 @@ class Guild extends AnonymousGuild {
    */
   async searchMessages({
     cache = true,
-    retryOnMissingIndex = true,
+    retryIfIndexNotYetAvailable = true,
     signal,
     content,
     maxId,
     minId,
     channelIds,
-    authorType,
+    authorTypes,
     authorIds,
     mentions,
     mentionsRoleIds,
@@ -1177,11 +1177,11 @@ class Guild extends AnonymousGuild {
     repliedToMessageIds,
     pinned,
     has,
-    embedType,
-    embedProvider,
-    linkHostname,
-    attachmentFilename,
-    attachmentExtension,
+    embedTypes,
+    embedProviders,
+    linkHostnames,
+    attachmentFilenames,
+    attachmentExtensions,
     sortBy,
     sortOrder,
     includeNsfw,
@@ -1194,7 +1194,7 @@ class Guild extends AnonymousGuild {
       max_id: maxId,
       min_id: minId,
       channel_id: channelIds?.map(channel => this.channels.resolveId(channel)),
-      author_type: authorType,
+      author_type: authorTypes,
       author_id: authorIds?.map(author => this.client.users.resolveId(author)),
       mentions: mentions?.map(mention => this.client.users.resolveId(mention)),
       mentions_role_id: mentionsRoleIds?.map(role => this.roles.resolveId(role)),
@@ -1203,11 +1203,11 @@ class Guild extends AnonymousGuild {
       replied_to_message_id: repliedToMessageIds?.map(message => (message instanceof Message ? message.id : message)),
       pinned,
       has,
-      embed_type: embedType,
-      embed_provider: embedProvider,
-      link_hostname: linkHostname,
-      attachment_filename: attachmentFilename,
-      attachment_extension: attachmentExtension,
+      embed_type: embedTypes,
+      embed_provider: embedProviders,
+      link_hostname: linkHostnames,
+      attachment_filename: attachmentFilenames,
+      attachment_extension: attachmentExtensions,
       sort_by: sortBy,
       sort_order: sortOrder,
       include_nsfw: includeNsfw,
@@ -1219,7 +1219,7 @@ class Guild extends AnonymousGuild {
     let data = await this.client.rest.get(Routes.guildMessagesSearch(this.id), { query, signal });
 
     if (data.code === RESTJSONErrorCodes.IndexNotYetAvailable) {
-      if (!retryOnMissingIndex)
+      if (!retryIfIndexNotYetAvailable)
         throw new DiscordjsError(ErrorCodes.SearchIndexNotYetAvailable, data.documents_indexed, data.retry_after);
       do {
         const retryAfter = data.retry_after || 1;

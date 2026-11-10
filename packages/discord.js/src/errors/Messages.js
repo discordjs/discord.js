@@ -96,7 +96,7 @@ const Messages = {
   [ErrorCodes.NotGuildSticker]: 'Sticker is a standard (non-guild) sticker and has no author.',
 
   [ErrorCodes.SearchIndexNotYetAvailable]: (indexed, retryAfter) =>
-    `Search index not yet available (currently ${indexed} indexed) and opted out of retrying. You can retry in ${retryAfter}ms.`,
+    `Search index not yet available (currently ${indexed} indexed) and opted out of retrying. You can retry in ${retryAfter} seconds.`,
 
   [ErrorCodes.ReactionResolveUser]: "Couldn't resolve the user id to remove from the reaction.",
 
