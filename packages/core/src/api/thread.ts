@@ -1,9 +1,11 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import type { RequestData, REST } from '@discordjs/rest';
+import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/rest';
 import {
 	Routes,
 	type APIThreadMember,
+	type RESTGetAPIChannelThreadMemberQuery,
+	type RESTGetAPIChannelThreadMemberResult,
 	type RESTGetAPIChannelThreadMembersResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
@@ -64,9 +66,61 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread to fetch the member from
 	 * @param userId - The id of the user
 	 * @param options - The options for fetching the member
+	 * @deprecated Use the overload with a query instead.
 	 */
-	public async getMember(threadId: Snowflake, userId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
-		return this.rest.get(Routes.threadMembers(threadId, userId), { signal }) as Promise<APIThreadMember>;
+	public async getMember(
+		threadId: Snowflake,
+		userId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'>,
+	): Promise<APIThreadMember>;
+
+	/**
+	 * Fetches a member of a thread
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#get-thread-member}
+	 * @param threadId - The id of the thread to fetch the member from
+	 * @param userId - The id of the user
+	 * @param query - The query for fetching the member
+	 * @param options - The options for fetching the member
+	 */
+	public async getMember(
+		threadId: Snowflake,
+		userId: Snowflake,
+		query: RESTGetAPIChannelThreadMemberQuery & { with_member: true },
+		options?: Pick<RequestData, 'signal'>,
+	): Promise<Required<Pick<RESTGetAPIChannelThreadMemberResult, 'member'>> & RESTGetAPIChannelThreadMemberResult>;
+
+	/**
+	 * Fetches a member of a thread
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#get-thread-member}
+	 * @param threadId - The id of the thread to fetch the member from
+	 * @param userId - The id of the user
+	 * @param query - The query for fetching the member
+	 * @param options - The options for fetching the member
+	 */
+	public async getMember(
+		threadId: Snowflake,
+		userId: Snowflake,
+		query?: RESTGetAPIChannelThreadMemberQuery,
+		options?: Pick<RequestData, 'signal'>,
+	): Promise<RESTGetAPIChannelThreadMemberResult>;
+
+	public async getMember(
+		threadId: Snowflake,
+		userId: Snowflake,
+		queryOrOptions: Pick<RequestData, 'signal'> | RESTGetAPIChannelThreadMemberQuery = {},
+		options: Pick<RequestData, 'signal'> = {},
+	) {
+		const requestData: RequestData = {
+			signal: ('signal' in queryOrOptions ? queryOrOptions : options).signal,
+		};
+
+		if ('with_member' in queryOrOptions) {
+			requestData.query = makeURLSearchParams(queryOrOptions);
+		}
+
+		return this.rest.get(Routes.threadMembers(threadId, userId), requestData);
 	}
 
 	/**
