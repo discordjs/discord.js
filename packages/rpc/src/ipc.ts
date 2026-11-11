@@ -120,26 +120,32 @@ export class IPCTransport extends AsyncEventEmitter {
 					if (id === 9) throw error;
 				}
 			}
+			const socket = this.socket;
+			socket.on('close', this.onClose.bind(this));
+			socket.on('error', this.onError.bind(this));
+
+			this.emit('open');
+			if (signal.aborted || this.socket !== socket || socket.destroyed) {
+				if (this.socket === socket) this.onClose(false);
+				else socket.destroy();
+				signal.throwIfAborted();
+				throw new Error('IPC connection closed');
+			}
+
+			socket.write(
+				encode(OPCodes.Handshake, {
+					v: 1,
+					client_id: this.client.clientId,
+				}),
+			);
+
+			// paused for manual read management in this.decode()
+			socket.pause();
+
+			socket.on('readable', this.decode.bind(this));
 		} finally {
 			if (this.connectionAbort === controller) this.connectionAbort = null;
 		}
-
-		this.socket.on('close', this.onClose.bind(this));
-		this.socket.on('error', this.onError.bind(this));
-
-		this.emit('open');
-
-		this.socket.write(
-			encode(OPCodes.Handshake, {
-				v: 1,
-				client_id: this.client.clientId,
-			}),
-		);
-
-		// paused for manual read management in this.decode()
-		this.socket.pause();
-
-		this.socket.on('readable', this.decode.bind(this));
 	}
 
 	private decode() {
