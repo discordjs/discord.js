@@ -162,16 +162,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		}
 
 		const signal = options?.signal ?? AbortSignal.timeout(10e3);
-		const onAbort: (_: Event) => void = (_: Event) => {
-			// eslint-disable-next-line typescript/no-use-before-define
-			this.removeListener(RPCEvents.Ready, onReady);
-			// eslint-disable-next-line typescript/no-use-before-define
-			this.transport.removeListener('close', onClose);
-
-			const reason = signal.reason instanceof Error ? signal.reason : new Error(String(signal.reason));
-			reject(reason);
-		};
-
+		signal.throwIfAborted();
 		const onReady = () => {
 			signal.removeEventListener('abort', onAbort);
 			this.readyTimestamp = Date.now();
@@ -193,21 +184,40 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 			reject(new RPCEventError(JSON.stringify(data)));
 		};
 
-		signal.addEventListener('abort', onAbort);
+		const closeTransport = async () => {
+			this.removeListener(RPCEvents.Ready, onReady);
+			this.transport.removeListener('close', onClose);
+			try {
+				await this.transport.close({ signal });
+			} catch {
+				// The connection promise reports the original abort reason.
+			}
+		};
+
+		function onAbort() {
+			const reason = signal.reason instanceof Error ? signal.reason : new Error(String(signal.reason));
+			void closeTransport();
+			reject(reason);
+		}
+
+		signal.addEventListener('abort', onAbort, { once: true });
 
 		this.once(RPCEvents.Ready, onReady);
 
 		this.transport.once('close', onClose);
 
-		try {
-			await this.transport.connect();
-		} catch (error) {
-			this.readyTimestamp = null;
-			signal.removeEventListener('abort', onAbort);
-			this.removeListener(RPCEvents.Ready, onReady);
-			this.transport.removeListener('close', onClose);
-			reject(error);
-		}
+		const connectTransport = async () => {
+			try {
+				await this.transport.connect({ signal });
+			} catch (error) {
+				if (!signal.aborted) this.readyTimestamp = null;
+				signal.removeEventListener('abort', onAbort);
+				this.removeListener(RPCEvents.Ready, onReady);
+				this.transport.removeListener('close', onClose);
+				reject(error);
+			}
+		};
+		void connectTransport();
 
 		return promise;
 	}
