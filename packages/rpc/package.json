@@ -47,10 +47,11 @@
 		"provenance": true
 	},
 	"scripts": {
+		"test": "vitest run --config ../../vitest.config.ts",
 		"build": "tsc --noEmit && tsup",
 		"build:docs": "tsc -p tsconfig.docs.json",
-		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
-		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions",
+		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src __tests__",
+		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src __tests__ --fix --fix-suggestions",
 		"fmt": "pnpm run format",
 		"docs": "pnpm run build:docs && api-extractor run --local --minify && generate-split-documentation",
 		"prepack": "pnpm run build && pnpm run lint",
