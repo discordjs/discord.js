@@ -5,7 +5,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [
-		dts(),
+		dts({ entryRoot: './src/lib' }),
 		react(),
 		Unocss({
 			content: { pipeline: { include: ['.storybook/preview.ts'] } },

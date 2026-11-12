@@ -45,7 +45,7 @@
 		"provenance": true
 	},
 	"scripts": {
-		"build": "tsc --noEmit && vite build",
+		"build": "tsc && vite build",
 		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
 		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions",
 		"prepack": "pnpm run build && pnpm run lint",

@@ -40,7 +40,6 @@
 	],
 	"type": "module",
 	"main": "./dist/src/index.js",
-	"module": "./dist/src/index.mjs",
 	"types": "./dist/src/index.d.ts",
 	"exports": {
 		".": {
