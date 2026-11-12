@@ -56,8 +56,9 @@
     "provenance": true
   },
   "scripts": {
-    "test": "pnpm run test:source-policies && pnpm run docs:test && pnpm run test:typescript",
+    "test": "pnpm run test:source-policies && pnpm run test:sweepers && pnpm run docs:test && pnpm run test:typescript",
     "test:source-policies": "node --test scripts/oxlint-plugin.test.mjs",
+    "test:sweepers": "node --test test/sweepers.test.js",
     "test:typescript": "tsc --noEmit && tsd",
     "lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json scripts src typings",
     "format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json scripts src typings --fix --fix-suggestions",

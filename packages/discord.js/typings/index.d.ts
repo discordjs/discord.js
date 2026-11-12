@@ -6152,9 +6152,9 @@ export interface AttachmentPayload {
   waveform?: string;
 }
 
-export type GlobalSweepFilter<Key, Value> = () =>
-  | ((value: Value, key: Key, collection: Collection<Key, Value>) => boolean)
-  | null;
+export type GlobalSweepFilter<Key, Value> = () => Awaitable<
+  ((value: Value, key: Key, collection: Collection<Key, Value>) => boolean) | null
+>;
 
 export interface GuildAuditLogsTypes {
   [AuditLogEvent.GuildUpdate]: ['Guild', 'Update'];

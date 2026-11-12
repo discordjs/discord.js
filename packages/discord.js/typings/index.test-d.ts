@@ -3138,3 +3138,19 @@ declare const authorizingIntegrationOwners: AuthorizingIntegrationOwners;
   expectType<User | null>(authorizingIntegrationOwners.user);
   expectType<Snowflake | undefined>(authorizingIntegrationOwners[ApplicationIntegrationType.GuildInstall]);
 }
+
+// Sweep filters may be asynchronous
+new Client({
+  intents: [],
+  sweepers: {
+    ...Options.DefaultSweeperSettings,
+    messages: {
+      interval: 3_600,
+      filter: async () => (message: Message) => message.author.bot,
+    },
+    users: {
+      interval: 3_600,
+      filter: async () => null,
+    },
+  },
+});
