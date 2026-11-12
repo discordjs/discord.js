@@ -30,7 +30,7 @@
 	],
 	"type": "module",
 	"sideEffects": false,
-	"module": "./dist/index.js",
+	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
