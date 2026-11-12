@@ -1,7 +1,6 @@
-'use strict';
-
-const { token, owner } = require('./auth.js');
-const { Client, Events, codeBlock, GatewayIntentBits } = require('../src/index.js');
+import { inspect } from 'node:util';
+import { Client, Events, codeBlock, GatewayIntentBits } from '../src/index.js';
+import { token, owner } from './auth.js';
 
 const client = new Client({
   intents: GatewayIntentBits.Guilds | GatewayIntentBits.GuildMessages | GatewayIntentBits.GuildMessagePolls,
@@ -53,18 +52,19 @@ client.on(Events.MessageCreate, async message => {
   if (message.author.id !== owner || !message.content.startsWith(prefix)) return;
   let res;
   try {
+    // eslint-disable-next-line no-eval
     res = await eval(message.content.slice(prefix.length));
-    if (typeof res !== 'string') res = require('node:util').inspect(res);
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error(err.stack);
-    res = err.message;
+    if (typeof res !== 'string') res = inspect(res);
+  } catch (error) {
+    console.error(error.stack);
+    res = error.message;
   }
 
-  if (res.length > 2000) {
+  if (res.length > 2_000) {
     console.log(res);
     res = 'Output too long, check the console.';
   }
+
   await message.channel.send(codeBlock('js', res));
 });
 

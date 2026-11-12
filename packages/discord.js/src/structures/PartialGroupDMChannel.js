@@ -1,9 +1,7 @@
-'use strict';
-
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { PartialGroupDMMessageManager } = require('../managers/PartialGroupDMMessageManager.js');
-const { BaseChannel } = require('./BaseChannel.js');
-const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { PartialGroupDMMessageManager } from '../managers/PartialGroupDMMessageManager.js';
+import { BaseChannel } from './BaseChannel.js';
+import { TextBasedChannel } from './interfaces/TextBasedChannel.js';
 
 /**
  * Represents a Partial Group DM Channel on Discord.
@@ -11,7 +9,7 @@ const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
  * @extends {BaseChannel}
  * @implements {TextBasedChannel}
  */
-class PartialGroupDMChannel extends BaseChannel {
+export class PartialGroupDMChannel extends BaseChannel {
   constructor(client, data) {
     super(client, data);
 
@@ -142,5 +140,3 @@ TextBasedChannel.applyToClass(PartialGroupDMChannel, [
   'setRateLimitPerUser',
   'setNSFW',
 ]);
-
-exports.PartialGroupDMChannel = PartialGroupDMChannel;

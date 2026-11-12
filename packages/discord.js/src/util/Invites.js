@@ -1,9 +1,7 @@
-'use strict';
-
-const { InviteType } = require('discord-api-types/v10');
-const { BaseInvite } = require('../structures/BaseInvite.js');
-const { GroupDMInvite } = require('../structures/GroupDMInvite.js');
-const { GuildInvite } = require('../structures/GuildInvite.js');
+import { InviteType } from 'discord-api-types/v10';
+import { BaseInvite } from '../structures/BaseInvite.js';
+import { GroupDMInvite } from '../structures/GroupDMInvite.js';
+import { GuildInvite } from '../structures/GuildInvite.js';
 
 /**
  * Any invite.
@@ -24,8 +22,6 @@ const InviteTypeToClass = {
  * @returns {BaseInvite}
  * @ignore
  */
-function createInvite(client, data) {
+export function createInvite(client, data) {
   return new (InviteTypeToClass[data.type] ?? BaseInvite)(client, data);
 }
-
-exports.createInvite = createInvite;

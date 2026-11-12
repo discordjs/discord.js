@@ -31,36 +31,31 @@
 	"bin": {
 		"api-extractor": "./bin/api-extractor"
 	},
+	"type": "module",
 	"exports": {
 		".": {
-			"require": {
-				"types": "./dist/index.d.ts",
-				"default": "./dist/index.js"
-			},
-			"import": {
-				"types": "./dist/index.d.mts",
-				"default": "./dist/index.mjs"
-			}
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
 		}
 	},
 	"scripts": {
-		"build": "tsc --noEmit && tsup && pnpm run copy-files",
+		"build": "tsc && pnpm run copy-files",
 		"copy-files": "cpy \"src/schemas/*.json\" \"dist/schemas\" && cpy \"extends/*.json\" \"dist/extends\"",
 		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
 		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions"
 	},
 	"dependencies": {
 		"@discordjs/api-extractor-model": "workspace:^",
-		"@microsoft/tsdoc": "~0.16.0",
+		"@microsoft/tsdoc": "~0.17.1",
 		"@microsoft/tsdoc-config": "~0.18.1",
-		"@rushstack/node-core-library": "5.23.1",
-		"@rushstack/ts-command-line": "5.3.9",
-		"colors": "~1.4.0",
+		"@rushstack/node-core-library": "^5.23.1",
+		"@rushstack/terminal": "^0.24.2",
+		"@rushstack/ts-command-line": "^5.3.9",
 		"diff": "~8.0.4",
 		"resolve": "~1.22.12",
 		"semver": "~7.7.4",
 		"source-map": "~0.6.1",
-		"typescript": "~5.9.3"
+		"typescript": "npm:@typescript/typescript6@~6.0.2"
 	},
 	"devDependencies": {
 		"@types/node": "^24.13.3",
@@ -71,7 +66,7 @@
 		"oxfmt": "^0.74.0",
 		"oxlint": "^1.89.0",
 		"terser": "^5.51.2",
-		"tsup": "^8.5.1",
-		"turbo": "^2.10.12"
+		"turbo": "^2.10.12",
+		"typescript-native": "npm:typescript@~7.0.2"
 	}
 }

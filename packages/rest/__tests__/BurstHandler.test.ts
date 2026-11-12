@@ -1,6 +1,6 @@
 /* eslint-disable promise/prefer-await-to-then */
 import { MockAgent, Response, setGlobalDispatcher } from 'undici';
-import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
+import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor.js';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
 import { DiscordAPIError, RateLimitError, REST, BurstHandlerMajorIdKey } from '../src/index.js';
 import { BurstHandler } from '../src/lib/handlers/BurstHandler.js';

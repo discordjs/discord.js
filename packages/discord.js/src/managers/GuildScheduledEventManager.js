@@ -1,20 +1,18 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { GuildScheduledEventEntityType, Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { GuildScheduledEvent } = require('../structures/GuildScheduledEvent.js');
-const { resolveImage } = require('../util/DataResolver.js');
-const { _transformGuildScheduledEventRecurrenceRule } = require('../util/Transformers.js');
-const { CachedManager } = require('./CachedManager.js');
+import { Collection } from '@discordjs/collection';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { GuildScheduledEventEntityType, Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { GuildScheduledEvent } from '../structures/GuildScheduledEvent.js';
+import { resolveImage } from '../util/DataResolver.js';
+import { _transformGuildScheduledEventRecurrenceRule } from '../util/Transformers.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for GuildScheduledEvents and stores their cache.
  *
  * @extends {CachedManager}
  */
-class GuildScheduledEventManager extends CachedManager {
+export class GuildScheduledEventManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, GuildScheduledEvent, iterable);
 
@@ -329,5 +327,3 @@ class GuildScheduledEventManager extends CachedManager {
     );
   }
 }
-
-exports.GuildScheduledEventManager = GuildScheduledEventManager;

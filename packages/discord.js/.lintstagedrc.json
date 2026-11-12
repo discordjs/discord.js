@@ -1,8 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/lintstagedrc.schema.json",
   "*": "oxfmt --no-error-on-unmatched-pattern",
-  "{src/**,typings/**,scripts/**}.{mjs,js,ts}": [
-    "oxlint --fix --fix-suggestions",
-    "node ./scripts/checkSourcePolicies.mjs"
-  ]
+  "{src/**,typings/**,scripts/**}.{mjs,js,ts}": ["oxlint --fix --fix-suggestions"]
 }

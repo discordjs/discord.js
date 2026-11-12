@@ -1,16 +1,14 @@
 /* eslint-disable id-length */
-'use strict';
-
-const { GatewayOpcodes, ActivityType } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { Presence } = require('./Presence.js');
+import { GatewayOpcodes, ActivityType } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { Presence } from './Presence.js';
 
 /**
  * Represents the client's presence.
  *
  * @extends {Presence}
  */
-class ClientPresence extends Presence {
+export class ClientPresence extends Presence {
   constructor(client, data = {}) {
     super(client, Object.assign(data, { status: data.status ?? 'online', user: { id: null } }));
   }
@@ -85,5 +83,3 @@ class ClientPresence extends Presence {
     return data;
   }
 }
-
-exports.ClientPresence = ClientPresence;

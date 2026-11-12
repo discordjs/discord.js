@@ -83,6 +83,8 @@ export class ApiItemMetadata {
 
 	public docCommentEnhancerVisitorState: VisitorState = VisitorState.Unvisited;
 
+	public artificialDocComment: boolean = false;
+
 	public constructor(options: IApiItemMetadataOptions) {
 		const {
 			declaredReleaseTag,

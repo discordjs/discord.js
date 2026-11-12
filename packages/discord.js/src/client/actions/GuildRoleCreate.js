@@ -1,9 +1,7 @@
-'use strict';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const { Events } = require('../../util/Events.js');
-const { Action } = require('./Action.js');
-
-class GuildRoleCreateAction extends Action {
+export class GuildRoleCreateAction extends Action {
   handle(data) {
     const client = this.client;
     const guild = client.guilds.cache.get(data.guild_id);
@@ -23,5 +21,3 @@ class GuildRoleCreateAction extends Action {
     return { role };
   }
 }
-
-exports.GuildRoleCreateAction = GuildRoleCreateAction;

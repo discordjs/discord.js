@@ -1,12 +1,10 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { InteractionType, ApplicationCommandType, ComponentType } = require('discord-api-types/v10');
-const { SelectMenuTypes } = require('../util/Constants.js');
-const { PermissionsBitField } = require('../util/PermissionsBitField.js');
-const { AuthorizingIntegrationOwners } = require('./AuthorizingIntegrationOwners.js');
-const { Base } = require('./Base.js');
+import { Collection } from '@discordjs/collection';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { InteractionType, ApplicationCommandType, ComponentType } from 'discord-api-types/v10';
+import { SelectMenuTypes } from '../util/Constants.js';
+import { PermissionsBitField } from '../util/PermissionsBitField.js';
+import { AuthorizingIntegrationOwners } from './AuthorizingIntegrationOwners.js';
+import { Base } from './Base.js';
 
 /**
  * Represents an interaction.
@@ -14,7 +12,7 @@ const { Base } = require('./Base.js');
  * @extends {Base}
  * @abstract
  */
-class BaseInteraction extends Base {
+export class BaseInteraction extends Base {
   constructor(client, data) {
     super(client);
 
@@ -374,5 +372,3 @@ class BaseInteraction extends Base {
     return ![InteractionType.Ping, InteractionType.ApplicationCommandAutocomplete].includes(this.type);
   }
 }
-
-exports.BaseInteraction = BaseInteraction;

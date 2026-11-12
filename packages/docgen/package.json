@@ -38,19 +38,13 @@
 		"bin/index.js",
 		"dist"
 	],
+	"type": "module",
 	"main": "./dist/src/index.js",
-	"module": "./dist/src/index.mjs",
 	"types": "./dist/src/index.d.ts",
 	"exports": {
 		".": {
-			"require": {
-				"types": "./dist/src/index.d.ts",
-				"default": "./dist/src/index.js"
-			},
-			"import": {
-				"types": "./dist/src/index.d.mts",
-				"default": "./dist/src/index.mjs"
-			}
+			"types": "./dist/src/index.d.ts",
+			"default": "./dist/src/index.js"
 		}
 	},
 	"publishConfig": {
@@ -58,7 +52,7 @@
 		"provenance": true
 	},
 	"scripts": {
-		"build": "tsup",
+		"build": "tsc",
 		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
 		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions",
 		"fmt": "pnpm run format",
@@ -77,9 +71,9 @@
 		"oxfmt": "^0.74.0",
 		"oxlint": "^1.89.0",
 		"terser": "^5.51.2",
-		"tsup": "^8.5.1",
 		"turbo": "^2.10.12",
-		"typescript": "~5.9.3"
+		"typescript": "npm:@typescript/typescript6@~6.0.2",
+		"typescript-native": "npm:typescript@~7.0.2"
 	},
 	"engines": {
 		"node": ">=24.17.0"

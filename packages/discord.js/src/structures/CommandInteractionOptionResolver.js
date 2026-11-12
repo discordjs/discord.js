@@ -1,12 +1,10 @@
-'use strict';
-
-const { ApplicationCommandOptionType } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+import { ApplicationCommandOptionType } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
 
 /**
  * A resolver for command interaction options.
  */
-class CommandInteractionOptionResolver {
+export class CommandInteractionOptionResolver {
   constructor(client, options, resolved) {
     /**
      * The client that instantiated this.
@@ -332,5 +330,3 @@ class CommandInteractionOptionResolver {
     return focusedOption;
   }
 }
-
-exports.CommandInteractionOptionResolver = CommandInteractionOptionResolver;

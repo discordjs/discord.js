@@ -1,15 +1,13 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { _transformAPIAutoModerationAction } = require('../util/Transformers.js');
-const { Base } = require('./Base.js');
+import { Collection } from '@discordjs/collection';
+import { _transformAPIAutoModerationAction } from '../util/Transformers.js';
+import { Base } from './Base.js';
 
 /**
  * Represents an auto moderation rule.
  *
  * @extends {Base}
  */
-class AutoModerationRule extends Base {
+export class AutoModerationRule extends Base {
   constructor(client, data, guild) {
     super(client);
 
@@ -313,5 +311,3 @@ class AutoModerationRule extends Base {
     return this.edit({ exemptChannels, reason });
   }
 }
-
-exports.AutoModerationRule = AutoModerationRule;

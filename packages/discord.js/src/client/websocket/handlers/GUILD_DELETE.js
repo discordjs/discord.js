@@ -1,8 +1,6 @@
-'use strict';
+import { Events } from '../../../util/Events.js';
 
-const { Events } = require('../../../util/Events.js');
-
-module.exports = (client, { d: data }) => {
+export default (client, { d: data }) => {
   const guild = client.guilds.cache.get(data.id);
   if (!guild) return;
 

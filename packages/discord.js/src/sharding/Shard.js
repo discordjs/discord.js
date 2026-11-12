@@ -1,15 +1,13 @@
 /* eslint-disable promise/prefer-await-to-callbacks, promise/prefer-await-to-then, no-use-before-define */
-'use strict';
-
-const path = require('node:path');
-const process = require('node:process');
-const { setTimeout, clearTimeout } = require('node:timers');
-const { setTimeout: sleep } = require('node:timers/promises');
-const { SHARE_ENV } = require('node:worker_threads');
-const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { ShardEvents } = require('../util/ShardEvents.js');
-const { makeError, makePlainError } = require('../util/Util.js');
+import path from 'node:path';
+import process from 'node:process';
+import { setTimeout, clearTimeout } from 'node:timers';
+import { setTimeout as sleep } from 'node:timers/promises';
+import { SHARE_ENV } from 'node:worker_threads';
+import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { ShardEvents } from '../util/ShardEvents.js';
+import { makeError, makePlainError } from '../util/Util.js';
 
 let childProcess = null;
 let Worker = null;
@@ -21,16 +19,16 @@ let Worker = null;
  *
  * @extends {AsyncEventEmitter}
  */
-class Shard extends AsyncEventEmitter {
+export class Shard extends AsyncEventEmitter {
   constructor(manager, id) {
     super();
 
     switch (manager.mode) {
       case 'process':
-        childProcess = require('node:child_process');
+        childProcess = process.getBuiltinModule('node:child_process');
         break;
       case 'worker':
-        Worker = require('node:worker_threads').Worker;
+        Worker = process.getBuiltinModule('node:worker_threads').Worker;
         break;
       default:
         throw new Error(`Invalid sharding mode in Shard ${id}`);
@@ -502,5 +500,3 @@ class Shard extends AsyncEventEmitter {
     }
   }
 }
-
-exports.Shard = Shard;

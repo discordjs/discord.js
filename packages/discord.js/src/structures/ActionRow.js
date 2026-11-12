@@ -1,14 +1,12 @@
-'use strict';
-
-const { createComponent } = require('../util/Components.js');
-const { Component } = require('./Component.js');
+import { createComponent } from '../util/Components.js';
+import { Component } from './Component.js';
 
 /**
  * Represents an action row
  *
  * @extends {Component}
  */
-class ActionRow extends Component {
+export class ActionRow extends Component {
   constructor({ components, ...data }) {
     super(data);
 
@@ -30,5 +28,3 @@ class ActionRow extends Component {
     return { ...this.data, components: this.components.map(component => component.toJSON()) };
   }
 }
-
-exports.ActionRow = ActionRow;

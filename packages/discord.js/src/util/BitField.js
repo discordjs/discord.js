@@ -1,12 +1,10 @@
 /* eslint-disable unicorn/prefer-number-properties */
-'use strict';
-
-const { DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
+import { DiscordjsRangeError, ErrorCodes } from '../errors/index.js';
 
 /**
  * Data structure that makes it easy to interact with a bitfield.
  */
-class BitField {
+export class BitField {
   /**
    * Numeric bitfield flags.
    * <info>Defined in extension classes</info>
@@ -193,5 +191,3 @@ class BitField {
     throw new DiscordjsRangeError(ErrorCodes.BitFieldInvalid, bit);
   }
 }
-
-exports.BitField = BitField;

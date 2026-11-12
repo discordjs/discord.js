@@ -1,18 +1,16 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { MessagePayload } = require('../structures/MessagePayload.js');
-const { Sticker } = require('../structures/Sticker.js');
-const { CachedManager } = require('./CachedManager.js');
+import { Collection } from '@discordjs/collection';
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { MessagePayload } from '../structures/MessagePayload.js';
+import { Sticker } from '../structures/Sticker.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for Guild Stickers and stores their cache.
  *
  * @extends {CachedManager}
  */
-class GuildStickerManager extends CachedManager {
+export class GuildStickerManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, Sticker, iterable);
 
@@ -191,5 +189,3 @@ class GuildStickerManager extends CachedManager {
     return resolvedSticker.user;
   }
 }
-
-exports.GuildStickerManager = GuildStickerManager;

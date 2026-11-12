@@ -1,7 +1,5 @@
-'use strict';
-
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { BaseManager } = require('./BaseManager.js');
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { BaseManager } from './BaseManager.js';
 
 /**
  * Manages the API methods of a data model along with a collection of instances.
@@ -9,7 +7,7 @@ const { BaseManager } = require('./BaseManager.js');
  * @extends {BaseManager}
  * @abstract
  */
-class DataManager extends BaseManager {
+export class DataManager extends BaseManager {
   constructor(client, holds) {
     super(client);
 
@@ -62,5 +60,3 @@ class DataManager extends BaseManager {
     return this.cache;
   }
 }
-
-exports.DataManager = DataManager;

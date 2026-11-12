@@ -1,14 +1,12 @@
-'use strict';
-
-const { ApplicationCommandManager } = require('./ApplicationCommandManager.js');
-const { ApplicationCommandPermissionsManager } = require('./ApplicationCommandPermissionsManager.js');
+import { ApplicationCommandManager } from './ApplicationCommandManager.js';
+import { ApplicationCommandPermissionsManager } from './ApplicationCommandPermissionsManager.js';
 
 /**
  * An extension for guild-specific application commands.
  *
  * @extends {ApplicationCommandManager}
  */
-class GuildApplicationCommandManager extends ApplicationCommandManager {
+export class GuildApplicationCommandManager extends ApplicationCommandManager {
   constructor(guild, iterable) {
     super(guild.client, iterable);
 
@@ -27,5 +25,3 @@ class GuildApplicationCommandManager extends ApplicationCommandManager {
     this.permissions = new ApplicationCommandPermissionsManager(this);
   }
 }
-
-exports.GuildApplicationCommandManager = GuildApplicationCommandManager;

@@ -1,5 +1,5 @@
-import type { VoiceConnection } from '../VoiceConnection';
-import type { AudioPlayer } from './AudioPlayer';
+import type { VoiceConnection } from '../VoiceConnection.js';
+import type { AudioPlayer } from './AudioPlayer.js';
 
 /**
  * Represents a subscription of a voice connection to an audio player, allowing

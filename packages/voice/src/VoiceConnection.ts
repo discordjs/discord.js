@@ -1,21 +1,21 @@
 import type { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
 import type { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData } from 'discord-api-types/v10';
-import type { AudioPlayer } from './audio/AudioPlayer';
-import type { PlayerSubscription } from './audio/PlayerSubscription';
-import type { JoinConfig } from './DataStore';
+import type { AudioPlayer } from './audio/AudioPlayer.js';
+import type { PlayerSubscription } from './audio/PlayerSubscription.js';
+import type { JoinConfig } from './DataStore.js';
 import {
 	getVoiceConnection,
 	createJoinVoiceChannelPayload,
 	trackVoiceConnection,
 	untrackVoiceConnection,
-} from './DataStore';
-import type { CreateVoiceConnectionOptions } from './index';
-import type { VoiceWebSocket, VoiceUDPSocket } from './networking';
-import { Networking, NetworkingStatusCode, type NetworkingState } from './networking/Networking';
-import { VoiceReceiver } from './receive/index';
-import type { DiscordGatewayAdapterImplementerMethods } from './util/adapter';
-import { noop } from './util/util';
+} from './DataStore.js';
+import type { CreateVoiceConnectionOptions } from './index.js';
+import type { VoiceWebSocket, VoiceUDPSocket } from './networking/index.js';
+import { Networking, NetworkingStatusCode, type NetworkingState } from './networking/Networking.js';
+import { VoiceReceiver } from './receive/index.js';
+import type { DiscordGatewayAdapterImplementerMethods } from './util/adapter.js';
+import { noop } from './util/util.js';
 
 /**
  * The various status codes a voice connection can hold at any one time.

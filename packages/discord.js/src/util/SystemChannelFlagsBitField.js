@@ -1,7 +1,5 @@
-'use strict';
-
-const { GuildSystemChannelFlags } = require('discord-api-types/v10');
-const { BitField } = require('./BitField.js');
+import { GuildSystemChannelFlags } from 'discord-api-types/v10';
+import { BitField } from './BitField.js';
 
 /**
  * Data structure that makes it easy to interact with a {@link Guild#systemChannelFlags} bitfield.
@@ -10,7 +8,7 @@ const { BitField } = require('./BitField.js');
  *
  * @extends {BitField}
  */
-class SystemChannelFlagsBitField extends BitField {
+export class SystemChannelFlagsBitField extends BitField {
   /**
    * Numeric system channel flags.
    *
@@ -43,5 +41,3 @@ class SystemChannelFlagsBitField extends BitField {
  *
  * @typedef {string|number|SystemChannelFlagsBitField|SystemChannelFlagsResolvable[]} SystemChannelFlagsResolvable
  */
-
-exports.SystemChannelFlagsBitField = SystemChannelFlagsBitField;

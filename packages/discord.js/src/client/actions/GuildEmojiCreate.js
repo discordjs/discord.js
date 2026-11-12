@@ -1,9 +1,7 @@
-'use strict';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const { Events } = require('../../util/Events.js');
-const { Action } = require('./Action.js');
-
-class GuildEmojiCreateAction extends Action {
+export class GuildEmojiCreateAction extends Action {
   handle(guild, createdEmoji) {
     const already = guild.emojis.cache.has(createdEmoji.id);
     const emoji = guild.emojis._add(createdEmoji);
@@ -17,5 +15,3 @@ class GuildEmojiCreateAction extends Action {
     return { emoji };
   }
 }
-
-exports.GuildEmojiCreateAction = GuildEmojiCreateAction;

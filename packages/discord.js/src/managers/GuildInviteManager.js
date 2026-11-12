@@ -1,19 +1,18 @@
-'use strict';
+import { Buffer } from 'node:buffer';
+import { Collection } from '@discordjs/collection';
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { GuildInvite } from '../structures/GuildInvite.js';
+import { resolveInviteCode, resolveInviteTargetUsersFile } from '../util/DataResolver.js';
+import { _transformAPIInviteTargetUsersJobStatus } from '../util/Transformers.js';
+import { CachedManager } from './CachedManager.js';
 
-const { Buffer } = require('node:buffer');
-const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { GuildInvite } = require('../structures/GuildInvite.js');
-const { resolveInviteCode, resolveInviteTargetUsersFile } = require('../util/DataResolver.js');
-const { _transformAPIInviteTargetUsersJobStatus } = require('../util/Transformers.js');
-const { CachedManager } = require('./CachedManager.js');
 /**
  * Manages API methods for GuildInvites and stores their cache.
  *
  * @extends {CachedManager}
  */
-class GuildInviteManager extends CachedManager {
+export class GuildInviteManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, GuildInvite, iterable);
 
@@ -319,5 +318,3 @@ class GuildInviteManager extends CachedManager {
     return _transformAPIInviteTargetUsersJobStatus(job);
   }
 }
-
-exports.GuildInviteManager = GuildInviteManager;

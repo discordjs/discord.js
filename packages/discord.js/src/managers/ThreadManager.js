@@ -1,19 +1,17 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { ThreadChannel } = require('../structures/ThreadChannel.js');
-const { MakeCacheOverrideSymbol } = require('../util/Symbols.js');
-const { CachedManager } = require('./CachedManager.js');
+import { Collection } from '@discordjs/collection';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { ThreadChannel } from '../structures/ThreadChannel.js';
+import { MakeCacheOverrideSymbol } from '../util/Symbols.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for thread-based channels and stores their cache.
  *
  * @extends {CachedManager}
  */
-class ThreadManager extends CachedManager {
+export class ThreadManager extends CachedManager {
   static [MakeCacheOverrideSymbol] = ThreadManager;
 
   constructor(channel, iterable) {
@@ -209,5 +207,3 @@ class ThreadManager extends CachedManager {
     return response;
   }
 }
-
-exports.ThreadManager = ThreadManager;

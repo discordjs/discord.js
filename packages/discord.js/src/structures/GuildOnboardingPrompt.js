@@ -1,15 +1,13 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { Base } = require('./Base.js');
-const { GuildOnboardingPromptOption } = require('./GuildOnboardingPromptOption.js');
+import { Collection } from '@discordjs/collection';
+import { Base } from './Base.js';
+import { GuildOnboardingPromptOption } from './GuildOnboardingPromptOption.js';
 
 /**
  * Represents the data of a prompt of a guilds onboarding.
  *
  * @extends {Base}
  */
-class GuildOnboardingPrompt extends Base {
+export class GuildOnboardingPrompt extends Base {
   constructor(client, data, guildId) {
     super(client);
 
@@ -84,5 +82,3 @@ class GuildOnboardingPrompt extends Base {
     return this.client.guilds.cache.get(this.guildId);
   }
 }
-
-exports.GuildOnboardingPrompt = GuildOnboardingPrompt;

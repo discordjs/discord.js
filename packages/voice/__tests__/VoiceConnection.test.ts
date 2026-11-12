@@ -337,7 +337,10 @@ describe('VoiceConnection#configureNetworking', () => {
 		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Destroyed);
 		expect(Networking.Networking).toHaveBeenCalledTimes(0);
 
-		voiceConnection.state = { status: VoiceConnectionStatus.Signalling, adapter };
+		voiceConnection.state = {
+			status: VoiceConnectionStatus.Signalling,
+			adapter,
+		};
 		voiceConnection.configureNetworking();
 		expect(Networking.Networking).toHaveBeenCalledTimes(1);
 		expect(Networking.Networking).toHaveBeenCalledWith(
@@ -433,11 +436,17 @@ describe('VoiceConnection#onNetworkingStateChange', () => {
 			{ code: Networking.NetworkingStatusCode.Ready } as any,
 			{ code: Networking.NetworkingStatusCode.Closed } as any,
 		];
-		voiceConnection['_state'] = { status: VoiceConnectionStatus.Signalling } as any;
+		voiceConnection['_state'] = {
+			status: VoiceConnectionStatus.Signalling,
+		} as any;
 		voiceConnection['onNetworkingStateChange'](call[0], call[1]);
-		voiceConnection['_state'] = { status: VoiceConnectionStatus.Disconnected } as any;
+		voiceConnection['_state'] = {
+			status: VoiceConnectionStatus.Disconnected,
+		} as any;
 		voiceConnection['onNetworkingStateChange'](call[0], call[1]);
-		voiceConnection['_state'] = { status: VoiceConnectionStatus.Destroyed } as any;
+		voiceConnection['_state'] = {
+			status: VoiceConnectionStatus.Destroyed,
+		} as any;
 		voiceConnection['onNetworkingStateChange'](call[0], call[1]);
 		expect(stateSetter).not.toHaveBeenCalled();
 	});
@@ -512,7 +521,10 @@ describe('VoiceConnection#disconnect', () => {
 		expect(voiceConnection.disconnect()).toEqual(false);
 		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Destroyed);
 
-		voiceConnection.state = { status: VoiceConnectionStatus.Signalling, adapter };
+		voiceConnection.state = {
+			status: VoiceConnectionStatus.Signalling,
+			adapter,
+		};
 		expect(voiceConnection.disconnect()).toEqual(false);
 		expect(voiceConnection.state.status).toEqual(VoiceConnectionStatus.Signalling);
 	});
@@ -652,7 +664,10 @@ describe('VoiceConnection#onSubscriptionRemoved', () => {
 		const subscription = new PlayerSubscription(voiceConnection, new AudioPlayer.AudioPlayer());
 		subscription.unsubscribe = vitest.fn();
 
-		voiceConnection.state = { ...(voiceConnection.state as VoiceConnectionSignallingState), subscription };
+		voiceConnection.state = {
+			...(voiceConnection.state as VoiceConnectionSignallingState),
+			subscription,
+		};
 		voiceConnection['onSubscriptionRemoved'](Symbol('new subscription') as any);
 		expect(voiceConnection.state).toMatchObject({
 			status: VoiceConnectionStatus.Signalling,
@@ -666,7 +681,10 @@ describe('VoiceConnection#onSubscriptionRemoved', () => {
 		const subscription = new PlayerSubscription(voiceConnection, new AudioPlayer.AudioPlayer());
 		subscription.unsubscribe = vitest.fn();
 
-		voiceConnection.state = { ...(voiceConnection.state as VoiceConnectionSignallingState), subscription };
+		voiceConnection.state = {
+			...(voiceConnection.state as VoiceConnectionSignallingState),
+			subscription,
+		};
 		voiceConnection['onSubscriptionRemoved'](subscription);
 		expect(voiceConnection.state).toEqual({
 			...voiceConnection.state,

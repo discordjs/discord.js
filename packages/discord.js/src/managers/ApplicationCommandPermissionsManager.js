@@ -1,16 +1,14 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { ApplicationCommandPermissionType, RESTJSONErrorCodes, Routes } = require('discord-api-types/v10');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { BaseManager } = require('./BaseManager.js');
+import { Collection } from '@discordjs/collection';
+import { ApplicationCommandPermissionType, RESTJSONErrorCodes, Routes } from 'discord-api-types/v10';
+import { DiscordjsError, DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { BaseManager } from './BaseManager.js';
 
 /**
  * Manages API methods for permissions of Application Commands.
  *
  * @extends {BaseManager}
  */
-class ApplicationCommandPermissionsManager extends BaseManager {
+export class ApplicationCommandPermissionsManager extends BaseManager {
   constructor(manager) {
     super(manager.client);
 
@@ -442,8 +440,6 @@ class ApplicationCommandPermissionsManager extends BaseManager {
     return { guildId, commandId };
   }
 }
-
-exports.ApplicationCommandPermissionsManager = ApplicationCommandPermissionsManager;
 
 /**
  * Data that resolves to an id used for an application command permission

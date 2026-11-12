@@ -1,4 +1,4 @@
-import type { AudioResource } from './AudioResource';
+import type { AudioResource } from './AudioResource.js';
 
 /**
  * An error emitted by an AudioPlayer. Contains an attached resource to aid with

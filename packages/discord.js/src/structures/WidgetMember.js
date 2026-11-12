@@ -1,13 +1,11 @@
-'use strict';
-
-const { Base } = require('./Base.js');
+import { Base } from './Base.js';
 
 /**
  * Represents a WidgetMember.
  *
  * @extends {Base}
  */
-class WidgetMember extends Base {
+export class WidgetMember extends Base {
   /**
    * Activity sent in a {@link WidgetMember}.
    *
@@ -110,5 +108,3 @@ class WidgetMember extends Base {
     this.activity = data.activity ?? null;
   }
 }
-
-exports.WidgetMember = WidgetMember;

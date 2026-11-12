@@ -1,14 +1,12 @@
-'use strict';
-
-const { Component } = require('./Component.js');
-const { UnfurledMediaItem } = require('./UnfurledMediaItem.js');
+import { Component } from './Component.js';
+import { UnfurledMediaItem } from './UnfurledMediaItem.js';
 
 /**
  * Represents a thumbnail component
  *
  * @extends {Component}
  */
-class ThumbnailComponent extends Component {
+export class ThumbnailComponent extends Component {
   constructor({ media, ...data }) {
     super(data);
 
@@ -50,5 +48,3 @@ class ThumbnailComponent extends Component {
     return { ...this.data, media: this.media.toJSON() };
   }
 }
-
-exports.ThumbnailComponent = ThumbnailComponent;

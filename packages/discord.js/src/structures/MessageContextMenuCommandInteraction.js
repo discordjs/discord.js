@@ -1,13 +1,11 @@
-'use strict';
-
-const { ContextMenuCommandInteraction } = require('./ContextMenuCommandInteraction.js');
+import { ContextMenuCommandInteraction } from './ContextMenuCommandInteraction.js';
 
 /**
  * Represents a message context menu interaction.
  *
  * @extends {ContextMenuCommandInteraction}
  */
-class MessageContextMenuCommandInteraction extends ContextMenuCommandInteraction {
+export class MessageContextMenuCommandInteraction extends ContextMenuCommandInteraction {
   /**
    * The message this interaction was sent from
    *
@@ -18,5 +16,3 @@ class MessageContextMenuCommandInteraction extends ContextMenuCommandInteraction
     return this.options.getMessage('message');
   }
 }
-
-exports.MessageContextMenuCommandInteraction = MessageContextMenuCommandInteraction;
