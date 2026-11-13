@@ -7,9 +7,11 @@ const { Events } = require('./Events.js');
 
 /**
  * @typedef {Function} GlobalSweepFilter
- * @returns {?Function} Return `null` to skip sweeping, otherwise a function passed to `sweep()`,
+ * @returns {?Function|Promise<?Function>} Return `null` to skip sweeping, otherwise a function passed to `sweep()`,
  * See {@link https://discord.js.org/docs/packages/collection/stable/Collection:Class#sweep Collection#sweep}
- * for the definition of this function.
+ * for the definition of this function. The result may also be returned from a promise, which allows
+ * asynchronous work (e.g. a database query) to be done before the sweep function is created.
+ * The sweep function itself must be synchronous.
  */
 
 /**
@@ -344,6 +346,7 @@ class Sweepers {
   destroy() {
     for (const key of SweeperKeys) {
       if (this.intervals[key]) clearInterval(this.intervals[key]);
+      this.intervals[key] = null;
     }
   }
 
@@ -521,12 +524,26 @@ class Sweepers {
    */
   _initInterval(intervalKey, sweepKey, opts) {
     if (opts.interval <= 0 || opts.interval === Infinity) return;
-    this.intervals[intervalKey] = setInterval(() => {
-      const sweepFn = opts.filter();
-      if (sweepFn === null) return;
-      if (typeof sweepFn !== 'function') throw new DiscordjsTypeError(ErrorCodes.SweepFilterReturn);
-      this[sweepKey](sweepFn);
+
+    // Whether a previous run is still waiting on an asynchronous filter, runs must not overlap
+    let running = false;
+
+    const interval = setInterval(async () => {
+      if (running) return;
+      running = true;
+
+      try {
+        const sweepFn = await opts.filter();
+        // The sweepers may have been destroyed while the filter was pending
+        if (this.intervals[intervalKey] !== interval || sweepFn === null) return;
+        if (typeof sweepFn !== 'function') throw new DiscordjsTypeError(ErrorCodes.SweepFilterReturn);
+        this[sweepKey](sweepFn);
+      } finally {
+        running = false;
+      }
     }, opts.interval * 1_000).unref();
+
+    this.intervals[intervalKey] = interval;
   }
 }
 
