@@ -4,7 +4,7 @@
 		<a href="https://discord.js.org"><img src="https://discord.js.org/static/logo.svg" width="546" alt="discord.js" /></a>
 	</p>
 	<p>
-		<a href="https://github.com/Davidooff/discordjs-voice-video-fork"><img src="https://img.shields.io/badge/fork-video%20receive%20%2B%20DAVE%20E2EE-5865F2?logo=github" alt="fork badge" /></a>
+		<a href="https://github.com/Davidooff/discord.js/tree/voice-video/packages/voice"><img src="https://img.shields.io/badge/fork-video%20receive%20%2B%20DAVE%20E2EE-5865F2?logo=github" alt="fork badge" /></a>
 		<img src="https://img.shields.io/badge/verified-live%20against%20Discord%20DAVE%20v1-brightgreen" alt="verified badge" />
 		<img src="https://img.shields.io/badge/base-%40discordjs%2Fvoice%20v0.19.2-blue" alt="base version" />
 	</p>
@@ -21,21 +21,21 @@ Video receive is **not documented** by Discord, and DAVE video is not implemente
 
 ## What is implemented
 
-| Area                            | Status | Notes                                                                                                   |
-| ------------------------------- | ------ | ------------------------------------------------------------------------------------------------------- |
-| Voice gateway v8 video opcodes  | ✅     | op 12 (video broadcast) with replay on join, op 15 (media sink wants), op 13 (client disconnect)        |
-| Video-capable IDENTIFY          | ✅     | `video: true` + stream descriptors are **required** or the SFU forwards nothing and never replays op 12 |
-| Codec negotiation               | ✅     | H264 / H265 / VP8 / VP9 / AV1 offered in `SELECT_PROTOCOL`                                              |
-| SSRC ↔ user mapping             | ✅     | op 12 streams + RTX SSRCs + fallback discovery via sequential allocation (audio N, video N+1, rtx N+2)  |
-| Keyframe requests               | ✅     | RTCP PLI on subscribe + every 2 s per active stream                                                     |
-| Receiver reports                | ✅     | RTCP RR every 5 s per received stream (an SFU that never hears from a sink stops forwarding to it)      |
-| RTX retransmission              | ✅     | OSN unwrap, sequence dedup, padding/probe filtering                                                     |
-| DAVE E2EE (MLS)                 | ✅     | full epoch participation, transitions, key ratchets — via `@snazzah/davey`                              |
-| DAVE audio decryption           | ✅     | verified live (real Opus speech frames)                                                                 |
-| **DAVE video decryption (AV1)** | ✅     | **verified live — the main achievement of this fork**                                                   |
-| AV1 RTP depacketizer            | ✅     | RFC 9494 / libwebrtc-compatible, sender-exact frame reconstruction                                      |
-| H264 / H265 / VP8 / VP9 decryption | ✅  | RFC 6184 / RFC 7798 (single, AP, FU; 4-byte start codes as libdave writes them) and VP8/VP9 descriptor stripping |
-| Sending video                   | ❌     | receive only                                                                                            |
+| Area                               | Status | Notes                                                                                                            |
+| ---------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------- |
+| Voice gateway v8 video opcodes     | ✅     | op 12 (video broadcast) with replay on join, op 15 (media sink wants), op 13 (client disconnect)                 |
+| Video-capable IDENTIFY             | ✅     | `video: true` + stream descriptors are **required** or the SFU forwards nothing and never replays op 12          |
+| Codec negotiation                  | ✅     | H264 / H265 / VP8 / VP9 / AV1 offered in `SELECT_PROTOCOL`                                                       |
+| SSRC ↔ user mapping                | ✅     | op 12 streams + RTX SSRCs + fallback discovery via sequential allocation (audio N, video N+1, rtx N+2)           |
+| Keyframe requests                  | ✅     | RTCP PLI on subscribe + every 2 s per active stream                                                              |
+| Receiver reports                   | ✅     | RTCP RR every 5 s per received stream (an SFU that never hears from a sink stops forwarding to it)               |
+| RTX retransmission                 | ✅     | OSN unwrap, sequence dedup, padding/probe filtering                                                              |
+| DAVE E2EE (MLS)                    | ✅     | full epoch participation, transitions, key ratchets — via `@snazzah/davey`                                       |
+| DAVE audio decryption              | ✅     | verified live (real Opus speech frames)                                                                          |
+| **DAVE video decryption (AV1)**    | ✅     | **verified live — the main achievement of this fork**                                                            |
+| AV1 RTP depacketizer               | ✅     | RFC 9494 / libwebrtc-compatible, sender-exact frame reconstruction                                               |
+| H264 / H265 / VP8 / VP9 decryption | ✅     | RFC 6184 / RFC 7798 (single, AP, FU; 4-byte start codes as libdave writes them) and VP8/VP9 descriptor stripping |
+| Sending video                      | ❌     | receive only                                                                                                     |
 
 ## Verification
 
@@ -85,11 +85,17 @@ If you concatenate RTP payloads and try to decrypt (what every naive implementat
 
 ### Installation
 
+This fork lives on the `voice-video` branch of the discord.js monorepo, so build and pack the package, then install the tarball:
+
 ```sh
-npm install Davidooff/discordjs-voice-video-fork
+git clone -b voice-video https://github.com/Davidooff/discord.js.git
+cd discord.js && pnpm install --frozen-lockfile
+cd packages/voice && pnpm run build && pnpm pack
+# in your project:
+npm install /path/to/discord.js/packages/voice/discordjs-voice-*.tgz
 ```
 
-Requires Node.js 22.12.0+; `ffmpeg` for the example/recorder.
+Requires Node.js 22.12.0+; `ffmpeg` for the example.
 
 ### Receiving video (library)
 
@@ -114,21 +120,9 @@ video.on('data', (packet) => {
 	// the final OBU is sizeless and there is no temporal delimiter.
 	//
 	// To make it decodable: prepend a temporal delimiter (0x12 0x00) and give
-	// the final OBU an explicit size — see `decodeableAv1()` in record-live.mjs.
+	// the final OBU an explicit size.
 });
 ```
-
-### Recorder harness (verified end-to-end)
-
-`record-live.mjs` in the repo root is the harness used for verification: it joins a channel with a **user token**, subscribes to whoever turns on their camera, writes decoder-ready AV1 frames to `recordings/*.obu`, converts to MP4 via ffmpeg (`-f obu`), and keeps a raw transport-decrypted packet log for analysis.
-
-```sh
-cp .env.example .env   # DISCORD_TOKEN, GUILD_ID, CHANNEL_ID
-npm run build && node record-live.mjs
-```
-
-> [!WARNING]
-> Automating a user account violates Discord's ToS; the harness exists because bots cannot see DAVE media the same way in all contexts. Use your own account and judgment. Recording people without consent may be illegal in your jurisdiction.
 
 ### Complete example
 
@@ -159,15 +153,15 @@ Tests: `__tests__/av1.test.ts` round-trips frames through a port of libwebrtc's 
 - **Codecs**: AV1 (PT 109), H264 (PT 101), H265 (PT 103), VP8 (PT 105) and VP9 (PT 107) are depacketized into the sender layout DAVE encrypted, then decrypted. Frames are assembled in RTP sequence order (retransmissions arrive out of place) and a frame with a sequence gap is dropped.
 - Screen shares may use simulcast — you receive every layer; filter by `quality`/`rid` from the `video` event.
 - The `VideoRtpPacket.payload` for DAVE frames is libdave-layout AV1, not a plain bitstream — normalize before decoding (see usage).
-- 3 unit-test failures on Node 26 are environmental only (missing `@discordjs/opus` native prebuilds; pre-existing upstream).
 
 ## Development
 
+From the monorepo root run `pnpm install --frozen-lockfile`, then in `packages/voice`:
+
 ```sh
-npm install
-npm run build     # tsc + tsup (ESM/CJS + types)
-npm test          # vitest
-npm run lint      # eslint + prettier
+pnpm run build    # tsc + tsup (ESM/CJS + types)
+pnpm run test     # vitest
+pnpm run lint     # oxfmt + oxlint
 ```
 
 ## Credits & legal
