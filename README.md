@@ -1,3 +1,8 @@
+> [!IMPORTANT]
+> **This is `discordjs-voice-video`, a fork of discord.js that adds video receive to `@discordjs/voice`.**
+> Bots can receive camera and screen-share streams in voice channels: AV1, H264, H265, VP8 and VP9, decrypted from DAVE end-to-end encryption, with NACK/RTX packet recovery and RTCP feedback.
+> All changes are in [`packages/voice`](packages/voice); see [its README](packages/voice/README.md) for usage and installation. Everything else is unchanged upstream discord.js.
+
 <div align="center">
 	<br />
 	<p>

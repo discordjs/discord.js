@@ -4,7 +4,7 @@
 		<a href="https://discord.js.org"><img src="https://discord.js.org/static/logo.svg" width="546" alt="discord.js" /></a>
 	</p>
 	<p>
-		<a href="https://github.com/Davidooff/discord.js/tree/voice-video/packages/voice"><img src="https://img.shields.io/badge/fork-video%20receive%20%2B%20DAVE%20E2EE-5865F2?logo=github" alt="fork badge" /></a>
+		<a href="https://github.com/Davidooff/discordjs-voice-video/tree/main/packages/voice"><img src="https://img.shields.io/badge/fork-video%20receive%20%2B%20DAVE%20E2EE-5865F2?logo=github" alt="fork badge" /></a>
 		<img src="https://img.shields.io/badge/verified-live%20against%20Discord%20DAVE%20v1-brightgreen" alt="verified badge" />
 		<img src="https://img.shields.io/badge/base-%40discordjs%2Fvoice%20v0.19.2-blue" alt="base version" />
 	</p>
@@ -85,14 +85,14 @@ If you concatenate RTP payloads and try to decrypt (what every naive implementat
 
 ### Installation
 
-This fork lives on the `voice-video` branch of the discord.js monorepo, so build and pack the package, then install the tarball:
+The package lives inside the discord.js monorepo, so build and pack the package, then install the tarball:
 
 ```sh
-git clone -b voice-video https://github.com/Davidooff/discord.js.git
-cd discord.js && pnpm install --frozen-lockfile
+git clone https://github.com/Davidooff/discordjs-voice-video.git
+cd discordjs-voice-video && pnpm install --frozen-lockfile
 cd packages/voice && pnpm run build && pnpm pack
 # in your project:
-npm install /path/to/discord.js/packages/voice/discordjs-voice-*.tgz
+npm install /path/to/discordjs-voice-video/packages/voice/discordjs-voice-*.tgz
 ```
 
 Requires Node.js 22.12.0+; `ffmpeg` for the example.
