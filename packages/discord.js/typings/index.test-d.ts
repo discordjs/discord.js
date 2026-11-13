@@ -205,6 +205,7 @@ import type {
   StringSelectMenuComponent,
   StringSelectMenuComponentData,
   StringSelectMenuInteraction,
+  Sweepers,
   TextBasedChannel,
   TextBasedChannelTypes,
   ThreadManager,
@@ -3154,3 +3155,8 @@ new Client({
     },
   },
 });
+
+// Built-in sweep filter factories stay synchronous
+expectType<((value: Message, key: Snowflake, collection: Collection<Snowflake, Message>) => boolean) | null>(
+  {} as ReturnType<ReturnType<typeof Sweepers.outdatedMessageSweepFilter>>,
+);
