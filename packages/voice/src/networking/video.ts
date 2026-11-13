@@ -118,6 +118,7 @@ export interface MediaSinkWantsSendPayload {
 	/**
 	 * The sink wants payload.
 	 */
+	// eslint-disable-next-line id-length
 	d: MediaSinkWantsPayload;
 	/**
 	 * The opcode (15).

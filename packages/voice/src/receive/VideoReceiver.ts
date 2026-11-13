@@ -2,15 +2,16 @@ import { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
 import type { VoiceReceivePayload } from 'discord-api-types/voice/v8';
 import { VoiceOpcodes } from 'discord-api-types/voice/v8';
-import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
-import { NetworkingStatusCode, type ConnectionData, type Networking } from '../networking/Networking';
 import { depacketizeAv1Frame, depacketizeAv1FrameNormalized } from '../networking/av1';
 import { depacketizeH264Frame } from '../networking/h264';
 import { depacketizeH265Frame } from '../networking/h265';
+import { NetworkingStatusCode, type ConnectionData, type Networking } from '../networking/Networking';
 import { createNACK, createPLI, createREMB, createReceiverReport, isRTCPPacket } from '../networking/rtcp';
 import { VideoGatewayOpcodes, type MediaSinkWantsPayload, type VoiceVideoPayload } from '../networking/video';
 import { depacketizeVp8Frame, depacketizeVp9Frame } from '../networking/vp8';
 import { RTP_VIDEO_PAYLOAD_TYPES } from '../util/constants';
+import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
+import { decryptRtpPayload, stripExtensionBody, stripRtpPadding } from './decrypt';
 import { FrameBuffer, type BufferedPacket } from './FrameBuffer';
 import {
 	VideoReceiveStream,
@@ -18,7 +19,6 @@ import {
 	type VideoReceiveStreamOptions,
 	type VideoRtpPacket,
 } from './VideoReceiveStream';
-import { decryptRtpPayload, stripExtensionBody, stripRtpPadding } from './decrypt';
 
 /**
  * Information about a single incoming video stream (simulcast layer) of a user.
@@ -124,7 +124,6 @@ export interface VideoReceiveStats {
 	 */
 	unsupported: Record<number, number>;
 }
-
 
 export interface VideoReceiver extends EventEmitter {
 	/**
@@ -426,12 +425,20 @@ export class VideoReceiver extends EventEmitter {
 			extHighestSequence: ((state.cycles << 16) | state.last) >>> 0,
 		}));
 		for (let index = 0; index < sources.length; index += 31) {
-			this.voiceConnection.state.networking.sendRTCP(createReceiverReport(senderSSRC, sources.slice(index, index + 31)));
+			this.voiceConnection.state.networking.sendRTCP(
+				createReceiverReport(senderSSRC, sources.slice(index, index + 31)),
+			);
 			this.stats.rrSent++;
 		}
 
 		if (this.rembKbps > 0) {
-			this.voiceConnection.state.networking.sendRTCP(createREMB(senderSSRC, sources.map((source) => source.ssrc), this.rembKbps * 1_000));
+			this.voiceConnection.state.networking.sendRTCP(
+				createREMB(
+					senderSSRC,
+					sources.map((source) => source.ssrc),
+					this.rembKbps * 1_000,
+				),
+			);
 			this.stats.rembSent = (this.stats.rembSent ?? 0) + 1;
 		}
 	}
@@ -690,7 +697,14 @@ export class VideoReceiver extends EventEmitter {
 			return;
 		}
 
-		this.frameBuffer(stream, mediaSSRC, userId).push({ sequence, timestamp, marker, payloadType, retransmitted, payload });
+		this.frameBuffer(stream, mediaSSRC, userId).push({
+			sequence,
+			timestamp,
+			marker,
+			payloadType,
+			retransmitted,
+			payload,
+		});
 	}
 
 	/**

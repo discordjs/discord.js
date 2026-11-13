@@ -4,7 +4,14 @@ import { createNACK } from '../src/networking/rtcp';
 import { FrameBuffer, type BufferedPacket } from '../src/receive/FrameBuffer';
 
 function packet(sequence: number, timestamp: number, marker = false): BufferedPacket {
-	return { sequence: sequence & 0xffff, timestamp, marker, payloadType: 101, retransmitted: false, payload: Buffer.from([sequence & 0xff]) };
+	return {
+		sequence: sequence & 0xffff,
+		timestamp,
+		marker,
+		payloadType: 101,
+		retransmitted: false,
+		payload: Buffer.from([sequence & 0xff]),
+	};
 }
 
 function harness(maxWaitMs = 300) {
@@ -23,7 +30,14 @@ function harness(maxWaitMs = 300) {
 describe('FrameBuffer', () => {
 	test('in-order frames after the first marker (a mid-frame join drops the partial frame)', () => {
 		const { buffer, frames } = harness();
-		for (const item of [packet(10, 1), packet(11, 1, true), packet(12, 2), packet(13, 2), packet(14, 2, true), packet(15, 3, true)])
+		for (const item of [
+			packet(10, 1),
+			packet(11, 1, true),
+			packet(12, 2),
+			packet(13, 2),
+			packet(14, 2, true),
+			packet(15, 3, true),
+		])
 			buffer.push(item);
 		expect(frames).toEqual([[12, 13, 14], [15]]);
 	});
@@ -48,10 +62,7 @@ describe('FrameBuffer', () => {
 		buffer.push(packet(6, 3, true));
 		expect(nacks).toEqual([[3]]);
 		buffer.push({ ...packet(3, 2), retransmitted: true });
-		expect(frames).toEqual([
-			[2, 3, 4, 5],
-			[6],
-		]);
+		expect(frames).toEqual([[2, 3, 4, 5], [6]]);
 	});
 
 	test('a frame that never completes is given up after maxWaitMs, the next one goes out', () => {
@@ -97,9 +108,9 @@ describe('createNACK', () => {
 		expect(nack.readUInt32BE(8)).toBe(0x01020304);
 		// 100 with 101 (bit 0) and 103 (bit 2); 117 is 17 after 100, so it starts the second entry, with 118 (bit 0).
 		expect(nack.readUInt16BE(12)).toBe(100);
-		expect(nack.readUInt16BE(14)).toBe((1 << 0) | (1 << 2));
+		expect(nack.readUInt16BE(14)).toBe(0b101);
 		expect(nack.readUInt16BE(16)).toBe(117);
-		expect(nack.readUInt16BE(18)).toBe(1 << 0);
+		expect(nack.readUInt16BE(18)).toBe(0b1);
 	});
 });
 

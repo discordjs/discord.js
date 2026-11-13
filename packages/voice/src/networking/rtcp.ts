@@ -160,7 +160,7 @@ export function createREMB(senderSsrc: number, mediaSsrcs: number[], bitrateBps:
 	// 18-bit mantissa, 6-bit exponent (libwebrtc rtcp_packet/remb.cc).
 	let exponent = 0;
 	let mantissa = Math.max(0, Math.floor(bitrateBps));
-	while (mantissa > 0x3_ffff && exponent < 63) {
+	while (mantissa > 0x3_ff_ff && exponent < 63) {
 		mantissa = Math.floor(mantissa / 2);
 		exponent++;
 	}

@@ -45,7 +45,12 @@ function packetizeH264(nals: Buffer[], maxPayload: number): Buffer[] {
 			for (let offset = 0; offset < body.length; offset += chunk) {
 				const start = offset === 0 ? 0x80 : 0;
 				const end = offset + chunk >= body.length ? 0x40 : 0;
-				out.push(Buffer.concat([Buffer.from([(header & 0xe0) | 28, start | end | (header & 0x1f)]), body.subarray(offset, offset + chunk)]));
+				out.push(
+					Buffer.concat([
+						Buffer.from([(header & 0xe0) | 28, start | end | (header & 0x1f)]),
+						body.subarray(offset, offset + chunk),
+					]),
+				);
 			}
 
 			index++;
@@ -99,7 +104,7 @@ describe('H264 depacketizer', () => {
 		expect(h264FrameIsKeyframe(frame!)).toBe(false);
 	});
 
-	test('an FU-A without its start or end fails the frame (a lost middle fragment is the receiver\'s sequence check)', () => {
+	test("an FU-A without its start or end fails the frame (a lost middle fragment is the receiver's sequence check)", () => {
 		const packets = packetizeH264([idr], 1_200);
 		expect(depacketizeH264Frame(packets.slice(1))).toBeUndefined();
 		expect(depacketizeH264Frame(packets.slice(0, -1))).toBeUndefined();
@@ -207,7 +212,12 @@ function packetizeVp8(frame: Buffer, maxPayload: number, pictureId: number): Buf
 	const out: Buffer[] = [];
 	const chunk = maxPayload - 4;
 	for (let offset = 0; offset < frame.length; offset += chunk) {
-		const descriptor = Buffer.from([0x80 | (offset === 0 ? 0x10 : 0), 0x80, 0x80 | ((pictureId >> 8) & 0x7f), pictureId & 0xff]);
+		const descriptor = Buffer.from([
+			0x80 | (offset === 0 ? 0x10 : 0),
+			0x80,
+			0x80 | ((pictureId >> 8) & 0x7f),
+			pictureId & 0xff,
+		]);
 		out.push(Buffer.concat([descriptor, frame.subarray(offset, offset + chunk)]));
 	}
 
@@ -224,7 +234,8 @@ function packetizeVp9(frame: Buffer, maxPayload: number, keyframe: boolean): Buf
 	for (let offset = 0; offset < frame.length; offset += chunk) {
 		const first = offset === 0;
 		const last = offset + chunk >= frame.length;
-		const flags = 0x80 | (keyframe ? 0 : 0x40) | (first ? 0x08 : 0) | (last ? 0x04 : 0) | (first && keyframe ? 0x02 : 0);
+		const flags =
+			0x80 | (keyframe ? 0 : 0x40) | (first ? 0x08 : 0) | (last ? 0x04 : 0) | (first && keyframe ? 0x02 : 0);
 		const parts = [Buffer.from([flags, 0x81, 0x23])];
 		if (first && keyframe) parts.push(ss);
 		parts.push(frame.subarray(offset, offset + chunk));

@@ -9,9 +9,6 @@ import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants';
 import * as secretbox from '../util/Secretbox';
 import { noop } from '../util/util';
 import { DAVESession, getMaxProtocolVersion } from './DAVESession';
-import { VoiceUDPSocket } from './VoiceUDPSocket';
-import type { BinaryWebSocketMessage } from './VoiceWebSocket';
-import { VoiceWebSocket } from './VoiceWebSocket';
 import {
 	VIDEO_CODEC_NEGOTIATION,
 	VIDEO_IDENTIFY_STREAMS,
@@ -20,6 +17,9 @@ import {
 	type VideoIdentifyData,
 	type VideoSelectProtocolData,
 } from './video';
+import { VoiceUDPSocket } from './VoiceUDPSocket';
+import type { BinaryWebSocketMessage } from './VoiceWebSocket';
+import { VoiceWebSocket } from './VoiceWebSocket';
 
 // The number of audio channels required by Discord
 const CHANNELS = 2;

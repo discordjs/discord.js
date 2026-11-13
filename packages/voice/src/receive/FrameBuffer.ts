@@ -119,8 +119,8 @@ export class FrameBuffer {
 	}
 
 	private dropThrough(sequence: number) {
-		for (const key of [...this.packets.keys()]) if (distance(key, sequence) <= 0) this.packets.delete(key);
-		for (const key of [...this.nacked.keys()]) if (distance(key, sequence) <= 0) this.nacked.delete(key);
+		for (const key of this.packets.keys()) if (distance(key, sequence) <= 0) this.packets.delete(key);
+		for (const key of this.nacked.keys()) if (distance(key, sequence) <= 0) this.nacked.delete(key);
 	}
 
 	private drain() {

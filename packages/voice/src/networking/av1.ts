@@ -25,7 +25,7 @@ export interface Av1Obu {
 const OBU_HAS_EXTENSION_MASK = 0b0000_0100;
 const OBU_HAS_SIZE_MASK = 0b0000_0010;
 
-function readLeb128(buffer: Buffer, offset: number): { next: number, value: number; } | undefined {
+function readLeb128(buffer: Buffer, offset: number): { next: number; value: number } | undefined {
 	let value = 0;
 	let shift = 0;
 	let position = offset;

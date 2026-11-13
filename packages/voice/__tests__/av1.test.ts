@@ -2,6 +2,18 @@ import { Buffer } from 'node:buffer';
 import { describe, expect, test } from 'vitest';
 import { depacketizeAv1Frame, depacketizeAv1FrameNormalized, type Av1Obu } from '../src/networking/av1';
 
+function readLeb(buf: Buffer, at: number) {
+	let value = 0;
+	let shift = 0;
+	let position0 = at;
+	for (;;) {
+		const byte = buf[position0++]!;
+		value += (byte & 0x7f) * 2 ** shift;
+		if ((byte & 0x80) === 0) return { value, next: position0 };
+		shift += 7;
+	}
+}
+
 /**
  * Emits RTP payloads for a sender-layout frame the way libwebrtc's
  * RtpPacketizerAv1 does: an aggregation header per packet, leb128 size
@@ -11,18 +23,6 @@ import { depacketizeAv1Frame, depacketizeAv1FrameNormalized, type Av1Obu } from 
 function packetizeSenderFrame(frame: Buffer, maxPayload: number): Buffer[] {
 	// Parse the sender-layout frame into OBUs (headers/sizes present except
 	// for the final sizeless OBU).
-	function readLeb(buf: Buffer, at: number) {
-		let value = 0;
-		let shift = 0;
-		let position0 = at;
-		for (;;) {
-			const byte = buf[position0++]!;
-			value += (byte & 0x7f) * 2 ** shift;
-			if ((byte & 0x80) === 0) return { value, next: position0 };
-			shift += 7;
-		}
-	}
-
 	const obus: { header: number; payload: Buffer }[] = [];
 	let position = 0;
 	while (position < frame.length) {
@@ -129,7 +129,7 @@ describe('AV1 depacketization', () => {
 
 	test('reassembles a multi-packet frame exactly', () => {
 		const frame = senderFrameFromObus([
-			{ header: 0x0a, payload: Buffer.from([...Array.from({length: 40}).keys()]) },
+			{ header: 0x0a, payload: Buffer.from([...Array.from({ length: 40 }).keys()]) },
 			{ header: 0x2a, payload: Buffer.alloc(1_500, 0x5a) },
 		]);
 		const payloads = packetizeSenderFrame(frame, 700);

@@ -10,8 +10,8 @@ import {
 	AudioPacket,
 	type AudioReceiveStreamOptions,
 } from './AudioReceiveStream';
-import { SpeakingMap } from './SpeakingMap';
 import { decryptRtpPayload } from './decrypt';
+import { SpeakingMap } from './SpeakingMap';
 import { SSRCMap } from './SSRCMap';
 
 /**

@@ -1,15 +1,14 @@
-/* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable id-length */
 import { Buffer } from 'node:buffer';
 import crypto from 'node:crypto';
 import process from 'node:process';
 import { describe, test, expect, vitest, beforeEach } from 'vitest';
-import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
 import { NetworkingStatusCode } from '../src/networking/Networking';
 import { createPLI } from '../src/networking/rtcp';
 import { VideoGatewayOpcodes } from '../src/networking/video';
-import type { VideoRtpPacket } from '../src/receive/VideoReceiveStream';
 import { VideoReceiver } from '../src/receive/VideoReceiver';
+import type { VideoRtpPacket } from '../src/receive/VideoReceiveStream';
+import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
 
 vitest.mock('../src/VoiceConnection', async (importOriginal) => {
 	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
@@ -72,7 +71,6 @@ describe('VideoReceiver', () => {
 		const vc = new VoiceConnection({} as never, {} as never);
 		sendRTCP = vitest.fn();
 		sendMediaSinkWants = vitest.fn();
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		vc.receiver = { ssrcMap: new Map() } as any;
 		vc.state = {
 			status: VoiceConnectionStatus.Ready,
@@ -185,8 +183,14 @@ describe('VideoReceiver', () => {
 		const frames: VideoRtpPacket[] = [];
 		stream.on('data', (data: VideoRtpPacket) => frames.push(data));
 
-		const send = (ssrc: number, payload: Buffer, sequence: number, timestamp: number, marker = false, payloadType = 101) =>
-			receiver.onUdpMessage(encryptPacket({ ssrc, payload, sequence, timestamp, marker, payloadType }).packet);
+		const send = (
+			ssrc: number,
+			payload: Buffer,
+			sequence: number,
+			timestamp: number,
+			marker = false,
+			payloadType = 101,
+		) => receiver.onUdpMessage(encryptPacket({ ssrc, payload, sequence, timestamp, marker, payloadType }).packet);
 		// The frame before: its marker tells the buffer where the next frame starts (itself dropped: after a mid-stream
 		// join the first frame may be partial).
 		send(VIDEO_SSRC, Buffer.from([0x41, 0x01]), 9, 1_000, true);
@@ -205,13 +209,18 @@ describe('VideoReceiver', () => {
 		send(RTX_SSRC, Buffer.from([0x00, 0x0b, 0x7c, 0x05, ...nal.subarray(4, 7)]), 500, 2_000, false, 102);
 		await nextTick();
 		expect(frames).toHaveLength(1);
-		expect(frames[0]).toMatchObject({ timestamp: 2_000, payloadType: 101, retransmitted: true, firstSequence: 10, sequence: 12 });
+		expect(frames[0]).toMatchObject({
+			timestamp: 2_000,
+			payloadType: 101,
+			retransmitted: true,
+			firstSequence: 10,
+			sequence: 12,
+		});
 		expect(frames[0]!.payload.equals(Buffer.concat([Buffer.from([0, 0, 0, 1]), nal]))).toBe(true);
 	});
 
 	test('bootstraps unmapped video SSRCs via the sequential SSRC allocation', async () => {
 		// audio ssrc 111 -> user (from opcode 5 speaking)
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(receiver.voiceConnection.receiver as any).ssrcMap.set(111, { userId: USER_ID, audioSSRC: 111 });
 
 		const listener = vitest.fn();

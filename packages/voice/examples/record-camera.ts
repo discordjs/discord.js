@@ -1,3 +1,4 @@
+import { spawn } from 'node:child_process';
 /**
  * Example: capture the camera (or screen share) stream of Discord users to an MP4 file.
  *
@@ -20,7 +21,6 @@
  */
 import { createSocket } from 'node:dgram';
 import { writeFileSync } from 'node:fs';
-import { spawn } from 'node:child_process';
 import { Client, Events, GatewayIntentBits } from 'discord.js';
 // In your own project this import would simply be `@discordjs/voice`
 // (this fork installed from git).
