@@ -1,13 +1,11 @@
-'use strict';
-
-const { Webhook } = require('./Webhook.js');
+import { Webhook } from './Webhook.js';
 
 /**
  * Represents a webhook for an Interaction
  *
  * @implements {Webhook}
  */
-class InteractionWebhook {
+export class InteractionWebhook {
   /**
    * @param {Client} client The instantiating client
    * @param {Snowflake} id The application's id
@@ -63,5 +61,3 @@ class InteractionWebhook {
 }
 
 Webhook.applyToClass(InteractionWebhook, ['sendSlackMessage', 'edit', 'delete', 'createdTimestamp', 'createdAt']);
-
-exports.InteractionWebhook = InteractionWebhook;

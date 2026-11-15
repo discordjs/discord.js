@@ -1,9 +1,7 @@
-'use strict';
-
 /**
  * Role connection metadata object for an application.
  */
-class ApplicationRoleConnectionMetadata {
+export class ApplicationRoleConnectionMetadata {
   constructor(data) {
     /**
      * The name of this metadata field
@@ -48,5 +46,3 @@ class ApplicationRoleConnectionMetadata {
     this.type = data.type;
   }
 }
-
-exports.ApplicationRoleConnectionMetadata = ApplicationRoleConnectionMetadata;

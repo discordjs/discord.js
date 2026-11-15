@@ -1,8 +1,6 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { Events } = require('../util/Events.js');
-const { Collector } = require('./interfaces/Collector.js');
+import { Collection } from '@discordjs/collection';
+import { Events } from '../util/Events.js';
+import { Collector } from './interfaces/Collector.js';
 
 /**
  * @typedef {CollectorOptions} InteractionCollectorOptions
@@ -27,7 +25,7 @@ const { Collector } = require('./interfaces/Collector.js');
  *
  * @extends {Collector}
  */
-class InteractionCollector extends Collector {
+export class InteractionCollector extends Collector {
   /**
    * @param {Client} client The client on which to collect interactions
    * @param {InteractionCollectorOptions} [options={}] The options to apply to this collector
@@ -252,5 +250,3 @@ class InteractionCollector extends Collector {
     }
   }
 }
-
-exports.InteractionCollector = InteractionCollector;

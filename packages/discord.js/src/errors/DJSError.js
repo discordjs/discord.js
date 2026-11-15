@@ -1,8 +1,6 @@
-'use strict';
-
 // Heavily inspired by node's `internal/errors` module
-const { ErrorCodes } = require('./ErrorCodes.js');
-const { Messages } = require('./Messages.js');
+import { ErrorCodes } from './ErrorCodes.js';
+import { Messages } from './Messages.js';
 
 /**
  * Extend an error of some sort into a DiscordjsError.
@@ -47,6 +45,6 @@ function message(code, args) {
   return String(...args);
 }
 
-exports.DiscordjsError = makeDiscordjsError(Error);
-exports.DiscordjsTypeError = makeDiscordjsError(TypeError);
-exports.DiscordjsRangeError = makeDiscordjsError(RangeError);
+export const DiscordjsError = makeDiscordjsError(Error);
+export const DiscordjsTypeError = makeDiscordjsError(TypeError);
+export const DiscordjsRangeError = makeDiscordjsError(RangeError);

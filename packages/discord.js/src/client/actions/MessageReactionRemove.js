@@ -1,7 +1,5 @@
-'use strict';
-
-const { Events } = require('../../util/Events.js');
-const { Action } = require('./Action.js');
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
 /*
 { user_id: 'id',
@@ -11,7 +9,7 @@ const { Action } = require('./Action.js');
      guild_id: 'id' }
 */
 
-class MessageReactionRemoveAction extends Action {
+export class MessageReactionRemoveAction extends Action {
   handle(data) {
     if (!data.emoji) return false;
 
@@ -47,5 +45,3 @@ class MessageReactionRemoveAction extends Action {
     return { message, reaction, user };
   }
 }
-
-exports.MessageReactionRemoveAction = MessageReactionRemoveAction;

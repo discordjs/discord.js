@@ -1,15 +1,13 @@
-'use strict';
-
-const { Routes } = require('discord-api-types/v10');
-const { resolveImage } = require('../util/DataResolver.js');
-const { User } = require('./User.js');
+import { Routes } from 'discord-api-types/v10';
+import { resolveImage } from '../util/DataResolver.js';
+import { User } from './User.js';
 
 /**
  * Represents the logged in client's Discord user.
  *
  * @extends {User}
  */
-class ClientUser extends User {
+export class ClientUser extends User {
   _patch(data) {
     super._patch(data);
 
@@ -217,5 +215,3 @@ class ClientUser extends User {
     return this.setPresence({ afk, shardId });
   }
 }
-
-exports.ClientUser = ClientUser;
