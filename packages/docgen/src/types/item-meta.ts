@@ -1,23 +1,10 @@
-import { /* basename, */ relative } from 'node:path';
-// import type { SourceReference } from '../index.js';
+import { relative } from 'node:path';
 import type { Meta } from '../interfaces/index.js';
 import { DocumentedItem } from './item.js';
 
-export class DocumentedItemMeta extends DocumentedItem<Meta /* | SourceReference */> {
+export class DocumentedItemMeta extends DocumentedItem<Meta> {
 	public override serializer() {
-		if (this.config.typescript) {
-			/*
-			const data = this.data as SourceReference;
-
-			return {
-				line: data.line,
-				file: basename(data.fileName),
-				path: undefined,
-				url: data.url,
-			}; */
-		}
-
-		const data = this.data as Meta;
+		const data = this.data;
 		return {
 			line: data.lineno,
 			file: data.filename,

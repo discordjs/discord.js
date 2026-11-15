@@ -1,16 +1,10 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, extname, basename, relative } from 'node:path';
 import jsdoc2md from 'jsdoc-to-markdown';
-// import { type JSONOutput, Application, TSConfigReader } from 'typedoc';
 import type { CLIOptions } from '../bin/index.js';
 import { Documentation } from './documentation.js';
 import type { RootTypes, ChildTypes, CustomDocs } from './interfaces/index.js';
 
-// export type DeclarationReflection = JSONOutput.DeclarationReflection;
-// export type SignatureReflection = JSONOutput.SignatureReflection;
-// export type SourceReference = JSONOutput.SourceReference;
-// export type ParameterReflection = JSONOutput.ParameterReflection;
-// export type LiteralType = JSONOutput.LiteralType;
 interface CustomFiles {
 	files: {
 		id?: string;
@@ -22,23 +16,11 @@ interface CustomFiles {
 	path?: string;
 }
 
-export async function build({ input, custom: customDocs, root, output, newOutput, typescript }: CLIOptions) {
-	let data: (ChildTypes & RootTypes)[] /* | DeclarationReflection[] */ = [];
-	if (typescript) {
-		/*
-		console.log('Parsing Typescript in source files...');
-		const app = await Application.bootstrap({ entryPoints: input }, [new TSConfigReader()]);
-		const project = await app.convert();
-		if (project) {
-			data = app.serializer.toObject(project).children!;
-			console.log(`${data.length} items parsed.`);
-		} */
-	} else {
-		console.log('Parsing JSDocs in source files...');
+export async function build({ input, custom: customDocs, root, output, newOutput }: CLIOptions) {
+	console.log('Parsing JSDocs in source files...');
 
-		data = jsdoc2md.getTemplateDataSync({ files: input }) as (ChildTypes & RootTypes)[];
-		console.log(`${data.length} JSDoc items parsed.`);
-	}
+	const data = jsdoc2md.getTemplateDataSync({ files: input }) as (ChildTypes | RootTypes)[];
+	console.log(`${data.length} JSDoc items parsed.`);
 
 	const custom: Record<string, CustomDocs> = {};
 	if (customDocs) {
@@ -80,7 +62,7 @@ export async function build({ input, custom: customDocs, root, output, newOutput
 	}
 
 	console.log(`Serializing documentation with format version ${Documentation.FORMAT_VERSION}...`);
-	const docs = new Documentation(data, { input, custom: customDocs, root, output, typescript }, custom);
+	const docs = new Documentation(data, { input, custom: customDocs, root, output }, custom);
 
 	if (output) {
 		console.log(`Writing to ${output}...`);

@@ -11,7 +11,6 @@ export interface CLIOptions {
 	newOutput: string;
 	output: string;
 	root: string;
-	typescript: boolean;
 }
 
 const command = createCommand()
@@ -19,8 +18,7 @@ const command = createCommand()
 	.option('-i, --input <string...>', 'Source directories to parse JSDocs in')
 	.option('-c, --custom <string>', 'Custom docs definition file to use')
 	.option('-r, --root [string]', 'Root directory of the project', '.')
-	.option('-o, --output <string>', 'Path to output file')
-	.option('--typescript', '', false);
+	.option('-o, --output <string>', 'Path to output file');
 
 const program = command.parse(process.argv);
 const options = program.opts<CLIOptions>();

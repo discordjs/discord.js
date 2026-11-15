@@ -65,7 +65,6 @@
 		"eslint-config-neon": "^0.5.4",
 		"oxfmt": "^0.74.0",
 		"oxlint": "^1.89.0",
-		"terser": "^5.51.2",
 		"turbo": "^2.10.12"
 	}
 }
