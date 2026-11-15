@@ -1,9 +1,9 @@
-'use strict';
-
-const { DefaultRestOptions, DefaultUserAgentAppendix } = require('@discordjs/rest');
-const { DefaultWebSocketManagerOptions } = require('@discordjs/ws');
-const { version } = require('../../package.json');
-const { toSnakeCase } = require('./Transformers.js');
+import { Collection } from '@discordjs/collection';
+import { DefaultRestOptions, DefaultUserAgentAppendix } from '@discordjs/rest';
+import { DefaultWebSocketManagerOptions } from '@discordjs/ws';
+import packageJson from '../../package.json' with { type: 'json' };
+import { LimitedCollection } from './LimitedCollection.js';
+import { toSnakeCase } from './Transformers.js';
 
 /**
  * @typedef {Object} CacheFactoryParams
@@ -63,10 +63,12 @@ const { toSnakeCase } = require('./Transformers.js');
  * <info>This property is optional when the key is `invites`, `messages`, or `threads` and `lifetime` is set</info>
  */
 
+const cacheEverything = () => new Collection();
+
 /**
  * Contains various utilities for client options.
  */
-class Options extends null {
+export class Options extends null {
   /**
    * The default user agent appendix.
    *
@@ -74,7 +76,7 @@ class Options extends null {
    * @memberof Options
    * @private
    */
-  static userAgentAppendix = `discord.js/${version} ${DefaultUserAgentAppendix}`.trimEnd();
+  static userAgentAppendix = `discord.js/${packageJson.version} ${DefaultUserAgentAppendix}`.trimEnd();
 
   /**
    * The default client options.
@@ -122,9 +124,6 @@ class Options extends null {
    *  });
    */
   static cacheWithLimits(settings = {}) {
-    const { Collection } = require('@discordjs/collection');
-    const { LimitedCollection } = require('./LimitedCollection.js');
-
     return ({ managerType, manager }) => {
       const setting = settings[manager.name] ?? settings[managerType.name];
       /* eslint-disable-next-line eqeqeq */
@@ -156,8 +155,7 @@ class Options extends null {
    * @returns {CacheFactory}
    */
   static cacheEverything() {
-    const { Collection } = require('@discordjs/collection');
-    return () => new Collection();
+    return cacheEverything;
   }
 
   /**
@@ -193,8 +191,6 @@ class Options extends null {
     };
   }
 }
-
-exports.Options = Options;
 
 /**
  * @external RESTOptions

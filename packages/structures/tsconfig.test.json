@@ -3,7 +3,8 @@
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
 		"noEmit": true,
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"rootDir": "."
 	},
 	"include": ["__tests__/**/*.ts"],
 	"exclude": ["node_modules"]

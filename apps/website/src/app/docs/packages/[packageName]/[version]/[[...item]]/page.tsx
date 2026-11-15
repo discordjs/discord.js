@@ -28,7 +28,8 @@ export async function generateMetadata({
 	}
 
 	const decodedItemName = decodeURIComponent(foundItem);
-	const titlePart = decodedItemName.split(':')?.[0] ?? decodedItemName;
+	const [name = decodedItemName, kind] = decodedItemName.split(':');
+	const titlePart = kind ? `${name} ${kind}` : name;
 
 	return {
 		title: `${titlePart} (${packageName} - ${version})`,

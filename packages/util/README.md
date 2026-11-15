@@ -22,7 +22,7 @@
 
 ## Installation
 
-**Node.js 22.12.0 or newer is required.**
+**Node.js 24.17.0 or newer is required.**
 
 ```sh
 npm install @discordjs/util
@@ -63,5 +63,5 @@ If you don't understand something in the documentation, you are experiencing pro
 [discord-developers]: https://discord.gg/discord-developers
 [source]: https://github.com/discordjs/discord.js/tree/main/packages/util
 [npm]: https://www.npmjs.com/package/@discordjs/util
-[related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
+[related-libs]: https://docs.discord.com/developers/developer-tools/community-resources#libraries
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md

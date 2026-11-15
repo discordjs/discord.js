@@ -2,9 +2,9 @@ import { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
 import Davey from '@snazzah/davey';
 import type { VoiceDavePrepareEpochData, VoiceDavePrepareTransitionData } from 'discord-api-types/voice/v8';
-import { SILENCE_FRAME } from '../audio/AudioPlayer';
+import { SILENCE_FRAME } from '../audio/AudioPlayer.js';
 
-interface SessionMethods {
+export interface SessionMethods {
 	canPassthrough(userId: string): boolean;
 	decrypt(userId: string, mediaType: 0 | 1, packet: Buffer): Buffer;
 	encryptOpus(packet: Buffer): Buffer;
@@ -21,7 +21,7 @@ interface SessionMethods {
 	voicePrivacyCode: string;
 }
 
-interface ProposalsResult {
+export interface ProposalsResult {
 	commit?: Buffer;
 	welcome?: Buffer;
 }
@@ -44,7 +44,7 @@ const TRANSITION_EXPIRY_PENDING_DOWNGRADE = 24;
  */
 export const DEFAULT_DECRYPTION_FAILURE_TOLERANCE = 36;
 
-interface TransitionResult {
+export interface TransitionResult {
 	success: boolean;
 	transitionId: number;
 }

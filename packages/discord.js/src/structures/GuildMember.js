@@ -1,19 +1,18 @@
-'use strict';
-
-const { PermissionFlagsBits } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { GuildMemberRoleManager } = require('../managers/GuildMemberRoleManager.js');
-const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField.js');
-const { PermissionsBitField } = require('../util/PermissionsBitField.js');
-const { Base } = require('./Base.js');
-const { VoiceState } = require('./VoiceState.js');
+import { PermissionFlagsBits } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { GuildMemberRoleManager } from '../managers/GuildMemberRoleManager.js';
+import { GuildMemberFlagsBitField } from '../util/GuildMemberFlagsBitField.js';
+import { PermissionsBitField } from '../util/PermissionsBitField.js';
+import { _transformCollectibles } from '../util/Transformers.js';
+import { Base } from './Base.js';
+import { VoiceState } from './VoiceState.js';
 
 /**
  * Represents a member of a guild on Discord.
  *
  * @extends {Base}
  */
-class GuildMember extends Base {
+export class GuildMember extends Base {
   constructor(client, data, guild) {
     super(client);
 
@@ -149,6 +148,17 @@ class GuildMember extends Base {
       };
     } else {
       this.avatarDecorationData = null;
+    }
+
+    if ('collectibles' in data) {
+      /**
+       * The member's collectibles
+       *
+       * @type {?Collectibles}
+       */
+      this.collectibles = data.collectibles ? _transformCollectibles(data.collectibles) : null;
+    } else {
+      this.collectibles ??= null;
     }
   }
 
@@ -593,13 +603,18 @@ class GuildMember extends Base {
       this.avatar === member.avatar &&
       this.banner === member.banner &&
       this.pending === member.pending &&
+      this.premiumSinceTimestamp === member.premiumSinceTimestamp &&
       this.communicationDisabledUntilTimestamp === member.communicationDisabledUntilTimestamp &&
       this.flags.bitfield === member.flags.bitfield &&
       (this._roles === member._roles ||
         (this._roles.length === member._roles.length &&
           this._roles.every((role, index) => role === member._roles[index]))) &&
       this.avatarDecorationData?.asset === member.avatarDecorationData?.asset &&
-      this.avatarDecorationData?.skuId === member.avatarDecorationData?.skuId
+      this.avatarDecorationData?.skuId === member.avatarDecorationData?.skuId &&
+      this.collectibles?.nameplate?.skuId === member.collectibles?.nameplate?.skuId &&
+      this.collectibles?.nameplate?.asset === member.collectibles?.nameplate?.asset &&
+      this.collectibles?.nameplate?.label === member.collectibles?.nameplate?.label &&
+      this.collectibles?.nameplate?.palette === member.collectibles?.nameplate?.palette
     );
   }
 
@@ -630,5 +645,3 @@ class GuildMember extends Base {
     return json;
   }
 }
-
-exports.GuildMember = GuildMember;

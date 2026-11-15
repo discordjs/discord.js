@@ -25,7 +25,7 @@
 
 ## Installation
 
-**Node.js 22.12.0 or newer is required.**
+**Node.js 24.17.0 or newer is required.**
 
 ```sh
 npm install @discordjs/core
@@ -55,7 +55,6 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 const gateway = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: GatewayIntentBits.GuildMessages | GatewayIntentBits.MessageContent,
-	fetchGatewayInformation: () => rest.get('/gateway/bot') as Promise<RESTGetAPIGatewayBotResult>,
 });
 
 // Create a client to emit relevant events.
@@ -75,7 +74,9 @@ client.on(GatewayDispatchEvents.InteractionCreate, async ({ data: interaction, a
 client.once(GatewayDispatchEvents.Ready, () => console.log('Ready!'));
 
 // Start the WebSocket connection.
-gateway.connect();
+await gateway.connect({
+	gatewayInformation: (await rest.get('/gateway/bot')) as RESTGetAPIGatewayBotResult,
+});
 ```
 
 ## Independent REST API Usage
@@ -126,5 +127,5 @@ If you don't understand something in the documentation, you are experiencing pro
 [discord-developers]: https://discord.gg/discord-developers
 [source]: https://github.com/discordjs/discord.js/tree/main/packages/core
 [npm]: https://www.npmjs.com/package/@discordjs/core
-[related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
+[related-libs]: https://docs.discord.com/developers/developer-tools/community-resources#libraries
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md

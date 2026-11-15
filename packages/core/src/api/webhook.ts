@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import { makeURLSearchParams, type RequestData, type RawFile, type REST } from '@discordjs/rest';
 import {
 	Routes,
@@ -16,6 +14,7 @@ import {
 	type RESTPostAPIWebhookWithTokenQuery,
 	type RESTPostAPIWebhookWithTokenSlackQuery,
 	type RESTPostAPIWebhookWithTokenWaitResult,
+	type RESTDeleteAPIWebhookWithTokenMessageQuery,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
@@ -136,13 +135,15 @@ export class WebhooksAPI {
 		{ wait, thread_id, with_components, files, ...body }: CreateWebhookMessageOptions,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		return this.rest.post(Routes.webhook(id, token), {
+		const response = await this.rest.post(Routes.webhook(id, token), {
 			query: makeURLSearchParams({ wait, thread_id, with_components }),
 			files,
 			body,
 			auth: false,
 			signal,
-		}) as Promise<RESTPostAPIWebhookWithTokenWaitResult | void>;
+		});
+
+		return wait ? response : undefined;
 	}
 
 	/**
@@ -259,7 +260,7 @@ export class WebhooksAPI {
 		id: Snowflake,
 		token: string,
 		messageId: Snowflake,
-		query: { thread_id?: Snowflake } = {},
+		query: RESTDeleteAPIWebhookWithTokenMessageQuery = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.webhookMessage(id, token, messageId), {

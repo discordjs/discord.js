@@ -1,41 +1,40 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { messageLink } = require('@discordjs/formatters');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const {
+import { Collection } from '@discordjs/collection';
+import { messageLink } from '@discordjs/formatters';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import {
   InteractionType,
   ChannelType,
   MessageType,
   MessageFlags,
   MessageReferenceType,
   PermissionFlagsBits,
-} = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { ReactionManager } = require('../managers/ReactionManager.js');
-const { createComponent, findComponentByCustomId } = require('../util/Components.js');
-const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants.js');
-const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
-const { PermissionsBitField } = require('../util/PermissionsBitField.js');
-const { _transformAPIMessageInteractionMetadata } = require('../util/Transformers.js');
-const { cleanContent, resolvePartialEmoji, transformResolved } = require('../util/Util.js');
-const { Attachment } = require('./Attachment.js');
-const { Base } = require('./Base.js');
-const { ClientApplication } = require('./ClientApplication.js');
-const { Embed } = require('./Embed.js');
-const { InteractionCollector } = require('./InteractionCollector.js');
-const { MessageMentions } = require('./MessageMentions.js');
-const { MessagePayload } = require('./MessagePayload.js');
-const { Poll } = require('./Poll.js');
-const { ReactionCollector } = require('./ReactionCollector.js');
-const { Sticker } = require('./Sticker.js');
+  GuildFeature,
+} from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { ReactionManager } from '../managers/ReactionManager.js';
+import { createComponent, findComponentByCustomId } from '../util/Components.js';
+import { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } from '../util/Constants.js';
+import { MessageFlagsBitField } from '../util/MessageFlagsBitField.js';
+import { PermissionsBitField } from '../util/PermissionsBitField.js';
+import { _transformAPIMessageInteractionMetadata } from '../util/Transformers.js';
+import { cleanContent, resolvePartialEmoji, transformResolved } from '../util/Util.js';
+import { Attachment } from './Attachment.js';
+import { Base } from './Base.js';
+import { ClientApplication } from './ClientApplication.js';
+import { Embed } from './Embed.js';
+import { InteractionCollector } from './InteractionCollector.js';
+import { MessageMentions } from './MessageMentions.js';
+import { MessagePayload } from './MessagePayload.js';
+import { Poll } from './Poll.js';
+import { ReactionCollector } from './ReactionCollector.js';
+import { Sticker } from './Sticker.js';
 
 /**
  * Represents a message on Discord.
  *
  * @extends {Base}
  */
-class Message extends Base {
+export class Message extends Base {
   constructor(client, data) {
     super(client);
 
@@ -421,6 +420,10 @@ class Message extends Base {
        * @property {?Snowflake} interactedMessageId
        * Id of the message that contained interactive component.
        * Present only on messages created from component interactions
+       * @property {?User} targetUser
+       * The user the command was run on. Present only on user context menu command interactions
+       * @property {?Snowflake} targetMessageId
+       * Id of the message the command was run on. Present only on message context menu command interactions
        * @property {?MessageInteractionMetadata} triggeringInteractionMetadata
        * Metadata for the interaction that was used to open the modal. Present only on modal submit interactions
        */
@@ -498,6 +501,34 @@ class Message extends Base {
       };
     } else {
       this.call ??= null;
+    }
+
+    /**
+     * The shared client theme sent with this message
+     *
+     * @typedef {Object} SharedClientTheme
+     * @property {string[]} colors The hexadecimal-encoded colors of the theme (max of 5)
+     * @property {number} gradientAngle The direction of the theme's colors (0–360)
+     * @property {number} baseMix The intensity of the theme's colors (0–100)
+     * @property {?BaseThemeType} [baseTheme] The mode of the theme
+     */
+    if (data.shared_client_theme) {
+      /**
+       * The shared client theme sent with this message
+       *
+       * @type {?SharedClientTheme}
+       */
+      this.sharedClientTheme = {
+        colors: data.shared_client_theme.colors,
+        gradientAngle: data.shared_client_theme.gradient_angle,
+        baseMix: data.shared_client_theme.base_mix,
+      };
+
+      if ('base_theme' in data.shared_client_theme) {
+        this.sharedClientTheme.baseTheme = data.shared_client_theme.base_theme;
+      }
+    } else {
+      this.sharedClientTheme ??= null;
     }
   }
 
@@ -841,6 +872,7 @@ class Message extends Base {
       this.reference?.type !== MessageReferenceType.Forward &&
       this.type === MessageType.Default &&
       !this.poll &&
+      this.guild.features.includes(GuildFeature.News) &&
       channel.viewable &&
       channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );
@@ -1171,5 +1203,3 @@ class Message extends Base {
     });
   }
 }
-
-exports.Message = Message;

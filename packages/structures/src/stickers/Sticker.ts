@@ -1,3 +1,4 @@
+import { DiscordSnowflake } from '@sapphire/snowflake';
 import {
 	CDNRoutes,
 	ImageFormat,
@@ -92,5 +93,20 @@ export class Sticker<Omitted extends keyof APISticker | '' = ''> extends Structu
 		return isIdSet(this[kData].id) && isFieldSet(this[kData], 'format_type', 'number')
 			? `${RouteBases.cdn}${CDNRoutes.sticker(this[kData].id.toString(), StickerFormatExtensionMap[this[kData].format_type] as StickerFormat)}`
 			: null;
+  }
+
+  /**
+	 * The timestamp the sticker was created at
+	 */
+	public get createdTimestamp() {
+		return isIdSet(this.id) ? DiscordSnowflake.timestampFrom(this.id) : null;
+	}
+
+	/**
+	 * The time the sticker was created at
+	 */
+	public get createdDate() {
+		const createdTimestamp = this.createdTimestamp;
+		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
 }

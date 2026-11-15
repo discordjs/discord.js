@@ -4,7 +4,7 @@
 
 import * as path from 'node:path';
 import { JsonFile } from '@rushstack/node-core-library';
-import colors from 'colors';
+import { Colorize } from '@rushstack/terminal';
 import * as ts from 'typescript';
 import type { IExtractorInvokeOptions } from './Extractor.js';
 import { ExtractorConfig } from './ExtractorConfig.js';
@@ -59,12 +59,21 @@ export class CompilerState {
 		if (!commandLine.options.skipLibCheck && extractorConfig.skipLibCheck) {
 			commandLine.options.skipLibCheck = true;
 			console.log(
-				colors.cyan(
+				Colorize.cyan(
 					'API Extractor was invoked with skipLibCheck. This is not recommended and may cause ' +
 						'incorrect type analysis.',
 				),
 			);
 		}
+
+		// Delete outDir and declarationDir to prevent TypeScript from redirecting self-package
+		// imports to source files. When these options are set, TypeScript's module resolution
+		// tries to map output .d.ts files back to their source .ts files to avoid analyzing
+		// build outputs during compilation. However, API Extractor specifically wants to analyze
+		// the .d.ts build artifacts, not the source files. Since API Extractor doesn't emit any
+		// files, these options are unnecessary and interfere with correct module resolution.
+		delete commandLine.options.outDir;
+		delete commandLine.options.declarationDir;
 
 		const inputFilePaths: string[] = commandLine.fileNames.concat(
 			extractorConfig.mainEntryPointFilePath.filePath,

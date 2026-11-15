@@ -4,7 +4,7 @@ import { BitField } from './BitField.js';
 /**
  * Data structure that makes it easy to interact with a {@link Attachment#flags} bitfield.
  */
-export class AttachmentFlagsBitField extends BitField<keyof AttachmentFlags> {
+export class AttachmentFlagsBitField extends BitField<keyof typeof AttachmentFlags> {
 	/**
 	 * Numeric attachment flags.
 	 */

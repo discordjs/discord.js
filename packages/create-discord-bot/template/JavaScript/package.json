@@ -5,23 +5,22 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"lint": "prettier --check . && eslint --ext .js,.mjs,.cjs --format=pretty src",
-		"format": "prettier --write . && eslint --ext .js,.mjs,.cjs --fix --format=pretty src",
+		"lint": "oxfmt --check && oxlint src",
+		"format": "oxfmt && oxlint src --fix --fix-suggestions",
 		"start": "node --env-file=.env src/index.js",
 		"deploy": "node --env-file=.env src/util/deploy.js"
 	},
 	"dependencies": {
-		"@discordjs/core": "^2.4.0",
-		"discord.js": "^14.25.1"
+		"@discordjs/core": "^2.6.0",
+		"discord.js": "^14.27.0"
 	},
 	"devDependencies": {
-		"eslint": "^9.39.1",
-		"eslint-config-neon": "^0.2.9",
-		"eslint-formatter-pretty": "^7.0.0",
-		"prettier": "^3.7.4",
-		"zod": "^4.1.13"
+		"eslint-config-neon": "^0.5.4",
+		"oxfmt": "^0.74.0",
+		"oxlint": "^1.89.0",
+		"zod": "^4.5.4"
 	},
 	"engines": {
-		"node": ">=22.12.0"
+		"node": ">=24.17.0"
 	}
 }

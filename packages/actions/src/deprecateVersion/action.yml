@@ -10,7 +10,7 @@ inputs:
   message:
     description: Deprecation message
     required: false
-    default: This version is deprecated. Please use a newer version.
+    # Default message lives in the command to handle empty strings.
   node-auth-token:
     description: npm authentication token
     required: true
@@ -19,7 +19,10 @@ runs:
   steps:
     - name: Deprecate version
       shell: bash
-      run: |
-        pnpm exec npm-deprecate --name "${{ inputs.version }}" --message "${{ inputs.message }}" --package "${{ inputs.package }}"
       env:
+        VERSION: ${{ inputs.version }}
+        MESSAGE: ${{ inputs.message || 'This version is deprecated. Please use a newer version.' }}
+        PACKAGE: ${{ inputs.package }}
         NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}
+      run: |
+        pnpm exec npm-deprecate --name "$VERSION" --message "$MESSAGE" --package "$PACKAGE"

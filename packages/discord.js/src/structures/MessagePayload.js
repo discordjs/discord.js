@@ -1,24 +1,20 @@
-'use strict';
-
-const { Buffer } = require('node:buffer');
-const { isJSONEncodable, lazy } = require('@discordjs/util');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
-const { resolveFile } = require('../util/DataResolver.js');
-const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
-const { findName, verifyString, resolvePartialEmoji } = require('../util/Util.js');
-
-// Fixes circular dependencies.
-const getWebhook = lazy(() => require('./Webhook.js').Webhook);
-const getUser = lazy(() => require('./User.js').User);
-const getGuildMember = lazy(() => require('./GuildMember.js').GuildMember);
-const getMessage = lazy(() => require('./Message.js').Message);
-const getMessageManager = lazy(() => require('../managers/MessageManager.js').MessageManager);
+import { Buffer } from 'node:buffer';
+import { isJSONEncodable, isRawFileEncodable } from '@discordjs/util';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { DiscordjsError, DiscordjsRangeError, ErrorCodes } from '../errors/index.js';
+import { MessageManager } from '../managers/MessageManager.js';
+import { resolveFile } from '../util/DataResolver.js';
+import { MessageFlagsBitField } from '../util/MessageFlagsBitField.js';
+import { findName, verifyString, resolvePartialEmoji } from '../util/Util.js';
+import { GuildMember } from './GuildMember.js';
+import { Message } from './Message.js';
+import { User } from './User.js';
+import { Webhook } from './Webhook.js';
 
 /**
  * Represents a message to be sent to the API.
  */
-class MessagePayload {
+export class MessagePayload {
   /**
    * @param {MessageTarget} target The target for this message to be sent to
    * @param {MessagePayloadOption} options The payload of this message
@@ -60,7 +56,7 @@ class MessagePayload {
    * @readonly
    */
   get isWebhook() {
-    return this.target instanceof getWebhook();
+    return this.target instanceof Webhook;
   }
 
   /**
@@ -70,7 +66,7 @@ class MessagePayload {
    * @readonly
    */
   get isUser() {
-    return this.target instanceof getUser() || this.target instanceof getGuildMember();
+    return this.target instanceof User || this.target instanceof GuildMember;
   }
 
   /**
@@ -80,7 +76,7 @@ class MessagePayload {
    * @readonly
    */
   get isMessage() {
-    return this.target instanceof getMessage();
+    return this.target instanceof Message;
   }
 
   /**
@@ -90,7 +86,7 @@ class MessagePayload {
    * @readonly
    */
   get isMessageManager() {
-    return this.target instanceof getMessageManager();
+    return this.target instanceof MessageManager;
   }
 
   /**
@@ -190,16 +186,24 @@ class MessagePayload {
       }
     }
 
-    const attachments = this.options.files?.map((file, index) => ({
-      id: index.toString(),
-      description: file.description,
-      title: file.title,
-      waveform: file.waveform,
-      duration_secs: file.duration,
-    }));
+    let attachments = this.options.files?.map((file, index) =>
+      isRawFileEncodable(file)
+        ? {
+            id: index.toString(),
+            ...file.toJSON(),
+          }
+        : {
+            id: index.toString(),
+            description: file.description,
+            title: file.title,
+            waveform: file.waveform,
+            duration_secs: file.duration,
+          },
+    );
 
     // Only passable during edits
     if (Array.isArray(this.options.attachments)) {
+      attachments ??= [];
       attachments.push(
         // Note how we don't check for file body encodable, since we aren't expecting file data here
         ...this.options.attachments.map(attachment => (isJSONEncodable(attachment) ? attachment.toJSON() : attachment)),
@@ -220,6 +224,18 @@ class MessagePayload {
             duration: this.options.poll.duration,
             allow_multiselect: this.options.poll.allowMultiselect,
             layout_type: this.options.poll.layoutType,
+          };
+    }
+
+    let shared_client_theme;
+    if (this.options.sharedClientTheme) {
+      shared_client_theme = isJSONEncodable(this.options.sharedClientTheme)
+        ? this.options.sharedClientTheme.toJSON()
+        : {
+            colors: this.options.sharedClientTheme.colors,
+            gradient_angle: this.options.sharedClientTheme.gradientAngle,
+            base_mix: this.options.sharedClientTheme.baseMix,
+            base_theme: this.options.sharedClientTheme.baseTheme,
           };
     }
 
@@ -245,6 +261,7 @@ class MessagePayload {
       thread_name: threadName,
       applied_tags: appliedTags,
       poll,
+      shared_client_theme,
     };
     return this;
   }
@@ -276,6 +293,8 @@ class MessagePayload {
     if (ownAttachment) {
       attachment = fileLike;
       name = findName(attachment);
+    } else if (isRawFileEncodable(fileLike)) {
+      return fileLike.getRawFile();
     } else {
       attachment = fileLike.attachment;
       name = fileLike.name ?? findName(attachment);
@@ -300,8 +319,6 @@ class MessagePayload {
     );
   }
 }
-
-exports.MessagePayload = MessagePayload;
 
 /**
  * A target for a message.

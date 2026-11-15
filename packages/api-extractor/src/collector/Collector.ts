@@ -18,7 +18,7 @@ import { TypeScriptHelpers } from '../analyzer/TypeScriptHelpers.js';
 import { TypeScriptInternals, type IGlobalVariableAnalyzer } from '../analyzer/TypeScriptInternals.js';
 import { ExtractorConfig } from '../api/ExtractorConfig.js';
 import { ExtractorMessageId } from '../api/ExtractorMessageId.js';
-import type { IConfigEntryPoint } from '../api/IConfigFile';
+import type { IConfigEntryPoint } from '../api/IConfigFile.js';
 import { ApiItemMetadata, type IApiItemMetadataOptions } from './ApiItemMetadata.js';
 import { CollectorEntity } from './CollectorEntity.js';
 import { type DeclarationMetadata, InternalDeclarationMetadata } from './DeclarationMetadata.js';
@@ -108,9 +108,10 @@ export class Collector {
 	public constructor(options: ICollectorOptions) {
 		this.packageJsonLookup = new PackageJsonLookup();
 
-		this._program = options.program;
-		this.extractorConfig = options.extractorConfig;
-		this.sourceMapper = options.sourceMapper;
+		const { program, extractorConfig, sourceMapper, messageRouter } = options;
+		this._program = program;
+		this.extractorConfig = extractorConfig;
+		this.sourceMapper = sourceMapper;
 
 		const entryPoints: IConfigEntryPoint[] = [
 			this.extractorConfig.mainEntryPointFilePath,
@@ -118,7 +119,7 @@ export class Collector {
 		];
 
 		const workingPackageEntryPoints: IWorkingPackageEntryPoint[] = entryPoints.map((entryPoint) => {
-			const sourceFile: ts.SourceFile | undefined = options.program.getSourceFile(entryPoint.filePath);
+			const sourceFile: ts.SourceFile | undefined = program.getSourceFile(entryPoint.filePath);
 
 			if (!sourceFile) {
 				throw new Error('Unable to load file: ' + entryPoint.filePath);
@@ -140,10 +141,10 @@ export class Collector {
 			entryPoints: workingPackageEntryPoints,
 		});
 
-		this.messageRouter = options.messageRouter;
+		this.messageRouter = messageRouter;
 
-		this.program = options.program;
-		this.typeChecker = options.program.getTypeChecker();
+		this.program = program;
+		this.typeChecker = program.getTypeChecker();
 		this.globalVariableAnalyzer = TypeScriptInternals.getGlobalVariableAnalyzer(this.program);
 
 		this._tsdocParser = new tsdoc.TSDocParser(this.extractorConfig.tsdocConfiguration);
@@ -342,7 +343,6 @@ export class Collector {
 
 		Sort.sortSet(this._dtsTypeReferenceDirectives);
 		Sort.sortSet(this._dtsLibReferenceDirectives);
-		// eslint-disable-next-line @typescript-eslint/require-array-sort-compare
 		this._starExportedExternalModulePaths.sort();
 	}
 
@@ -493,7 +493,7 @@ export class Collector {
 	private _createCollectorEntity(
 		astEntity: AstEntity,
 		entryPoint: IWorkingPackageEntryPoint,
-		exportName?: string | undefined,
+		exportName?: string,
 		parent?: CollectorEntity,
 	): void {
 		let entity: CollectorEntity | undefined = this._entitiesByAstEntity.get(astEntity);

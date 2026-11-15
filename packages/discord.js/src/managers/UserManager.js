@@ -1,19 +1,17 @@
-'use strict';
-
-const { ChannelType, Routes } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { GuildMember } = require('../structures/GuildMember.js');
-const { Message } = require('../structures/Message.js');
-const { ThreadMember } = require('../structures/ThreadMember.js');
-const { User } = require('../structures/User.js');
-const { CachedManager } = require('./CachedManager.js');
+import { ChannelType, Routes } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { GuildMember } from '../structures/GuildMember.js';
+import { Message } from '../structures/Message.js';
+import { ThreadMember } from '../structures/ThreadMember.js';
+import { User } from '../structures/User.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for users and stores their cache.
  *
  * @extends {CachedManager}
  */
-class UserManager extends CachedManager {
+export class UserManager extends CachedManager {
   constructor(client, iterable) {
     super(client, User, iterable);
   }
@@ -66,7 +64,14 @@ class UserManager extends CachedManager {
     }
 
     const data = await this.client.rest.post(Routes.userChannels(), { body: { recipient_id: id } });
-    return this.client.channels._add(data, null, { cache });
+    return this.client.channels._add(
+      {
+        ...data,
+        ...('recipients' in data ? { recipients: [...data.recipients, { id: this.client.user.id }] } : undefined),
+      },
+      null,
+      { cache },
+    );
   }
 
   /**
@@ -138,5 +143,3 @@ class UserManager extends CachedManager {
     return super.resolveId(user);
   }
 }
-
-exports.UserManager = UserManager;

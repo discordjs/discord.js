@@ -4,7 +4,7 @@ import { BitField } from './BitField.js';
 /**
  * Data structure that makes it easy to interact with a {@link (Channel:class).flags} bitfield.
  */
-export class ChannelFlagsBitField extends BitField<keyof ChannelFlags> {
+export class ChannelFlagsBitField extends BitField<keyof typeof ChannelFlags> {
 	/**
 	 * Numeric guild channel flags.
 	 */

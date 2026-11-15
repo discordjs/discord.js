@@ -1,36 +1,34 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ChannelType, GuildPremiumTier, Routes, GuildFeature } = require('discord-api-types/v10');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { AutoModerationRuleManager } = require('../managers/AutoModerationRuleManager.js');
-const { GuildApplicationCommandManager } = require('../managers/GuildApplicationCommandManager.js');
-const { GuildBanManager } = require('../managers/GuildBanManager.js');
-const { GuildChannelManager } = require('../managers/GuildChannelManager.js');
-const { GuildEmojiManager } = require('../managers/GuildEmojiManager.js');
-const { GuildInviteManager } = require('../managers/GuildInviteManager.js');
-const { GuildMemberManager } = require('../managers/GuildMemberManager.js');
-const { GuildScheduledEventManager } = require('../managers/GuildScheduledEventManager.js');
-const { GuildSoundboardSoundManager } = require('../managers/GuildSoundboardSoundManager.js');
-const { GuildStickerManager } = require('../managers/GuildStickerManager.js');
-const { PresenceManager } = require('../managers/PresenceManager.js');
-const { RoleManager } = require('../managers/RoleManager.js');
-const { StageInstanceManager } = require('../managers/StageInstanceManager.js');
-const { VoiceStateManager } = require('../managers/VoiceStateManager.js');
-const { resolveImage } = require('../util/DataResolver.js');
-const { SystemChannelFlagsBitField } = require('../util/SystemChannelFlagsBitField.js');
-const { _transformAPIIncidentsData } = require('../util/Transformers.js');
-const { discordSort, getSortableGroupTypes, resolvePartialEmoji } = require('../util/Util.js');
-const { AnonymousGuild } = require('./AnonymousGuild.js');
-const { GuildAuditLogs } = require('./GuildAuditLogs.js');
-const { GuildOnboarding } = require('./GuildOnboarding.js');
-const { GuildPreview } = require('./GuildPreview.js');
-const { GuildTemplate } = require('./GuildTemplate.js');
-const { Integration } = require('./Integration.js');
-const { Webhook } = require('./Webhook.js');
-const { WelcomeScreen } = require('./WelcomeScreen.js');
+import { Collection } from '@discordjs/collection';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { ChannelType, GuildPremiumTier, Routes, GuildFeature } from 'discord-api-types/v10';
+import { DiscordjsError, DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { AutoModerationRuleManager } from '../managers/AutoModerationRuleManager.js';
+import { GuildApplicationCommandManager } from '../managers/GuildApplicationCommandManager.js';
+import { GuildBanManager } from '../managers/GuildBanManager.js';
+import { GuildChannelManager } from '../managers/GuildChannelManager.js';
+import { GuildEmojiManager } from '../managers/GuildEmojiManager.js';
+import { GuildInviteManager } from '../managers/GuildInviteManager.js';
+import { GuildMemberManager } from '../managers/GuildMemberManager.js';
+import { GuildScheduledEventManager } from '../managers/GuildScheduledEventManager.js';
+import { GuildSoundboardSoundManager } from '../managers/GuildSoundboardSoundManager.js';
+import { GuildStickerManager } from '../managers/GuildStickerManager.js';
+import { PresenceManager } from '../managers/PresenceManager.js';
+import { RoleManager } from '../managers/RoleManager.js';
+import { StageInstanceManager } from '../managers/StageInstanceManager.js';
+import { VoiceStateManager } from '../managers/VoiceStateManager.js';
+import { resolveImage } from '../util/DataResolver.js';
+import { SystemChannelFlagsBitField } from '../util/SystemChannelFlagsBitField.js';
+import { _transformAPIIncidentsData } from '../util/Transformers.js';
+import { discordSort, getSortableGroupTypes, resolvePartialEmoji } from '../util/Util.js';
+import { AnonymousGuild } from './AnonymousGuild.js';
+import { GuildAuditLogs } from './GuildAuditLogs.js';
+import { GuildOnboarding } from './GuildOnboarding.js';
+import { GuildPreview } from './GuildPreview.js';
+import { GuildTemplate } from './GuildTemplate.js';
+import { Integration } from './Integration.js';
+import { Webhook } from './Webhook.js';
+import { WelcomeScreen } from './WelcomeScreen.js';
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -39,7 +37,7 @@ const { WelcomeScreen } = require('./WelcomeScreen.js');
  *
  * @extends {AnonymousGuild}
  */
-class Guild extends AnonymousGuild {
+export class Guild extends AnonymousGuild {
   constructor(client, data) {
     super(client, data, false);
 
@@ -1553,5 +1551,3 @@ class Guild extends AnonymousGuild {
     );
   }
 }
-
-exports.Guild = Guild;

@@ -1,10 +1,10 @@
 import type { Buffer } from 'node:buffer';
-import type Redis from 'ioredis/built/Redis.js';
+import type { Redis } from 'ioredis';
 import type { IRPCBroker } from '../Broker.js';
 import type { RedisBrokerOptions } from './BaseRedis.js';
 import { BaseRedisBroker, DefaultRedisBrokerOptions } from './BaseRedis.js';
 
-interface InternalPromise {
+export interface InternalPromise {
 	reject(error: any): void;
 	resolve(data: any): void;
 	timeout: NodeJS.Timeout;
@@ -74,7 +74,6 @@ export class RPCRedisBroker<TEvents extends Record<string, any[]>, TResponses ex
 		this.streamReadClient.on('messageBuffer', (channel: Buffer, message: Buffer) => {
 			const [, id] = channel.toString().split(':');
 			if (id && this.promises.has(id)) {
-				// eslint-disable-next-line @typescript-eslint/unbound-method
 				const { resolve, timeout } = this.promises.get(id)!;
 				resolve(this.options.decode(message));
 				clearTimeout(timeout);
@@ -109,7 +108,6 @@ export class RPCRedisBroker<TEvents extends Record<string, any[]>, TResponses ex
 			const timeout = setTimeout(() => reject(timedOut), timeoutDuration).unref();
 
 			this.promises.set(id!, { resolve, reject, timeout });
-			// eslint-disable-next-line promise/prefer-await-to-then
 		}).finally(() => {
 			void this.streamReadClient.unsubscribe(rpcChannel);
 			this.promises.delete(id!);

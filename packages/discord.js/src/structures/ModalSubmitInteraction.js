@@ -1,15 +1,11 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { lazy } = require('@discordjs/util');
-const { transformResolved } = require('../util/Util.js');
-const { BaseInteraction } = require('./BaseInteraction.js');
-const { InteractionWebhook } = require('./InteractionWebhook.js');
-const { ModalComponentResolver } = require('./ModalComponentResolver.js');
-const { InteractionResponses } = require('./interfaces/InteractionResponses.js');
-
-const getMessage = lazy(() => require('./Message.js').Message);
-const getAttachment = lazy(() => require('./Attachment.js').Attachment);
+import { Collection } from '@discordjs/collection';
+import { transformResolved } from '../util/Util.js';
+import { Attachment } from './Attachment.js';
+import { BaseInteraction } from './BaseInteraction.js';
+import { InteractionWebhook } from './InteractionWebhook.js';
+import { InteractionResponses } from './interfaces/InteractionResponses.js';
+import { Message } from './Message.js';
+import { ModalComponentResolver } from './ModalComponentResolver.js';
 
 /**
  * @typedef {Object} BaseModalData
@@ -35,6 +31,24 @@ const getAttachment = lazy(() => require('./Attachment.js').Attachment);
  */
 
 /**
+ * @typedef {BaseModalData} RadioGroupModalData
+ * @property {string} customId The custom id of the radio group
+ * @property {?string} value The value selected for the radio group
+ */
+
+/**
+ * @typedef {BaseModalData} CheckboxGroupModalData
+ * @property {string} customId The custom id of the checkbox group
+ * @property {string[]} values The values selected for the checkbox group
+ */
+
+/**
+ * @typedef {BaseModalData} CheckboxModalData
+ * @property {string} customId The custom id of the checkbox
+ * @property {boolean} value Whether this checkbox was selected
+ */
+
+/**
  * @typedef {BaseModalData} TextInputModalData
  * @property {string} customId The custom id of the component
  * @property {string} value The value of the component
@@ -45,7 +59,7 @@ const getAttachment = lazy(() => require('./Attachment.js').Attachment);
  */
 
 /**
- * @typedef {SelectMenuModalData|TextInputModalData|FileUploadModalData} ModalData
+ * @typedef {SelectMenuModalData|TextInputModalData|FileUploadModalData|RadioGroupModalData|CheckboxGroupModalData|CheckboxModalData} ModalData
  */
 
 /**
@@ -64,7 +78,7 @@ const getAttachment = lazy(() => require('./Attachment.js').Attachment);
  * @extends {BaseInteraction}
  * @implements {InteractionResponses}
  */
-class ModalSubmitInteraction extends BaseInteraction {
+export class ModalSubmitInteraction extends BaseInteraction {
   constructor(client, data) {
     super(client, data);
     /**
@@ -80,7 +94,7 @@ class ModalSubmitInteraction extends BaseInteraction {
        *
        * @type {?Message}
        */
-      this.message = this.channel?.messages._add(data.message) ?? new (getMessage())(this.client, data.message);
+      this.message = this.channel?.messages._add(data.message) ?? new Message(this.client, data.message);
     } else {
       this.message = null;
     }
@@ -211,7 +225,7 @@ class ModalSubmitInteraction extends BaseInteraction {
           data.attachments = new Collection();
           for (const [id, attachment] of Object.entries(attachments)) {
             if (valueSet.has(id)) {
-              data.attachments.set(id, new (getAttachment())(attachment));
+              data.attachments.set(id, new Attachment(attachment));
             }
           }
         }
@@ -252,5 +266,3 @@ class ModalSubmitInteraction extends BaseInteraction {
 }
 
 InteractionResponses.applyToClass(ModalSubmitInteraction, 'showModal');
-
-exports.ModalSubmitInteraction = ModalSubmitInteraction;

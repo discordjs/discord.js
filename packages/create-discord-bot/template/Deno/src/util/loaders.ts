@@ -1,7 +1,7 @@
 import type { PathLike } from 'node:fs';
 import { glob, stat } from 'node:fs/promises';
-import { basename, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import type { Command } from '../commands/index.ts';
 import { predicate as commandPredicate } from '../commands/index.ts';
 import type { Event } from '../events/index.ts';
@@ -42,13 +42,15 @@ export async function loadStructures<Structure>(
 
 	// Loop through all the matching files in the directory
 	for await (const file of glob(pattern)) {
+		const url = pathToFileURL(file);
+
 		// If the file is index.ts, skip the file
-		if (basename(file) === 'index.ts') {
+		if (url.pathname.endsWith('/index.ts')) {
 			continue;
 		}
 
 		// Import the structure dynamically from the file
-		const { default: structure } = await import(file);
+		const { default: structure } = await import(url.href);
 
 		// If the default export is a valid structure, add it
 		if (predicate(structure)) {

@@ -5,7 +5,7 @@ import {
 	ApplicationCommandType,
 } from 'discord-api-types/v10';
 import { z } from 'zod';
-import { localeMapPredicate, memberPermissionsPredicate } from '../../../Assertions.js';
+import { fileUploadTypesPredicate, localeMapPredicate, memberPermissionsPredicate } from '../../../Assertions.js';
 import { ApplicationCommandOptionAllowedChannelTypes } from './mixins/ApplicationCommandOptionChannelTypesMixin.js';
 
 const namePredicate = z
@@ -39,7 +39,7 @@ const channelMixinOptionPredicate = z.object({
 
 const autocompleteMixinOptionPredicate = z.object({
 	autocomplete: z.literal(true),
-	choices: z.union([z.never(), z.never().array(), z.undefined()]),
+	choices: z.array(z.any()).length(0).optional(),
 });
 
 const choiceValueStringPredicate = z.string().min(1).max(100);
@@ -77,6 +77,7 @@ export const baseBasicOptionPredicate = z.object({
 export const attachmentOptionPredicate = z.object({
 	...baseBasicOptionPredicate.shape,
 	type: z.literal(ApplicationCommandOptionType.Attachment),
+	file_types: fileUploadTypesPredicate.optional(),
 });
 
 export const booleanOptionPredicate = z.object({

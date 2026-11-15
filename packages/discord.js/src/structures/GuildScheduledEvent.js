@@ -1,16 +1,14 @@
-'use strict';
-
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { GuildScheduledEventStatus, GuildScheduledEventEntityType, RouteBases } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { Base } = require('./Base.js');
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { GuildScheduledEventStatus, GuildScheduledEventEntityType, RouteBases } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { Base } from './Base.js';
 
 /**
  * Represents a scheduled event in a {@link Guild}.
  *
  * @extends {Base}
  */
-class GuildScheduledEvent extends Base {
+export class GuildScheduledEvent extends Base {
   constructor(client, data) {
     super(client);
 
@@ -470,7 +468,7 @@ class GuildScheduledEvent extends Base {
   /**
    * Sets the new description of the guild scheduled event.
    *
-   * @param {string} description The description of the guild scheduled event
+   * @param {?string} description The description of the guild scheduled event
    * @param {string} [reason] The reason for changing the description
    * @returns {Promise<GuildScheduledEvent>}
    * @example
@@ -499,6 +497,22 @@ class GuildScheduledEvent extends Base {
    */
   async setStatus(status, reason) {
     return this.edit({ status, reason });
+  }
+
+  /**
+   * Sets the cover image of the guild scheduled event.
+   *
+   * @param {?(BufferResolvable|Base64Resolvable)} image The new cover image
+   * @param {string} [reason] The reason for changing the cover image
+   * @returns {Promise<GuildScheduledEvent>}
+   * @example
+   * // Set cover image of a guild scheduled event
+   * guildScheduledEvent.setImage('./example.png')
+   *   .then(guildScheduledEvent => console.log(`Set the cover image to: ${guildScheduledEvent.coverImageURL()}`))
+   *   .catch(console.error);
+   */
+  async setImage(image, reason) {
+    return this.edit({ image, reason });
   }
 
   /**
@@ -575,5 +589,3 @@ class GuildScheduledEvent extends Base {
     return this.status === GuildScheduledEventStatus.Scheduled;
   }
 }
-
-exports.GuildScheduledEvent = GuildScheduledEvent;

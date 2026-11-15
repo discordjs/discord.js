@@ -1,18 +1,16 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { ThreadMember } = require('../structures/ThreadMember.js');
-const { CachedManager } = require('./CachedManager.js');
+import { Collection } from '@discordjs/collection';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { ThreadMember } from '../structures/ThreadMember.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
  *
  * @extends {CachedManager}
  */
-class ThreadMemberManager extends CachedManager {
+export class ThreadMemberManager extends CachedManager {
   constructor(thread, iterable) {
     super(thread.client, ThreadMember, iterable);
 
@@ -193,5 +191,3 @@ class ThreadMemberManager extends CachedManager {
     return data.reduce((col, member) => col.set(member.user_id, this._add(member, cache)), new Collection());
   }
 }
-
-exports.ThreadMemberManager = ThreadMemberManager;

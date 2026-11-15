@@ -1,13 +1,11 @@
-'use strict';
-
-const { Base } = require('./Base.js');
+import { Base } from './Base.js';
 
 /**
  * Represents a ban in a guild on Discord.
  *
  * @extends {Base}
  */
-class GuildBan extends Base {
+export class GuildBan extends Base {
   constructor(client, data, guild) {
     super(client);
 
@@ -61,5 +59,3 @@ class GuildBan extends Base {
     return this.guild.bans.fetch({ user: this.user, cache: true, force });
   }
 }
-
-exports.GuildBan = GuildBan;

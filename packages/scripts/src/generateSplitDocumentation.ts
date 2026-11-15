@@ -151,7 +151,6 @@ function resolveCanonicalReference(
 					return canonicalReference.source as ModuleSource;
 				},
 			},
-			// eslint-disable-next-line unicorn/better-regex
 			version: apiPackage?.dependencies?.[canonicalReference.source.packageName]?.replace(/[~^]/, ''),
 		};
 	else if (
@@ -174,7 +173,6 @@ function resolveCanonicalReference(
 					return canonicalReference;
 				},
 			},
-			// eslint-disable-next-line unicorn/better-regex
 			version: apiPackage?.dependencies?.[canonicalReference.packageName ?? '']?.replace(/[~^]/, ''),
 		};
 	}
@@ -358,7 +356,10 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 
 					return {
 						kind: DocNodeKind.LinkTag,
-						text: linkText ?? foundItem?.displayName ?? resolved!.item.displayName,
+						text:
+							linkText ??
+							foundItem?.displayName ??
+							[resolved!.item.displayName, ...(resolved?.item.members?.map((mem) => mem.displayName) ?? [])].join('.'),
 						uri: resolveItemURI(foundItem ?? resolved!.item),
 						resolvedPackage: {
 							packageName: resolved?.package ?? apiItem.getAssociatedPackage()?.displayName.replace('@discordjs/', ''),
@@ -537,10 +538,14 @@ function resolveFileUrl(item: ApiDeclaredItem) {
 				sourceURL: `/docs/packages/${pkgName}/${version}/${(currentItem.parent as ApiEntryPoint).importPath}/${currentItem.displayName}:${currentItem.kind}`,
 			};
 		}
-	} else if (fileUrl?.includes('/dist/') && fileUrl.includes('/main/packages/')) {
-		const [, pkg] = fileUrl.split('/main/packages/');
+	} else if (fileUrl?.includes('/dist/') && fileUrl.includes('/packages/')) {
+		const [dir, pkg] = fileUrl.split('/packages/');
 		const pkgName = pkg!.split('/')[0];
-		const version = 'main';
+		const prefix = pkgName === 'discord.js' ? '' : '@discordjs/';
+		const version =
+			dir?.split('/').at(-1) === 'main'
+				? 'main'
+				: item.getAssociatedPackage()?.dependencies?.[`${prefix}${pkgName}`]?.replace(/[~^]/, '');
 
 		// https://github.com/discordjs/discord.js/tree/main/packages/builders/dist/index.d.ts
 		let currentItem = item;
@@ -948,7 +953,6 @@ function itemEnum(item: ApiEnum) {
 }
 
 function memberKind(member: ApiItem | null) {
-	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (member?.kind) {
 		case 'Class': {
 			const classMember = member as ApiClass;
@@ -1055,7 +1059,6 @@ export async function generateSplitDocumentation({
 			for (const entry of entries) {
 				const members = entry.members
 					.filter((item) => {
-						// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 						switch (item.kind) {
 							case ApiItemKind.Function:
 								return (item as ApiFunction).overloadIndex === 1;

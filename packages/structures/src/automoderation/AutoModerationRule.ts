@@ -55,14 +55,18 @@ export class AutoModerationRule<Omitted extends keyof APIAutoModerationRule | ''
 	}
 
 	/**
-	 * The rule {@link https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-event-types | event type}
+	 * The rule event type
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-event-types}
 	 */
 	public get eventType() {
 		return this[kData].event_type;
 	}
 
 	/**
-	 * The rule {@link https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types | trigger type}
+	 * The rule trigger type
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types}
 	 */
 	public get triggerType() {
 		return this[kData].trigger_type;

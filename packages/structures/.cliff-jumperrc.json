@@ -3,5 +3,6 @@
 	"name": "structures",
 	"org": "discordjs",
 	"packagePath": "packages/structures",
-	"identifierBase": false
+	"identifierBase": false,
+	"skipTag": true
 }

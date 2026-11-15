@@ -224,6 +224,16 @@ export function linkedRoleMention<RoleId extends Snowflake>(roleId: RoleId): `<i
 }
 
 /**
+ * Formats a game id into a game profile mention.
+ *
+ * @typeParam GameId - This is inferred by the supplied game id
+ * @param gameId - The game id to format
+ */
+export function gameProfileMention<GameId extends Snowflake>(gameId: GameId): `<@$${GameId}>` {
+	return `<@$${gameId}>`;
+}
+
+/**
  * Formats an application command name and id into an application command mention.
  *
  * @typeParam CommandId - This is inferred by the supplied command id
@@ -288,8 +298,8 @@ export function chatInputApplicationCommandMention<
 >(
 	commandId: CommandId,
 	commandName: CommandName,
-	subcommandName?: SubcommandName | undefined,
-	subcommandGroupName?: SubcommandGroupName | undefined,
+	subcommandName?: SubcommandName,
+	subcommandGroupName?: SubcommandGroupName,
 ):
 	| `</${CommandName} ${SubcommandGroupName} ${SubcommandName}:${CommandId}>`
 	| `</${CommandName} ${SubcommandName}:${CommandId}>`
@@ -520,7 +530,6 @@ export function heading<Content extends string>(content: Content, level: Heading
 export function heading<Content extends string>(content: Content, level: HeadingLevel.Three): `### ${Content}`;
 
 export function heading(content: string, level?: HeadingLevel) {
-	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (level) {
 		case HeadingLevel.Three:
 			return `### ${content}`;

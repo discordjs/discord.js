@@ -1,11 +1,9 @@
-'use strict';
-
-const isEqual = require('fast-deep-equal');
+import isEqual from 'fast-deep-equal';
 
 /**
  * Represents a component
  */
-class Component {
+export class Component {
   constructor(data) {
     /**
      * The API data associated with this component
@@ -58,5 +56,3 @@ class Component {
     return { ...this.data };
   }
 }
-
-exports.Component = Component;

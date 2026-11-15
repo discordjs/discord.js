@@ -4,6 +4,8 @@ import { getOctokit, context } from '@actions/github';
 import { $ } from 'bun';
 import type { ReleaseEntry } from './generateReleaseTree.js';
 
+const REGISTRY_CHECK_TIMEOUT_MS = 15 * 60 * 1_000;
+
 let octokit: ReturnType<typeof getOctokit> | undefined;
 
 if (process.env.GITHUB_TOKEN) {
@@ -69,7 +71,7 @@ export async function releasePackage(release: ReleaseEntry, dry: boolean, devTag
 				return;
 			}
 
-			if (performance.now() > before + 5 * 60 * 1_000) {
+			if (performance.now() > before + REGISTRY_CHECK_TIMEOUT_MS) {
 				clearInterval(interval);
 				reject(new Error(`Release for ${release.name} failed.`));
 			}
@@ -87,7 +89,6 @@ export async function releasePackage(release: ReleaseEntry, dry: boolean, devTag
 	// Evil, but I can't think of a cleaner mechanism
 	if (release.name === 'create-discord-bot') {
 		await $`pnpm --filter=create-discord-bot run rename-to-app`;
-		// eslint-disable-next-line require-atomic-updates
 		release.name = 'create-discord-app';
 		await releasePackage(release, dry, devTag, false);
 	}
