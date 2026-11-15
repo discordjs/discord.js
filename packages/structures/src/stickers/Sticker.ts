@@ -93,9 +93,9 @@ export class Sticker<Omitted extends keyof APISticker | '' = ''> extends Structu
 		return isIdSet(this[kData].id) && isFieldSet(this[kData], 'format_type', 'number')
 			? `${RouteBases.cdn}${CDNRoutes.sticker(this[kData].id.toString(), StickerFormatExtensionMap[this[kData].format_type] as StickerFormat)}`
 			: null;
-  }
+	}
 
-  /**
+	/**
 	 * The timestamp the sticker was created at
 	 */
 	public get createdTimestamp() {
