@@ -162,7 +162,9 @@ describe('State transitions', () => {
 			}
 
 			const resource = await started(new AudioResource([], [Readable.from(silence())], null, 5));
-			player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Pause } });
+			player = createAudioPlayer({
+				behaviors: { noSubscriber: NoSubscriberBehavior.Pause },
+			});
 			connection.subscribe(player);
 
 			player.play(resource);
@@ -183,7 +185,9 @@ describe('State transitions', () => {
 
 		test('NoSubscriberBehavior.Play', async () => {
 			const resource = await started(new AudioResource([], [Readable.from(silence())], null, 5));
-			player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Play } });
+			player = createAudioPlayer({
+				behaviors: { noSubscriber: NoSubscriberBehavior.Play },
+			});
 
 			player.play(resource);
 			expect(player.checkPlayable()).toEqual(true);
@@ -193,7 +197,9 @@ describe('State transitions', () => {
 
 		test('NoSubscriberBehavior.Stop', async () => {
 			const resource = await started(new AudioResource([], [Readable.from(silence())], null, 5));
-			player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Stop } });
+			player = createAudioPlayer({
+				behaviors: { noSubscriber: NoSubscriberBehavior.Stop },
+			});
 
 			player.play(resource);
 			expect(addAudioPlayer).toBeCalledTimes(1);

@@ -1,8 +1,6 @@
-'use strict';
-
-const process = require('node:process');
-const { token } = require('./auth.js');
-const { ShardingManager } = require('../src/index.js');
+import process from 'node:process';
+import { ShardingManager } from '../src/index.js';
+import { token } from './auth.js';
 
 const sharder = new ShardingManager(`${process.cwd()}/test/shard.js`, { token, respawn: false });
 

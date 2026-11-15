@@ -30,7 +30,7 @@
 	],
 	"type": "module",
 	"sideEffects": false,
-	"module": "./dist/index.js",
+	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
@@ -45,7 +45,7 @@
 		"provenance": true
 	},
 	"scripts": {
-		"build": "tsc --noEmit && vite build",
+		"build": "tsc && vite build",
 		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
 		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions",
 		"prepack": "pnpm run build && pnpm run lint",
@@ -82,10 +82,10 @@
 		"prop-types": "^15.8.1",
 		"storybook": "^10.5.10",
 		"turbo": "^2.10.12",
-		"typescript": "~5.9.3",
+		"typescript": "~7.0.2",
 		"unocss": "^66.9.2",
-		"vite": "^8.2.2",
-		"vite-plugin-dts": "^5.1.0"
+		"unplugin-dts": "^1.0.3",
+		"vite": "^8.2.2"
 	},
 	"engines": {
 		"node": ">=24.17.0"

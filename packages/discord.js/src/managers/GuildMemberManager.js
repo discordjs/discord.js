@@ -1,28 +1,26 @@
-'use strict';
-
-const { setTimeout, clearTimeout } = require('node:timers');
-const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { GatewayRateLimitError } = require('@discordjs/util');
-const { WebSocketShardEvents } = require('@discordjs/ws');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes, GatewayOpcodes, GatewayDispatchEvents } = require('discord-api-types/v10');
-const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
-const { BaseGuildVoiceChannel } = require('../structures/BaseGuildVoiceChannel.js');
-const { GuildMember } = require('../structures/GuildMember.js');
-const { Role } = require('../structures/Role.js');
-const { resolveImage } = require('../util/DataResolver.js');
-const { Events } = require('../util/Events.js');
-const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField.js');
-const { Partials } = require('../util/Partials.js');
-const { CachedManager } = require('./CachedManager.js');
+import { setTimeout, clearTimeout } from 'node:timers';
+import { Collection } from '@discordjs/collection';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { GatewayRateLimitError } from '@discordjs/util';
+import { WebSocketShardEvents } from '@discordjs/ws';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { Routes, GatewayOpcodes, GatewayDispatchEvents } from 'discord-api-types/v10';
+import { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } from '../errors/index.js';
+import { BaseGuildVoiceChannel } from '../structures/BaseGuildVoiceChannel.js';
+import { GuildMember } from '../structures/GuildMember.js';
+import { Role } from '../structures/Role.js';
+import { resolveImage } from '../util/DataResolver.js';
+import { Events } from '../util/Events.js';
+import { GuildMemberFlagsBitField } from '../util/GuildMemberFlagsBitField.js';
+import { Partials } from '../util/Partials.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
  *
  * @extends {CachedManager}
  */
-class GuildMemberManager extends CachedManager {
+export class GuildMemberManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, GuildMember, iterable);
 
@@ -618,5 +616,3 @@ class GuildMemberManager extends CachedManager {
     await this.client.rest.delete(Routes.guildMemberRole(this.guild.id, userId, roleId), { reason });
   }
 }
-
-exports.GuildMemberManager = GuildMemberManager;

@@ -1,11 +1,9 @@
-'use strict';
-
-const assert = require('node:assert/strict');
-const { EventEmitter } = require('node:events');
-const { setTimeout: sleep } = require('node:timers/promises');
-const { describe, it, mock } = require('node:test');
-const { Collection } = require('@discordjs/collection');
-const { Sweepers } = require('../src/util/Sweepers.js');
+import assert from 'node:assert/strict';
+import { EventEmitter } from 'node:events';
+import { describe, it, mock } from 'node:test';
+import { setTimeout as sleep } from 'node:timers/promises';
+import { Collection } from '@discordjs/collection';
+import { Sweepers } from '../src/util/Sweepers.js';
 
 // Sweeper intervals are given in seconds, this keeps the tests fast
 const INTERVAL = 0.01;
@@ -102,5 +100,29 @@ describe('Sweepers with asynchronous filters', () => {
 
     assert.equal(client.users.cache.size, 3);
     assert.equal(sweepers.intervals.users, null);
+  });
+
+  it('reports a rejected filter as a client error and keeps sweeping', async () => {
+    const client = createClient();
+    const errors = [];
+    client.on('error', error => errors.push(error));
+    const failure = new Error('database unavailable');
+    let calls = 0;
+    const sweepers = new Sweepers(client, {
+      users: {
+        interval: INTERVAL,
+        async filter() {
+          calls++;
+          if (calls === 1) throw failure;
+          return () => true;
+        },
+      },
+    });
+
+    await sleep(WAIT);
+    sweepers.destroy();
+
+    assert.deepEqual(errors, [failure]);
+    assert.equal(client.users.cache.size, 0);
   });
 });

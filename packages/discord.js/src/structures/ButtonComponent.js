@@ -1,13 +1,11 @@
-'use strict';
-
-const { Component } = require('./Component.js');
+import { Component } from './Component.js';
 
 /**
  * Represents a button component
  *
  * @extends {Component}
  */
-class ButtonComponent extends Component {
+export class ButtonComponent extends Component {
   /**
    * The style of this button
    *
@@ -68,5 +66,3 @@ class ButtonComponent extends Component {
     return this.data.url ?? null;
   }
 }
-
-exports.ButtonComponent = ButtonComponent;

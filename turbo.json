@@ -6,13 +6,13 @@
 	"globalDependencies": [
 		"oxfmt.config.ts",
 		"oxlint.config.ts",
-		"packages/discord.js/scripts/oxlint-plugin.mjs",
-		"tsconfig.json"
+		"packages/discord.js/scripts/oxlint-plugin.js",
+		"tsconfig.base.json"
 	],
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
-			"inputs": ["bin/**", "src/**", "scripts/**", "package.json", "tsconfig.json", "tsup.config.ts", "vite.config.ts"],
+			"inputs": ["bin/**", "src/**", "scripts/**", "package.json", "tsconfig.json", "vite.config.ts"],
 			"outputs": ["dist/**"],
 			"outputLogs": "errors-only"
 		},
@@ -106,10 +106,17 @@
 				"scripts/**",
 				"package.json",
 				"tsconfig.json",
+				"tsconfig.test.json",
 				"vitest.config.ts"
 			],
 			"outputs": ["coverage/**"],
 			"outputLogs": "new-only"
+		},
+		"discord.js#test": {
+			"dependsOn": ["^build"],
+			"inputs": ["src/**", "typings/**", "package.json", "tsconfig.json"],
+			"outputs": [],
+			"outputLogs": "full"
 		},
 		"lint": {
 			"dependsOn": ["^build"],

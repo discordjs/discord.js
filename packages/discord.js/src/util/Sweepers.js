@@ -1,9 +1,7 @@
-'use strict';
-
-const { setInterval, clearInterval } = require('node:timers');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { ThreadChannelTypes, SweeperKeys } = require('./Constants.js');
-const { Events } = require('./Events.js');
+import { setInterval, clearInterval } from 'node:timers';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { ThreadChannelTypes, SweeperKeys } from './Constants.js';
+import { Events } from './Events.js';
 
 /**
  * @typedef {Function} GlobalSweepFilter
@@ -17,7 +15,7 @@ const { Events } = require('./Events.js');
 /**
  * A container for all cache sweeping intervals and their associated sweep methods.
  */
-class Sweepers {
+export class Sweepers {
   constructor(client, options) {
     /**
      * The client that instantiated this
@@ -538,6 +536,8 @@ class Sweepers {
         if (this.intervals[intervalKey] !== interval || sweepFn === null) return;
         if (typeof sweepFn !== 'function') throw new DiscordjsTypeError(ErrorCodes.SweepFilterReturn);
         this[sweepKey](sweepFn);
+      } catch (error) {
+        this.client.emit(Events.Error, error);
       } finally {
         running = false;
       }
@@ -546,5 +546,3 @@ class Sweepers {
     this.intervals[intervalKey] = interval;
   }
 }
-
-exports.Sweepers = Sweepers;

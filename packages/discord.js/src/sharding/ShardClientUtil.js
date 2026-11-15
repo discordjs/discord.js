@@ -1,18 +1,16 @@
 /* eslint-disable promise/prefer-await-to-callbacks, promise/prefer-await-to-then */
-'use strict';
-
-const process = require('node:process');
-const { calculateShardId } = require('@discordjs/util');
-const { WebSocketShardEvents } = require('@discordjs/ws');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { Events } = require('../util/Events.js');
-const { makeError, makePlainError } = require('../util/Util.js');
+import process from 'node:process';
+import { calculateShardId } from '@discordjs/util';
+import { WebSocketShardEvents } from '@discordjs/ws';
+import { DiscordjsError, DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { Events } from '../util/Events.js';
+import { makeError, makePlainError } from '../util/Util.js';
 
 /**
  * Helper class for sharded clients spawned as a child process/worker, such as from a {@link ShardingManager}.
  * Utilizes IPC to send and receive data to/from the master process and other shards.
  */
-class ShardClientUtil {
+export class ShardClientUtil {
   constructor(client, mode) {
     /**
      * Client for the shard
@@ -49,7 +47,7 @@ class ShardClientUtil {
         });
         break;
       case 'worker':
-        this.parentPort = require('node:worker_threads').parentPort;
+        this.parentPort = process.getBuiltinModule('node:worker_threads').parentPort;
         this.parentPort.on('message', this._handleMessage.bind(this));
         client.on(Events.ClientReady, () => {
           this.parentPort.postMessage({ _ready: true });
@@ -288,5 +286,3 @@ class ShardClientUtil {
     }
   }
 }
-
-exports.ShardClientUtil = ShardClientUtil;

@@ -35,39 +35,22 @@
 	"files": [
 		"dist"
 	],
+	"type": "module",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
 			"node": {
-				"require": {
-					"types": "./dist/index.d.ts",
-					"default": "./dist/index.js"
-				},
-				"import": {
-					"types": "./dist/index.d.mts",
-					"default": "./dist/index.mjs"
-				}
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
 			},
 			"default": {
-				"require": {
-					"types": "./dist/web.d.ts",
-					"default": "./dist/web.js"
-				},
-				"import": {
-					"types": "./dist/web.d.mts",
-					"default": "./dist/web.mjs"
-				}
+				"types": "./dist/web.d.ts",
+				"default": "./dist/web.js"
 			}
 		},
 		"./*": {
-			"require": {
-				"types": "./dist/strategies/*.d.ts",
-				"default": "./dist/strategies/*.js"
-			},
-			"import": {
-				"types": "./dist/strategies/*.d.mts",
-				"default": "./dist/strategies/*.mjs"
-			}
+			"types": "./dist/strategies/*.d.ts",
+			"default": "./dist/strategies/*.js"
 		}
 	},
 	"publishConfig": {
@@ -76,7 +59,7 @@
 	},
 	"scripts": {
 		"test": "vitest run",
-		"build": "tsc --noEmit && tsup",
+		"build": "tsc && inject-version",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src __tests__",
 		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src __tests__ --fix --fix-suggestions",
@@ -104,13 +87,11 @@
 		"@favware/cliff-jumper": "^6.1.0",
 		"@types/node": "^24.13.3",
 		"@vitest/coverage-v8": "^4.1.11",
-		"esbuild-plugin-version-injector": "^1.2.1",
 		"eslint-config-neon": "^0.5.4",
 		"oxfmt": "^0.74.0",
 		"oxlint": "^1.89.0",
-		"tsup": "^8.5.1",
 		"turbo": "^2.10.12",
-		"typescript": "~5.9.3",
+		"typescript": "~7.0.2",
 		"vitest": "^4.1.11"
 	},
 	"engines": {
