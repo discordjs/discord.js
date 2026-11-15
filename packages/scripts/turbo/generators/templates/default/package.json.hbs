@@ -29,14 +29,11 @@
 		"dist"
 	],
 	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"import": {
-				"types": "./dist/index.d.ts",
-				"default": "./dist/index.js"
-			}
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
 		}
 	},
 	"publishConfig": {
@@ -65,7 +62,7 @@
 		"oxfmt": "^0.74.0",
 		"oxlint": "^1.89.0",
 		"turbo": "^2.10.12",
-		"typescript": "~7\.1\.0-dev\.20261003.1",
+		"typescript": "~7.1.0-dev.20261003.1",
 		"vitest": "^4.1.11"
 	},
 	"engines": {

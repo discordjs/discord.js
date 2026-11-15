@@ -984,7 +984,7 @@ export class ApiModelGenerator {
 			const nodeTransforms: IExcerptBuilderNodeTransform[] = [];
 
 			const returnTypeTokenRange: IExcerptTokenRange = ExcerptBuilder.createEmptyTokenRange();
-			nodeTransforms.push({ node: indexSignature.type, captureTokenRange: returnTypeTokenRange });
+			nodeTransforms.push({ node: indexSignature.type!, captureTokenRange: returnTypeTokenRange });
 
 			const parameters: IApiParameterOptions[] = this._captureParameters(nodeTransforms, indexSignature.parameters);
 
@@ -1922,7 +1922,7 @@ export class ApiModelGenerator {
 					external?.see?.[0] ?? '',
 				);
 				if (match) {
-					target = `discord-api-types#${match.groups!.name}`;
+					target = `discord-api-types/${match.groups!.type}#(${match.groups!.name}:${match.groups!.kind ?? 'variable'})`;
 				}
 
 				return `{@link ${target}${groups.prop ? `.${groups.prop}` : ''}${groups.name ? ` |${groups.name}` : ''}}`;
