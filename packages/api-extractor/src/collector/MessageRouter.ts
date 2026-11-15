@@ -120,9 +120,7 @@ export class MessageRouter {
 	#applyMessagesConfig(messagesConfig: IExtractorMessagesConfig): void {
 		if (messagesConfig.compilerMessageReporting) {
 			for (const messageId of Object.getOwnPropertyNames(messagesConfig.compilerMessageReporting)) {
-				const reportingRule: IReportingRule = MessageRouter.#getNormalizedRule(
-					messagesConfig.compilerMessageReporting[messageId]!,
-				);
+				const reportingRule: IReportingRule = _getNormalizedRule(messagesConfig.compilerMessageReporting[messageId]!);
 
 				if (messageId === 'default') {
 					this.#compilerDefaultRule = reportingRule;
@@ -139,9 +137,7 @@ export class MessageRouter {
 
 		if (messagesConfig.extractorMessageReporting) {
 			for (const messageId of Object.getOwnPropertyNames(messagesConfig.extractorMessageReporting)) {
-				const reportingRule: IReportingRule = MessageRouter.#getNormalizedRule(
-					messagesConfig.extractorMessageReporting[messageId]!,
-				);
+				const reportingRule: IReportingRule = _getNormalizedRule(messagesConfig.extractorMessageReporting[messageId]!);
 
 				if (messageId === 'default') {
 					this.#extractorDefaultRule = reportingRule;
@@ -163,9 +159,7 @@ export class MessageRouter {
 
 		if (messagesConfig.tsdocMessageReporting) {
 			for (const messageId of Object.getOwnPropertyNames(messagesConfig.tsdocMessageReporting)) {
-				const reportingRule: IReportingRule = MessageRouter.#getNormalizedRule(
-					messagesConfig.tsdocMessageReporting[messageId]!,
-				);
+				const reportingRule: IReportingRule = _getNormalizedRule(messagesConfig.tsdocMessageReporting[messageId]!);
 
 				if (messageId === 'default') {
 					this.#tsdocDefaultRule = reportingRule;
@@ -184,13 +178,6 @@ export class MessageRouter {
 				}
 			}
 		}
-	}
-
-	static #getNormalizedRule(rule: IConfigMessageReportingRule): IReportingRule {
-		return {
-			logLevel: rule.logLevel || 'none',
-			addToApiReportFile: rule.addToApiReportFile ?? false,
-		};
 	}
 
 	public get messages(): readonly ExtractorMessage[] {
@@ -307,52 +294,7 @@ export class MessageRouter {
 
 		const keyNamesToOmit: Set<string> = new Set(ioptions.keyNamesToOmit);
 
-		return MessageRouter.#buildJsonDumpObject(input, keyNamesToOmit);
-	}
-
-	static #buildJsonDumpObject(input: any, keyNamesToOmit: Set<string>): any | undefined {
-		if (input === null || input === undefined) {
-			return null; // JSON uses null instead of undefined
-		}
-
-		switch (typeof input) {
-			case 'boolean':
-			case 'number':
-			case 'string':
-				return input;
-			case 'object':
-				if (Array.isArray(input)) {
-					const outputArray: any[] = [];
-					for (const element of input) {
-						const serializedElement: any = MessageRouter.#buildJsonDumpObject(element, keyNamesToOmit);
-						if (serializedElement !== undefined) {
-							outputArray.push(serializedElement);
-						}
-					}
-
-					return outputArray;
-				}
-
-				// eslint-disable-next-line no-case-declarations
-				const outputObject: object = {};
-				for (const key of Object.getOwnPropertyNames(input)) {
-					if (keyNamesToOmit.has(key)) {
-						continue;
-					}
-
-					const value: any = input[key];
-
-					const serializedValue: any = MessageRouter.#buildJsonDumpObject(value, keyNamesToOmit);
-
-					if (serializedValue !== undefined) {
-						(outputObject as any)[key] = serializedValue;
-					}
-				}
-
-				return outputObject;
-			default:
-				return undefined;
-		}
+		return _buildJsonDumpObject(input, keyNamesToOmit);
 	}
 
 	/**
@@ -652,5 +594,57 @@ export class MessageRouter {
 			// Then sort by messageId
 			return Sort.compareByValue(a.messageId, b.messageId);
 		});
+	}
+}
+
+function _getNormalizedRule(rule: IConfigMessageReportingRule): IReportingRule {
+	return {
+		logLevel: rule.logLevel || 'none',
+		addToApiReportFile: rule.addToApiReportFile ?? false,
+	};
+}
+
+function _buildJsonDumpObject(input: any, keyNamesToOmit: Set<string>): any | undefined {
+	if (input === null || input === undefined) {
+		return null; // JSON uses null instead of undefined
+	}
+
+	switch (typeof input) {
+		case 'boolean':
+		case 'number':
+		case 'string':
+			return input;
+		case 'object':
+			if (Array.isArray(input)) {
+				const outputArray: any[] = [];
+				for (const element of input) {
+					const serializedElement: any = _buildJsonDumpObject(element, keyNamesToOmit);
+					if (serializedElement !== undefined) {
+						outputArray.push(serializedElement);
+					}
+				}
+
+				return outputArray;
+			}
+
+			// eslint-disable-next-line no-case-declarations
+			const outputObject: object = {};
+			for (const key of Object.getOwnPropertyNames(input)) {
+				if (keyNamesToOmit.has(key)) {
+					continue;
+				}
+
+				const value: any = input[key];
+
+				const serializedValue: any = _buildJsonDumpObject(value, keyNamesToOmit);
+
+				if (serializedValue !== undefined) {
+					(outputObject as any)[key] = serializedValue;
+				}
+			}
+
+			return outputObject;
+		default:
+			return undefined;
 	}
 }

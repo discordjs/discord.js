@@ -667,7 +667,7 @@ export class ExportAnalyzer {
 					importKind: AstImportKind.StarImport,
 					exportName: declarationSymbol.name,
 					modulePath: externalModulePath,
-					isTypeOnly: ExportAnalyzer.#getIsTypeOnly(importDeclaration),
+					isTypeOnly: _getIsTypeOnly(importDeclaration),
 				});
 			}
 
@@ -700,7 +700,7 @@ export class ExportAnalyzer {
 						importKind: AstImportKind.NamedImport,
 						modulePath: externalModulePath,
 						exportName,
-						isTypeOnly: ExportAnalyzer.#getIsTypeOnly(importDeclaration),
+						isTypeOnly: _getIsTypeOnly(importDeclaration),
 					});
 				}
 
@@ -734,7 +734,7 @@ export class ExportAnalyzer {
 						importKind: AstImportKind.DefaultImport,
 						modulePath: externalModulePath,
 						exportName,
-						isTypeOnly: ExportAnalyzer.#getIsTypeOnly(importDeclaration),
+						isTypeOnly: _getIsTypeOnly(importDeclaration),
 					});
 				}
 
@@ -795,14 +795,6 @@ export class ExportAnalyzer {
 		}
 
 		return namespaceImport;
-	}
-
-	static #getIsTypeOnly(importDeclaration: ts.ImportDeclaration): boolean {
-		if (importDeclaration.importClause) {
-			return importDeclaration.importClause.phaseModifier === ts.SyntaxKind.TypeKeyword;
-		}
-
-		return false;
 	}
 
 	#getExportOfSpecifierAstModule(
@@ -1004,4 +996,12 @@ export class ExportAnalyzer {
 
 		return moduleSpecifier;
 	}
+}
+
+function _getIsTypeOnly(importDeclaration: ts.ImportDeclaration): boolean {
+	if (importDeclaration.importClause) {
+		return importDeclaration.importClause.phaseModifier === ts.SyntaxKind.TypeKeyword;
+	}
+
+	return false;
 }

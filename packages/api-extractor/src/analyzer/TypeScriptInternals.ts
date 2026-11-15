@@ -1,16 +1,16 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
-import { InternalError } from '@rushstack/node-core-library';
+// import { InternalError } from '@rushstack/node-core-library';
 import * as ts from 'typescript/ast';
 import * as tsAPI from 'typescript/sync';
 
 /**
  * Exposes the TypeScript compiler internals for detecting global variable names.
  */
-export interface IGlobalVariableAnalyzer {
-	hasGlobalName(name: string): boolean;
-}
+// export interface IGlobalVariableAnalyzer {
+// 	hasGlobalName(name: string): boolean;
+// }
 
 export class TypeScriptInternals {
 	/**
@@ -95,22 +95,22 @@ export class TypeScriptInternals {
 	// 	return (declaration as any).localSymbol;
 	// }
 
-	public static getGlobalVariableAnalyzer(program: tsAPI.Program): IGlobalVariableAnalyzer {
-		// Compiler internals: `getEmitResolver` and `hasGlobalName` are accessed via `any` and
-		// guarded below at runtime.
-		// https://github.com/microsoft/TypeScript/blob/v6.0.3/src/compiler/checker.ts#L51221
-		const typeChecker: any = program.getProject().checker;
-		if (!typeChecker.getEmitResolver) {
-			throw new InternalError('Missing TypeChecker.getEmitResolver');
-		}
+	// public static getGlobalVariableAnalyzer(program: tsAPI.Program): IGlobalVariableAnalyzer {
+	// 	// Compiler internals: `getEmitResolver` and `hasGlobalName` are accessed via `any` and
+	// 	// guarded below at runtime.
+	// 	// https://github.com/microsoft/TypeScript/blob/v6.0.3/src/compiler/checker.ts#L51221
+	// 	const typeChecker: any = program.getProject().checker;
+	// 	if (!typeChecker.getEmitResolver) {
+	// 		throw new InternalError('Missing TypeChecker.getEmitResolver');
+	// 	}
 
-		const resolver: any = typeChecker.getEmitResolver();
-		if (!resolver.hasGlobalName) {
-			throw new InternalError('Missing EmitResolver.hasGlobalName');
-		}
+	// 	const resolver: any = typeChecker.getEmitResolver();
+	// 	if (!resolver.hasGlobalName) {
+	// 		throw new InternalError('Missing EmitResolver.hasGlobalName');
+	// 	}
 
-		return resolver;
-	}
+	// 	return resolver;
+	// }
 
 	/**
 	 * Returns whether a variable is declared with the const keyword

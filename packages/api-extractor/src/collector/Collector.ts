@@ -16,7 +16,7 @@ import { AstReferenceResolver } from '../analyzer/AstReferenceResolver.js';
 import { AstSymbol } from '../analyzer/AstSymbol.js';
 import { AstSymbolTable } from '../analyzer/AstSymbolTable.js';
 import { TypeScriptHelpers } from '../analyzer/TypeScriptHelpers.js';
-import { /* TypeScriptInternals, */ type IGlobalVariableAnalyzer } from '../analyzer/TypeScriptInternals.js';
+// import { /* TypeScriptInternals, */ type IGlobalVariableAnalyzer } from '../analyzer/TypeScriptInternals.js';
 import { ExtractorConfig } from '../api/ExtractorConfig.js';
 import { ExtractorMessageId } from '../api/ExtractorMessageId.js';
 import type { IConfigEntryPoint } from '../api/IConfigFile.js';
@@ -61,7 +61,7 @@ export class Collector {
 
 	public readonly typeChecker: tsAPI.Checker;
 
-	public readonly globalVariableAnalyzer: IGlobalVariableAnalyzer | undefined;
+	// public readonly globalVariableAnalyzer: IGlobalVariableAnalyzer | undefined;
 
 	public readonly astSymbolTable: AstSymbolTable;
 
@@ -146,7 +146,7 @@ export class Collector {
 
 		this.program = program;
 		this.typeChecker = program.getProject().checker;
-		this.globalVariableAnalyzer = undefined; // TypeScriptInternals.getGlobalVariableAnalyzer(this.program);
+		// this.globalVariableAnalyzer = undefined; // TypeScriptInternals.getGlobalVariableAnalyzer(this.program);
 
 		this._tsdocParser = new tsdoc.TSDocParser(this.extractorConfig.tsdocConfiguration);
 

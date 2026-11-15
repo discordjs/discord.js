@@ -202,30 +202,6 @@ export class PackageMetadataManager {
 	}
 
 	/**
-	 * This feature is still being standardized: https://github.com/microsoft/tsdoc/issues/7
-	 * In the future we will use the \@microsoft/tsdoc library to read this file.
-	 */
-	static #resolveTsdocMetadataPathFromPackageJson(packageFolder: string, packageJson: INodePackageJson): string {
-		const tsdocMetadataRelativePath: string =
-			_tryResolveTsdocMetadataFromTsdocMetadataField(packageJson) ??
-			_tryResolveTsdocMetadataFromExportsField(packageJson) ??
-			_tryResolveTsdocMetadataFromTypesVersionsField(packageJson) ??
-			_tryResolveTsdocMetadataFromTypesOrTypingsFields(packageJson) ??
-			_tryResolveTsdocMetadataFromMainField(packageJson) ??
-			// As a final fallback, place the file in the root of the package.
-			TSDOC_METADATA_FILENAME;
-
-		// Always resolve relative to the package folder.
-		const tsdocMetadataPath: string = path.resolve(
-			packageFolder,
-			// This non-null assertion is safe because the last entry in TSDOC_METADATA_RESOLUTION_FUNCTIONS
-			// returns a non-undefined value.
-			tsdocMetadataRelativePath!,
-		);
-		return tsdocMetadataPath;
-	}
-
-	/**
 	 * @param packageFolder - The package folder
 	 * @param packageJson - The package JSON
 	 * @param tsdocMetadataPath - An explicit path that can be configured in api-extractor.json.
@@ -241,7 +217,7 @@ export class PackageMetadataManager {
 			return path.resolve(packageFolder, tsdocMetadataPath);
 		}
 
-		return PackageMetadataManager.#resolveTsdocMetadataPathFromPackageJson(packageFolder, packageJson);
+		return _resolveTsdocMetadataPathFromPackageJson(packageFolder, packageJson);
 	}
 
 	/**
@@ -290,10 +266,7 @@ export class PackageMetadataManager {
 
 			let aedocSupported = false;
 
-			const tsdocMetadataPath: string = PackageMetadataManager.#resolveTsdocMetadataPathFromPackageJson(
-				packageJsonFolder,
-				packageJson,
-			);
+			const tsdocMetadataPath: string = _resolveTsdocMetadataPathFromPackageJson(packageJsonFolder, packageJson);
 
 			if (FileSystem.exists(tsdocMetadataPath)) {
 				this.#messageRouter.logVerbose(ConsoleMessageId.FoundTSDocMetadata, 'Found metadata in ' + tsdocMetadataPath);
@@ -319,4 +292,28 @@ export class PackageMetadataManager {
 
 		return packageMetadata.aedocSupported;
 	}
+}
+
+/**
+ * This feature is still being standardized: https://github.com/microsoft/tsdoc/issues/7
+ * In the future we will use the \@microsoft/tsdoc library to read this file.
+ */
+function _resolveTsdocMetadataPathFromPackageJson(packageFolder: string, packageJson: INodePackageJson): string {
+	const tsdocMetadataRelativePath: string =
+		_tryResolveTsdocMetadataFromTsdocMetadataField(packageJson) ??
+		_tryResolveTsdocMetadataFromExportsField(packageJson) ??
+		_tryResolveTsdocMetadataFromTypesVersionsField(packageJson) ??
+		_tryResolveTsdocMetadataFromTypesOrTypingsFields(packageJson) ??
+		_tryResolveTsdocMetadataFromMainField(packageJson) ??
+		// As a final fallback, place the file in the root of the package.
+		TSDOC_METADATA_FILENAME;
+
+	// Always resolve relative to the package folder.
+	const tsdocMetadataPath: string = path.resolve(
+		packageFolder,
+		// This non-null assertion is safe because the last entry in TSDOC_METADATA_RESOLUTION_FUNCTIONS
+		// returns a non-undefined value.
+		tsdocMetadataRelativePath!,
+	);
+	return tsdocMetadataPath;
 }

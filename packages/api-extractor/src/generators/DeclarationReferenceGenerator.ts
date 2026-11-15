@@ -36,7 +36,7 @@ export class DeclarationReferenceGenerator {
 	): DeclarationReference | undefined {
 		const symbol: tsAPI.Symbol | undefined = this.#collector.typeChecker.getSymbolAtLocation(node);
 		if (symbol !== undefined) {
-			const isExpression: boolean = DeclarationReferenceGenerator.#isInExpressionContext(node);
+			const isExpression: boolean = _isInExpressionContext(node);
 			return (
 				this.getDeclarationReferenceForSymbol(
 					symbol,
@@ -66,33 +66,6 @@ export class DeclarationReferenceGenerator {
 		return this.#symbolToDeclarationReference(symbol, meaning, /* includeModuleSymbols*/ false, entryPoint);
 	}
 
-	static #isInExpressionContext(node: ts.Node): boolean {
-		switch (node.parent.kind) {
-			case ts.SyntaxKind.TypeQuery:
-			case ts.SyntaxKind.ComputedPropertyName:
-				return true;
-			case ts.SyntaxKind.QualifiedName:
-				return DeclarationReferenceGenerator.#isInExpressionContext(node.parent);
-			default:
-				return false;
-		}
-	}
-
-	static #isExternalModuleSymbol(symbol: tsAPI.Symbol): boolean {
-		return (
-			Boolean(symbol.flags & tsAPI.SymbolFlags.ValueModule) &&
-			symbol.valueDeclaration !== undefined &&
-			ts.isSourceFile(symbol.valueDeclaration.resolve()!)
-		);
-	}
-
-	static #isSameSymbol(left: tsAPI.Symbol | undefined, right: tsAPI.Symbol): boolean {
-		return (
-			left === right ||
-			Boolean(left?.valueDeclaration && right.valueDeclaration && left.valueDeclaration === right.valueDeclaration)
-		);
-	}
-
 	#getNavigationToSymbol(symbol: tsAPI.Symbol): Navigation {
 		const declaration: ts.Declaration | undefined = TypeScriptHelpers.tryGetADeclaration(symbol);
 		const sourceFile: ts.SourceFile | undefined = declaration?.getSourceFile();
@@ -105,7 +78,7 @@ export class DeclarationReferenceGenerator {
 			Boolean(sourceFile) && this.#collector.program.isSourceFileFromExternalLibrary(sourceFile!);
 		if (isGlobal || isFromExternalLibrary) {
 			const members = parent?.getMembers();
-			if (members && DeclarationReferenceGenerator.#isSameSymbol(members.get(symbol.escapedName), symbol)) {
+			if (members && _isSameSymbol(members.get(symbol.escapedName), symbol)) {
 				return Navigation.Members;
 			}
 
@@ -124,9 +97,9 @@ export class DeclarationReferenceGenerator {
 		// If its parent symbol is not a source file, then use either Exports or Members. If the parent symbol
 		// is a source file, but it wasn't exported from the package entry point (in the check above), then the
 		// symbol is a local, so fall through below.
-		if (parent && !DeclarationReferenceGenerator.#isExternalModuleSymbol(parent)) {
+		if (parent && !_isExternalModuleSymbol(parent)) {
 			const members = parent?.getMembers();
-			if (members && DeclarationReferenceGenerator.#isSameSymbol(members.get(symbol.escapedName), symbol)) {
+			if (members && _isSameSymbol(members.get(symbol.escapedName), symbol)) {
 				return Navigation.Members;
 			}
 
@@ -138,69 +111,6 @@ export class DeclarationReferenceGenerator {
 		// 1. Symbols that are exported from a file module but not the package entry point.
 		// 2. Symbols that are not exported from their parent module.
 		return Navigation.Locals;
-	}
-
-	static #getMeaningOfSymbol(symbol: tsAPI.Symbol, meaning: tsAPI.SymbolFlags): Meaning | undefined {
-		if (symbol.flags & meaning & tsAPI.SymbolFlags.Class) {
-			return Meaning.Class;
-		}
-
-		if (symbol.flags & meaning & tsAPI.SymbolFlags.Enum) {
-			return Meaning.Enum;
-		}
-
-		if (symbol.flags & meaning & tsAPI.SymbolFlags.Interface) {
-			return Meaning.Interface;
-		}
-
-		if (symbol.flags & meaning & tsAPI.SymbolFlags.TypeAlias) {
-			return Meaning.TypeAlias;
-		}
-
-		if (symbol.flags & meaning & tsAPI.SymbolFlags.Function) {
-			return Meaning.Function;
-		}
-
-		if (symbol.flags & meaning & tsAPI.SymbolFlags.Variable) {
-			return Meaning.Variable;
-		}
-
-		if (symbol.flags & meaning & tsAPI.SymbolFlags.Module) {
-			return Meaning.Namespace;
-		}
-
-		if (symbol.flags & meaning & tsAPI.SymbolFlags.ClassMember) {
-			return Meaning.Member;
-		}
-
-		if (symbol.flags & meaning & tsAPI.SymbolFlags.Constructor) {
-			return Meaning.Constructor;
-		}
-
-		if (symbol.flags & meaning & tsAPI.SymbolFlags.EnumMember) {
-			return Meaning.Member;
-		}
-
-		if (symbol.flags & meaning & tsAPI.SymbolFlags.Signature) {
-			if (symbol.escapedName === ts.InternalSymbolName.Call) {
-				return Meaning.CallSignature;
-			}
-
-			if (symbol.escapedName === ts.InternalSymbolName.New) {
-				return Meaning.ConstructSignature;
-			}
-
-			if (symbol.escapedName === ts.InternalSymbolName.Index) {
-				return Meaning.IndexSignature;
-			}
-		}
-
-		if (symbol.flags & meaning & tsAPI.SymbolFlags.TypeParameter) {
-			// This should have already been handled in `getDeclarationReferenceOfSymbol`.
-			throw new InternalError('Not supported.');
-		}
-
-		return undefined;
 	}
 
 	#symbolToDeclarationReference(
@@ -227,7 +137,7 @@ export class DeclarationReferenceGenerator {
 			}
 		}
 
-		if (DeclarationReferenceGenerator.#isExternalModuleSymbol(followedSymbol)) {
+		if (_isExternalModuleSymbol(followedSymbol)) {
 			if (!includeModuleSymbols) {
 				return undefined;
 			}
@@ -284,7 +194,7 @@ export class DeclarationReferenceGenerator {
 
 		return parentRef
 			.addNavigationStep(navigation as any, localName)
-			.withMeaning(DeclarationReferenceGenerator.#getMeaningOfSymbol(followedSymbol, meaning) as any);
+			.withMeaning(_getMeaningOfSymbol(followedSymbol, meaning) as any);
 	}
 
 	#getParentReference(symbol: tsAPI.Symbol, entryPoint: IWorkingPackageEntryPoint): DeclarationReference | undefined {
@@ -412,4 +322,94 @@ export class DeclarationReferenceGenerator {
 
 		return GlobalSource.instance;
 	}
+}
+
+function _isInExpressionContext(node: ts.Node): boolean {
+	switch (node.parent.kind) {
+		case ts.SyntaxKind.TypeQuery:
+		case ts.SyntaxKind.ComputedPropertyName:
+			return true;
+		case ts.SyntaxKind.QualifiedName:
+			return _isInExpressionContext(node.parent);
+		default:
+			return false;
+	}
+}
+
+function _isExternalModuleSymbol(symbol: tsAPI.Symbol): boolean {
+	return (
+		Boolean(symbol.flags & tsAPI.SymbolFlags.ValueModule) &&
+		symbol.valueDeclaration !== undefined &&
+		ts.isSourceFile(symbol.valueDeclaration.resolve()!)
+	);
+}
+
+function _isSameSymbol(left: tsAPI.Symbol | undefined, right: tsAPI.Symbol): boolean {
+	return (
+		left === right ||
+		Boolean(left?.valueDeclaration && right.valueDeclaration && left.valueDeclaration === right.valueDeclaration)
+	);
+}
+
+function _getMeaningOfSymbol(symbol: tsAPI.Symbol, meaning: tsAPI.SymbolFlags): Meaning | undefined {
+	if (symbol.flags & meaning & tsAPI.SymbolFlags.Class) {
+		return Meaning.Class;
+	}
+
+	if (symbol.flags & meaning & tsAPI.SymbolFlags.Enum) {
+		return Meaning.Enum;
+	}
+
+	if (symbol.flags & meaning & tsAPI.SymbolFlags.Interface) {
+		return Meaning.Interface;
+	}
+
+	if (symbol.flags & meaning & tsAPI.SymbolFlags.TypeAlias) {
+		return Meaning.TypeAlias;
+	}
+
+	if (symbol.flags & meaning & tsAPI.SymbolFlags.Function) {
+		return Meaning.Function;
+	}
+
+	if (symbol.flags & meaning & tsAPI.SymbolFlags.Variable) {
+		return Meaning.Variable;
+	}
+
+	if (symbol.flags & meaning & tsAPI.SymbolFlags.Module) {
+		return Meaning.Namespace;
+	}
+
+	if (symbol.flags & meaning & tsAPI.SymbolFlags.ClassMember) {
+		return Meaning.Member;
+	}
+
+	if (symbol.flags & meaning & tsAPI.SymbolFlags.Constructor) {
+		return Meaning.Constructor;
+	}
+
+	if (symbol.flags & meaning & tsAPI.SymbolFlags.EnumMember) {
+		return Meaning.Member;
+	}
+
+	if (symbol.flags & meaning & tsAPI.SymbolFlags.Signature) {
+		if (symbol.escapedName === ts.InternalSymbolName.Call) {
+			return Meaning.CallSignature;
+		}
+
+		if (symbol.escapedName === ts.InternalSymbolName.New) {
+			return Meaning.ConstructSignature;
+		}
+
+		if (symbol.escapedName === ts.InternalSymbolName.Index) {
+			return Meaning.IndexSignature;
+		}
+	}
+
+	if (symbol.flags & meaning & tsAPI.SymbolFlags.TypeParameter) {
+		// This should have already been handled in `getDeclarationReferenceOfSymbol`.
+		throw new InternalError('Not supported.');
+	}
+
+	return undefined;
 }

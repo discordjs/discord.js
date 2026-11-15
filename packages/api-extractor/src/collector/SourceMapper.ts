@@ -101,7 +101,7 @@ export class SourceMapper {
 		const sourceMap: ISourceMap | null = this.#getSourceMap(sourceFilePath);
 		if (!sourceMap) return;
 
-		const nearestMappingItem: MappingItem | undefined = SourceMapper.#findNearestMappingItem(sourceMap.mappingItems, {
+		const nearestMappingItem: MappingItem | undefined = _findNearestMappingItem(sourceMap.mappingItems, {
 			line: sourceFileLine,
 			column: sourceFileColumn,
 		});
@@ -215,44 +215,44 @@ export class SourceMapper {
 
 		return sourceMap;
 	}
+}
 
-	// The `mappingItems` array is sorted by generatedLine/generatedColumn (GENERATED_ORDER).
-	// The #findNearestMappingItem() lookup is a simple binary search that returns the previous item
-	// if there is no exact match.
-	static #findNearestMappingItem(mappingItems: MappingItem[], position: Position): MappingItem | undefined {
-		if (mappingItems.length === 0) {
-			return undefined;
-		}
-
-		let startIndex = 0;
-		let endIndex: number = mappingItems.length - 1;
-
-		while (startIndex <= endIndex) {
-			const middleIndex: number = startIndex + Math.floor((endIndex - startIndex) / 2);
-
-			const diff: number = SourceMapper.#compareMappingItem(mappingItems[middleIndex]!, position);
-
-			if (diff < 0) {
-				startIndex = middleIndex + 1;
-			} else if (diff > 0) {
-				endIndex = middleIndex - 1;
-			} else {
-				// Exact match
-				return mappingItems[middleIndex];
-			}
-		}
-
-		// If we didn't find an exact match, then endIndex < startIndex.
-		// Take endIndex because it's the smaller value.
-		return mappingItems[endIndex];
+// The `mappingItems` array is sorted by generatedLine/generatedColumn (GENERATED_ORDER).
+// The #findNearestMappingItem() lookup is a simple binary search that returns the previous item
+// if there is no exact match.
+function _findNearestMappingItem(mappingItems: MappingItem[], position: Position): MappingItem | undefined {
+	if (mappingItems.length === 0) {
+		return undefined;
 	}
 
-	static #compareMappingItem(mappingItem: MappingItem, position: Position): number {
-		const diff: number = mappingItem.generatedLine - position.line;
-		if (diff !== 0) {
-			return diff;
-		}
+	let startIndex = 0;
+	let endIndex: number = mappingItems.length - 1;
 
-		return mappingItem.generatedColumn - position.column;
+	while (startIndex <= endIndex) {
+		const middleIndex: number = startIndex + Math.floor((endIndex - startIndex) / 2);
+
+		const diff: number = _compareMappingItem(mappingItems[middleIndex]!, position);
+
+		if (diff < 0) {
+			startIndex = middleIndex + 1;
+		} else if (diff > 0) {
+			endIndex = middleIndex - 1;
+		} else {
+			// Exact match
+			return mappingItems[middleIndex];
+		}
 	}
+
+	// If we didn't find an exact match, then endIndex < startIndex.
+	// Take endIndex because it's the smaller value.
+	return mappingItems[endIndex];
+}
+
+function _compareMappingItem(mappingItem: MappingItem, position: Position): number {
+	const diff: number = mappingItem.generatedLine - position.line;
+	if (diff !== 0) {
+		return diff;
+	}
+
+	return mappingItem.generatedColumn - position.column;
 }

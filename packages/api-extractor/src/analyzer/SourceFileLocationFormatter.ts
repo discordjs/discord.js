@@ -2,7 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import * as path from 'node:path';
-import { Path, Text } from '@rushstack/node-core-library';
+import { Path } from '@rushstack/node-core-library';
 import type * as ts from 'typescript/ast';
 
 export interface ISourceFileLocationFormatOptions {
@@ -43,7 +43,7 @@ export class SourceFileLocationFormatter {
 		}
 
 		// Convert it to a Unix-style path
-		scrubbedPath = Text.replaceAll(scrubbedPath, '\\', '/');
+		scrubbedPath = Path.convertToSlashes(scrubbedPath);
 		result += scrubbedPath;
 
 		if (ioptions.sourceFileLine) {
