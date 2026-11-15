@@ -63,12 +63,12 @@ export class AstDeclaration {
 	public apiItemMetadata: unknown;
 
 	// NOTE: This array becomes immutable after astSymbol.analyze() sets astSymbol.analyzed=true
-	private readonly _analyzedChildren: AstDeclaration[] = [];
+	readonly #analyzedChildren: AstDeclaration[] = [];
 
-	private readonly _analyzedReferencedAstEntitiesSet: Set<AstEntity> = new Set<AstEntity>();
+	readonly #analyzedReferencedAstEntitiesSet: Set<AstEntity> = new Set<AstEntity>();
 
 	// Reverse lookup used by findChildrenWithName()
-	private _childrenByName: Map<string, AstDeclaration[]> | undefined = undefined;
+	#childrenByName: Map<string, AstDeclaration[]> | undefined = undefined;
 
 	public constructor(options: IAstDeclarationOptions) {
 		this.declaration = options.declaration;
@@ -100,7 +100,7 @@ export class AstDeclaration {
 	 * The collection will be empty until AstSymbol.analyzed is true.
 	 */
 	public get children(): readonly AstDeclaration[] {
-		return this.astSymbol.analyzed ? this._analyzedChildren : [];
+		return this.astSymbol.analyzed ? this.#analyzedChildren : [];
 	}
 
 	/**
@@ -119,7 +119,7 @@ export class AstDeclaration {
 	 *   (e.g. if a method returns an enum, this doesn't imply that the method's class references that enum)
 	 */
 	public get referencedAstEntities(): readonly AstEntity[] {
-		return this.astSymbol.analyzed ? [...this._analyzedReferencedAstEntitiesSet] : [];
+		return this.astSymbol.analyzed ? [...this.#analyzedReferencedAstEntitiesSet] : [];
 	}
 
 	/**
@@ -137,7 +137,7 @@ export class AstDeclaration {
 			throw new InternalError('_notifyChildAttach() called after analysis is already complete');
 		}
 
-		this._analyzedChildren.push(child);
+		this.#analyzedChildren.push(child);
 	}
 
 	/**
@@ -153,7 +153,7 @@ export class AstDeclaration {
 
 		result += '\n';
 
-		for (const referencedAstEntity of this._analyzedReferencedAstEntitiesSet.values()) {
+		for (const referencedAstEntity of this.#analyzedReferencedAstEntitiesSet.values()) {
 			result += indent + `  ref: ${referencedAstEntity.localName}\n`;
 		}
 
@@ -186,7 +186,7 @@ export class AstDeclaration {
 
 		for (let current: AstDeclaration | undefined = this; current; current = current.parent) {
 			// Don't add references to symbols that are already referenced by a parent
-			if (current._analyzedReferencedAstEntitiesSet.has(referencedAstEntity)) {
+			if (current.#analyzedReferencedAstEntitiesSet.has(referencedAstEntity)) {
 				return;
 			}
 
@@ -196,7 +196,7 @@ export class AstDeclaration {
 			}
 		}
 
-		this._analyzedReferencedAstEntitiesSet.add(referencedAstEntity);
+		this.#analyzedReferencedAstEntitiesSet.add(referencedAstEntity);
 	}
 
 	/**
@@ -221,15 +221,15 @@ export class AstDeclaration {
 		//
 		//    return this.astSymbol.analyzed ? this._analyzedChildren : [];
 		//
-		if (!this.astSymbol.analyzed || this._analyzedChildren.length === 0) {
+		if (!this.astSymbol.analyzed || this.#analyzedChildren.length === 0) {
 			return [];
 		}
 
-		if (this._childrenByName === undefined) {
+		if (this.#childrenByName === undefined) {
 			// Build the lookup table
 			const childrenByName: Map<string, AstDeclaration[]> = new Map<string, AstDeclaration[]>();
 
-			for (const child of this._analyzedChildren) {
+			for (const child of this.#analyzedChildren) {
 				const childName: string = child.astSymbol.localName;
 				let array: AstDeclaration[] | undefined = childrenByName.get(childName);
 				if (array === undefined) {
@@ -240,10 +240,10 @@ export class AstDeclaration {
 				array.push(child);
 			}
 
-			this._childrenByName = childrenByName;
+			this.#childrenByName = childrenByName;
 		}
 
-		return this._childrenByName.get(name) ?? [];
+		return this.#childrenByName.get(name) ?? [];
 	}
 
 	/**

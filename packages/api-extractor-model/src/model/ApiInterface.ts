@@ -75,13 +75,13 @@ export interface IApiInterfaceJson
 export class ApiInterface extends ApiItemContainerMixin(
 	ApiNameMixin(ApiTypeParameterListMixin(ApiReleaseTagMixin(ApiExportedMixin(ApiDeclaredItem)))),
 ) {
-	private readonly _extendsTypes: HeritageType[] = [];
+	readonly #extendsTypes: HeritageType[] = [];
 
 	public constructor(options: IApiInterfaceOptions) {
 		super(options);
 
 		for (const extendsTokenRange of options.extendsTokenRanges) {
-			this._extendsTypes.push(new HeritageType(this.buildExcerpt(extendsTokenRange), extendsTokenRange.typeParameters));
+			this.#extendsTypes.push(new HeritageType(this.buildExcerpt(extendsTokenRange), extendsTokenRange.typeParameters));
 		}
 	}
 
@@ -120,7 +120,7 @@ export class ApiInterface extends ApiItemContainerMixin(
 	 * The list of base interfaces that this interface inherits from using the `extends` keyword.
 	 */
 	public get extendsTypes(): readonly HeritageType[] {
-		return this._extendsTypes;
+		return this.#extendsTypes;
 	}
 
 	/**

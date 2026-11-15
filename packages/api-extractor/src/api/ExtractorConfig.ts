@@ -269,11 +269,11 @@ export class ExtractorConfig {
 	 */
 	public static readonly _tsdocBaseFilePath: string = path.resolve(import.meta.dirname, '../extends/tsdoc-base.json');
 
-	private static readonly _defaultConfig: Partial<IConfigFile> = JsonFile.load(
+	static readonly #defaultConfig: Partial<IConfigFile> = JsonFile.load(
 		path.join(import.meta.dirname, '../schemas/api-extractor-defaults.json'),
 	);
 
-	private static readonly _declarationFileExtensionRegExp: RegExp = /\.d\.[cm]?ts$/i;
+	static readonly #declarationFileExtensionRegExp: RegExp = /\.d\.[cm]?ts$/i;
 
 	/**
 	 * {@inheritDoc IConfigFile.projectFolder}
@@ -356,7 +356,7 @@ export class ExtractorConfig {
 	 * @deprecated Use {@link ExtractorConfig.reportConfigs} to access all report configurations.
 	 */
 	public get reportFilePath(): string {
-		const completeConfig: IExtractorConfigApiReport | undefined = this._getCompleteReportConfig();
+		const completeConfig: IExtractorConfigApiReport | undefined = this.#getCompleteReportConfig();
 		return completeConfig === undefined ? '' : path.join(this.reportFolder, completeConfig.fileName);
 	}
 
@@ -367,7 +367,7 @@ export class ExtractorConfig {
 	 * @deprecated Use {@link ExtractorConfig.reportConfigs} to access all report configurations.
 	 */
 	public get reportTempFilePath(): string {
-		const completeConfig: IExtractorConfigApiReport | undefined = this._getCompleteReportConfig();
+		const completeConfig: IExtractorConfigApiReport | undefined = this.#getCompleteReportConfig();
 		return completeConfig === undefined ? '' : path.join(this.reportTempFolder, completeConfig.fileName);
 	}
 
@@ -723,7 +723,7 @@ export class ExtractorConfig {
 
 				// This step has to be performed in advance, since the currentConfigFolderPath information will be lost
 				// after merge() is performed.
-				ExtractorConfig._resolveConfigFileRelativePaths(baseConfig, currentConfigFolderPath);
+				ExtractorConfig.#resolveConfigFileRelativePaths(baseConfig, currentConfigFolderPath);
 
 				// Merge extractorConfig into baseConfig, mutating baseConfig
 				Objects.mergeWith(baseConfig, configObject, mergeCustomizer);
@@ -737,7 +737,7 @@ export class ExtractorConfig {
 
 		// Lastly, apply the defaults
 		configObject = Objects.mergeWith(
-			structuredClone(ExtractorConfig._defaultConfig),
+			structuredClone(ExtractorConfig.#defaultConfig),
 			configObject,
 			mergeCustomizer,
 		) as Partial<IConfigFile>;
@@ -748,9 +748,9 @@ export class ExtractorConfig {
 		return configObject as IConfigFile;
 	}
 
-	private static _resolveConfigFileRelativePaths(configFile: IConfigFile, currentConfigFolderPath: string): void {
+	static #resolveConfigFileRelativePaths(configFile: IConfigFile, currentConfigFolderPath: string): void {
 		if (configFile.projectFolder) {
-			configFile.projectFolder = ExtractorConfig._resolveConfigFileRelativePath(
+			configFile.projectFolder = ExtractorConfig.#resolveConfigFileRelativePath(
 				'projectFolder',
 				configFile.projectFolder,
 				currentConfigFolderPath,
@@ -758,7 +758,7 @@ export class ExtractorConfig {
 		}
 
 		if (configFile.mainEntryPointFilePath) {
-			configFile.mainEntryPointFilePath = ExtractorConfig._resolveConfigFileRelativePath(
+			configFile.mainEntryPointFilePath = ExtractorConfig.#resolveConfigFileRelativePath(
 				'mainEntryPointFilePath',
 				configFile.mainEntryPointFilePath,
 				currentConfigFolderPath,
@@ -768,7 +768,7 @@ export class ExtractorConfig {
 		if (configFile.additionalEntryPoints) {
 			const entryPointWithAbsolutePath: IConfigEntryPoint[] = [];
 			for (const entryPoint of configFile.additionalEntryPoints) {
-				const absoluteFilePath: string = ExtractorConfig._resolveConfigFileRelativePath(
+				const absoluteFilePath: string = ExtractorConfig.#resolveConfigFileRelativePath(
 					'additionalEntryPoints',
 					entryPoint.filePath,
 					currentConfigFolderPath,
@@ -784,7 +784,7 @@ export class ExtractorConfig {
 		}
 
 		if (configFile.compiler?.tsconfigFilePath) {
-			configFile.compiler.tsconfigFilePath = ExtractorConfig._resolveConfigFileRelativePath(
+			configFile.compiler.tsconfigFilePath = ExtractorConfig.#resolveConfigFileRelativePath(
 				'tsconfigFilePath',
 				configFile.compiler.tsconfigFilePath,
 				currentConfigFolderPath,
@@ -793,7 +793,7 @@ export class ExtractorConfig {
 
 		if (configFile.apiReport) {
 			if (configFile.apiReport.reportFolder) {
-				configFile.apiReport.reportFolder = ExtractorConfig._resolveConfigFileRelativePath(
+				configFile.apiReport.reportFolder = ExtractorConfig.#resolveConfigFileRelativePath(
 					'reportFolder',
 					configFile.apiReport.reportFolder,
 					currentConfigFolderPath,
@@ -801,7 +801,7 @@ export class ExtractorConfig {
 			}
 
 			if (configFile.apiReport.reportTempFolder) {
-				configFile.apiReport.reportTempFolder = ExtractorConfig._resolveConfigFileRelativePath(
+				configFile.apiReport.reportTempFolder = ExtractorConfig.#resolveConfigFileRelativePath(
 					'reportTempFolder',
 					configFile.apiReport.reportTempFolder,
 					currentConfigFolderPath,
@@ -810,7 +810,7 @@ export class ExtractorConfig {
 		}
 
 		if (configFile.docModel?.apiJsonFilePath) {
-			configFile.docModel.apiJsonFilePath = ExtractorConfig._resolveConfigFileRelativePath(
+			configFile.docModel.apiJsonFilePath = ExtractorConfig.#resolveConfigFileRelativePath(
 				'apiJsonFilePath',
 				configFile.docModel.apiJsonFilePath,
 				currentConfigFolderPath,
@@ -819,7 +819,7 @@ export class ExtractorConfig {
 
 		if (configFile.dtsRollup) {
 			if (configFile.dtsRollup.untrimmedFilePath) {
-				configFile.dtsRollup.untrimmedFilePath = ExtractorConfig._resolveConfigFileRelativePath(
+				configFile.dtsRollup.untrimmedFilePath = ExtractorConfig.#resolveConfigFileRelativePath(
 					'untrimmedFilePath',
 					configFile.dtsRollup.untrimmedFilePath,
 					currentConfigFolderPath,
@@ -827,7 +827,7 @@ export class ExtractorConfig {
 			}
 
 			if (configFile.dtsRollup.alphaTrimmedFilePath) {
-				configFile.dtsRollup.alphaTrimmedFilePath = ExtractorConfig._resolveConfigFileRelativePath(
+				configFile.dtsRollup.alphaTrimmedFilePath = ExtractorConfig.#resolveConfigFileRelativePath(
 					'alphaTrimmedFilePath',
 					configFile.dtsRollup.alphaTrimmedFilePath,
 					currentConfigFolderPath,
@@ -835,7 +835,7 @@ export class ExtractorConfig {
 			}
 
 			if (configFile.dtsRollup.betaTrimmedFilePath) {
-				configFile.dtsRollup.betaTrimmedFilePath = ExtractorConfig._resolveConfigFileRelativePath(
+				configFile.dtsRollup.betaTrimmedFilePath = ExtractorConfig.#resolveConfigFileRelativePath(
 					'betaTrimmedFilePath',
 					configFile.dtsRollup.betaTrimmedFilePath,
 					currentConfigFolderPath,
@@ -843,7 +843,7 @@ export class ExtractorConfig {
 			}
 
 			if (configFile.dtsRollup.publicTrimmedFilePath) {
-				configFile.dtsRollup.publicTrimmedFilePath = ExtractorConfig._resolveConfigFileRelativePath(
+				configFile.dtsRollup.publicTrimmedFilePath = ExtractorConfig.#resolveConfigFileRelativePath(
 					'publicTrimmedFilePath',
 					configFile.dtsRollup.publicTrimmedFilePath,
 					currentConfigFolderPath,
@@ -852,7 +852,7 @@ export class ExtractorConfig {
 		}
 
 		if (configFile.tsdocMetadata?.tsdocMetadataFilePath) {
-			configFile.tsdocMetadata.tsdocMetadataFilePath = ExtractorConfig._resolveConfigFileRelativePath(
+			configFile.tsdocMetadata.tsdocMetadataFilePath = ExtractorConfig.#resolveConfigFileRelativePath(
 				'tsdocMetadataFilePath',
 				configFile.tsdocMetadata.tsdocMetadataFilePath,
 				currentConfigFolderPath,
@@ -860,7 +860,7 @@ export class ExtractorConfig {
 		}
 	}
 
-	private static _resolveConfigFileRelativePath(
+	static #resolveConfigFileRelativePath(
 		_fieldName: string,
 		fieldValue: string,
 		currentConfigFolderPath: string,
@@ -976,7 +976,7 @@ export class ExtractorConfig {
 					}
 				}
 			} else {
-				ExtractorConfig._rejectAnyTokensInPath(configObject.projectFolder, 'projectFolder');
+				ExtractorConfig.#rejectAnyTokensInPath(configObject.projectFolder, 'projectFolder');
 
 				if (!FileSystem.exists(configObject.projectFolder)) {
 					throw new Error('The specified "projectFolder" path does not exist: ' + configObject.projectFolder);
@@ -1001,7 +1001,7 @@ export class ExtractorConfig {
 				throw new Error('The "mainEntryPointFilePath" setting is missing');
 			}
 
-			const mainEntryPointFilePath: string = ExtractorConfig._resolvePathWithTokens(
+			const mainEntryPointFilePath: string = ExtractorConfig.#resolvePathWithTokens(
 				'mainEntryPointFilePath',
 				configObject.mainEntryPointFilePath,
 				tokenContext,
@@ -1019,7 +1019,7 @@ export class ExtractorConfig {
 
 			const additionalEntryPoints: IConfigEntryPoint[] = [];
 			for (const entryPoint of configObject.additionalEntryPoints || []) {
-				const absoluteEntryPointFilePath: string = ExtractorConfig._resolvePathWithTokens(
+				const absoluteEntryPointFilePath: string = ExtractorConfig.#resolvePathWithTokens(
 					'entryPointFilePath',
 					entryPoint.filePath,
 					tokenContext,
@@ -1046,7 +1046,7 @@ export class ExtractorConfig {
 				}
 			}
 
-			const tsconfigFilePath: string = ExtractorConfig._resolvePathWithTokens(
+			const tsconfigFilePath: string = ExtractorConfig.#resolvePathWithTokens(
 				'tsconfigFilePath',
 				configObject.compiler.tsconfigFilePath,
 				tokenContext,
@@ -1109,7 +1109,7 @@ export class ExtractorConfig {
 					const fileNameWithTokens = `${reportFileNameBase}${
 						reportVariantKind === 'complete' ? '' : `.${reportVariantKind}`
 					}${reportFileNameSuffix}`;
-					const normalizedFileName: string = ExtractorConfig._expandStringWithTokens(
+					const normalizedFileName: string = ExtractorConfig.#expandStringWithTokens(
 						'reportFileName',
 						fileNameWithTokens,
 						tokenContext,
@@ -1122,7 +1122,7 @@ export class ExtractorConfig {
 				}
 
 				if (apiReportConfig.reportFolder) {
-					reportFolder = ExtractorConfig._resolvePathWithTokens(
+					reportFolder = ExtractorConfig.#resolvePathWithTokens(
 						'reportFolder',
 						apiReportConfig.reportFolder,
 						tokenContext,
@@ -1130,7 +1130,7 @@ export class ExtractorConfig {
 				}
 
 				if (apiReportConfig.reportTempFolder) {
-					reportTempFolder = ExtractorConfig._resolvePathWithTokens(
+					reportTempFolder = ExtractorConfig.#resolvePathWithTokens(
 						'reportTempFolder',
 						apiReportConfig.reportTempFolder,
 						tokenContext,
@@ -1148,7 +1148,7 @@ export class ExtractorConfig {
 			let docModelIncludeForgottenExports = false;
 			let projectFolderUrl: string | undefined;
 			if (configObject.docModel?.enabled) {
-				apiJsonFilePath = ExtractorConfig._resolvePathWithTokens(
+				apiJsonFilePath = ExtractorConfig.#resolvePathWithTokens(
 					'apiJsonFilePath',
 					configObject.docModel.apiJsonFilePath,
 					tokenContext,
@@ -1222,7 +1222,7 @@ export class ExtractorConfig {
 							packageJson,
 						);
 					} else {
-						tsdocMetadataFilePath = ExtractorConfig._resolvePathWithTokens(
+						tsdocMetadataFilePath = ExtractorConfig.#resolvePathWithTokens(
 							'tsdocMetadataFilePath',
 							configObject.tsdocMetadata.tsdocMetadataFilePath,
 							tokenContext,
@@ -1255,22 +1255,22 @@ export class ExtractorConfig {
 					);
 				}
 
-				untrimmedFilePath = ExtractorConfig._resolvePathWithTokens(
+				untrimmedFilePath = ExtractorConfig.#resolvePathWithTokens(
 					'untrimmedFilePath',
 					configObject.dtsRollup.untrimmedFilePath,
 					tokenContext,
 				);
-				alphaTrimmedFilePath = ExtractorConfig._resolvePathWithTokens(
+				alphaTrimmedFilePath = ExtractorConfig.#resolvePathWithTokens(
 					'alphaTrimmedFilePath',
 					configObject.dtsRollup.alphaTrimmedFilePath,
 					tokenContext,
 				);
-				betaTrimmedFilePath = ExtractorConfig._resolvePathWithTokens(
+				betaTrimmedFilePath = ExtractorConfig.#resolvePathWithTokens(
 					'betaTrimmedFilePath',
 					configObject.dtsRollup.betaTrimmedFilePath,
 					tokenContext,
 				);
-				publicTrimmedFilePath = ExtractorConfig._resolvePathWithTokens(
+				publicTrimmedFilePath = ExtractorConfig.#resolvePathWithTokens(
 					'publicTrimmedFilePath',
 					configObject.dtsRollup.publicTrimmedFilePath,
 					tokenContext,
@@ -1373,16 +1373,16 @@ export class ExtractorConfig {
 	/**
 	 * Gets the report configuration for the "complete" (default) report configuration, if one was specified.
 	 */
-	private _getCompleteReportConfig(): IExtractorConfigApiReport | undefined {
+	#getCompleteReportConfig(): IExtractorConfigApiReport | undefined {
 		return this.reportConfigs.find((x) => x.variant === 'complete');
 	}
 
-	private static _resolvePathWithTokens(
+	static #resolvePathWithTokens(
 		fieldName: string,
 		value: string | undefined,
 		tokenContext: IExtractorConfigTokenContext,
 	): string {
-		const returnValue = ExtractorConfig._expandStringWithTokens(fieldName, value, tokenContext);
+		const returnValue = ExtractorConfig.#expandStringWithTokens(fieldName, value, tokenContext);
 		if (returnValue !== '') {
 			return path.resolve(tokenContext.projectFolder, returnValue);
 		}
@@ -1390,7 +1390,7 @@ export class ExtractorConfig {
 		return returnValue;
 	}
 
-	private static _expandStringWithTokens(
+	static #expandStringWithTokens(
 		fieldName: string,
 		value: string | undefined,
 		tokenContext: IExtractorConfigTokenContext,
@@ -1418,7 +1418,7 @@ export class ExtractorConfig {
 				throw new Error(`The "${fieldName}" value incorrectly uses the "<lookup>" token`);
 			}
 
-			ExtractorConfig._rejectAnyTokensInPath(returnValue, fieldName);
+			ExtractorConfig.#rejectAnyTokensInPath(returnValue, fieldName);
 		}
 
 		return returnValue;
@@ -1428,14 +1428,14 @@ export class ExtractorConfig {
 	 * Returns true if the specified file path has the ".d.ts" file extension.
 	 */
 	public static hasDtsFileExtension(filePath: string): boolean {
-		return ExtractorConfig._declarationFileExtensionRegExp.test(filePath);
+		return ExtractorConfig.#declarationFileExtensionRegExp.test(filePath);
 	}
 
 	/**
 	 * Given a path string that may have originally contained expandable tokens such as `<projectFolder>"`
 	 * this reports an error if any token-looking substrings remain after expansion (e.g. `c:\blah\<invalid>\blah`).
 	 */
-	private static _rejectAnyTokensInPath(value: string, fieldName: string): void {
+	static #rejectAnyTokensInPath(value: string, fieldName: string): void {
 		if (!value.includes('<') && !value.includes('>')) {
 			return;
 		}

@@ -190,25 +190,22 @@ function _tryResolveTsdocMetadataFromMainField({ main }: INodePackageJson): stri
 export class PackageMetadataManager {
 	public static tsdocMetadataFilename: string = TSDOC_METADATA_FILENAME;
 
-	private readonly _packageJsonLookup: PackageJsonLookup;
+	readonly #packageJsonLookup: PackageJsonLookup;
 
-	private readonly _messageRouter: MessageRouter;
+	readonly #messageRouter: MessageRouter;
 
-	private readonly _packageMetadataByPackageJsonPath: Map<string, PackageMetadata> = new Map<string, PackageMetadata>();
+	readonly #packageMetadataByPackageJsonPath: Map<string, PackageMetadata> = new Map<string, PackageMetadata>();
 
 	public constructor(packageJsonLookup: PackageJsonLookup, messageRouter: MessageRouter) {
-		this._packageJsonLookup = packageJsonLookup;
-		this._messageRouter = messageRouter;
+		this.#packageJsonLookup = packageJsonLookup;
+		this.#messageRouter = messageRouter;
 	}
 
 	/**
 	 * This feature is still being standardized: https://github.com/microsoft/tsdoc/issues/7
 	 * In the future we will use the \@microsoft/tsdoc library to read this file.
 	 */
-	private static _resolveTsdocMetadataPathFromPackageJson(
-		packageFolder: string,
-		packageJson: INodePackageJson,
-	): string {
+	static #resolveTsdocMetadataPathFromPackageJson(packageFolder: string, packageJson: INodePackageJson): string {
 		const tsdocMetadataRelativePath: string =
 			_tryResolveTsdocMetadataFromTsdocMetadataField(packageJson) ??
 			_tryResolveTsdocMetadataFromExportsField(packageJson) ??
@@ -244,7 +241,7 @@ export class PackageMetadataManager {
 			return path.resolve(packageFolder, tsdocMetadataPath);
 		}
 
-		return PackageMetadataManager._resolveTsdocMetadataPathFromPackageJson(packageFolder, packageJson);
+		return PackageMetadataManager.#resolveTsdocMetadataPathFromPackageJson(packageFolder, packageJson);
 	}
 
 	/**
@@ -279,33 +276,33 @@ export class PackageMetadataManager {
 	 */
 	public tryFetchPackageMetadata(sourceFilePath: string): PackageMetadata | undefined {
 		const packageJsonFilePath: string | undefined =
-			this._packageJsonLookup.tryGetPackageJsonFilePathFor(sourceFilePath);
+			this.#packageJsonLookup.tryGetPackageJsonFilePathFor(sourceFilePath);
 		if (!packageJsonFilePath) {
 			return undefined;
 		}
 
-		let packageMetadata: PackageMetadata | undefined = this._packageMetadataByPackageJsonPath.get(packageJsonFilePath);
+		let packageMetadata: PackageMetadata | undefined = this.#packageMetadataByPackageJsonPath.get(packageJsonFilePath);
 
 		if (!packageMetadata) {
-			const packageJson: INodePackageJson = this._packageJsonLookup.loadNodePackageJson(packageJsonFilePath);
+			const packageJson: INodePackageJson = this.#packageJsonLookup.loadNodePackageJson(packageJsonFilePath);
 
 			const packageJsonFolder: string = path.dirname(packageJsonFilePath);
 
 			let aedocSupported = false;
 
-			const tsdocMetadataPath: string = PackageMetadataManager._resolveTsdocMetadataPathFromPackageJson(
+			const tsdocMetadataPath: string = PackageMetadataManager.#resolveTsdocMetadataPathFromPackageJson(
 				packageJsonFolder,
 				packageJson,
 			);
 
 			if (FileSystem.exists(tsdocMetadataPath)) {
-				this._messageRouter.logVerbose(ConsoleMessageId.FoundTSDocMetadata, 'Found metadata in ' + tsdocMetadataPath);
+				this.#messageRouter.logVerbose(ConsoleMessageId.FoundTSDocMetadata, 'Found metadata in ' + tsdocMetadataPath);
 				// If the file exists at all, assume it was written by API Extractor
 				aedocSupported = true;
 			}
 
 			packageMetadata = new PackageMetadata(packageJsonFilePath, packageJson, aedocSupported);
-			this._packageMetadataByPackageJsonPath.set(packageJsonFilePath, packageMetadata);
+			this.#packageMetadataByPackageJsonPath.set(packageJsonFilePath, packageMetadata);
 		}
 
 		return packageMetadata;

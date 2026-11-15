@@ -37,10 +37,10 @@ export interface IResolveDeclarationReferenceResult {
  * which resolves declaration references by walking the compiler state.
  */
 export class ModelReferenceResolver {
-	private readonly _apiModel: ApiModel;
+	readonly #apiModel: ApiModel;
 
 	public constructor(apiModel: ApiModel) {
-		this._apiModel = apiModel;
+		this.#apiModel = apiModel;
 	}
 
 	public resolve(
@@ -66,7 +66,7 @@ export class ModelReferenceResolver {
 				return result;
 			}
 		} else {
-			apiPackage = this._apiModel.tryGetPackageByName(declarationReference.packageName);
+			apiPackage = this.#apiModel.tryGetPackageByName(declarationReference.packageName);
 			if (apiPackage === undefined) {
 				result.errorMessage = `The package "${declarationReference.packageName}" could not be located`;
 				return result;
@@ -142,10 +142,10 @@ export class ModelReferenceResolver {
 				let memberSelectorResult: IResolveDeclarationReferenceResult;
 				switch (memberSelector.selectorKind) {
 					case SelectorKind.System:
-						memberSelectorResult = this._selectUsingSystemSelector(foundMembers, memberSelector, identifier);
+						memberSelectorResult = this.#selectUsingSystemSelector(foundMembers, memberSelector, identifier);
 						break;
 					case SelectorKind.Index:
-						memberSelectorResult = this._selectUsingIndexSelector(foundMembers, memberSelector, identifier);
+						memberSelectorResult = this.#selectUsingIndexSelector(foundMembers, memberSelector, identifier);
 						break;
 					default:
 						result.errorMessage = `The selector "${memberSelector.selector}" is not a supported selector type`;
@@ -164,7 +164,7 @@ export class ModelReferenceResolver {
 		return result;
 	}
 
-	private _selectUsingSystemSelector(
+	#selectUsingSystemSelector(
 		foundMembers: readonly ApiItem[],
 		memberSelector: DocMemberSelector,
 		identifier: string,
@@ -218,7 +218,7 @@ export class ModelReferenceResolver {
 		return result;
 	}
 
-	private _selectUsingIndexSelector(
+	#selectUsingIndexSelector(
 		foundMembers: readonly ApiItem[],
 		memberSelector: DocMemberSelector,
 		identifier: string,

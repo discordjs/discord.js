@@ -45,34 +45,34 @@ export interface IBuildJsonDumpObjectOptions {
 export class MessageRouter {
 	public static readonly DIAGNOSTICS_LINE: string = '============================================================';
 
-	private readonly _workingPackageFolder: string | undefined;
+	readonly #workingPackageFolder: string | undefined;
 
-	private readonly _messageCallback: ((message: ExtractorMessage) => void) | undefined;
+	readonly #messageCallback: ((message: ExtractorMessage) => void) | undefined;
 
 	// All messages
-	private readonly _messages: ExtractorMessage[];
+	readonly #messages: ExtractorMessage[];
 
 	// For each AstDeclaration, the messages associated with it.  This is used when addToApiReportFile=true
-	private readonly _associatedMessagesForAstDeclaration: Map<AstDeclaration, ExtractorMessage[]>;
+	readonly #associatedMessagesForAstDeclaration: Map<AstDeclaration, ExtractorMessage[]>;
 
-	private readonly _sourceMapper: SourceMapper;
+	readonly #sourceMapper: SourceMapper;
 
-	private readonly _tsdocConfiguration: tsdoc.TSDocConfiguration;
+	readonly #tsdocConfiguration: tsdoc.TSDocConfiguration;
 
 	// Normalized representation of the routing rules from api-extractor.json
-	private _reportingRuleByMessageId: Map<string, IReportingRule> = new Map<string, IReportingRule>();
+	#reportingRuleByMessageId: Map<string, IReportingRule> = new Map<string, IReportingRule>();
 
-	private _compilerDefaultRule: IReportingRule = {
+	#compilerDefaultRule: IReportingRule = {
 		logLevel: ExtractorLogLevel.None,
 		addToApiReportFile: false,
 	};
 
-	private _extractorDefaultRule: IReportingRule = {
+	#extractorDefaultRule: IReportingRule = {
 		logLevel: ExtractorLogLevel.None,
 		addToApiReportFile: false,
 	};
 
-	private _tsdocDefaultRule: IReportingRule = { logLevel: ExtractorLogLevel.None, addToApiReportFile: false };
+	#tsdocDefaultRule: IReportingRule = { logLevel: ExtractorLogLevel.None, addToApiReportFile: false };
 
 	public errorCount: number = 0;
 
@@ -99,35 +99,35 @@ export class MessageRouter {
 			messagesConfig,
 		} = options;
 
-		this._workingPackageFolder = workingPackageFolder;
-		this._messageCallback = messageCallback;
+		this.#workingPackageFolder = workingPackageFolder;
+		this.#messageCallback = messageCallback;
 
-		this._messages = [];
-		this._associatedMessagesForAstDeclaration = new Map<AstDeclaration, ExtractorMessage[]>();
-		this._sourceMapper = sourceMapper;
-		this._tsdocConfiguration = tsdocConfiguration;
+		this.#messages = [];
+		this.#associatedMessagesForAstDeclaration = new Map<AstDeclaration, ExtractorMessage[]>();
+		this.#sourceMapper = sourceMapper;
+		this.#tsdocConfiguration = tsdocConfiguration;
 
 		// showDiagnostics implies showVerboseMessages
 		this.showVerboseMessages = showVerboseMessages || showDiagnostics;
 		this.showDiagnostics = showDiagnostics;
 
-		this._applyMessagesConfig(messagesConfig);
+		this.#applyMessagesConfig(messagesConfig);
 	}
 
 	/**
 	 * Read the api-extractor.json configuration and build up the tables of routing rules.
 	 */
-	private _applyMessagesConfig(messagesConfig: IExtractorMessagesConfig): void {
+	#applyMessagesConfig(messagesConfig: IExtractorMessagesConfig): void {
 		if (messagesConfig.compilerMessageReporting) {
 			for (const messageId of Object.getOwnPropertyNames(messagesConfig.compilerMessageReporting)) {
-				const reportingRule: IReportingRule = MessageRouter._getNormalizedRule(
+				const reportingRule: IReportingRule = MessageRouter.#getNormalizedRule(
 					messagesConfig.compilerMessageReporting[messageId]!,
 				);
 
 				if (messageId === 'default') {
-					this._compilerDefaultRule = reportingRule;
+					this.#compilerDefaultRule = reportingRule;
 				} else if (/^TS\d+$/.test(messageId)) {
-					this._reportingRuleByMessageId.set(messageId, reportingRule);
+					this.#reportingRuleByMessageId.set(messageId, reportingRule);
 				} else {
 					throw new Error(
 						`Error in API Extractor config: The messages.compilerMessageReporting table contains` +
@@ -139,19 +139,19 @@ export class MessageRouter {
 
 		if (messagesConfig.extractorMessageReporting) {
 			for (const messageId of Object.getOwnPropertyNames(messagesConfig.extractorMessageReporting)) {
-				const reportingRule: IReportingRule = MessageRouter._getNormalizedRule(
+				const reportingRule: IReportingRule = MessageRouter.#getNormalizedRule(
 					messagesConfig.extractorMessageReporting[messageId]!,
 				);
 
 				if (messageId === 'default') {
-					this._extractorDefaultRule = reportingRule;
+					this.#extractorDefaultRule = reportingRule;
 				} else if (!messageId.startsWith('ae-')) {
 					throw new Error(
 						`Error in API Extractor config: The messages.extractorMessageReporting table contains` +
 							` an invalid entry "${messageId}".  The name should begin with the "ae-" prefix.`,
 					);
 				} else if (allExtractorMessageIds.has(messageId)) {
-					this._reportingRuleByMessageId.set(messageId, reportingRule);
+					this.#reportingRuleByMessageId.set(messageId, reportingRule);
 				} else {
 					throw new Error(
 						`Error in API Extractor config: The messages.extractorMessageReporting table contains` +
@@ -163,19 +163,19 @@ export class MessageRouter {
 
 		if (messagesConfig.tsdocMessageReporting) {
 			for (const messageId of Object.getOwnPropertyNames(messagesConfig.tsdocMessageReporting)) {
-				const reportingRule: IReportingRule = MessageRouter._getNormalizedRule(
+				const reportingRule: IReportingRule = MessageRouter.#getNormalizedRule(
 					messagesConfig.tsdocMessageReporting[messageId]!,
 				);
 
 				if (messageId === 'default') {
-					this._tsdocDefaultRule = reportingRule;
+					this.#tsdocDefaultRule = reportingRule;
 				} else if (!messageId.startsWith('tsdoc-')) {
 					throw new Error(
 						`Error in API Extractor config: The messages.tsdocMessageReporting table contains` +
 							` an invalid entry "${messageId}".  The name should begin with the "tsdoc-" prefix.`,
 					);
-				} else if (this._tsdocConfiguration.isKnownMessageId(messageId)) {
-					this._reportingRuleByMessageId.set(messageId, reportingRule);
+				} else if (this.#tsdocConfiguration.isKnownMessageId(messageId)) {
+					this.#reportingRuleByMessageId.set(messageId, reportingRule);
 				} else {
 					throw new Error(
 						`Error in API Extractor config: The messages.tsdocMessageReporting table contains` +
@@ -186,7 +186,7 @@ export class MessageRouter {
 		}
 	}
 
-	private static _getNormalizedRule(rule: IConfigMessageReportingRule): IReportingRule {
+	static #getNormalizedRule(rule: IConfigMessageReportingRule): IReportingRule {
 		return {
 			logLevel: rule.logLevel || 'none',
 			addToApiReportFile: rule.addToApiReportFile ?? false,
@@ -194,7 +194,7 @@ export class MessageRouter {
 	}
 
 	public get messages(): readonly ExtractorMessage[] {
-		return this._messages;
+		return this.#messages;
 	}
 
 	/**
@@ -220,7 +220,7 @@ export class MessageRouter {
 			// NOTE: Since compiler errors pertain to issues specific to the .d.ts files,
 			// we do not apply source mappings for them.
 			// const sourceFile: ts.SourceFile = diagnostic.file;
-			// const sourceLocation: ISourceLocation = this._sourceMapper.getSourceLocation({
+			// const sourceLocation: ISourceLocation = this.#sourceMapper.getSourceLocation({
 			// 	sourceFile,
 			// 	pos: diagnostic.start ?? 0,
 			// 	useDtsLocation: true,
@@ -230,7 +230,7 @@ export class MessageRouter {
 			options.sourceFileColumn = diagnostic.startPosition?.character;
 		}
 
-		this._messages.push(new ExtractorMessage(options));
+		this.#messages.push(new ExtractorMessage(options));
 	}
 
 	/**
@@ -257,7 +257,7 @@ export class MessageRouter {
 			properties,
 		);
 
-		this._associateMessageWithAstDeclaration(extractorMessage, astDeclaration);
+		this.#associateMessageWithAstDeclaration(extractorMessage, astDeclaration);
 	}
 
 	/**
@@ -276,7 +276,7 @@ export class MessageRouter {
 				text: message.unformattedText,
 			};
 
-			const sourceLocation: ISourceLocation = this._sourceMapper.getSourceLocation({
+			const sourceLocation: ISourceLocation = this.#sourceMapper.getSourceLocation({
 				sourceFile,
 				pos: message.textRange.pos,
 			});
@@ -287,10 +287,10 @@ export class MessageRouter {
 			const extractorMessage: ExtractorMessage = new ExtractorMessage(options);
 
 			if (astDeclaration) {
-				this._associateMessageWithAstDeclaration(extractorMessage, astDeclaration);
+				this.#associateMessageWithAstDeclaration(extractorMessage, astDeclaration);
 			}
 
-			this._messages.push(extractorMessage);
+			this.#messages.push(extractorMessage);
 		}
 	}
 
@@ -307,10 +307,10 @@ export class MessageRouter {
 
 		const keyNamesToOmit: Set<string> = new Set(ioptions.keyNamesToOmit);
 
-		return MessageRouter._buildJsonDumpObject(input, keyNamesToOmit);
+		return MessageRouter.#buildJsonDumpObject(input, keyNamesToOmit);
 	}
 
-	private static _buildJsonDumpObject(input: any, keyNamesToOmit: Set<string>): any | undefined {
+	static #buildJsonDumpObject(input: any, keyNamesToOmit: Set<string>): any | undefined {
 		if (input === null || input === undefined) {
 			return null; // JSON uses null instead of undefined
 		}
@@ -324,7 +324,7 @@ export class MessageRouter {
 				if (Array.isArray(input)) {
 					const outputArray: any[] = [];
 					for (const element of input) {
-						const serializedElement: any = MessageRouter._buildJsonDumpObject(element, keyNamesToOmit);
+						const serializedElement: any = MessageRouter.#buildJsonDumpObject(element, keyNamesToOmit);
 						if (serializedElement !== undefined) {
 							outputArray.push(serializedElement);
 						}
@@ -342,7 +342,7 @@ export class MessageRouter {
 
 					const value: any = input[key];
 
-					const serializedValue: any = MessageRouter._buildJsonDumpObject(value, keyNamesToOmit);
+					const serializedValue: any = MessageRouter.#buildJsonDumpObject(value, keyNamesToOmit);
 
 					if (serializedValue !== undefined) {
 						(outputObject as any)[key] = serializedValue;
@@ -356,18 +356,15 @@ export class MessageRouter {
 	}
 
 	/**
-	 * Record this message in  _associatedMessagesForAstDeclaration
+	 * Record this message in  #associatedMessagesForAstDeclaration
 	 */
-	private _associateMessageWithAstDeclaration(
-		extractorMessage: ExtractorMessage,
-		astDeclaration: AstDeclaration,
-	): void {
+	#associateMessageWithAstDeclaration(extractorMessage: ExtractorMessage, astDeclaration: AstDeclaration): void {
 		let associatedMessages: ExtractorMessage[] | undefined =
-			this._associatedMessagesForAstDeclaration.get(astDeclaration);
+			this.#associatedMessagesForAstDeclaration.get(astDeclaration);
 
 		if (!associatedMessages) {
 			associatedMessages = [];
-			this._associatedMessagesForAstDeclaration.set(astDeclaration, associatedMessages);
+			this.#associatedMessagesForAstDeclaration.set(astDeclaration, associatedMessages);
 		}
 
 		associatedMessages.push(extractorMessage);
@@ -390,7 +387,7 @@ export class MessageRouter {
 			properties,
 		};
 
-		const sourceLocation: ISourceLocation = this._sourceMapper.getSourceLocation({
+		const sourceLocation: ISourceLocation = this.#sourceMapper.getSourceLocation({
 			sourceFile,
 			pos,
 		});
@@ -400,7 +397,7 @@ export class MessageRouter {
 
 		const extractorMessage: ExtractorMessage = new ExtractorMessage(options);
 
-		this._messages.push(extractorMessage);
+		this.#messages.push(extractorMessage);
 		return extractorMessage;
 	}
 
@@ -412,12 +409,12 @@ export class MessageRouter {
 	public fetchAssociatedMessagesForReviewFile(astDeclaration: AstDeclaration): ExtractorMessage[] {
 		const messagesForApiReportFile: ExtractorMessage[] = [];
 
-		const associatedMessages: ExtractorMessage[] = this._associatedMessagesForAstDeclaration.get(astDeclaration) ?? [];
+		const associatedMessages: ExtractorMessage[] = this.#associatedMessagesForAstDeclaration.get(astDeclaration) ?? [];
 		for (const associatedMessage of associatedMessages) {
 			// Make sure we didn't already report this message for some reason
 			if (!associatedMessage.handled) {
 				// Is this message type configured to go in the API report file?
-				const reportingRule: IReportingRule = this._getRuleForMessage(associatedMessage);
+				const reportingRule: IReportingRule = this.#getRuleForMessage(associatedMessage);
 				if (reportingRule.addToApiReportFile) {
 					// Include it in the result, and record that it went to the API report file
 					messagesForApiReportFile.push(associatedMessage);
@@ -426,7 +423,7 @@ export class MessageRouter {
 			}
 		}
 
-		this._sortMessagesForOutput(messagesForApiReportFile);
+		this.#sortMessagesForOutput(messagesForApiReportFile);
 		return messagesForApiReportFile;
 	}
 
@@ -441,7 +438,7 @@ export class MessageRouter {
 			// Make sure we didn't already report this message for some reason
 			if (!unassociatedMessage.handled) {
 				// Is this message type configured to go in the API report file?
-				const reportingRule: IReportingRule = this._getRuleForMessage(unassociatedMessage);
+				const reportingRule: IReportingRule = this.#getRuleForMessage(unassociatedMessage);
 				if (reportingRule.addToApiReportFile) {
 					// Include it in the result, and record that it went to the API report file
 					messagesForApiReportFile.push(unassociatedMessage);
@@ -450,7 +447,7 @@ export class MessageRouter {
 			}
 		}
 
-		this._sortMessagesForOutput(messagesForApiReportFile);
+		this.#sortMessagesForOutput(messagesForApiReportFile);
 		return messagesForApiReportFile;
 	}
 
@@ -469,15 +466,15 @@ export class MessageRouter {
 			}
 		}
 
-		this._sortMessagesForOutput(messagesForLogger);
+		this.#sortMessagesForOutput(messagesForLogger);
 
 		for (const message of messagesForLogger) {
-			this._handleMessage(message);
+			this.#handleMessage(message);
 		}
 	}
 
 	public logError(messageId: ConsoleMessageId, message: string, properties?: IExtractorMessageProperties): void {
-		this._handleMessage(
+		this.#handleMessage(
 			new ExtractorMessage({
 				category: ExtractorMessageCategory.Console,
 				messageId,
@@ -489,7 +486,7 @@ export class MessageRouter {
 	}
 
 	public logWarning(messageId: ConsoleMessageId, message: string, properties?: IExtractorMessageProperties): void {
-		this._handleMessage(
+		this.#handleMessage(
 			new ExtractorMessage({
 				category: ExtractorMessageCategory.Console,
 				messageId,
@@ -501,7 +498,7 @@ export class MessageRouter {
 	}
 
 	public logInfo(messageId: ConsoleMessageId, message: string, properties?: IExtractorMessageProperties): void {
-		this._handleMessage(
+		this.#handleMessage(
 			new ExtractorMessage({
 				category: ExtractorMessageCategory.Console,
 				messageId,
@@ -513,7 +510,7 @@ export class MessageRouter {
 	}
 
 	public logVerbose(messageId: ConsoleMessageId, message: string, properties?: IExtractorMessageProperties): void {
-		this._handleMessage(
+		this.#handleMessage(
 			new ExtractorMessage({
 				category: ExtractorMessageCategory.Console,
 				messageId,
@@ -543,7 +540,7 @@ export class MessageRouter {
 	/**
 	 * Give the calling application a chance to handle the `ExtractorMessage`, and if not, display it on the console.
 	 */
-	private _handleMessage(message: ExtractorMessage): void {
+	#handleMessage(message: ExtractorMessage): void {
 		// Don't tally messages that were already "handled" by writing them into the API report
 		if (message.handled) {
 			return;
@@ -553,13 +550,13 @@ export class MessageRouter {
 		if (message.category === ExtractorMessageCategory.Console) {
 			// Console messages have their category log level assigned via logInfo(), logVerbose(), etc.
 		} else {
-			const reportingRule: IReportingRule = this._getRuleForMessage(message);
+			const reportingRule: IReportingRule = this.#getRuleForMessage(message);
 			message.logLevel = reportingRule.logLevel;
 		}
 
 		// If there is a callback, allow it to modify and/or handle the message
-		if (this._messageCallback) {
-			this._messageCallback(message);
+		if (this.#messageCallback) {
+			this.#messageCallback(message);
 		}
 
 		// Update the statistics
@@ -589,7 +586,7 @@ export class MessageRouter {
 		if (message.category === ExtractorMessageCategory.Console) {
 			messageText = message.text;
 		} else {
-			messageText = message.formatMessageWithLocation(this._workingPackageFolder);
+			messageText = message.formatMessageWithLocation(this.#workingPackageFolder);
 		}
 
 		switch (message.logLevel) {
@@ -616,19 +613,19 @@ export class MessageRouter {
 	/**
 	 * For a given message, determine the IReportingRule based on the rule tables.
 	 */
-	private _getRuleForMessage(message: ExtractorMessage): IReportingRule {
-		const reportingRule: IReportingRule | undefined = this._reportingRuleByMessageId.get(message.messageId);
+	#getRuleForMessage(message: ExtractorMessage): IReportingRule {
+		const reportingRule: IReportingRule | undefined = this.#reportingRuleByMessageId.get(message.messageId);
 		if (reportingRule) {
 			return reportingRule;
 		}
 
 		switch (message.category) {
 			case ExtractorMessageCategory.Compiler:
-				return this._compilerDefaultRule;
+				return this.#compilerDefaultRule;
 			case ExtractorMessageCategory.Extractor:
-				return this._extractorDefaultRule;
+				return this.#extractorDefaultRule;
 			case ExtractorMessageCategory.TSDoc:
-				return this._tsdocDefaultRule;
+				return this.#tsdocDefaultRule;
 			case ExtractorMessageCategory.Console:
 				throw new InternalError('ExtractorMessageCategory.Console is not supported with IReportingRule');
 		}
@@ -637,7 +634,7 @@ export class MessageRouter {
 	/**
 	 * Sorts an array of messages according to a reasonable ordering
 	 */
-	private _sortMessagesForOutput(messages: ExtractorMessage[]): void {
+	#sortMessagesForOutput(messages: ExtractorMessage[]): void {
 		messages.sort((a, b) => {
 			let diff: number;
 			// First sort by file name

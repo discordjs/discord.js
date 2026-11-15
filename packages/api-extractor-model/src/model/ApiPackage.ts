@@ -191,32 +191,32 @@ export interface IApiPackageSaveOptions extends IJsonFileSaveOptions {
  * @public
  */
 export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumentedItem)) {
-	private readonly _tsdocConfiguration: TSDocConfiguration;
+	readonly #tsdocConfiguration: TSDocConfiguration;
 
-	private readonly _projectFolderUrl?: string | undefined;
+	readonly #projectFolderUrl?: string | undefined;
 
-	private readonly _dependencies?: Record<string, string> | undefined;
+	readonly #dependencies?: Record<string, string> | undefined;
 
 	public constructor(options: IApiPackageOptions) {
 		super(options);
 
-		this._tsdocConfiguration = options.tsdocConfiguration;
-		this._projectFolderUrl = options.projectFolderUrl;
+		this.#tsdocConfiguration = options.tsdocConfiguration;
+		this.#projectFolderUrl = options.projectFolderUrl;
 
 		if (options.dependencies) {
-			this._dependencies = options.dependencies;
+			this.#dependencies = options.dependencies;
 		} else {
 			const packageJson = PackageJsonLookup.instance.tryLoadPackageJsonFor('.');
 			if (packageJson?.dependencies) {
-				this._dependencies = {};
+				this.#dependencies = {};
 				for (const [pack, semVer] of Object.entries(packageJson.dependencies)) {
 					const pathToPackage = path.join('..', pack.includes('/') ? pack.slice(pack.lastIndexOf('/')) : pack);
 					if (semVer === 'workspace:^') {
-						this._dependencies[pack] =
+						this.#dependencies[pack] =
 							PackageJsonLookup.instance.tryLoadPackageJsonFor(pathToPackage)?.version ?? 'unknown';
 					} else {
 						// if (FileSystem.exists(pathToPackage))
-						this._dependencies[pack] = semVer.replace(/^[\^~]/, '');
+						this.#dependencies[pack] = semVer.replace(/^[\^~]/, '');
 					}
 				}
 			}
@@ -243,7 +243,7 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 
 	public static loadFromJson(rawJson: any, apiJsonFilename: string = ''): ApiPackage {
 		const jsonObject =
-			MinifyJSONMapping.metadata in rawJson ? this._mapFromMinified(rawJson) : (rawJson as IApiPackageJson);
+			MinifyJSONMapping.metadata in rawJson ? this.#mapFromMinified(rawJson) : (rawJson as IApiPackageJson);
 		if (!jsonObject?.metadata) throw new Error(util.inspect(rawJson, { depth: 2 }));
 		if (!jsonObject?.metadata || typeof jsonObject.metadata.schemaVersion !== 'number') {
 			throw new Error(
@@ -337,7 +337,7 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 	}
 
 	public get dependencies(): Record<string, string> | undefined {
-		return this._dependencies;
+		return this.#dependencies;
 	}
 
 	/**
@@ -349,11 +349,11 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 	 * in the .api.json file so that doc comments can be parsed accurately when loading the file.
 	 */
 	public get tsdocConfiguration(): TSDocConfiguration {
-		return this._tsdocConfiguration;
+		return this.#tsdocConfiguration;
 	}
 
 	public get projectFolderUrl(): string | undefined {
-		return this._projectFolderUrl;
+		return this.#projectFolderUrl;
 	}
 
 	/**
@@ -395,13 +395,13 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 			jsonObject.projectFolderUrl = this.projectFolderUrl;
 		}
 
-		if (this._dependencies) {
-			jsonObject.dependencies = this._dependencies;
+		if (this.#dependencies) {
+			jsonObject.dependencies = this.#dependencies;
 		}
 
 		this.serializeInto(jsonObject);
 		if (ioptions.minify) {
-			FileSystem.writeFile(apiJsonFilename, Buffer.from(JSON.stringify(this._mapToMinified(jsonObject)), 'utf8'), {
+			FileSystem.writeFile(apiJsonFilename, Buffer.from(JSON.stringify(this.#mapToMinified(jsonObject)), 'utf8'), {
 				ensureFolderExists: ioptions.ensureFolderExists ?? true,
 			});
 		} else {
@@ -416,7 +416,7 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 		return DeclarationReference.package(this.name);
 	}
 
-	private _mapToMinified(jsonObject: IApiPackageJson) {
+	#mapToMinified(jsonObject: IApiPackageJson) {
 		const mapper = (item: any): any => {
 			if (Array.isArray(item)) return item.map(mapper);
 			else {
@@ -438,7 +438,7 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 		return mapper(jsonObject);
 	}
 
-	private static _mapFromMinified(jsonObject: any): IApiPackageJson {
+	static #mapFromMinified(jsonObject: any): IApiPackageJson {
 		const mapper = (item: any): any => {
 			if (Array.isArray(item)) return item.map(mapper);
 			else {
