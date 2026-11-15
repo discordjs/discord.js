@@ -152,10 +152,10 @@ export class ExportAnalyzer {
 				const exportStarSymbol: tsAPI.Symbol | undefined = exports.get(ts.InternalSymbolName.ExportStar);
 				if (exportStarSymbol) {
 					for (const exportStarDeclaration of exportStarSymbol.declarations ?? []) {
-						const exportStartDeclarationResolved: ts.Declaration | undefined = exportStarDeclaration.resolve();
-						if (exportStartDeclarationResolved && ts.isExportDeclaration(exportStartDeclarationResolved)) {
+						const exportStarDeclarationResolved: ts.Declaration | undefined = exportStarDeclaration.resolve();
+						if (exportStarDeclarationResolved && ts.isExportDeclaration(exportStarDeclarationResolved)) {
 							const starExportedModule: AstModule | undefined = this._fetchSpecifierAstModule(
-								exportStartDeclarationResolved,
+								exportStarDeclarationResolved,
 								exportStarSymbol,
 							);
 
