@@ -274,7 +274,7 @@ export function createAudioResource<Metadata>(
 	const transformerPipeline = findPipeline(inputType, needsInlineVolume ? VOLUME_CONSTRAINT : NO_CONSTRAINT);
 
 	if (transformerPipeline.length === 0) {
-		if (typeof input === 'string') throw new Error(`Invalid pipeline constructed for string resource '${input}'`);
+		if (typeof input === 'string') throw new TypeError(`Invalid pipeline constructed for string resource '${input}'`);
 		// No adjustments required
 		return new AudioResource<Metadata>(
 			[],

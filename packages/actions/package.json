@@ -44,15 +44,15 @@
 		"@actions/core": "^3.0.1",
 		"@actions/github": "^9.1.1",
 		"@actions/glob": "^0.7.0",
-		"@aws-sdk/client-s3": "^3.1124.0",
+		"@aws-sdk/client-s3": "^3.1169.0",
 		"@discordjs/scripts": "workspace:^",
 		"cloudflare": "^7.1.0",
-		"commander": "^15.0.0",
+		"commander": "^15.1.0",
 		"meilisearch": "^0.60.0",
 		"p-limit": "^7.3.2",
 		"p-queue": "^9.3.3",
 		"tslib": "^2.8.1",
-		"undici": "^8.10.1"
+		"undici": "^8.12.4"
 	},
 	"devDependencies": {
 		"@npm/types": "^2.1.0",
@@ -61,9 +61,9 @@
 		"@vitest/coverage-v8": "^4.1.11",
 		"eslint-config-neon": "^0.5.4",
 		"oxfmt": "^0.74.0",
-		"oxlint": "^1.89.0",
+		"oxlint": "^1.93.0",
 		"terser": "^5.51.2",
-		"turbo": "^2.10.12",
+		"turbo": "^2.11.11",
 		"typescript": "~7.0.2",
 		"vitest": "^4.1.11"
 	},

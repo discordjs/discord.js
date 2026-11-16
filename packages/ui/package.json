@@ -56,7 +56,7 @@
 		"chromatic": "chromatic"
 	},
 	"dependencies": {
-		"@ariakit/react": "^0.4.39",
+		"@ariakit/react": "^0.4.43",
 		"@react-icons/all-files": "^4.1.0",
 		"react": "^19.2.8",
 		"react-dom": "^19.2.8"
@@ -64,28 +64,28 @@
 	"devDependencies": {
 		"@favware/cliff-jumper": "^6.1.0",
 		"@react-icons/all-files": "^4.1.0",
-		"@storybook/addon-docs": "^10.5.10",
-		"@storybook/addon-links": "^10.5.10",
-		"@storybook/addon-themes": "^10.5.10",
-		"@storybook/builder-vite": "^10.5.10",
-		"@storybook/react": "^10.5.10",
-		"@storybook/react-vite": "^10.5.10",
+		"@storybook/addon-docs": "^10.6.7",
+		"@storybook/addon-links": "^10.6.7",
+		"@storybook/addon-themes": "^10.6.7",
+		"@storybook/builder-vite": "^10.6.7",
+		"@storybook/react": "^10.6.7",
+		"@storybook/react-vite": "^10.6.7",
 		"@types/node": "^24.13.3",
 		"@types/react": "^19.2.18",
 		"@types/react-dom": "^19.2.5",
-		"@unocss/reset": "^66.9.2",
-		"@vitejs/plugin-react": "^6.1.1",
-		"chromatic": "^18.7.2",
+		"@unocss/reset": "^66.13.0",
+		"@vitejs/plugin-react": "^6.3.0",
+		"chromatic": "^18.14.4",
 		"eslint-config-neon": "^0.5.4",
 		"oxfmt": "^0.74.0",
-		"oxlint": "^1.89.0",
+		"oxlint": "^1.93.0",
 		"prop-types": "^15.8.1",
-		"storybook": "^10.5.10",
-		"turbo": "^2.10.12",
+		"storybook": "^10.6.7",
+		"turbo": "^2.11.11",
 		"typescript": "~7.0.2",
-		"unocss": "^66.9.2",
+		"unocss": "^66.13.0",
 		"unplugin-dts": "^1.0.3",
-		"vite": "^8.2.2"
+		"vite": "^8.3.8"
 	},
 	"engines": {
 		"node": ">=24.17.0"
