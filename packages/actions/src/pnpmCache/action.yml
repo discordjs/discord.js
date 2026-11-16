@@ -9,7 +9,7 @@ runs:
       with:
         swap-size-gb: 10
 
-    - uses: pnpm/action-setup@v6.0.9
+    - uses: pnpm/action-setup@v6.1.1
       name: Install pnpm
       with:
         run_install: false
