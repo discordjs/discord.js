@@ -76,7 +76,7 @@
 		"@types/supertest": "^7.2.1",
 		"@vitest/coverage-v8": "^4.1.11",
 		"eslint-config-neon": "^0.5.4",
-		"oxfmt": "^0.74.0",
+		"oxfmt": "^0.78.0",
 		"oxlint": "^1.93.0",
 		"supertest": "^7.3.2",
 		"turbo": "^2.11.11",

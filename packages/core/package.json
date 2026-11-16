@@ -60,7 +60,7 @@
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"@discordjs/ws": "workspace:^",
-		"@sapphire/snowflake": "^3.5.5",
+		"@sapphire/snowflake": "^4.0.0",
 		"@vladfrangu/async_event_emitter": "^2.4.7",
 		"discord-api-types": "^0.38.59"
 	},
@@ -71,7 +71,7 @@
 		"@types/node": "^24.13.3",
 		"@vitest/coverage-v8": "^4.1.11",
 		"eslint-config-neon": "^0.5.4",
-		"oxfmt": "^0.74.0",
+		"oxfmt": "^0.78.0",
 		"oxlint": "^1.93.0",
 		"turbo": "^2.11.11",
 		"typescript": "~7.0.2",

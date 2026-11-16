@@ -61,12 +61,12 @@
 		"husky": "^9.1.7",
 		"is-ci": "^4.1.0",
 		"lint-staged": "^17.6.1",
-		"oxfmt": "^0.74.0",
+		"oxfmt": "^0.78.0",
 		"oxlint": "^1.93.0",
 		"turbo": "^2.11.11",
 		"typescript": "~7.0.2",
 		"unocss": "^66.13.0",
-		"vercel": "^59.11.2",
+		"vercel": "^65.16.0",
 		"vitest": "^4.1.11"
 	},
 	"engines": {

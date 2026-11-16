@@ -68,7 +68,7 @@
 		"@types/jsdoc-to-markdown": "^7.0.6",
 		"@types/node": "^24.13.3",
 		"eslint-config-neon": "^0.5.4",
-		"oxfmt": "^0.74.0",
+		"oxfmt": "^0.78.0",
 		"oxlint": "^1.93.0",
 		"terser": "^5.51.2",
 		"turbo": "^2.11.11",
