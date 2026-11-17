@@ -78,9 +78,9 @@
 		"@types/node": "^24.13.3",
 		"@vitest/coverage-v8": "^4.1.11",
 		"eslint-config-neon": "^0.5.4",
-		"oxfmt": "^0.74.0",
-		"oxlint": "^1.89.0",
-		"turbo": "^2.10.12",
+		"oxfmt": "^0.78.0",
+		"oxlint": "^1.93.0",
+		"turbo": "^2.11.11",
 		"typescript": "~7.0.2",
 		"vitest": "^4.1.11"
 	},
