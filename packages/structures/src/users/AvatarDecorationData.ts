@@ -1,6 +1,7 @@
-import type { APIAvatarDecorationData } from 'discord-api-types/v10';
+import { CDNRoutes, RouteBases, type APIAvatarDecorationData } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
+import { isFieldSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 
 /**
@@ -36,5 +37,16 @@ export class AvatarDecorationData<Omitted extends keyof APIAvatarDecorationData 
 	 */
 	public get asset() {
 		return this[kData].asset;
+	}
+
+	/**
+	 * Get the URL to the asset of this avatar decoration
+	 *
+	 * @returns the URL to the asset of this avatar decoration
+	 */
+	public assetURL() {
+		return isFieldSet(this[kData], 'asset', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.avatarDecoration(this[kData].asset)}`
+			: null;
 	}
 }
