@@ -70,11 +70,13 @@ export class EntitlementManager extends CachedManager {
    * @returns {Promise<Entitlement|Collection<Snowflake, Entitlement>>}
    */
   async fetch(options) {
-    if (!options) return this._fetchMany(options);
+    if (options === undefined) {
+      return this._fetchMany(options);
+    }
+
     const { entitlement, cache, force } = options;
     const resolvedEntitlement = this.resolveId(entitlement ?? options);
-
-    if (resolvedEntitlement) {
+    if (resolvedEntitlement !== null) {
       return this._fetchSingle({ entitlement: resolvedEntitlement, cache, force });
     }
 
