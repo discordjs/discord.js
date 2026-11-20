@@ -1,15 +1,13 @@
-'use strict';
-
-const { ChannelType, Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { ThreadManager } = require('./ThreadManager.js');
+import { ChannelType, Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { ThreadManager } from './ThreadManager.js';
 
 /**
  * Manages API methods for {@link ThreadChannel} objects and stores their cache.
  *
  * @extends {ThreadManager}
  */
-class GuildTextThreadManager extends ThreadManager {
+export class GuildTextThreadManager extends ThreadManager {
   /**
    * The channel this Manager belongs to
    *
@@ -91,5 +89,3 @@ class GuildTextThreadManager extends ThreadManager {
     return this.client.actions.ThreadCreate.handle(data).thread;
   }
 }
-
-exports.GuildTextThreadManager = GuildTextThreadManager;

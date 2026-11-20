@@ -1,6 +1,4 @@
-'use strict';
-
-const { Emoji } = require('./Emoji.js');
+import { Emoji } from './Emoji.js';
 
 /**
  * Parent class for {@link GuildEmoji} and {@link GuildPreviewEmoji}.
@@ -8,7 +6,7 @@ const { Emoji } = require('./Emoji.js');
  * @extends {Emoji}
  * @abstract
  */
-class BaseGuildEmoji extends Emoji {
+export class BaseGuildEmoji extends Emoji {
   constructor(client, data, guild) {
     super(client, data);
 
@@ -107,5 +105,3 @@ class BaseGuildEmoji extends Emoji {
  * @type {number}
  * @readonly
  */
-
-exports.BaseGuildEmoji = BaseGuildEmoji;

@@ -3,5 +3,6 @@
 	"name": "ui",
 	"org": "discordjs",
 	"packagePath": "packages/ui",
-	"identifierBase": false
+	"identifierBase": false,
+	"skipTag": true
 }

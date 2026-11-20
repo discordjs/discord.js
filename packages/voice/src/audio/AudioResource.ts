@@ -1,9 +1,9 @@
 import type { Buffer } from 'node:buffer';
 import { pipeline, type Readable } from 'node:stream';
 import prism from 'prism-media';
-import { noop } from '../util/util';
-import { SILENCE_FRAME, type AudioPlayer } from './AudioPlayer';
-import { findPipeline, StreamType, TransformerType, type Edge } from './TransformerGraph';
+import { noop } from '../util/util.js';
+import { SILENCE_FRAME, type AudioPlayer } from './AudioPlayer.js';
+import { findPipeline, StreamType, TransformerType, type Edge } from './TransformerGraph.js';
 
 /**
  * Options that are set when creating a new audio resource.
@@ -274,7 +274,7 @@ export function createAudioResource<Metadata>(
 	const transformerPipeline = findPipeline(inputType, needsInlineVolume ? VOLUME_CONSTRAINT : NO_CONSTRAINT);
 
 	if (transformerPipeline.length === 0) {
-		if (typeof input === 'string') throw new Error(`Invalid pipeline constructed for string resource '${input}'`);
+		if (typeof input === 'string') throw new TypeError(`Invalid pipeline constructed for string resource '${input}'`);
 		// No adjustments required
 		return new AudioResource<Metadata>(
 			[],

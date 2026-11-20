@@ -30,7 +30,7 @@
 		"directory": "packages/create-discord-bot"
 	},
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
-	"bin": "./dist/index.js",
+	"bin": "./dist/bin/index.js",
 	"directories": {
 		"lib": "src",
 		"bin": "bin"
@@ -45,7 +45,7 @@
 		"provenance": true
 	},
 	"scripts": {
-		"build": "tsc --noEmit && tsup",
+		"build": "tsc",
 		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
 		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions",
 		"prepack": "pnpm run build && pnpm run lint",
@@ -54,7 +54,7 @@
 		"rename-to-app": "node scripts/rename-to-app.mjs"
 	},
 	"dependencies": {
-		"commander": "^15.0.0",
+		"commander": "^15.1.0",
 		"prompts": "^2.4.2",
 		"validate-npm-package-name": "^8.0.0"
 	},
@@ -65,11 +65,10 @@
 		"@types/prompts": "^2.4.9",
 		"@types/validate-npm-package-name": "^4.0.2",
 		"eslint-config-neon": "^0.5.4",
-		"oxfmt": "^0.74.0",
-		"oxlint": "^1.89.0",
+		"oxfmt": "^0.78.0",
+		"oxlint": "^1.93.0",
 		"terser": "^5.51.2",
-		"tsup": "^8.5.1",
-		"typescript": "~5.9.3"
+		"typescript": "~7.0.2"
 	},
 	"engines": {
 		"node": ">=24.17.0"

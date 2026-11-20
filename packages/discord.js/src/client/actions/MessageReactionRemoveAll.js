@@ -1,9 +1,7 @@
-'use strict';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const { Events } = require('../../util/Events.js');
-const { Action } = require('./Action.js');
-
-class MessageReactionRemoveAllAction extends Action {
+export class MessageReactionRemoveAllAction extends Action {
   handle(data) {
     // Verify channel
     const channel = this.getChannel({ id: data.channel_id, ...('guild_id' in data && { guild_id: data.guild_id }) });
@@ -30,5 +28,3 @@ class MessageReactionRemoveAllAction extends Action {
  * @param {Message} message The message the reactions were removed from
  * @param {Collection<string|Snowflake, MessageReaction>} reactions The cached message reactions that were removed.
  */
-
-exports.MessageReactionRemoveAllAction = MessageReactionRemoveAllAction;
