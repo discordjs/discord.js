@@ -99,9 +99,9 @@ export const apiItem_onParentChanged: unique symbol = Symbol('ApiItem._onAddToCo
  * @public
  */
 export class ApiItem {
-	private _canonicalReference: DeclarationReference | undefined;
+	#canonicalReference: DeclarationReference | undefined;
 
-	private _parent: ApiItem | undefined;
+	#parent: ApiItem | undefined;
 
 	// eslint-disable-next-line @typescript-eslint/no-useless-constructor
 	public constructor(_options: IApiItemOptions) {
@@ -159,16 +159,16 @@ export class ApiItem {
 	 * @beta
 	 */
 	public get canonicalReference(): DeclarationReference {
-		if (!this._canonicalReference) {
+		if (!this.#canonicalReference) {
 			try {
-				this._canonicalReference = this.buildCanonicalReference();
+				this.#canonicalReference = this.buildCanonicalReference();
 			} catch (error) {
 				const name: string = this.getScopedNameWithinPackage() || this.displayName;
 				throw new InternalError(`Error building canonical reference for ${name}:\n` + (error as Error).message);
 			}
 		}
 
-		return this._canonicalReference;
+		return this.#canonicalReference;
 	}
 
 	/**
@@ -217,7 +217,7 @@ export class ApiItem {
 	 * @virtual
 	 */
 	public get parent(): ApiItem | undefined {
-		return this._parent;
+		return this.#parent;
 	}
 
 	/**
@@ -242,7 +242,7 @@ export class ApiItem {
 	 * item of its name/kind, then the result is an array containing only this item.
 	 */
 	public getMergedSiblings(): readonly ApiItem[] {
-		const parent: ApiItem | undefined = this._parent;
+		const parent: ApiItem | undefined = this.#parent;
 		if (parent && ApiItemContainerMixin.isBaseClassOf(parent)) {
 			return parent._getMergedSiblingsForMember(this);
 		}
@@ -369,8 +369,8 @@ export class ApiItem {
 	 * @internal
 	 */
 	public [apiItem_onParentChanged](parent: ApiItem | undefined): void {
-		this._parent = parent;
-		this._canonicalReference = undefined;
+		this.#parent = parent;
+		this.#canonicalReference = undefined;
 	}
 
 	/**

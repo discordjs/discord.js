@@ -4,7 +4,7 @@
 
 import { ReleaseTag } from '@discordjs/api-extractor-model';
 import { FileSystem, type NewlineKind, InternalError } from '@rushstack/node-core-library';
-import * as ts from 'typescript';
+import * as ts from 'typescript/ast';
 import { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstEntity } from '../analyzer/AstEntity.js';
 import { AstImport } from '../analyzer/AstImport.js';
@@ -71,458 +71,448 @@ export class DtsRollupGenerator {
 		const writer: IndentedWriter = new IndentedWriter();
 		writer.trimLeadingSpaces = true;
 
-		DtsRollupGenerator._generateTypingsFileContent(collector, writer, dtsKind);
+		_generateTypingsFileContent(collector, writer, dtsKind);
 
 		FileSystem.writeFile(dtsFilename, writer.toString(), {
 			convertLineEndings: newlineKind,
 			ensureFolderExists: true,
 		});
 	}
+}
 
-	private static _generateTypingsFileContent(
-		collector: Collector,
-		writer: IndentedWriter,
-		dtsKind: DtsRollupKind,
-	): void {
-		// Emit the @packageDocumentation comment at the top of the file
-		if (collector.workingPackage.tsdocParserContext) {
-			writer.trimLeadingSpaces = false;
-			writer.writeLine(collector.workingPackage.tsdocParserContext.sourceRange.toString());
-			writer.trimLeadingSpaces = true;
-			writer.ensureSkippedLine();
-		}
-
-		// Emit the triple slash directives
-		for (const typeDirectiveReference of collector.dtsTypeReferenceDirectives) {
-			// https://github.com/microsoft/TypeScript/blob/611ebc7aadd7a44a4c0447698bfda9222a78cb66/src/compiler/declarationEmitter.ts#L162
-			writer.writeLine(`/// <reference types="${typeDirectiveReference}" />`);
-		}
-
-		for (const libDirectiveReference of collector.dtsLibReferenceDirectives) {
-			writer.writeLine(`/// <reference lib="${libDirectiveReference}" />`);
-		}
-
+function _generateTypingsFileContent(collector: Collector, writer: IndentedWriter, dtsKind: DtsRollupKind): void {
+	// Emit the @packageDocumentation comment at the top of the file
+	if (collector.workingPackage.tsdocParserContext) {
+		writer.trimLeadingSpaces = false;
+		writer.writeLine(collector.workingPackage.tsdocParserContext.sourceRange.toString());
+		writer.trimLeadingSpaces = true;
 		writer.ensureSkippedLine();
-
-		// dtsRollup doesn't support multiple entry points. We throw error if dtsRollup is enabled while more than one entry points are specified.
-		// So at this point, we can safely assume there is only one entry point in collector.entities
-		// Emit the imports
-		for (const entity of [...collector.entities.values()][0]!) {
-			if (entity.astEntity instanceof AstImport) {
-				// Note: it isn't valid to trim imports based on their release tags.
-				// E.g. class Foo (`@public`) extends interface Bar (`@beta`) from some external library.
-				// API-Extractor cannot trim `import { Bar } from "external-library"` when generating its public rollup,
-				// or the export of `Foo` would include a broken reference to `Bar`.
-				const astImport: AstImport = entity.astEntity;
-				DtsEmitHelpers.emitImport(writer, entity, astImport);
-			}
-		}
-
-		writer.ensureSkippedLine();
-
-		// Emit the regular declarations
-		for (const entity of [...collector.entities.values()][0]!) {
-			const astEntity: AstEntity = entity.astEntity;
-			const symbolMetadata: SymbolMetadata | undefined = collector.tryFetchMetadataForAstEntity(astEntity);
-			const maxEffectiveReleaseTag: ReleaseTag = symbolMetadata
-				? symbolMetadata.maxEffectiveReleaseTag
-				: ReleaseTag.None;
-
-			if (!this._shouldIncludeReleaseTag(maxEffectiveReleaseTag, dtsKind)) {
-				if (!collector.extractorConfig.omitTrimmingComments) {
-					writer.ensureSkippedLine();
-					writer.writeLine(`/* Excluded from this release type: ${entity.nameForEmit} */`);
-				}
-
-				continue;
-			}
-
-			if (astEntity instanceof AstSymbol) {
-				// Emit all the declarations for this entry
-				for (const astDeclaration of astEntity.astDeclarations || []) {
-					const apiItemMetadata: ApiItemMetadata = collector.fetchApiItemMetadata(astDeclaration);
-
-					if (this._shouldIncludeReleaseTag(apiItemMetadata.effectiveReleaseTag, dtsKind)) {
-						const span: Span = new Span(astDeclaration.declaration);
-						DtsRollupGenerator._modifySpan(collector, span, entity, astDeclaration, dtsKind);
-						writer.ensureSkippedLine();
-						span.writeModifiedText(writer);
-						writer.ensureNewLine();
-					} else if (!collector.extractorConfig.omitTrimmingComments) {
-						writer.ensureSkippedLine();
-						writer.writeLine(`/* Excluded declaration from this release type: ${entity.nameForEmit} */`);
-					}
-				}
-			}
-
-			if (astEntity instanceof AstNamespaceImport) {
-				const astModuleExportInfo: IAstModuleExportInfo = astEntity.fetchAstModuleExportInfo(collector);
-
-				if (entity.nameForEmit === undefined) {
-					// This should never happen
-					throw new InternalError('referencedEntry.nameForEmit is undefined');
-				}
-
-				if (astModuleExportInfo.starExportedExternalModules.size > 0) {
-					// We could support this, but we would need to find a way to safely represent it.
-					throw new Error(
-						`The ${entity.nameForEmit} namespace import includes a start export, which is not supported:\n` +
-							SourceFileLocationFormatter.formatDeclaration(astEntity.declaration),
-					);
-				}
-
-				// Emit a synthetic declaration for the namespace.  It will look like this:
-				//
-				//    declare namespace example {
-				//      export {
-				//        f1,
-				//        f2
-				//      }
-				//    }
-				//
-				// Note that we do not try to relocate f1()/f2() to be inside the namespace because other type
-				// signatures may reference them directly (without using the namespace qualifier).
-
-				writer.ensureSkippedLine();
-				if (entity.shouldInlineExport) {
-					writer.write('export ');
-				}
-
-				writer.writeLine(`declare namespace ${entity.nameForEmit} {`);
-
-				// all local exports of local imported module are just references to top-level declarations
-				writer.increaseIndent();
-				writer.writeLine('export {');
-				writer.increaseIndent();
-
-				const exportClauses: string[] = [];
-				for (const [exportedName, exportedEntity] of astModuleExportInfo.exportedLocalEntities) {
-					const collectorEntity: CollectorEntity | undefined = collector.tryGetCollectorEntity(exportedEntity);
-					if (collectorEntity === undefined) {
-						// This should never happen
-						// top-level exports of local imported module should be added as collector entities before
-						throw new InternalError(
-							`Cannot find collector entity for ${entity.nameForEmit}.${exportedEntity.localName}`,
-						);
-					}
-
-					// If the entity's declaration won't be included, then neither should the namespace export it
-					// This fixes the issue encountered here: https://github.com/microsoft/rushstack/issues/2791
-					const exportedSymbolMetadata: SymbolMetadata | undefined =
-						collector.tryFetchMetadataForAstEntity(exportedEntity);
-					const exportedMaxEffectiveReleaseTag: ReleaseTag = exportedSymbolMetadata
-						? exportedSymbolMetadata.maxEffectiveReleaseTag
-						: ReleaseTag.None;
-					if (!DtsRollupGenerator._shouldIncludeReleaseTag(exportedMaxEffectiveReleaseTag, dtsKind)) {
-						continue;
-					}
-
-					if (collectorEntity.nameForEmit === exportedName) {
-						exportClauses.push(collectorEntity.nameForEmit);
-					} else {
-						const safeExportedName: string = SyntaxHelpers.isSafeUnquotedMemberIdentifier(exportedName)
-							? exportedName
-							: JSON.stringify(exportedName);
-						exportClauses.push(`${collectorEntity.nameForEmit} as ${safeExportedName}`);
-					}
-				}
-
-				writer.writeLine(exportClauses.join(',\n'));
-
-				writer.decreaseIndent();
-				writer.writeLine('}'); // end of "export { ... }"
-				writer.decreaseIndent();
-				writer.writeLine('}'); // end of "declare namespace { ... }"
-			}
-
-			if (!entity.shouldInlineExport) {
-				for (const exportName of entity.exportNames) {
-					DtsEmitHelpers.emitNamedExport(writer, exportName, entity);
-				}
-			}
-
-			writer.ensureSkippedLine();
-		}
-
-		DtsEmitHelpers.emitStarExports(writer, collector);
-
-		// Emit "export { }" which is a special directive that prevents consumers from importing declarations
-		// that don't have an explicit "export" modifier.
-		writer.ensureSkippedLine();
-		writer.writeLine('export { }');
 	}
 
-	/**
-	 * Before writing out a declaration, _modifySpan() applies various fixups to make it nice.
-	 */
-	private static _modifySpan(
-		collector: Collector,
-		span: Span,
-		entity: CollectorEntity,
-		astDeclaration: AstDeclaration,
-		dtsKind: DtsRollupKind,
-	): void {
-		const previousSpan: Span | undefined = span.previousSibling;
+	// Emit the triple slash directives
+	for (const typeDirectiveReference of collector.dtsTypeReferenceDirectives) {
+		// https://github.com/microsoft/TypeScript/blob/611ebc7aadd7a44a4c0447698bfda9222a78cb66/src/compiler/declarationEmitter.ts#L162
+		writer.writeLine(`/// <reference types="${typeDirectiveReference}" />`);
+	}
 
-		const metadata = collector.fetchApiItemMetadata(astDeclaration);
+	for (const libDirectiveReference of collector.dtsLibReferenceDirectives) {
+		writer.writeLine(`/// <reference lib="${libDirectiveReference}" />`);
+	}
 
-		let recurseChildren = true;
-		switch (span.kind) {
-			case ts.SyntaxKind.JSDoc:
-				// If the @packageDocumentation comment seems to be attached to one of the regular API items,
-				// omit it.  It gets explictly emitted at the top of the file.
-				if (/[\s*]@packagedocumentation[\s*]/gi.test(span.node.getText())) {
-					span.modification.skipAll();
-				}
+	writer.ensureSkippedLine();
 
-				// For now, we don't transform JSDoc comment nodes at all
-				recurseChildren = false;
-				break;
+	// dtsRollup doesn't support multiple entry points. We throw error if dtsRollup is enabled while more than one entry points are specified.
+	// So at this point, we can safely assume there is only one entry point in collector.entities
+	// Emit the imports
+	for (const entity of [...collector.entities.values()][0]!) {
+		if (entity.astEntity instanceof AstImport) {
+			// Note: it isn't valid to trim imports based on their release tags.
+			// E.g. class Foo (`@public`) extends interface Bar (`@beta`) from some external library.
+			// API-Extractor cannot trim `import { Bar } from "external-library"` when generating its public rollup,
+			// or the export of `Foo` would include a broken reference to `Bar`.
+			const astImport: AstImport = entity.astEntity;
+			DtsEmitHelpers.emitImport(writer, entity, astImport);
+		}
+	}
 
-			case ts.SyntaxKind.ExportKeyword:
-				if (DtsEmitHelpers.isExportKeywordInNamespaceExportDeclaration(span.node)) {
-					// This is an export declaration inside a namespace - preserve the export keyword
-					break;
-				}
+	writer.ensureSkippedLine();
 
-				// Otherwise, delete the export keyword -- we will re-add it below
-				span.modification.skipAll();
-				break;
+	// Emit the regular declarations
+	for (const entity of [...collector.entities.values()][0]!) {
+		const astEntity: AstEntity = entity.astEntity;
+		const symbolMetadata: SymbolMetadata | undefined = collector.tryFetchMetadataForAstEntity(astEntity);
+		const maxEffectiveReleaseTag: ReleaseTag = symbolMetadata ? symbolMetadata.maxEffectiveReleaseTag : ReleaseTag.None;
 
-			case ts.SyntaxKind.DefaultKeyword:
-			case ts.SyntaxKind.DeclareKeyword:
-				// Delete any explicit "export" or "declare" keywords -- we will re-add them below
-				span.modification.skipAll();
-				break;
+		if (!_shouldIncludeReleaseTag(maxEffectiveReleaseTag, dtsKind)) {
+			if (!collector.extractorConfig.omitTrimmingComments) {
+				writer.ensureSkippedLine();
+				writer.writeLine(`/* Excluded from this release type: ${entity.nameForEmit} */`);
+			}
 
-			case ts.SyntaxKind.InterfaceKeyword:
-			case ts.SyntaxKind.ClassKeyword:
-			case ts.SyntaxKind.EnumKeyword:
-			case ts.SyntaxKind.NamespaceKeyword:
-			case ts.SyntaxKind.ModuleKeyword:
-			case ts.SyntaxKind.TypeKeyword:
-			case ts.SyntaxKind.FunctionKeyword:
-				// Replace the stuff we possibly deleted above
-				let replacedModifiers = '';
-
-				// Add a declare statement for root declarations (but not for nested declarations)
-				if (!astDeclaration.parent) {
-					replacedModifiers += 'declare ';
-				}
-
-				if (entity.shouldInlineExport) {
-					replacedModifiers = 'export ' + replacedModifiers;
-				}
-
-				if (previousSpan?.kind === ts.SyntaxKind.SyntaxList) {
-					// If there is a previous span of type SyntaxList, then apply it before any other modifiers
-					// (e.g. "abstract") that appear there.
-					previousSpan.modification.prefix = replacedModifiers + previousSpan.modification.prefix;
-				} else {
-					// Otherwise just stick it in front of this span
-					span.modification.prefix = replacedModifiers + span.modification.prefix;
-				}
-
-				break;
-
-			case ts.SyntaxKind.VariableDeclaration:
-				// Is this a top-level variable declaration?
-				// (The logic below does not apply to variable declarations that are part of an explicit "namespace" block,
-				// since the compiler prefers not to emit "declare" or "export" keywords for those declarations.)
-				if (!span.parent) {
-					// The VariableDeclaration node is part of a VariableDeclarationList, however
-					// the Entry.followedSymbol points to the VariableDeclaration part because
-					// multiple definitions might share the same VariableDeclarationList.
-					//
-					// Since we are emitting a separate declaration for each one, we need to look upwards
-					// in the ts.Node tree and write a copy of the enclosing VariableDeclarationList
-					// content (e.g. "var" from "var x=1, y=2").
-					const list: ts.VariableDeclarationList | undefined = TypeScriptHelpers.matchAncestor(span.node, [
-						ts.SyntaxKind.VariableDeclarationList,
-						ts.SyntaxKind.VariableDeclaration,
-					]);
-					if (!list) {
-						// This should not happen unless the compiler API changes somehow
-						throw new InternalError('Unsupported variable declaration');
-					}
-
-					const listPrefix: string = list.getSourceFile().text.slice(list.getStart(), list.declarations[0]!.getStart());
-					span.modification.prefix = 'declare ' + listPrefix + span.modification.prefix;
-					span.modification.suffix = ';';
-
-					if (entity.shouldInlineExport) {
-						span.modification.prefix = 'export ' + span.modification.prefix;
-					}
-
-					const declarationMetadata: DeclarationMetadata = collector.fetchDeclarationMetadata(astDeclaration);
-					if (declarationMetadata.tsdocParserContext) {
-						// Typically the comment for a variable declaration is attached to the outer variable statement
-						// (which may possibly contain multiple variable declarations), so it's not part of the Span.
-						// Instead we need to manually inject it.
-						let originalComment: string = declarationMetadata.tsdocParserContext.sourceRange.toString();
-						if (!/\r?\n\s*$/.test(originalComment)) {
-							originalComment += '\n';
-						}
-
-						span.modification.indentDocComment = IndentDocCommentScope.PrefixOnly;
-						span.modification.prefix = originalComment + span.modification.prefix;
-					}
-				}
-
-				break;
-
-			case ts.SyntaxKind.Identifier:
-				{
-					const referencedEntity: CollectorEntity | undefined = collector.tryGetEntityForNode(
-						span.node as ts.Identifier,
-					);
-
-					if (referencedEntity) {
-						if (!referencedEntity.nameForEmit) {
-							// This should never happen
-							throw new InternalError('referencedEntry.nameForEmit is undefined');
-						}
-
-						span.modification.prefix = referencedEntity.nameForEmit;
-						// For debugging:
-						// span.modification.prefix += '/*R=FIX*/';
-					} else {
-						// For debugging:
-						// span.modification.prefix += '/*R=KEEP*/';
-					}
-				}
-
-				break;
-
-			case ts.SyntaxKind.ImportType:
-				DtsEmitHelpers.modifyImportTypeSpan(collector, span, astDeclaration, (childSpan, childAstDeclaration) => {
-					DtsRollupGenerator._modifySpan(collector, childSpan, entity, childAstDeclaration, dtsKind);
-				});
-				break;
-
-			case ts.SyntaxKind.ClassDeclaration:
-			case ts.SyntaxKind.Constructor:
-			case ts.SyntaxKind.ConstructSignature:
-			case ts.SyntaxKind.EnumDeclaration:
-			case ts.SyntaxKind.EnumMember:
-			case ts.SyntaxKind.FunctionDeclaration:
-			case ts.SyntaxKind.GetAccessor:
-			case ts.SyntaxKind.InterfaceDeclaration:
-			case ts.SyntaxKind.MethodDeclaration:
-			case ts.SyntaxKind.MethodSignature:
-			case ts.SyntaxKind.PropertyDeclaration:
-			case ts.SyntaxKind.PropertySignature:
-			case ts.SyntaxKind.TypeAliasDeclaration:
-				if (metadata.artificialDocComment && metadata.tsdocComment) {
-					span.modification.prefix = metadata.tsdocComment.emitAsTsdoc() + (span.modification.prefix ?? '');
-					span.modification.indentDocComment = IndentDocCommentScope.PrefixOnly;
-				}
-
-				if (span.kind === ts.SyntaxKind.TypeAliasDeclaration) {
-					// TODO: find out why TypeAlias has no linebreak by default
-					span.modification.suffix = (span.modification.suffix ?? '') + '\n';
-				}
-
-				break;
-
-			default:
-				break;
+			continue;
 		}
 
-		if (recurseChildren) {
-			for (const child of span.children) {
-				let childAstDeclaration: AstDeclaration = astDeclaration;
+		if (astEntity instanceof AstSymbol) {
+			// Emit all the declarations for this entry
+			for (const astDeclaration of astEntity.astDeclarations || []) {
+				const apiItemMetadata: ApiItemMetadata = collector.fetchApiItemMetadata(astDeclaration);
 
-				// Should we trim this node?
-				let trimmed = false;
-				if (AstDeclaration.isSupportedSyntaxKind(child.kind)) {
-					childAstDeclaration = collector.astSymbolTable.getChildAstDeclarationByNode(child.node, astDeclaration);
-					const releaseTag: ReleaseTag = collector.fetchApiItemMetadata(childAstDeclaration).effectiveReleaseTag;
+				if (_shouldIncludeReleaseTag(apiItemMetadata.effectiveReleaseTag, dtsKind)) {
+					const span: Span = new Span(astDeclaration.declaration);
+					_modifySpan(collector, span, entity, astDeclaration, dtsKind);
+					writer.ensureSkippedLine();
+					span.writeModifiedText(writer);
+					writer.ensureNewLine();
+				} else if (!collector.extractorConfig.omitTrimmingComments) {
+					writer.ensureSkippedLine();
+					writer.writeLine(`/* Excluded declaration from this release type: ${entity.nameForEmit} */`);
+				}
+			}
+		}
 
-					if (!this._shouldIncludeReleaseTag(releaseTag, dtsKind)) {
-						let nodeToTrim: Span = child;
+		if (astEntity instanceof AstNamespaceImport) {
+			const astModuleExportInfo: IAstModuleExportInfo = astEntity.fetchAstModuleExportInfo(collector);
 
-						// If we are trimming a variable statement, then we need to trim the outer VariableDeclarationList
-						// as well.
-						if (child.kind === ts.SyntaxKind.VariableDeclaration) {
-							const variableStatement: Span | undefined = child.findFirstParent(ts.SyntaxKind.VariableStatement);
-							if (variableStatement !== undefined) {
-								nodeToTrim = variableStatement;
-							}
-						}
+			if (entity.nameForEmit === undefined) {
+				// This should never happen
+				throw new InternalError('referencedEntry.nameForEmit is undefined');
+			}
 
-						const modification: SpanModification = nodeToTrim.modification;
+			if (astModuleExportInfo.starExportedExternalModules.size > 0) {
+				// We could support this, but we would need to find a way to safely represent it.
+				throw new Error(
+					`The ${entity.nameForEmit} namespace import includes a start export, which is not supported:\n` +
+						SourceFileLocationFormatter.formatDeclaration(astEntity.declaration),
+				);
+			}
 
-						// Yes, trim it and stop here
-						const name: string = childAstDeclaration.astSymbol.localName;
-						modification.omitChildren = true;
+			// Emit a synthetic declaration for the namespace.  It will look like this:
+			//
+			//    declare namespace example {
+			//      export {
+			//        f1,
+			//        f2
+			//      }
+			//    }
+			//
+			// Note that we do not try to relocate f1()/f2() to be inside the namespace because other type
+			// signatures may reference them directly (without using the namespace qualifier).
 
-						if (collector.extractorConfig.omitTrimmingComments) {
-							modification.prefix = '';
-						} else {
-							modification.prefix = `/* Excluded from this release type: ${name} */`;
-						}
+			writer.ensureSkippedLine();
+			if (entity.shouldInlineExport) {
+				writer.write('export ');
+			}
 
-						modification.suffix = '';
+			writer.writeLine(`declare namespace ${entity.nameForEmit} {`);
 
-						if (nodeToTrim.children.length > 0) {
-							// If there are grandchildren, then keep the last grandchild's separator,
-							// since it often has useful whitespace
-							modification.suffix = nodeToTrim.children[nodeToTrim.children.length - 1]!.separator;
-						}
+			// all local exports of local imported module are just references to top-level declarations
+			writer.increaseIndent();
+			writer.writeLine('export {');
+			writer.increaseIndent();
 
-						// If the thing we are trimming is followed by a comma, then trim the comma also.
-						// An example would be an enum member.
-						if (nodeToTrim.nextSibling?.kind === ts.SyntaxKind.CommaToken) {
-							// Keep its separator since it often has useful whitespace
-							modification.suffix += nodeToTrim.nextSibling.separator;
-							nodeToTrim.nextSibling.modification.skipAll();
-						}
+			const exportClauses: string[] = [];
+			for (const [exportedName, exportedEntity] of astModuleExportInfo.exportedLocalEntities) {
+				const collectorEntity: CollectorEntity | undefined = collector.tryGetCollectorEntity(exportedEntity);
+				if (collectorEntity === undefined) {
+					// This should never happen
+					// top-level exports of local imported module should be added as collector entities before
+					throw new InternalError(`Cannot find collector entity for ${entity.nameForEmit}.${exportedEntity.localName}`);
+				}
 
-						if (modification.suffix.trim().length === 0 && modification.prefix.trim().length === 0) {
-							// In case of blank prefix and suffix, remove indentation to avoid blank lines in place of removed members
-							modification.suffix = '';
-							modification.prefix = '';
-						}
+				// If the entity's declaration won't be included, then neither should the namespace export it
+				// This fixes the issue encountered here: https://github.com/microsoft/rushstack/issues/2791
+				const exportedSymbolMetadata: SymbolMetadata | undefined =
+					collector.tryFetchMetadataForAstEntity(exportedEntity);
+				const exportedMaxEffectiveReleaseTag: ReleaseTag = exportedSymbolMetadata
+					? exportedSymbolMetadata.maxEffectiveReleaseTag
+					: ReleaseTag.None;
+				if (!_shouldIncludeReleaseTag(exportedMaxEffectiveReleaseTag, dtsKind)) {
+					continue;
+				}
 
-						trimmed = true;
+				if (collectorEntity.nameForEmit === exportedName) {
+					exportClauses.push(collectorEntity.nameForEmit);
+				} else {
+					const safeExportedName: string = SyntaxHelpers.isSafeUnquotedMemberIdentifier(exportedName)
+						? exportedName
+						: JSON.stringify(exportedName);
+					exportClauses.push(`${collectorEntity.nameForEmit} as ${safeExportedName}`);
+				}
+			}
+
+			writer.writeLine(exportClauses.join(',\n'));
+
+			writer.decreaseIndent();
+			writer.writeLine('}'); // end of "export { ... }"
+			writer.decreaseIndent();
+			writer.writeLine('}'); // end of "declare namespace { ... }"
+		}
+
+		if (!entity.shouldInlineExport) {
+			for (const exportName of entity.exportNames) {
+				DtsEmitHelpers.emitNamedExport(writer, exportName, entity);
+			}
+		}
+
+		writer.ensureSkippedLine();
+	}
+
+	DtsEmitHelpers.emitStarExports(writer, collector);
+
+	// Emit "export { }" which is a special directive that prevents consumers from importing declarations
+	// that don't have an explicit "export" modifier.
+	writer.ensureSkippedLine();
+	writer.writeLine('export { }');
+}
+
+/**
+ * Before writing out a declaration, _modifySpan() applies various fixups to make it nice.
+ */
+function _modifySpan(
+	collector: Collector,
+	span: Span,
+	entity: CollectorEntity,
+	astDeclaration: AstDeclaration,
+	dtsKind: DtsRollupKind,
+): void {
+	const previousSpan: Span | undefined = span.previousSibling;
+
+	const metadata = collector.fetchApiItemMetadata(astDeclaration);
+
+	let recurseChildren = true;
+	switch (span.kind) {
+		case ts.SyntaxKind.JSDoc:
+			// If the @packageDocumentation comment seems to be attached to one of the regular API items,
+			// omit it.  It gets explictly emitted at the top of the file.
+			if (/[\s*]@packagedocumentation[\s*]/gi.test(span.node.getText())) {
+				span.modification.skipAll();
+			}
+
+			// For now, we don't transform JSDoc comment nodes at all
+			recurseChildren = false;
+			break;
+
+		case ts.SyntaxKind.ExportKeyword:
+			if (DtsEmitHelpers.isExportKeywordInNamespaceExportDeclaration(span.node)) {
+				// This is an export declaration inside a namespace - preserve the export keyword
+				break;
+			}
+
+			// Otherwise, delete the export keyword -- we will re-add it below
+			span.modification.skipAll();
+			break;
+
+		case ts.SyntaxKind.DefaultKeyword:
+		case ts.SyntaxKind.DeclareKeyword:
+			// Delete any explicit "export" or "declare" keywords -- we will re-add them below
+			span.modification.skipAll();
+			break;
+
+		case ts.SyntaxKind.InterfaceKeyword:
+		case ts.SyntaxKind.ClassKeyword:
+		case ts.SyntaxKind.EnumKeyword:
+		case ts.SyntaxKind.NamespaceKeyword:
+		case ts.SyntaxKind.ModuleKeyword:
+		case ts.SyntaxKind.TypeKeyword:
+		case ts.SyntaxKind.FunctionKeyword:
+			// Replace the stuff we possibly deleted above
+			let replacedModifiers = '';
+
+			// Add a declare statement for root declarations (but not for nested declarations)
+			if (!astDeclaration.parent) {
+				replacedModifiers += 'declare ';
+			}
+
+			if (entity.shouldInlineExport) {
+				replacedModifiers = 'export ' + replacedModifiers;
+			}
+
+			if (previousSpan?.kind === ts.SyntaxKind.SyntaxList) {
+				// If there is a previous span of type SyntaxList, then apply it before any other modifiers
+				// (e.g. "abstract") that appear there.
+				previousSpan.modification.prefix = replacedModifiers + previousSpan.modification.prefix;
+			} else {
+				// Otherwise just stick it in front of this span
+				span.modification.prefix = replacedModifiers + span.modification.prefix;
+			}
+
+			break;
+
+		case ts.SyntaxKind.VariableDeclaration:
+			// Is this a top-level variable declaration?
+			// (The logic below does not apply to variable declarations that are part of an explicit "namespace" block,
+			// since the compiler prefers not to emit "declare" or "export" keywords for those declarations.)
+			if (!span.parent) {
+				// The VariableDeclaration node is part of a VariableDeclarationList, however
+				// the Entry.followedSymbol points to the VariableDeclaration part because
+				// multiple definitions might share the same VariableDeclarationList.
+				//
+				// Since we are emitting a separate declaration for each one, we need to look upwards
+				// in the ts.Node tree and write a copy of the enclosing VariableDeclarationList
+				// content (e.g. "var" from "var x=1, y=2").
+				const list: ts.VariableDeclarationList | undefined = TypeScriptHelpers.matchAncestor(span.node, [
+					ts.SyntaxKind.VariableDeclarationList,
+					ts.SyntaxKind.VariableDeclaration,
+				]);
+				if (!list) {
+					// This should not happen unless the compiler API changes somehow
+					throw new InternalError('Unsupported variable declaration');
+				}
+
+				const listPrefix: string = list.getSourceFile().text.slice(list.getStart(), list.declarations[0]!.getStart());
+				span.modification.prefix = 'declare ' + listPrefix + span.modification.prefix;
+				span.modification.suffix = ';';
+
+				if (entity.shouldInlineExport) {
+					span.modification.prefix = 'export ' + span.modification.prefix;
+				}
+
+				const declarationMetadata: DeclarationMetadata = collector.fetchDeclarationMetadata(astDeclaration);
+				if (declarationMetadata.tsdocParserContext) {
+					// Typically the comment for a variable declaration is attached to the outer variable statement
+					// (which may possibly contain multiple variable declarations), so it's not part of the Span.
+					// Instead we need to manually inject it.
+					let originalComment: string = declarationMetadata.tsdocParserContext.sourceRange.toString();
+					if (!/\r?\n\s*$/.test(originalComment)) {
+						originalComment += '\n';
 					}
-				} else if (metadata.artificialDocComment && child.kind === ts.SyntaxKind.JSDoc) {
-					// we replace the existing JSDocComment with the artificial one
-					child.modification.skipAll();
+
+					span.modification.indentDocComment = IndentDocCommentScope.PrefixOnly;
+					span.modification.prefix = originalComment + span.modification.prefix;
+				}
+			}
+
+			break;
+
+		case ts.SyntaxKind.Identifier:
+			{
+				const referencedEntity: CollectorEntity | undefined = collector.tryGetEntityForNode(span.node as ts.Identifier);
+
+				if (referencedEntity) {
+					if (!referencedEntity.nameForEmit) {
+						// This should never happen
+						throw new InternalError('referencedEntry.nameForEmit is undefined');
+					}
+
+					span.modification.prefix = referencedEntity.nameForEmit;
+					// For debugging:
+					// span.modification.prefix += '/*R=FIX*/';
+				} else {
+					// For debugging:
+					// span.modification.prefix += '/*R=KEEP*/';
+				}
+			}
+
+			break;
+
+		case ts.SyntaxKind.ImportType:
+			DtsEmitHelpers.modifyImportTypeSpan(collector, span, astDeclaration, (childSpan, childAstDeclaration) => {
+				_modifySpan(collector, childSpan, entity, childAstDeclaration, dtsKind);
+			});
+			break;
+
+		case ts.SyntaxKind.ClassDeclaration:
+		case ts.SyntaxKind.Constructor:
+		case ts.SyntaxKind.ConstructSignature:
+		case ts.SyntaxKind.EnumDeclaration:
+		case ts.SyntaxKind.EnumMember:
+		case ts.SyntaxKind.FunctionDeclaration:
+		case ts.SyntaxKind.GetAccessor:
+		case ts.SyntaxKind.InterfaceDeclaration:
+		case ts.SyntaxKind.MethodDeclaration:
+		case ts.SyntaxKind.MethodSignature:
+		case ts.SyntaxKind.PropertyDeclaration:
+		case ts.SyntaxKind.PropertySignature:
+		case ts.SyntaxKind.TypeAliasDeclaration:
+			if (metadata.artificialDocComment && metadata.tsdocComment) {
+				span.modification.prefix = metadata.tsdocComment.emitAsTsdoc() + (span.modification.prefix ?? '');
+				span.modification.indentDocComment = IndentDocCommentScope.PrefixOnly;
+			}
+
+			if (span.kind === ts.SyntaxKind.TypeAliasDeclaration) {
+				// TODO: find out why TypeAlias has no linebreak by default
+				span.modification.suffix = (span.modification.suffix ?? '') + '\n';
+			}
+
+			break;
+
+		default:
+			break;
+	}
+
+	if (recurseChildren) {
+		for (const child of span.children) {
+			let childAstDeclaration: AstDeclaration = astDeclaration;
+
+			// Should we trim this node?
+			let trimmed = false;
+			if (AstDeclaration.isSupportedSyntaxKind(child.kind)) {
+				childAstDeclaration = collector.astSymbolTable.getChildAstDeclarationByNode(child.node, astDeclaration);
+				const releaseTag: ReleaseTag = collector.fetchApiItemMetadata(childAstDeclaration).effectiveReleaseTag;
+
+				if (!_shouldIncludeReleaseTag(releaseTag, dtsKind)) {
+					let nodeToTrim: Span = child;
+
+					// If we are trimming a variable statement, then we need to trim the outer VariableDeclarationList
+					// as well.
+					if (child.kind === ts.SyntaxKind.VariableDeclaration) {
+						const variableStatement: Span | undefined = child.findFirstParent(ts.SyntaxKind.VariableStatement);
+						if (variableStatement !== undefined) {
+							nodeToTrim = variableStatement;
+						}
+					}
+
+					const modification: SpanModification = nodeToTrim.modification;
+
+					// Yes, trim it and stop here
+					const name: string = childAstDeclaration.astSymbol.localName;
+					modification.omitChildren = true;
+
+					if (collector.extractorConfig.omitTrimmingComments) {
+						modification.prefix = '';
+					} else {
+						modification.prefix = `/* Excluded from this release type: ${name} */`;
+					}
+
+					modification.suffix = '';
+
+					if (nodeToTrim.children.length > 0) {
+						// If there are grandchildren, then keep the last grandchild's separator,
+						// since it often has useful whitespace
+						modification.suffix = nodeToTrim.children[nodeToTrim.children.length - 1]!.separator;
+					}
+
+					// If the thing we are trimming is followed by a comma, then trim the comma also.
+					// An example would be an enum member.
+					if (nodeToTrim.nextSibling?.kind === ts.SyntaxKind.CommaToken) {
+						// Keep its separator since it often has useful whitespace
+						modification.suffix += nodeToTrim.nextSibling.separator;
+						nodeToTrim.nextSibling.modification.skipAll();
+					}
+
+					if (modification.suffix.trim().length === 0 && modification.prefix.trim().length === 0) {
+						// In case of blank prefix and suffix, remove indentation to avoid blank lines in place of removed members
+						modification.suffix = '';
+						modification.prefix = '';
+					}
+
 					trimmed = true;
 				}
+			} else if (metadata.artificialDocComment && child.kind === ts.SyntaxKind.JSDoc) {
+				// we replace the existing JSDocComment with the artificial one
+				child.modification.skipAll();
+				trimmed = true;
+			}
 
-				if (!trimmed) {
-					DtsRollupGenerator._modifySpan(collector, child, entity, childAstDeclaration, dtsKind);
-				}
+			if (!trimmed) {
+				_modifySpan(collector, child, entity, childAstDeclaration, dtsKind);
 			}
 		}
 	}
+}
 
-	private static _shouldIncludeReleaseTag(releaseTag: ReleaseTag, dtsKind: DtsRollupKind): boolean {
-		switch (dtsKind) {
-			case DtsRollupKind.InternalRelease:
-				return true;
-			case DtsRollupKind.AlphaRelease:
-				return (
-					releaseTag === ReleaseTag.Alpha ||
-					releaseTag === ReleaseTag.Beta ||
-					releaseTag === ReleaseTag.Public ||
-					// NOTE: If the release tag is "None", then we don't have enough information to trim it
-					releaseTag === ReleaseTag.None
-				);
-			case DtsRollupKind.BetaRelease:
-				return (
-					releaseTag === ReleaseTag.Beta ||
-					releaseTag === ReleaseTag.Public ||
-					// NOTE: If the release tag is "None", then we don't have enough information to trim it
-					releaseTag === ReleaseTag.None
-				);
-			case DtsRollupKind.PublicRelease:
-				return releaseTag === ReleaseTag.Public || releaseTag === ReleaseTag.None;
-			default:
-				throw new Error(`${DtsRollupKind[dtsKind]} is not implemented`);
-		}
+function _shouldIncludeReleaseTag(releaseTag: ReleaseTag, dtsKind: DtsRollupKind): boolean {
+	switch (dtsKind) {
+		case DtsRollupKind.InternalRelease:
+			return true;
+		case DtsRollupKind.AlphaRelease:
+			return (
+				releaseTag === ReleaseTag.Alpha ||
+				releaseTag === ReleaseTag.Beta ||
+				releaseTag === ReleaseTag.Public ||
+				// NOTE: If the release tag is "None", then we don't have enough information to trim it
+				releaseTag === ReleaseTag.None
+			);
+		case DtsRollupKind.BetaRelease:
+			return (
+				releaseTag === ReleaseTag.Beta ||
+				releaseTag === ReleaseTag.Public ||
+				// NOTE: If the release tag is "None", then we don't have enough information to trim it
+				releaseTag === ReleaseTag.None
+			);
+		case DtsRollupKind.PublicRelease:
+			return releaseTag === ReleaseTag.Public || releaseTag === ReleaseTag.None;
+		default:
+			throw new Error(`${DtsRollupKind[dtsKind]} is not implemented`);
 	}
 }

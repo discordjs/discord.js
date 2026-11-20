@@ -82,7 +82,7 @@
 		"prop-types": "^15.8.1",
 		"storybook": "^10.6.7",
 		"turbo": "^2.11.11",
-		"typescript": "~7.0.2",
+		"typescript": "~7.1.0-beta",
 		"unocss": "^66.13.0",
 		"unplugin-dts": "^1.0.3",
 		"vite": "^8.3.8"

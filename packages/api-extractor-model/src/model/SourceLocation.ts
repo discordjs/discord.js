@@ -40,19 +40,19 @@ export interface ISourceLocationOptions {
  * @public
  */
 export class SourceLocation {
-	private readonly _projectFolderUrl?: string | undefined;
+	readonly #projectFolderUrl?: string | undefined;
 
-	private readonly _fileUrlPath?: string | undefined;
+	readonly #fileUrlPath?: string | undefined;
 
-	private readonly _fileLine?: number | undefined;
+	readonly #fileLine?: number | undefined;
 
-	private readonly _fileColumn?: number | undefined;
+	readonly #fileColumn?: number | undefined;
 
 	public constructor(options: ISourceLocationOptions) {
-		this._projectFolderUrl = options.projectFolderUrl;
-		this._fileUrlPath = options.fileUrlPath;
-		this._fileLine = options.sourceFileLine;
-		this._fileColumn = options.sourceFileColumn;
+		this.#projectFolderUrl = options.projectFolderUrl;
+		this.#fileUrlPath = options.fileUrlPath;
+		this.#fileLine = options.sourceFileLine;
+		this.#fileColumn = options.sourceFileColumn;
 	}
 
 	/**
@@ -60,16 +60,16 @@ export class SourceLocation {
 	 * cannot be determined.
 	 */
 	public get fileUrl(): string | undefined {
-		if (this._projectFolderUrl === undefined || this._fileUrlPath === undefined) {
+		if (this.#projectFolderUrl === undefined || this.#fileUrlPath === undefined) {
 			return undefined;
 		}
 
-		let projectFolderUrl: string = this._projectFolderUrl;
+		let projectFolderUrl: string = this.#projectFolderUrl;
 		if (!projectFolderUrl.endsWith('/')) {
 			projectFolderUrl += '/';
 		}
 
-		const url: URL = new URL(this._fileUrlPath, projectFolderUrl);
+		const url: URL = new URL(this.#fileUrlPath, projectFolderUrl);
 		return url.href;
 	}
 
@@ -77,13 +77,13 @@ export class SourceLocation {
 	 * The line in the `fileUrlPath` where the API item is declared.
 	 */
 	public get fileLine(): number | undefined {
-		return this._fileLine;
+		return this.#fileLine;
 	}
 
 	/**
 	 * The column in the `fileUrlPath` where the API item is declared.
 	 */
 	public get fileColumn(): number | undefined {
-		return this._fileColumn;
+		return this.#fileColumn;
 	}
 }

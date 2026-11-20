@@ -77,7 +77,7 @@ export class ApiClass extends ApiItemContainerMixin(
 	 */
 	public readonly extendsType: HeritageType | undefined;
 
-	private readonly _implementsTypes: HeritageType[] = [];
+	readonly #implementsTypes: HeritageType[] = [];
 
 	public constructor(options: IApiClassOptions) {
 		super(options);
@@ -92,7 +92,7 @@ export class ApiClass extends ApiItemContainerMixin(
 		}
 
 		for (const implementsTokenRange of options.implementsTokenRanges) {
-			this._implementsTypes.push(
+			this.#implementsTypes.push(
 				new HeritageType(this.buildExcerpt(implementsTokenRange), implementsTokenRange.typeParameters),
 			);
 		}
@@ -134,7 +134,7 @@ export class ApiClass extends ApiItemContainerMixin(
 	 * The list of interfaces that this class implements using the `implements` keyword.
 	 */
 	public get implementsTypes(): readonly HeritageType[] {
-		return this._implementsTypes;
+		return this.#implementsTypes;
 	}
 
 	/**

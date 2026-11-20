@@ -43,7 +43,8 @@ import {
 import type * as tsdoc from '@microsoft/tsdoc';
 import { DeclarationReference, type Meaning } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { JsonFile, Path } from '@rushstack/node-core-library';
-import * as ts from 'typescript';
+import * as ts from 'typescript/ast';
+import * as tsAPI from 'typescript/sync';
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstEntity } from '../analyzer/AstEntity.js';
 import { AstImport } from '../analyzer/AstImport.js';
@@ -245,74 +246,74 @@ function fixPrimitiveTypes(type: string, symbol: string | undefined) {
 }
 
 export class ApiModelGenerator {
-	private readonly _collector: Collector;
+	readonly #collector: Collector;
 
-	private readonly _apiModel: ApiModel;
+	readonly #apiModel: ApiModel;
 
-	private readonly _tsDocParser: tsdoc.TSDocParser;
+	readonly #tsDocParser: tsdoc.TSDocParser;
 
-	private readonly _referenceGenerator: DeclarationReferenceGenerator;
+	readonly #referenceGenerator: DeclarationReferenceGenerator;
 
-	private readonly _releaseTagsToTrim: Set<ReleaseTag> | undefined;
+	readonly #releaseTagsToTrim: Set<ReleaseTag> | undefined;
 
 	public readonly docModelEnabled: boolean;
 
-	private readonly _jsDocJson: DocgenJson | undefined;
+	readonly #jsDocJson: DocgenJson | undefined;
 
 	public constructor(collector: Collector, extractorConfig: ExtractorConfig) {
-		this._collector = collector;
-		this._apiModel = new ApiModel();
-		this._referenceGenerator = new DeclarationReferenceGenerator(collector);
+		this.#collector = collector;
+		this.#apiModel = new ApiModel();
+		this.#referenceGenerator = new DeclarationReferenceGenerator(collector);
 
 		const apiModelGenerationOptions: IApiModelGenerationOptions | undefined = extractorConfig.docModelGenerationOptions;
 		if (apiModelGenerationOptions) {
-			this._releaseTagsToTrim = apiModelGenerationOptions.releaseTagsToTrim;
+			this.#releaseTagsToTrim = apiModelGenerationOptions.releaseTagsToTrim;
 			this.docModelEnabled = true;
 		} else {
 			this.docModelEnabled = false;
 		}
 
 		// @ts-expect-error we reuse the private tsdocParser from collector here
-		this._tsDocParser = collector._tsdocParser;
+		this.#tsDocParser = collector._tsdocParser;
 	}
 
 	public get apiModel(): ApiModel {
-		return this._apiModel;
+		return this.#apiModel;
 	}
 
 	public buildApiPackage(): ApiPackage {
-		const packageDocComment: tsdoc.DocComment | undefined = this._collector.workingPackage.tsdocComment;
+		const packageDocComment: tsdoc.DocComment | undefined = this.#collector.workingPackage.tsdocComment;
 
-		const jsDocFilepath = `${this._collector.extractorConfig.apiJsonFilePath.slice(0, -8)}json`;
+		const jsDocFilepath = `${this.#collector.extractorConfig.apiJsonFilePath.slice(0, -8)}json`;
 		if (existsSync(jsDocFilepath)) {
 			// @ts-expect-error assign value only when starting to build a new ApiPackage
-			this._jsDocJson = JsonFile.load(jsDocFilepath);
+			this.#jsDocJson = JsonFile.load(jsDocFilepath);
 		}
 
 		const apiPackage: ApiPackage = new ApiPackage({
-			name: this._collector.workingPackage.name,
+			name: this.#collector.workingPackage.name,
 			docComment: packageDocComment,
-			tsdocConfiguration: this._collector.extractorConfig.tsdocConfiguration,
-			projectFolderUrl: this._collector.extractorConfig.projectFolderUrl,
+			tsdocConfiguration: this.#collector.extractorConfig.tsdocConfiguration,
+			projectFolderUrl: this.#collector.extractorConfig.projectFolderUrl,
 			preserveMemberOrder: true,
 		});
-		this._apiModel.addMember(apiPackage);
+		this.#apiModel.addMember(apiPackage);
 
-		for (const [entryPoint, entities] of this._collector.entities.entries()) {
+		for (const [entryPoint, entities] of this.#collector.entities.entries()) {
 			const apiEntryPoint: ApiEntryPoint = new ApiEntryPoint({ name: entryPoint.modulePath });
 			apiPackage.addMember(apiEntryPoint);
 
 			for (const entity of entities) {
 				// Only process entities that are exported from the entry point. Entities that are exported from
-				// `AstNamespaceImport` entities will be processed by `_processAstNamespaceImport`. However, if
+				// `AstNamespaceImport` entities will be processed by `#processAstNamespaceImport`. However, if
 				// we are including forgotten exports, then process everything.
-				if (entity.exportedFromEntryPoint || this._collector.extractorConfig.docModelIncludeForgottenExports) {
-					this._processAstEntity(entity.astEntity, {
+				if (entity.exportedFromEntryPoint || this.#collector.extractorConfig.docModelIncludeForgottenExports) {
+					this.#processAstEntity(entity.astEntity, {
 						entryPoint,
 						name: entity.nameForEmit!,
 						isExported: entity.exportedFromEntryPoint,
 						parentApiItem: apiEntryPoint,
-						parentDocgenJson: this._jsDocJson,
+						parentDocgenJson: this.#jsDocJson,
 					});
 				}
 			}
@@ -321,11 +322,11 @@ export class ApiModelGenerator {
 		return apiPackage;
 	}
 
-	private _processAstEntity(astEntity: AstEntity, context: IProcessAstEntityContext): void {
+	#processAstEntity(astEntity: AstEntity, context: IProcessAstEntityContext): void {
 		if (astEntity instanceof AstSymbol) {
 			// Skip ancillary declarations; we will process them with the main declaration
-			for (const astDeclaration of this._collector.getNonAncillaryDeclarations(astEntity)) {
-				this._processDeclaration(astDeclaration, context);
+			for (const astDeclaration of this.#collector.getNonAncillaryDeclarations(astEntity)) {
+				this.#processDeclaration(astDeclaration, context);
 			}
 
 			return;
@@ -346,7 +347,7 @@ export class ApiModelGenerator {
 			//
 			// This could be improved in the future, but it requires a stable mechanism for choosing an associated parent.
 			// For thoughts about this:  https://github.com/microsoft/rushstack/issues/1308
-			this._processAstNamespaceImport(astEntity, context);
+			this.#processAstNamespaceImport(astEntity, context);
 		}
 
 		// TO DO: Figure out how to represent reexported AstImport objects.  Basically we need to introduce a new
@@ -354,11 +355,11 @@ export class ApiModelGenerator {
 		// form "export { X } from 'external-package'".  We can also use this to solve GitHub issue #950.
 	}
 
-	private _processAstNamespaceImport(astNamespaceImport: AstNamespaceImport, context: IProcessAstEntityContext): void {
+	#processAstNamespaceImport(astNamespaceImport: AstNamespaceImport, context: IProcessAstEntityContext): void {
 		const astModule: AstModule = astNamespaceImport.astModule;
 		const { entryPoint, name, isExported, parentApiItem } = context;
 		const containerKey: string = ApiNamespace.getContainerKey(name);
-		const sourceLocation: ISourceLocation = this._getSourceLocation(astNamespaceImport.declaration);
+		const sourceLocation: ISourceLocation = this.#getSourceLocation(astNamespaceImport.declaration);
 
 		let apiNamespace: ApiNamespace | undefined = parentApiItem.tryGetMemberByKey(containerKey) as ApiNamespace;
 
@@ -378,7 +379,7 @@ export class ApiModelGenerator {
 
 		// eslint-disable-next-line unicorn/no-array-for-each
 		astModule.astModuleExportInfo!.exportedLocalEntities.forEach((exportedEntity: AstEntity, exportedName: string) => {
-			this._processAstEntity(exportedEntity, {
+			this.#processAstEntity(exportedEntity, {
 				entryPoint,
 				name: exportedName,
 				isExported: true,
@@ -387,94 +388,94 @@ export class ApiModelGenerator {
 		});
 	}
 
-	private _processDeclaration(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	#processDeclaration(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
 		if ((astDeclaration.modifierFlags & ts.ModifierFlags.Private) !== 0) {
 			return; // trim out private declarations
 		}
 
-		const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+		const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 		const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-		if (this._releaseTagsToTrim?.has(releaseTag)) {
+		if (this.#releaseTagsToTrim?.has(releaseTag)) {
 			return;
 		}
 
 		switch (astDeclaration.declaration.kind) {
 			case ts.SyntaxKind.CallSignature:
-				this._processApiCallSignature(astDeclaration, context);
+				this.#processApiCallSignature(astDeclaration, context);
 				break;
 
 			case ts.SyntaxKind.Constructor:
-				this._processApiConstructor(astDeclaration, context);
+				this.#processApiConstructor(astDeclaration, context);
 				break;
 
 			case ts.SyntaxKind.ConstructSignature:
-				this._processApiConstructSignature(astDeclaration, context);
+				this.#processApiConstructSignature(astDeclaration, context);
 				break;
 
 			case ts.SyntaxKind.ClassDeclaration:
-				this._processApiClass(astDeclaration, context);
+				this.#processApiClass(astDeclaration, context);
 				break;
 
 			case ts.SyntaxKind.EnumDeclaration:
-				this._processApiEnum(astDeclaration, context);
+				this.#processApiEnum(astDeclaration, context);
 				break;
 
 			case ts.SyntaxKind.EnumMember:
-				this._processApiEnumMember(astDeclaration, context);
+				this.#processApiEnumMember(astDeclaration, context);
 				break;
 
 			case ts.SyntaxKind.FunctionDeclaration:
-				this._processApiFunction(astDeclaration, context);
+				this.#processApiFunction(astDeclaration, context);
 				break;
 
 			case ts.SyntaxKind.GetAccessor:
-				this._processApiProperty(astDeclaration, context);
+				this.#processApiProperty(astDeclaration, context);
 				break;
 
 			case ts.SyntaxKind.SetAccessor:
-				this._processApiProperty(astDeclaration, context);
+				this.#processApiProperty(astDeclaration, context);
 				break;
 
 			case ts.SyntaxKind.IndexSignature:
-				this._processApiIndexSignature(astDeclaration, context);
+				this.#processApiIndexSignature(astDeclaration, context);
 				break;
 
 			case ts.SyntaxKind.InterfaceDeclaration:
-				this._processApiInterface(astDeclaration, context);
+				this.#processApiInterface(astDeclaration, context);
 				break;
 
 			case ts.SyntaxKind.MethodDeclaration:
-				this._processApiMethod(astDeclaration, context);
+				this.#processApiMethod(astDeclaration, context);
 				break;
 
 			case ts.SyntaxKind.MethodSignature:
-				this._processApiMethodSignature(astDeclaration, context);
+				this.#processApiMethodSignature(astDeclaration, context);
 				break;
 
 			case ts.SyntaxKind.ModuleDeclaration:
-				this._processApiNamespace(astDeclaration, context);
+				this.#processApiNamespace(astDeclaration, context);
 				break;
 
 			case ts.SyntaxKind.PropertyDeclaration:
-				this._processApiProperty(astDeclaration, context);
+				this.#processApiProperty(astDeclaration, context);
 				break;
 
 			case ts.SyntaxKind.PropertySignature:
-				this._processApiPropertySignature(astDeclaration, context);
+				this.#processApiPropertySignature(astDeclaration, context);
 				break;
 
 			case ts.SyntaxKind.TypeAliasDeclaration:
-				this._processApiTypeAlias(astDeclaration, context);
+				this.#processApiTypeAlias(astDeclaration, context);
 				break;
 
 			case ts.SyntaxKind.VariableDeclaration: {
 				// check for arrow functions in variable declaration
 				const functionDeclaration: ts.FunctionDeclaration | undefined =
-					this._tryFindFunctionDeclaration(astDeclaration);
+					this.#tryFindFunctionDeclaration(astDeclaration);
 				if (functionDeclaration) {
-					this._processApiFunction(astDeclaration, context, functionDeclaration);
+					this.#processApiFunction(astDeclaration, context, functionDeclaration);
 				} else {
-					this._processApiVariable(astDeclaration, context);
+					this.#processApiVariable(astDeclaration, context);
 				}
 
 				break;
@@ -485,16 +486,16 @@ export class ApiModelGenerator {
 		}
 	}
 
-	private _tryFindFunctionDeclaration(astDeclaration: AstDeclaration): ts.FunctionDeclaration | undefined {
+	#tryFindFunctionDeclaration(astDeclaration: AstDeclaration): ts.FunctionDeclaration | undefined {
 		const children: readonly ts.Node[] = astDeclaration.declaration.getChildren(
 			astDeclaration.declaration.getSourceFile(),
 		);
 		return children.find(ts.isFunctionTypeNode) as ts.FunctionDeclaration | undefined;
 	}
 
-	private _processChildDeclarations(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	#processChildDeclarations(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
 		for (const childDeclaration of astDeclaration.children) {
-			this._processDeclaration(childDeclaration, {
+			this.#processDeclaration(childDeclaration, {
 				...context,
 				name: childDeclaration.astSymbol.localName,
 			});
@@ -504,11 +505,11 @@ export class ApiModelGenerator {
 			[]) {
 			switch (context.parentApiItem.kind) {
 				case ApiItemKind.Class:
-					this._processApiMethod(null, { ...context, name: method.name });
+					this.#processApiMethod(null, { ...context, name: method.name });
 					break;
 
 				case ApiItemKind.Interface:
-					this._processApiMethodSignature(null, { ...context, name: method.name });
+					this.#processApiMethodSignature(null, { ...context, name: method.name });
 					break;
 
 				default:
@@ -522,11 +523,11 @@ export class ApiModelGenerator {
 			[]) {
 			switch (context.parentApiItem.kind) {
 				case ApiItemKind.Class:
-					this._processApiProperty(null, { ...context, name: property.name });
+					this.#processApiProperty(null, { ...context, name: property.name });
 					break;
 
 				case ApiItemKind.Interface:
-					this._processApiPropertySignature(null, { ...context, name: property.name });
+					this.#processApiPropertySignature(null, { ...context, name: property.name });
 					break;
 
 				default:
@@ -537,9 +538,9 @@ export class ApiModelGenerator {
 		}
 	}
 
-	private _processApiCallSignature(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	#processApiCallSignature(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
 		const { entryPoint, parentApiItem } = context;
-		const overloadIndex: number = this._collector.getOverloadIndex(astDeclaration);
+		const overloadIndex: number = this.#collector.getOverloadIndex(astDeclaration);
 		const containerKey: string = ApiCallSignature.getContainerKey(overloadIndex);
 
 		let apiCallSignature: ApiCallSignature | undefined = parentApiItem.tryGetMemberByKey(
@@ -556,18 +557,18 @@ export class ApiModelGenerator {
 				nodeTransforms.push({ node: callSignature.type, captureTokenRange: returnTypeTokenRange });
 			}
 
-			const typeParameters: IApiTypeParameterOptions[] = this._captureTypeParameters(
+			const typeParameters: IApiTypeParameterOptions[] = this.#captureTypeParameters(
 				nodeTransforms,
 				callSignature.typeParameters,
 			);
 
-			const parameters: IApiParameterOptions[] = this._captureParameters(nodeTransforms, callSignature.parameters);
+			const parameters: IApiParameterOptions[] = this.#captureParameters(nodeTransforms, callSignature.parameters);
 
-			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
-			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+			const excerptTokens: IExcerptToken[] = this.#buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
+			const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-			const sourceLocation: ISourceLocation = this._getSourceLocation(callSignature);
+			const sourceLocation: ISourceLocation = this.#getSourceLocation(callSignature);
 
 			apiCallSignature = new ApiCallSignature({
 				docComment,
@@ -586,9 +587,9 @@ export class ApiModelGenerator {
 		}
 	}
 
-	private _processApiConstructor(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	#processApiConstructor(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
 		const { entryPoint, parentApiItem } = context;
-		const overloadIndex: number = this._collector.getOverloadIndex(astDeclaration);
+		const overloadIndex: number = this.#collector.getOverloadIndex(astDeclaration);
 		const containerKey: string = ApiConstructor.getContainerKey(overloadIndex);
 
 		let apiConstructor: ApiConstructor | undefined = parentApiItem.tryGetMemberByKey(containerKey) as ApiConstructor;
@@ -599,18 +600,18 @@ export class ApiModelGenerator {
 			const nodeTransforms: IExcerptBuilderNodeTransform[] = [];
 			const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined;
 
-			const parameters: IApiParameterOptions[] = this._captureParameters(
+			const parameters: IApiParameterOptions[] = this.#captureParameters(
 				nodeTransforms,
 				constructorDeclaration.parameters,
 			);
 
-			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
-			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+			const excerptTokens: IExcerptToken[] = this.#buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
+			const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = parent?.construct
-				? this._tsDocParser.parseString(
-						`/*+\n * ${this._fixLinkTags(parent.construct.description) ?? ''}\n${
+				? this.#tsDocParser.parseString(
+						`/*+\n * ${this.#fixLinkTags(parent.construct.description) ?? ''}\n${
 							parent.construct.params
-								?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
+								?.map((param) => ` * @param ${param.name} - ${this.#fixLinkTags(param.description) ?? ''}\n`)
 								.join('') ?? ''
 						} */`,
 					).docComment
@@ -622,7 +623,7 @@ export class ApiModelGenerator {
 
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const isProtected: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Protected) !== 0;
-			const sourceLocation: ISourceLocation = this._getSourceLocation(constructorDeclaration);
+			const sourceLocation: ISourceLocation = this.#getSourceLocation(constructorDeclaration);
 
 			apiConstructor = new ApiConstructor({
 				docComment,
@@ -640,7 +641,7 @@ export class ApiModelGenerator {
 		}
 	}
 
-	private _processApiClass(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	#processApiClass(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
 		const { entryPoint, name, isExported, parentApiItem } = context;
 		const containerKey: string = ApiClass.getContainerKey(name);
 
@@ -653,7 +654,7 @@ export class ApiModelGenerator {
 
 			const nodeTransforms: IExcerptBuilderNodeTransform[] = [];
 
-			const typeParameters: IApiTypeParameterOptions[] = this._captureTypeParameters(
+			const typeParameters: IApiTypeParameterOptions[] = this.#captureTypeParameters(
 				nodeTransforms,
 				classDeclaration.typeParameters,
 			);
@@ -695,16 +696,16 @@ export class ApiModelGenerator {
 				}
 			}
 
-			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
-			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+			const excerptTokens: IExcerptToken[] = this.#buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
+			const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = jsDoc
-				? this._tsDocParser.parseString(
-						`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
+				? this.#tsDocParser.parseString(
+						`/**\n * ${this.#fixLinkTags(jsDoc.description) ?? ''}\n${
 							jsDoc.see?.map((see) => ` * @see ${see}\n`).join('') ?? ''
 						}${
 							jsDoc.deprecated
 								? ` * @deprecated ${
-										typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+										typeof jsDoc.deprecated === 'string' ? this.#fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
 									}\n`
 								: ''
 						} */`,
@@ -717,7 +718,7 @@ export class ApiModelGenerator {
 
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const isAbstract: boolean = (ts.getCombinedModifierFlags(classDeclaration) & ts.ModifierFlags.Abstract) !== 0;
-			const sourceLocation: ISourceLocation = this._getSourceLocation(classDeclaration);
+			const sourceLocation: ISourceLocation = this.#getSourceLocation(classDeclaration);
 
 			apiClass = new ApiClass({
 				name,
@@ -737,20 +738,20 @@ export class ApiModelGenerator {
 			parentApiItem.addMember(apiClass);
 		}
 
-		this._processChildDeclarations(astDeclaration, {
+		this.#processChildDeclarations(astDeclaration, {
 			...context,
 			parentApiItem: apiClass,
 			parentDocgenJson: jsDoc,
 		});
 
 		for (const event of jsDoc?.events ?? []) {
-			this._processApiEvent({ ...context, name: event.name, parentApiItem: apiClass, parentDocgenJson: jsDoc });
+			this.#processApiEvent({ ...context, name: event.name, parentApiItem: apiClass, parentDocgenJson: jsDoc });
 		}
 	}
 
-	private _processApiConstructSignature(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	#processApiConstructSignature(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
 		const { entryPoint, parentApiItem } = context;
-		const overloadIndex: number = this._collector.getOverloadIndex(astDeclaration);
+		const overloadIndex: number = this.#collector.getOverloadIndex(astDeclaration);
 		const containerKey: string = ApiConstructSignature.getContainerKey(overloadIndex);
 
 		let apiConstructSignature: ApiConstructSignature | undefined = parentApiItem.tryGetMemberByKey(
@@ -769,20 +770,20 @@ export class ApiModelGenerator {
 				nodeTransforms.push({ node: constructSignature.type, captureTokenRange: returnTypeTokenRange });
 			}
 
-			const typeParameters: IApiTypeParameterOptions[] = this._captureTypeParameters(
+			const typeParameters: IApiTypeParameterOptions[] = this.#captureTypeParameters(
 				nodeTransforms,
 				constructSignature.typeParameters,
 			);
 
-			const parameters: IApiParameterOptions[] = this._captureParameters(nodeTransforms, constructSignature.parameters);
+			const parameters: IApiParameterOptions[] = this.#captureParameters(nodeTransforms, constructSignature.parameters);
 
-			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
-			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+			const excerptTokens: IExcerptToken[] = this.#buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
+			const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = parent?.construct
-				? this._tsDocParser.parseString(
-						`/*+\n * ${this._fixLinkTags(parent.construct.description) ?? ''}\n${
+				? this.#tsDocParser.parseString(
+						`/*+\n * ${this.#fixLinkTags(parent.construct.description) ?? ''}\n${
 							parent.construct.params
-								?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
+								?.map((param) => ` * @param ${param.name} - ${this.#fixLinkTags(param.description) ?? ''}\n`)
 								.join('') ?? ''
 						} */`,
 					).docComment
@@ -793,7 +794,7 @@ export class ApiModelGenerator {
 			}
 
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-			const sourceLocation: ISourceLocation = this._getSourceLocation(constructSignature);
+			const sourceLocation: ISourceLocation = this.#getSourceLocation(constructSignature);
 
 			apiConstructSignature = new ApiConstructSignature({
 				docComment,
@@ -812,19 +813,19 @@ export class ApiModelGenerator {
 		}
 	}
 
-	private _processApiEnum(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	#processApiEnum(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
 		const { entryPoint, name, isExported, parentApiItem } = context;
 		const containerKey: string = ApiEnum.getContainerKey(name);
 
 		let apiEnum: ApiEnum | undefined = parentApiItem.tryGetMemberByKey(containerKey) as ApiEnum;
 
 		if (apiEnum === undefined) {
-			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, [], entryPoint);
-			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+			const excerptTokens: IExcerptToken[] = this.#buildExcerptTokens(astDeclaration, [], entryPoint);
+			const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-			const preserveMemberOrder: boolean = this._collector.extractorConfig.enumMemberOrder === EnumMemberOrder.Preserve;
-			const sourceLocation: ISourceLocation = this._getSourceLocation(astDeclaration.declaration);
+			const preserveMemberOrder: boolean = this.#collector.extractorConfig.enumMemberOrder === EnumMemberOrder.Preserve;
+			const sourceLocation: ISourceLocation = this.#getSourceLocation(astDeclaration.declaration);
 
 			apiEnum = new ApiEnum({
 				name,
@@ -840,13 +841,13 @@ export class ApiModelGenerator {
 			parentApiItem.addMember(apiEnum);
 		}
 
-		this._processChildDeclarations(astDeclaration, {
+		this.#processChildDeclarations(astDeclaration, {
 			...context,
 			parentApiItem: apiEnum,
 		});
 	}
 
-	private _processApiEnumMember(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	#processApiEnumMember(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
 		const { entryPoint, name, parentApiItem } = context;
 		const containerKey: string = ApiEnumMember.getContainerKey(name);
 
@@ -863,11 +864,11 @@ export class ApiModelGenerator {
 				nodeTransforms.push({ node: enumMember.initializer, captureTokenRange: initializerTokenRange });
 			}
 
-			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
-			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+			const excerptTokens: IExcerptToken[] = this.#buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
+			const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-			const sourceLocation: ISourceLocation = this._getSourceLocation(enumMember);
+			const sourceLocation: ISourceLocation = this.#getSourceLocation(enumMember);
 
 			apiEnumMember = new ApiEnumMember({
 				name,
@@ -884,14 +885,14 @@ export class ApiModelGenerator {
 		}
 	}
 
-	private _processApiFunction(
+	#processApiFunction(
 		astDeclaration: AstDeclaration,
 		context: IProcessAstEntityContext,
 		altFunctionDeclaration?: ts.FunctionDeclaration,
 	): void {
 		const { entryPoint, name, isExported, parentApiItem } = context;
 
-		const overloadIndex: number = this._collector.getOverloadIndex(astDeclaration);
+		const overloadIndex: number = this.#collector.getOverloadIndex(astDeclaration);
 		const containerKey: string = ApiFunction.getContainerKey(name, overloadIndex);
 
 		let apiFunction: ApiFunction | undefined = parentApiItem.tryGetMemberByKey(containerKey) as ApiFunction;
@@ -909,33 +910,33 @@ export class ApiModelGenerator {
 				nodeTransforms.push({ node: functionDeclaration.type, captureTokenRange: returnTypeTokenRange });
 			}
 
-			const typeParameters: IApiTypeParameterOptions[] = this._captureTypeParameters(
+			const typeParameters: IApiTypeParameterOptions[] = this.#captureTypeParameters(
 				nodeTransforms,
 				functionDeclaration.typeParameters,
 			);
 
-			const parameters: IApiParameterOptions[] = this._captureParameters(
+			const parameters: IApiParameterOptions[] = this.#captureParameters(
 				nodeTransforms,
 				functionDeclaration.parameters,
 				jsDoc?.params,
 			);
 
-			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
-			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+			const excerptTokens: IExcerptToken[] = this.#buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
+			const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = jsDoc
-				? this._tsDocParser.parseString(
-						`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
+				? this.#tsDocParser.parseString(
+						`/**\n * ${this.#fixLinkTags(jsDoc.description) ?? ''}\n${
 							jsDoc.params
-								?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
+								?.map((param) => ` * @param ${param.name} - ${this.#fixLinkTags(param.description) ?? ''}\n`)
 								.join('') ?? ''
 						}${
 							jsDoc.returns?.length && !Array.isArray(jsDoc.returns[0])
-								? ` * @returns ${this._fixLinkTags(jsDoc.returns[0]!.description) ?? ''}`
+								? ` * @returns ${this.#fixLinkTags(jsDoc.returns[0]!.description) ?? ''}`
 								: ''
 						}${
 							jsDoc.deprecated
 								? ` * @deprecated ${
-										typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+										typeof jsDoc.deprecated === 'string' ? this.#fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
 									}\n`
 								: ''
 						} */`,
@@ -947,7 +948,7 @@ export class ApiModelGenerator {
 			}
 
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-			const sourceLocation: ISourceLocation = this._getSourceLocation(functionDeclaration);
+			const sourceLocation: ISourceLocation = this.#getSourceLocation(functionDeclaration);
 
 			apiFunction = new ApiFunction({
 				name,
@@ -968,9 +969,9 @@ export class ApiModelGenerator {
 		}
 	}
 
-	private _processApiIndexSignature(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	#processApiIndexSignature(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
 		const { entryPoint, parentApiItem } = context;
-		const overloadIndex: number = this._collector.getOverloadIndex(astDeclaration);
+		const overloadIndex: number = this.#collector.getOverloadIndex(astDeclaration);
 		const containerKey: string = ApiIndexSignature.getContainerKey(overloadIndex);
 
 		let apiIndexSignature: ApiIndexSignature | undefined = parentApiItem.tryGetMemberByKey(
@@ -983,16 +984,16 @@ export class ApiModelGenerator {
 			const nodeTransforms: IExcerptBuilderNodeTransform[] = [];
 
 			const returnTypeTokenRange: IExcerptTokenRange = ExcerptBuilder.createEmptyTokenRange();
-			nodeTransforms.push({ node: indexSignature.type, captureTokenRange: returnTypeTokenRange });
+			nodeTransforms.push({ node: indexSignature.type!, captureTokenRange: returnTypeTokenRange });
 
-			const parameters: IApiParameterOptions[] = this._captureParameters(nodeTransforms, indexSignature.parameters);
+			const parameters: IApiParameterOptions[] = this.#captureParameters(nodeTransforms, indexSignature.parameters);
 
-			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
-			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+			const excerptTokens: IExcerptToken[] = this.#buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
+			const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-			const isReadonly: boolean = this._isReadonly(astDeclaration);
-			const sourceLocation: ISourceLocation = this._getSourceLocation(indexSignature);
+			const isReadonly: boolean = this.#isReadonly(astDeclaration);
+			const sourceLocation: ISourceLocation = this.#getSourceLocation(indexSignature);
 
 			apiIndexSignature = new ApiIndexSignature({
 				docComment,
@@ -1011,7 +1012,7 @@ export class ApiModelGenerator {
 		}
 	}
 
-	private _processApiInterface(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	#processApiInterface(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
 		const { entryPoint, name, isExported, parentApiItem } = context;
 		const containerKey: string = ApiInterface.getContainerKey(name);
 
@@ -1025,7 +1026,7 @@ export class ApiModelGenerator {
 
 			const nodeTransforms: IExcerptBuilderNodeTransform[] = [];
 
-			const typeParameters: IApiTypeParameterOptions[] = this._captureTypeParameters(
+			const typeParameters: IApiTypeParameterOptions[] = this.#captureTypeParameters(
 				nodeTransforms,
 				interfaceDeclaration.typeParameters,
 			);
@@ -1053,16 +1054,16 @@ export class ApiModelGenerator {
 				}
 			}
 
-			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
-			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+			const excerptTokens: IExcerptToken[] = this.#buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
+			const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = jsDoc
-				? this._tsDocParser.parseString(
-						`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
+				? this.#tsDocParser.parseString(
+						`/**\n * ${this.#fixLinkTags(jsDoc.description) ?? ''}\n${
 							jsDoc.see?.map((see) => ` * @see ${see}\n`).join('') ?? ''
 						}${
 							jsDoc.deprecated
 								? ` * @deprecated ${
-										typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+										typeof jsDoc.deprecated === 'string' ? this.#fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
 									}\n`
 								: ''
 						} */`,
@@ -1074,7 +1075,7 @@ export class ApiModelGenerator {
 			}
 
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-			const sourceLocation: ISourceLocation = this._getSourceLocation(interfaceDeclaration);
+			const sourceLocation: ISourceLocation = this.#getSourceLocation(interfaceDeclaration);
 
 			apiInterface = new ApiInterface({
 				name,
@@ -1092,21 +1093,21 @@ export class ApiModelGenerator {
 			parentApiItem.addMember(apiInterface);
 		}
 
-		this._processChildDeclarations(astDeclaration, {
+		this.#processChildDeclarations(astDeclaration, {
 			...context,
 			parentApiItem: apiInterface,
 			parentDocgenJson: jsDoc,
 		});
 	}
 
-	private _processApiMethod(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
+	#processApiMethod(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
 		const { entryPoint, name, parentApiItem } = context;
 		const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined;
 		const jsDoc = parent?.methods?.find((method) => method.name === name);
 		const isStatic: boolean = astDeclaration
 			? (astDeclaration.modifierFlags & ts.ModifierFlags.Static) !== 0
 			: jsDoc?.scope === 'static';
-		const overloadIndex: number = astDeclaration ? this._collector.getOverloadIndex(astDeclaration) : 1;
+		const overloadIndex: number = astDeclaration ? this.#collector.getOverloadIndex(astDeclaration) : 1;
 		const containerKey: string = ApiMethod.getContainerKey(name, isStatic, overloadIndex);
 
 		let apiMethod: ApiMethod | undefined = parentApiItem.tryGetMemberByKey(containerKey) as ApiMethod;
@@ -1122,35 +1123,35 @@ export class ApiModelGenerator {
 					nodeTransforms.push({ node: methodDeclaration.type, captureTokenRange: returnTypeTokenRange });
 				}
 
-				const typeParameters: IApiTypeParameterOptions[] = this._captureTypeParameters(
+				const typeParameters: IApiTypeParameterOptions[] = this.#captureTypeParameters(
 					nodeTransforms,
 					methodDeclaration.typeParameters,
 				);
 
-				const parameters: IApiParameterOptions[] = this._captureParameters(
+				const parameters: IApiParameterOptions[] = this.#captureParameters(
 					nodeTransforms,
 					methodDeclaration.parameters,
 					jsDoc?.params,
 				);
 
-				const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
-				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+				const excerptTokens: IExcerptToken[] = this.#buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
+				const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 				const docComment: tsdoc.DocComment | undefined = jsDoc
-					? this._tsDocParser.parseString(
-							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
+					? this.#tsDocParser.parseString(
+							`/**\n * ${this.#fixLinkTags(jsDoc.description) ?? ''}\n${
 								jsDoc.params
-									?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
+									?.map((param) => ` * @param ${param.name} - ${this.#fixLinkTags(param.description) ?? ''}\n`)
 									.join('') ?? ''
 							}${
 								jsDoc.returns?.length && !Array.isArray(jsDoc.returns[0])
-									? ` * @returns ${this._fixLinkTags(jsDoc.returns[0]!.description) ?? ''}\n`
+									? ` * @returns ${this.#fixLinkTags(jsDoc.returns[0]!.description) ?? ''}\n`
 									: ''
 							}${
 								jsDoc.examples?.map((example) => ` * @example\n * \`\`\`js\n * ${example}\n * \`\`\`\n`).join('') ?? ''
 							}${
 								jsDoc.deprecated
 									? ` * @deprecated ${
-											typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+											typeof jsDoc.deprecated === 'string' ? this.#fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
 										}\n`
 									: ''
 							} */`,
@@ -1166,10 +1167,10 @@ export class ApiModelGenerator {
 					return; // trim out items marked as "@internal" or "@alpha"
 				}
 
-				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
+				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & tsAPI.SymbolFlags.Optional) !== 0;
 				const isProtected: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Protected) !== 0;
 				const isAbstract: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Abstract) !== 0;
-				const sourceLocation: ISourceLocation = this._getSourceLocation(methodDeclaration);
+				const sourceLocation: ISourceLocation = this.#getSourceLocation(methodDeclaration);
 
 				apiMethod = new ApiMethod({
 					name,
@@ -1193,7 +1194,7 @@ export class ApiModelGenerator {
 					return;
 				}
 
-				const methodOptions = this._mapMethod(jsDoc, parentApiItem.getAssociatedPackage()!.name);
+				const methodOptions = this.#mapMethod(jsDoc, parentApiItem.getAssociatedPackage()!.name);
 				if (methodOptions.releaseTag === ReleaseTag.Internal || methodOptions.releaseTag === ReleaseTag.Alpha) {
 					return; // trim out items marked as "@internal" or "@alpha"
 				}
@@ -1205,9 +1206,9 @@ export class ApiModelGenerator {
 		}
 	}
 
-	private _processApiMethodSignature(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
+	#processApiMethodSignature(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
 		const { entryPoint, name, parentApiItem } = context;
-		const overloadIndex: number = astDeclaration ? this._collector.getOverloadIndex(astDeclaration) : 1;
+		const overloadIndex: number = astDeclaration ? this.#collector.getOverloadIndex(astDeclaration) : 1;
 		const containerKey: string = ApiMethodSignature.getContainerKey(name, overloadIndex);
 
 		let apiMethodSignature: ApiMethodSignature | undefined = parentApiItem.tryGetMemberByKey(
@@ -1218,7 +1219,8 @@ export class ApiModelGenerator {
 
 		if (apiMethodSignature === undefined) {
 			if (astDeclaration) {
-				const methodSignature: ts.MethodSignature = astDeclaration.declaration as ts.MethodSignature;
+				const methodSignature: ts.MethodSignatureDeclaration =
+					astDeclaration.declaration as ts.MethodSignatureDeclaration;
 
 				const nodeTransforms: IExcerptBuilderNodeTransform[] = [];
 
@@ -1227,33 +1229,33 @@ export class ApiModelGenerator {
 					nodeTransforms.push({ node: methodSignature.type, captureTokenRange: returnTypeTokenRange });
 				}
 
-				const typeParameters: IApiTypeParameterOptions[] = this._captureTypeParameters(
+				const typeParameters: IApiTypeParameterOptions[] = this.#captureTypeParameters(
 					nodeTransforms,
 					methodSignature.typeParameters,
 				);
 
-				const parameters: IApiParameterOptions[] = this._captureParameters(
+				const parameters: IApiParameterOptions[] = this.#captureParameters(
 					nodeTransforms,
 					methodSignature.parameters,
 					jsDoc?.params,
 				);
 
-				const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
-				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+				const excerptTokens: IExcerptToken[] = this.#buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
+				const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 				const docComment: tsdoc.DocComment | undefined = jsDoc
-					? this._tsDocParser.parseString(
-							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
+					? this.#tsDocParser.parseString(
+							`/**\n * ${this.#fixLinkTags(jsDoc.description) ?? ''}\n${
 								jsDoc.params
-									?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
+									?.map((param) => ` * @param ${param.name} - ${this.#fixLinkTags(param.description) ?? ''}\n`)
 									.join('') ?? ''
 							}${
 								jsDoc.returns?.length && !Array.isArray(jsDoc.returns[0])
-									? ` * @returns ${this._fixLinkTags(jsDoc.returns[0]!.description) ?? ''}\n`
+									? ` * @returns ${this.#fixLinkTags(jsDoc.returns[0]!.description) ?? ''}\n`
 									: ''
 							}${
 								jsDoc.deprecated
 									? ` * @deprecated ${
-											typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+											typeof jsDoc.deprecated === 'string' ? this.#fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
 										}\n`
 									: ''
 							} */`,
@@ -1265,8 +1267,8 @@ export class ApiModelGenerator {
 				}
 
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
-				const sourceLocation: ISourceLocation = this._getSourceLocation(methodSignature);
+				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & tsAPI.SymbolFlags.Optional) !== 0;
+				const sourceLocation: ISourceLocation = this.#getSourceLocation(methodSignature);
 
 				apiMethodSignature = new ApiMethodSignature({
 					name,
@@ -1283,25 +1285,25 @@ export class ApiModelGenerator {
 					fileColumn: sourceLocation.sourceFileColumn,
 				});
 			} else if (jsDoc) {
-				apiMethodSignature = new ApiMethodSignature(this._mapMethod(jsDoc, parentApiItem.getAssociatedPackage()!.name));
+				apiMethodSignature = new ApiMethodSignature(this.#mapMethod(jsDoc, parentApiItem.getAssociatedPackage()!.name));
 			}
 
 			parentApiItem.addMember(apiMethodSignature);
 		}
 	}
 
-	private _processApiNamespace(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	#processApiNamespace(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
 		const { entryPoint, name, isExported, parentApiItem } = context;
 		const containerKey: string = ApiNamespace.getContainerKey(name);
 
 		let apiNamespace: ApiNamespace | undefined = parentApiItem.tryGetMemberByKey(containerKey) as ApiNamespace;
 
 		if (apiNamespace === undefined) {
-			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, [], entryPoint);
-			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+			const excerptTokens: IExcerptToken[] = this.#buildExcerptTokens(astDeclaration, [], entryPoint);
+			const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-			const sourceLocation: ISourceLocation = this._getSourceLocation(astDeclaration.declaration);
+			const sourceLocation: ISourceLocation = this.#getSourceLocation(astDeclaration.declaration);
 
 			apiNamespace = new ApiNamespace({
 				name,
@@ -1316,13 +1318,13 @@ export class ApiModelGenerator {
 			parentApiItem.addMember(apiNamespace);
 		}
 
-		this._processChildDeclarations(astDeclaration, {
+		this.#processChildDeclarations(astDeclaration, {
 			...context,
 			parentApiItem: apiNamespace,
 		});
 	}
 
-	private _processApiProperty(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
+	#processApiProperty(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
 		const { entryPoint, name, parentApiItem } = context;
 		const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | DocgenTypedefJson | undefined;
 		const jsDoc = parent?.props?.find((prop) => prop.name === name);
@@ -1338,7 +1340,7 @@ export class ApiModelGenerator {
 		if (
 			apiProperty === undefined &&
 			(astDeclaration ||
-				!this._isInherited(parent as DocgenClassJson | DocgenInterfaceJson, jsDoc!, parentApiItem.kind))
+				!this.#isInherited(parent as DocgenClassJson | DocgenInterfaceJson, jsDoc!, parentApiItem.kind))
 		) {
 			if (astDeclaration) {
 				const declaration: ts.Declaration = astDeclaration.declaration;
@@ -1366,17 +1368,17 @@ export class ApiModelGenerator {
 					nodeTransforms.push({ node: declaration.initializer, captureTokenRange: initializerTokenRange });
 				}
 
-				const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
-				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+				const excerptTokens: IExcerptToken[] = this.#buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
+				const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 				const docComment: tsdoc.DocComment | undefined =
 					jsDoc && !ts.isSetAccessorDeclaration(declaration)
-						? this._tsDocParser.parseString(
-								`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}${jsDoc.default === undefined ? '' : ` (default: ${this._escapeSpecialChars(jsDoc.default)})`}\n${
+						? this.#tsDocParser.parseString(
+								`/**\n * ${this.#fixLinkTags(jsDoc.description) ?? ''}${jsDoc.default === undefined ? '' : ` (default: ${this.#escapeSpecialChars(jsDoc.default)})`}\n${
 									'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
 								}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
 									'deprecated' in jsDoc && jsDoc.deprecated
 										? ` * @deprecated ${
-												typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+												typeof jsDoc.deprecated === 'string' ? this.#fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
 											}\n`
 										: ''
 								} */`,
@@ -1388,11 +1390,11 @@ export class ApiModelGenerator {
 				}
 
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
+				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & tsAPI.SymbolFlags.Optional) !== 0;
 				const isProtected: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Protected) !== 0;
 				const isAbstract: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Abstract) !== 0;
-				const isReadonly: boolean = this._isReadonly(astDeclaration);
-				const sourceLocation: ISourceLocation = this._getSourceLocation(declaration);
+				const isReadonly: boolean = this.#isReadonly(astDeclaration);
+				const sourceLocation: ISourceLocation = this.#getSourceLocation(declaration);
 
 				apiProperty = new ApiProperty({
 					name,
@@ -1411,7 +1413,7 @@ export class ApiModelGenerator {
 					fileColumn: sourceLocation.sourceFileColumn,
 				});
 			} else if (parentApiItem.kind === ApiItemKind.Class || parentApiItem.kind === ApiItemKind.Interface) {
-				const propertyOptions = this._mapProp(jsDoc as DocgenPropertyJson, parentApiItem.getAssociatedPackage()!.name);
+				const propertyOptions = this.#mapProp(jsDoc as DocgenPropertyJson, parentApiItem.getAssociatedPackage()!.name);
 				if (propertyOptions.releaseTag === ReleaseTag.Internal || propertyOptions.releaseTag === ReleaseTag.Alpha) {
 					return; // trim out items marked as "@internal" or "@alpha"
 				}
@@ -1428,7 +1430,7 @@ export class ApiModelGenerator {
 		}
 	}
 
-	private _processApiPropertySignature(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
+	#processApiPropertySignature(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
 		const { entryPoint, name, parentApiItem } = context;
 		const containerKey: string = ApiPropertySignature.getContainerKey(name);
 
@@ -1440,10 +1442,11 @@ export class ApiModelGenerator {
 
 		if (
 			apiPropertySignature === undefined &&
-			(astDeclaration || !this._isInherited(parent as DocgenInterfaceJson, jsDoc!, parentApiItem.kind))
+			(astDeclaration || !this.#isInherited(parent as DocgenInterfaceJson, jsDoc!, parentApiItem.kind))
 		) {
 			if (astDeclaration) {
-				const propertySignature: ts.PropertySignature = astDeclaration.declaration as ts.PropertySignature;
+				const propertySignature: ts.PropertySignatureDeclaration =
+					astDeclaration.declaration as ts.PropertySignatureDeclaration;
 
 				const nodeTransforms: IExcerptBuilderNodeTransform[] = [];
 
@@ -1452,16 +1455,16 @@ export class ApiModelGenerator {
 					nodeTransforms.push({ node: propertySignature.type, captureTokenRange: propertyTypeTokenRange });
 				}
 
-				const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
-				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+				const excerptTokens: IExcerptToken[] = this.#buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
+				const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 				const docComment: tsdoc.DocComment | undefined = jsDoc
-					? this._tsDocParser.parseString(
-							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}${jsDoc.default === undefined ? '' : `\n * @defaultValue \`${this._escapeSpecialChars(jsDoc.default)}\``}\n${
+					? this.#tsDocParser.parseString(
+							`/**\n * ${this.#fixLinkTags(jsDoc.description) ?? ''}${jsDoc.default === undefined ? '' : `\n * @defaultValue \`${this.#escapeSpecialChars(jsDoc.default)}\``}\n${
 								'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
 							}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
 								'deprecated' in jsDoc && jsDoc.deprecated
 									? ` * @deprecated ${
-											typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+											typeof jsDoc.deprecated === 'string' ? this.#fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
 										}\n`
 									: ''
 							} */`,
@@ -1473,9 +1476,9 @@ export class ApiModelGenerator {
 				}
 
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
-				const isReadonly: boolean = this._isReadonly(astDeclaration);
-				const sourceLocation: ISourceLocation = this._getSourceLocation(propertySignature);
+				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & tsAPI.SymbolFlags.Optional) !== 0;
+				const isReadonly: boolean = this.#isReadonly(astDeclaration);
+				const sourceLocation: ISourceLocation = this.#getSourceLocation(propertySignature);
 
 				apiPropertySignature = new ApiPropertySignature({
 					name,
@@ -1491,7 +1494,7 @@ export class ApiModelGenerator {
 				});
 			} else if (parentApiItem.kind === ApiItemKind.Class || parentApiItem.kind === ApiItemKind.Interface) {
 				apiPropertySignature = new ApiPropertySignature(
-					this._mapProp(jsDoc as DocgenPropertyJson, parentApiItem.getAssociatedPackage()!.name),
+					this.#mapProp(jsDoc as DocgenPropertyJson, parentApiItem.getAssociatedPackage()!.name),
 				);
 			} else {
 				console.log(`We got a property in ApiItem of kind ${ApiItemKind[parentApiItem.kind]}`);
@@ -1504,7 +1507,7 @@ export class ApiModelGenerator {
 		}
 	}
 
-	private _processApiTypeAlias(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	#processApiTypeAlias(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
 		const { entryPoint, name, isExported, parentApiItem } = context;
 
 		const containerKey: string = ApiTypeAlias.getContainerKey(name);
@@ -1521,7 +1524,7 @@ export class ApiModelGenerator {
 
 			const nodeTransforms: IExcerptBuilderNodeTransform[] = [];
 
-			const typeParameters: IApiTypeParameterOptions[] = this._captureTypeParameters(
+			const typeParameters: IApiTypeParameterOptions[] = this.#captureTypeParameters(
 				nodeTransforms,
 				typeAliasDeclaration.typeParameters,
 			);
@@ -1529,21 +1532,21 @@ export class ApiModelGenerator {
 			const typeTokenRange: IExcerptTokenRange = ExcerptBuilder.createEmptyTokenRange();
 			nodeTransforms.push({ node: typeAliasDeclaration.type, captureTokenRange: typeTokenRange });
 
-			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
-			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+			const excerptTokens: IExcerptToken[] = this.#buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
+			const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = jsDoc
-				? this._tsDocParser.parseString(
-						`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
+				? this.#tsDocParser.parseString(
+						`/**\n * ${this.#fixLinkTags(jsDoc.description) ?? ''}\n${
 							'params' in jsDoc
 								? jsDoc.params
-										.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
+										.map((param) => ` * @param ${param.name} - ${this.#fixLinkTags(param.description) ?? ''}\n`)
 										.join('')
 								: ''
 						}${
 							'returns' in jsDoc
 								? jsDoc.returns
 										.map(
-											(ret) => ` * @returns ${Array.isArray(ret) ? '' : (this._fixLinkTags(ret.description) ?? '')}\n`,
+											(ret) => ` * @returns ${Array.isArray(ret) ? '' : (this.#fixLinkTags(ret.description) ?? '')}\n`,
 										)
 										.join('')
 								: ''
@@ -1556,7 +1559,7 @@ export class ApiModelGenerator {
 			}
 
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-			const sourceLocation: ISourceLocation = this._getSourceLocation(typeAliasDeclaration);
+			const sourceLocation: ISourceLocation = this.#getSourceLocation(typeAliasDeclaration);
 
 			apiTypeAlias = new ApiTypeAlias({
 				name,
@@ -1575,7 +1578,7 @@ export class ApiModelGenerator {
 		}
 	}
 
-	private _processApiVariable(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	#processApiVariable(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
 		const { entryPoint, name, isExported, parentApiItem } = context;
 
 		const containerKey: string = ApiVariable.getContainerKey(name);
@@ -1598,12 +1601,12 @@ export class ApiModelGenerator {
 				nodeTransforms.push({ node: variableDeclaration.initializer, captureTokenRange: initializerTokenRange });
 			}
 
-			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
-			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+			const excerptTokens: IExcerptToken[] = this.#buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
+			const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-			const isReadonly: boolean = this._isReadonly(astDeclaration);
-			const sourceLocation: ISourceLocation = this._getSourceLocation(variableDeclaration);
+			const isReadonly: boolean = this.#isReadonly(astDeclaration);
+			const sourceLocation: ISourceLocation = this.#getSourceLocation(variableDeclaration);
 
 			apiVariable = new ApiVariable({
 				name,
@@ -1624,7 +1627,7 @@ export class ApiModelGenerator {
 	}
 
 	// events aren't part of typescript, we only get them from docgen JSON here
-	private _processApiEvent(context: IProcessAstEntityContext): void {
+	#processApiEvent(context: IProcessAstEntityContext): void {
 		const { name, parentApiItem } = context;
 		const containerKey: string = ApiProperty.getContainerKey(name, false);
 
@@ -1646,7 +1649,7 @@ export class ApiModelGenerator {
 			const parameters: IApiParameterOptions[] = [];
 			for (let index = 0; index < (jsDoc.params?.length ?? 0) - 1; index++) {
 				const parameter = jsDoc.params![index]!;
-				const newTokens = this._mapVarType(parameter.type, parameter.nullable);
+				const newTokens = this.#mapVarType(parameter.type, parameter.nullable);
 				parameters.push({
 					parameterName: parameter.name,
 					parameterTypeTokenRange: {
@@ -1666,7 +1669,7 @@ export class ApiModelGenerator {
 
 			if (jsDoc.params?.length) {
 				const parameter = jsDoc.params![jsDoc.params.length - 1]!;
-				const newTokens = this._mapVarType(parameter.type, parameter.nullable);
+				const newTokens = this.#mapVarType(parameter.type, parameter.nullable);
 				parameters.push({
 					parameterName: parameter.name,
 					parameterTypeTokenRange: {
@@ -1684,15 +1687,15 @@ export class ApiModelGenerator {
 				});
 			}
 
-			const docComment: tsdoc.DocComment | undefined = this._tsDocParser.parseString(
-				`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
+			const docComment: tsdoc.DocComment | undefined = this.#tsDocParser.parseString(
+				`/**\n * ${this.#fixLinkTags(jsDoc.description) ?? ''}\n${
 					jsDoc.params
-						?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
+						?.map((param) => ` * @param ${param.name} - ${this.#fixLinkTags(param.description) ?? ''}\n`)
 						.join('') ?? ''
 				}${'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''}${
 					'deprecated' in jsDoc && jsDoc.deprecated
 						? ` * @deprecated ${
-								typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+								typeof jsDoc.deprecated === 'string' ? this.#fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
 							}\n`
 						: ''
 				} */`,
@@ -1721,7 +1724,7 @@ export class ApiModelGenerator {
 	 * @param astDeclaration - The declaration
 	 * @param nodeTransforms - A list of child nodes whose token ranges we want to capture
 	 */
-	private _buildExcerptTokens(
+	#buildExcerptTokens(
 		astDeclaration: AstDeclaration,
 		nodeTransforms: IExcerptBuilderNodeTransform[],
 		entryPoint: IWorkingPackageEntryPoint,
@@ -1729,9 +1732,9 @@ export class ApiModelGenerator {
 		const excerptTokens: IExcerptToken[] = [];
 
 		// Build the main declaration
-		ExcerptBuilder.addDeclaration(excerptTokens, astDeclaration, nodeTransforms, this._referenceGenerator, entryPoint);
+		ExcerptBuilder.addDeclaration(excerptTokens, astDeclaration, nodeTransforms, this.#referenceGenerator, entryPoint);
 
-		const declarationMetadata: DeclarationMetadata = this._collector.fetchDeclarationMetadata(astDeclaration);
+		const declarationMetadata: DeclarationMetadata = this.#collector.fetchDeclarationMetadata(astDeclaration);
 
 		// Add any ancillary declarations
 		for (const ancillaryDeclaration of declarationMetadata.ancillaryDeclarations) {
@@ -1740,7 +1743,7 @@ export class ApiModelGenerator {
 				excerptTokens,
 				ancillaryDeclaration,
 				nodeTransforms,
-				this._referenceGenerator,
+				this.#referenceGenerator,
 				entryPoint,
 			);
 		}
@@ -1748,7 +1751,7 @@ export class ApiModelGenerator {
 		return excerptTokens;
 	}
 
-	private _captureTypeParameters(
+	#captureTypeParameters(
 		nodeTransforms: IExcerptBuilderNodeTransform[],
 		typeParameterNodes: ts.NodeArray<ts.TypeParameterDeclaration> | undefined,
 	): IApiTypeParameterOptions[] {
@@ -1761,8 +1764,8 @@ export class ApiModelGenerator {
 				}
 
 				const defaultTypeTokenRange: IExcerptTokenRange = ExcerptBuilder.createEmptyTokenRange();
-				if (typeParameter.default) {
-					nodeTransforms.push({ node: typeParameter.default, captureTokenRange: defaultTypeTokenRange });
+				if (typeParameter.defaultType) {
+					nodeTransforms.push({ node: typeParameter.defaultType, captureTokenRange: defaultTypeTokenRange });
 				}
 
 				typeParameters.push({
@@ -1776,7 +1779,7 @@ export class ApiModelGenerator {
 		return typeParameters;
 	}
 
-	private _captureParameters(
+	#captureParameters(
 		nodeTransforms: IExcerptBuilderNodeTransform[],
 		parameterNodes: ts.NodeArray<ts.ParameterDeclaration>,
 		jsDoc?: DocgenParamJson[],
@@ -1793,7 +1796,7 @@ export class ApiModelGenerator {
 				parameters.push({
 					parameterName: syntheticName ?? parameter.name.getText().trim(),
 					parameterTypeTokenRange,
-					isOptional: this._collector.typeChecker.isOptionalParameter(parameter),
+					isOptional: Boolean(parameter.questionToken ?? parameter.initializer),
 					isRest: Boolean(parameter.dotDotDotToken),
 					defaultValue:
 						parameter.initializer?.getText() ??
@@ -1810,7 +1813,7 @@ export class ApiModelGenerator {
 		return parameters;
 	}
 
-	private _isInherited(
+	#isInherited(
 		container: DocgenClassJson | DocgenInterfaceJson,
 		jsDoc: DocgenParamJson | DocgenPropertyJson,
 		containerKind: ApiItemKind,
@@ -1819,12 +1822,12 @@ export class ApiModelGenerator {
 			case ApiItemKind.Class: {
 				const token = (container as DocgenClassJson).extends;
 				const parentName = Array.isArray(token) ? token[0]?.[0]?.[0] : token?.types?.[0]?.[0]?.[0];
-				const parentJson = this._jsDocJson?.classes.find((clas) => clas.name === parentName);
+				const parentJson = this.#jsDocJson?.classes.find((clas) => clas.name === parentName);
 				if (parentJson) {
 					if (parentJson.props?.find((prop) => prop.name === jsDoc.name)) {
 						return true;
 					} else {
-						return this._isInherited(parentJson, jsDoc, containerKind);
+						return this.#isInherited(parentJson, jsDoc, containerKind);
 					}
 				}
 
@@ -1835,13 +1838,13 @@ export class ApiModelGenerator {
 				const token = (container as DocgenInterfaceJson).extends;
 				const parentNames = Array.isArray(token) ? token.map((parent) => parent[0]?.[0]) : undefined;
 				const parentJsons = parentNames?.map((name) =>
-					this._jsDocJson?.interfaces.find((inter) => inter.name === name),
+					this.#jsDocJson?.interfaces.find((inter) => inter.name === name),
 				);
 				if (parentJsons?.length) {
 					for (const parentJson of parentJsons) {
 						if (
 							parentJson?.props?.find((prop) => prop.name === jsDoc.name) ||
-							this._isInherited(parentJson as DocgenInterfaceJson, jsDoc, containerKind)
+							this.#isInherited(parentJson as DocgenInterfaceJson, jsDoc, containerKind)
 						) {
 							return true;
 						}
@@ -1858,7 +1861,7 @@ export class ApiModelGenerator {
 		return false;
 	}
 
-	private _isReadonly(astDeclaration: AstDeclaration): boolean {
+	#isReadonly(astDeclaration: AstDeclaration): boolean {
 		switch (astDeclaration.declaration.kind) {
 			case ts.SyntaxKind.GetAccessor:
 			case ts.SyntaxKind.IndexSignature:
@@ -1866,9 +1869,9 @@ export class ApiModelGenerator {
 			case ts.SyntaxKind.PropertySignature:
 			case ts.SyntaxKind.SetAccessor:
 			case ts.SyntaxKind.VariableDeclaration: {
-				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+				const apiItemMetadata: ApiItemMetadata = this.#collector.fetchApiItemMetadata(astDeclaration);
 				const docComment: tsdoc.DocComment | undefined = apiItemMetadata.tsdocComment;
-				const declarationMetadata: DeclarationMetadata = this._collector.fetchDeclarationMetadata(astDeclaration);
+				const declarationMetadata: DeclarationMetadata = this.#collector.fetchDeclarationMetadata(astDeclaration);
 
 				const hasReadonlyModifier: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Readonly) !== 0;
 				const hasReadonlyDocTag = Boolean(docComment?.modifierTagSet?.hasTagName('@readonly'));
@@ -1889,20 +1892,20 @@ export class ApiModelGenerator {
 		}
 	}
 
-	private _getSourceLocation(declaration: ts.Declaration): ISourceLocation {
+	#getSourceLocation(declaration: ts.Declaration): ISourceLocation {
 		const sourceFile: ts.SourceFile = declaration.getSourceFile();
-		const sourceLocation: ISourceLocation = this._collector.sourceMapper.getSourceLocation({
+		const sourceLocation: ISourceLocation = this.#collector.sourceMapper.getSourceLocation({
 			sourceFile,
 			pos: declaration.getStart(sourceFile, false),
 		});
 
 		sourceLocation.sourceFilePath = Path.convertToSlashes(
-			path.relative(this._collector.extractorConfig.projectFolder, sourceLocation.sourceFilePath),
+			path.relative(this.#collector.extractorConfig.projectFolder, sourceLocation.sourceFilePath),
 		);
 		return sourceLocation;
 	}
 
-	private _escapeSpecialChars(input: boolean | number | string) {
+	#escapeSpecialChars(input: boolean | number | string) {
 		if (typeof input !== 'string') {
 			return input;
 		}
@@ -1910,11 +1913,11 @@ export class ApiModelGenerator {
 		return input.replaceAll(/(?<char>[@`{}])/g, '\\$<char>');
 	}
 
-	private _fixLinkTags(input?: string): string | undefined {
+	#fixLinkTags(input?: string): string | undefined {
 		return input
 			?.replaceAll(linkRegEx, (_match, _p1, _p2, _p3, _p4, _p5, _offset, _string, groups) => {
 				let target = groups.class ?? groups.url;
-				const external = this._jsDocJson?.externals.find((external) => groups.class && external.name === groups.class);
+				const external = this.#jsDocJson?.externals.find((external) => groups.class && external.name === groups.class);
 				const match = /discord-api-types-(?<type>[^#]*?)(?:#|\/(?<kind>[^#/]*)\/)(?<name>[^/}]*)}$/.exec(
 					external?.see?.[0] ?? '',
 				);
@@ -1927,7 +1930,7 @@ export class ApiModelGenerator {
 			.replaceAll('* ', '\n * * ');
 	}
 
-	private _mapVarType(typey: DocgenVarTypeJson, nullable?: boolean): IExcerptToken[] {
+	#mapVarType(typey: DocgenVarTypeJson, nullable?: boolean): IExcerptToken[] {
 		const mapper = Array.isArray(typey) ? typey : (typey.types ?? []);
 		const lookup: { [K in ts.SyntaxKind]?: string } = {
 			[ts.SyntaxKind.ClassDeclaration]: 'class',
@@ -1939,14 +1942,14 @@ export class ApiModelGenerator {
 			.flatMap((typ, index) => {
 				const result = typ.reduce<IExcerptToken[]>((arr, [type, symbol]) => {
 					const astEntity =
-						[...this._collector.entities.values()].reduce<AstSymbol | undefined>(
+						[...this.#collector.entities.values()].reduce<AstSymbol | undefined>(
 							(found, entities) =>
 								found ??
 								(entities.find((entity) => entity.nameForEmit === type && 'astDeclarations' in entity.astEntity)
 									?.astEntity as AstSymbol | undefined),
 							undefined,
 						) ??
-						[...this._collector.entities.values()].reduce<AstImport | undefined>(
+						[...this.#collector.entities.values()].reduce<AstImport | undefined>(
 							(found, entities) =>
 								found ??
 								(entities.find((entity) => entity.nameForEmit === type && 'astSymbol' in entity.astEntity)
@@ -1955,7 +1958,7 @@ export class ApiModelGenerator {
 						);
 					const astSymbol = astEntity instanceof AstImport ? astEntity.astSymbol : astEntity;
 					const match = astEntity instanceof AstImport ? moduleNameRegEx.exec(astEntity.modulePath) : null;
-					const pkg = match?.groups!.package ?? this._apiModel.packages[0]!.name;
+					const pkg = match?.groups!.package ?? this.#apiModel.packages[0]!.name;
 					return [
 						...arr,
 						{
@@ -1999,8 +2002,8 @@ export class ApiModelGenerator {
 			.filter((excerpt) => excerpt.text.length);
 	}
 
-	private _mapProp(prop: DocgenPropertyJson, _package: string): IApiPropertyOptions {
-		const mappedVarType = this._mapVarType(prop.type);
+	#mapProp(prop: DocgenPropertyJson, _package: string): IApiPropertyOptions {
+		const mappedVarType = this.#mapVarType(prop.type);
 		return {
 			name: prop.name,
 			isAbstract: Boolean(prop.abstract),
@@ -2008,8 +2011,8 @@ export class ApiModelGenerator {
 			isStatic: prop.scope === 'static',
 			isOptional: Boolean(prop.nullable),
 			isReadonly: Boolean(prop.readonly),
-			docComment: this._tsDocParser.parseString(
-				`/**\n * ${this._fixLinkTags(prop.description) ?? ''}\n${prop.default ? ` * @defaultValue \`${this._escapeSpecialChars(prop.default)}\`\n` : ''}${
+			docComment: this.#tsDocParser.parseString(
+				`/**\n * ${this.#fixLinkTags(prop.description) ?? ''}\n${prop.default ? ` * @defaultValue \`${this.#escapeSpecialChars(prop.default)}\`\n` : ''}${
 					prop.see?.map((see) => ` * @see ${see}\n`).join('') ?? ''
 				}${prop.readonly ? ' * @readonly\n' : ''} */`,
 			).docComment,
@@ -2030,12 +2033,7 @@ export class ApiModelGenerator {
 		};
 	}
 
-	private _mapParam(
-		param: DocgenParamJson,
-		index: number,
-		_package: string,
-		paramTokens: number[],
-	): IApiParameterOptions {
+	#mapParam(param: DocgenParamJson, index: number, _package: string, paramTokens: number[]): IApiParameterOptions {
 		return {
 			parameterName: param.name.startsWith('...') ? param.name.slice(3) : param.name,
 			isOptional: Boolean(param.optional),
@@ -2048,7 +2046,7 @@ export class ApiModelGenerator {
 		};
 	}
 
-	private _mapMethod(method: DocgenMethodJson, _package: string): IApiMethodOptions {
+	#mapMethod(method: DocgenMethodJson, _package: string): IApiMethodOptions {
 		const excerptTokens: IExcerptToken[] = [];
 		excerptTokens.push({
 			kind: ExcerptTokenKind.Content,
@@ -2064,7 +2062,7 @@ export class ApiModelGenerator {
 		});
 		const paramTokens: number[] = [];
 		for (let index = 0; index < (method.params?.length ?? 0) - 1; index++) {
-			const newTokens = this._mapVarType(method.params![index]!.type);
+			const newTokens = this.#mapVarType(method.params![index]!.type);
 			paramTokens.push(newTokens.length);
 			excerptTokens.push(...newTokens);
 			excerptTokens.push({
@@ -2076,7 +2074,7 @@ export class ApiModelGenerator {
 		}
 
 		if (method.params?.length) {
-			const newTokens = this._mapVarType(method.params[method.params.length - 1]!.type);
+			const newTokens = this.#mapVarType(method.params[method.params.length - 1]!.type);
 			paramTokens.push(newTokens.length);
 			excerptTokens.push(...newTokens);
 			excerptTokens.push({
@@ -2085,7 +2083,7 @@ export class ApiModelGenerator {
 			});
 		}
 
-		const returnTokens = this._mapVarType(method.returns?.[0] ?? []);
+		const returnTokens = this.#mapVarType(method.returns?.[0] ?? []);
 		excerptTokens.push(...returnTokens);
 
 		excerptTokens.push({ kind: ExcerptTokenKind.Content, text: ';' });
@@ -2097,20 +2095,20 @@ export class ApiModelGenerator {
 			isProtected: method.access === 'protected',
 			isStatic: method.scope === 'static',
 			overloadIndex: 1,
-			parameters: method.params?.map((param, index) => this._mapParam(param, index, _package, paramTokens)) ?? [],
+			parameters: method.params?.map((param, index) => this.#mapParam(param, index, _package, paramTokens)) ?? [],
 			releaseTag: method.access === 'private' ? ReleaseTag.Internal : ReleaseTag.Public,
 			returnTypeTokenRange: method.returns?.length
 				? { startIndex: excerptTokens.length - 1 - returnTokens.length, endIndex: excerptTokens.length - 1 }
 				: { startIndex: 0, endIndex: 0 },
 			typeParameters: [],
-			docComment: this._tsDocParser.parseString(
-				`/**\n * ${this._fixLinkTags(method.description) ?? ''}\n${
+			docComment: this.#tsDocParser.parseString(
+				`/**\n * ${this.#fixLinkTags(method.description) ?? ''}\n${
 					method.params
-						?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
+						?.map((param) => ` * @param ${param.name} - ${this.#fixLinkTags(param.description) ?? ''}\n`)
 						.join('') ?? ''
 				}${
 					method.returns?.length && !Array.isArray(method.returns[0]) && method.returns[0]!.description
-						? ` * @returns ${this._fixLinkTags(method.returns[0]!.description) ?? ''}`
+						? ` * @returns ${this.#fixLinkTags(method.returns[0]!.description) ?? ''}`
 						: ''
 				}${method.examples?.map((example) => ` * @example\n * \`\`\`js\n * ${example}\n * \`\`\`\n`).join('') ?? ''}${
 					method.deprecated

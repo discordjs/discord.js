@@ -41,30 +41,30 @@ export interface IApiDeclaredItemJson extends IApiDocumentedItemJson {
  */
 
 export class ApiDeclaredItem extends ApiDocumentedItem {
-	private readonly _excerptTokens: ExcerptToken[];
+	readonly #excerptTokens: ExcerptToken[];
 
-	private readonly _excerpt: Excerpt;
+	readonly #excerpt: Excerpt;
 
-	private readonly _fileUrlPath?: string | undefined;
+	readonly #fileUrlPath?: string | undefined;
 
-	private readonly _fileLine?: number | undefined;
+	readonly #fileLine?: number | undefined;
 
-	private readonly _fileColumn?: number | undefined;
+	readonly #fileColumn?: number | undefined;
 
-	private _sourceLocation?: SourceLocation;
+	#sourceLocation?: SourceLocation;
 
 	public constructor(options: IApiDeclaredItemOptions) {
 		super(options);
 
-		this._excerptTokens = options.excerptTokens.map((token) => {
+		this.#excerptTokens = options.excerptTokens.map((token) => {
 			const canonicalReference: DeclarationReference | undefined =
 				token.canonicalReference === undefined ? undefined : DeclarationReference.parse(token.canonicalReference);
 			return new ExcerptToken(token.kind, token.text, canonicalReference);
 		});
-		this._excerpt = new Excerpt(this.excerptTokens, { startIndex: 0, endIndex: this.excerptTokens.length });
-		this._fileUrlPath = options.fileUrlPath;
-		this._fileLine = options.fileLine;
-		this._fileColumn = options.fileColumn;
+		this.#excerpt = new Excerpt(this.excerptTokens, { startIndex: 0, endIndex: this.excerptTokens.length });
+		this.#fileUrlPath = options.fileUrlPath;
+		this.#fileLine = options.fileLine;
+		this.#fileColumn = options.fileColumn;
 	}
 
 	/**
@@ -87,14 +87,14 @@ export class ApiDeclaredItem extends ApiDocumentedItem {
 	 * The source code excerpt where the API item is declared.
 	 */
 	public get excerpt(): Excerpt {
-		return this._excerpt;
+		return this.#excerpt;
 	}
 
 	/**
 	 * The individual source code tokens that comprise the main excerpt.
 	 */
 	public get excerptTokens(): readonly ExcerptToken[] {
-		return this._excerptTokens;
+		return this.#excerptTokens;
 	}
 
 	/**
@@ -103,32 +103,32 @@ export class ApiDeclaredItem extends ApiDocumentedItem {
 	 * the same as the parent API item's.
 	 */
 	public get fileUrlPath(): string | undefined {
-		return this._fileUrlPath;
+		return this.#fileUrlPath;
 	}
 
 	/**
 	 * The line in the `fileUrlPath` where the API item is declared.
 	 */
 	public get fileLine(): number | undefined {
-		return this._fileLine;
+		return this.#fileLine;
 	}
 
 	/**
 	 * The column in the `fileUrlPath` where the API item is declared.
 	 */
 	public get fileColumn(): number | undefined {
-		return this._fileColumn;
+		return this.#fileColumn;
 	}
 
 	/**
 	 * Returns the source location where the API item is declared.
 	 */
 	public get sourceLocation(): SourceLocation {
-		if (!this._sourceLocation) {
-			this._sourceLocation = this._buildSourceLocation();
+		if (!this.#sourceLocation) {
+			this.#sourceLocation = this.#buildSourceLocation();
 		}
 
-		return this._sourceLocation;
+		return this.#sourceLocation;
 	}
 
 	/**
@@ -204,7 +204,7 @@ export class ApiDeclaredItem extends ApiDocumentedItem {
 	/**
 	 * Builds the cached object used by the `sourceLocation` property.
 	 */
-	private _buildSourceLocation(): SourceLocation {
+	#buildSourceLocation(): SourceLocation {
 		const projectFolderUrl: string | undefined = this.getAssociatedPackage()?.projectFolderUrl;
 
 		let fileUrlPath: string | undefined;

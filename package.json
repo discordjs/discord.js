@@ -64,7 +64,7 @@
 		"oxfmt": "^0.78.0",
 		"oxlint": "^1.93.0",
 		"turbo": "^2.11.11",
-		"typescript": "~7.0.2",
+		"typescript": "~7.1.0-beta",
 		"unocss": "^66.13.0",
 		"vercel": "^65.16.0",
 		"vitest": "^4.1.11"

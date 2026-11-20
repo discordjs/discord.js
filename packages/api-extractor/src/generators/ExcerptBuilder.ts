@@ -8,10 +8,11 @@ import {
 	type IExcerptTokenRangeWithTypeParameters,
 } from '@discordjs/api-extractor-model';
 import type { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
-import * as ts from 'typescript';
+import * as ts from 'typescript/ast';
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import { Span } from '../analyzer/Span.js';
 import type { IWorkingPackageEntryPoint } from '../collector/WorkingPackage.js';
+import { condenseTokens } from './condenseTokens.js';
 import type { DeclarationReferenceGenerator } from './DeclarationReferenceGenerator.js';
 
 /**
@@ -132,7 +133,7 @@ export class ExcerptBuilder {
 			}
 		}
 
-		ExcerptBuilder._buildSpan(excerptTokens, span, {
+		_buildSpan(excerptTokens, span, {
 			entryPoint,
 			referenceGenerator,
 			startingNode: span.node,
@@ -140,7 +141,7 @@ export class ExcerptBuilder {
 			transformsByNode,
 			lastAppendedTokenIsSeparator: false,
 		});
-		ExcerptBuilder._condenseTokens(excerptTokens, captureTokenRanges);
+		condenseTokens(excerptTokens, captureTokenRanges);
 	}
 
 	public static createEmptyTokenRange(): IExcerptTokenRange {
@@ -150,286 +151,189 @@ export class ExcerptBuilder {
 	public static createEmptyTokenRangeWithTypeParameters(): IExcerptTokenRangeWithTypeParameters {
 		return { startIndex: 0, endIndex: 0, typeParameters: [] };
 	}
+}
 
-	private static _isPrimitiveKeyword(node: ts.Node): boolean {
-		switch (node.kind) {
-			case ts.SyntaxKind.AnyKeyword:
-			case ts.SyntaxKind.BigIntKeyword:
-			case ts.SyntaxKind.BooleanKeyword:
-			case ts.SyntaxKind.NeverKeyword:
-			case ts.SyntaxKind.NumberKeyword:
-			case ts.SyntaxKind.ObjectKeyword:
-			case ts.SyntaxKind.StringKeyword:
-			case ts.SyntaxKind.SymbolKeyword:
-			case ts.SyntaxKind.UnknownKeyword:
-			case ts.SyntaxKind.VoidKeyword:
-			case ts.SyntaxKind.TypeOfKeyword:
-			case ts.SyntaxKind.UndefinedKeyword:
-			case ts.SyntaxKind.NullKeyword:
-				return true;
-			default:
-				return false;
-		}
-	}
-
-	private static _isRedundantBarAfterColon(span: Span) {
-		return (
-			span.kind === ts.SyntaxKind.BarToken &&
-			span.previousSibling === undefined &&
-			(span.parent?.parent?.previousSibling?.kind === ts.SyntaxKind.LessThanToken ||
-				span.parent?.parent?.previousSibling?.kind === ts.SyntaxKind.ColonToken)
-		);
-	}
-
-	/**
-	 * @returns false if we encountered a token that causes iteration to stop.
-	 */
-	private static _buildSpan(excerptTokens: IExcerptToken[], span: Span, state: IBuildSpanState): boolean {
-		if (span.kind === ts.SyntaxKind.JSDocComment) {
-			// Discard any comments
+function _isPrimitiveKeyword(node: ts.Node): boolean {
+	switch (node.kind) {
+		case ts.SyntaxKind.AnyKeyword:
+		case ts.SyntaxKind.BigIntKeyword:
+		case ts.SyntaxKind.BooleanKeyword:
+		case ts.SyntaxKind.NeverKeyword:
+		case ts.SyntaxKind.NumberKeyword:
+		case ts.SyntaxKind.ObjectKeyword:
+		case ts.SyntaxKind.StringKeyword:
+		case ts.SyntaxKind.SymbolKeyword:
+		case ts.SyntaxKind.UnknownKeyword:
+		case ts.SyntaxKind.VoidKeyword:
+		case ts.SyntaxKind.TypeOfKeyword:
+		case ts.SyntaxKind.UndefinedKeyword:
+		case ts.SyntaxKind.NullKeyword:
 			return true;
-		}
+		default:
+			return false;
+	}
+}
 
-		// Can this node start a excerpt?
-		const transform: IExcerptBuilderNodeTransform | undefined = state.transformsByNode.get(span.node);
+function _isRedundantBarAfterColon(span: Span) {
+	return (
+		span.kind === ts.SyntaxKind.BarToken &&
+		span.previousSibling === undefined &&
+		(span.parent?.parent?.previousSibling?.kind === ts.SyntaxKind.LessThanToken ||
+			span.parent?.parent?.previousSibling?.kind === ts.SyntaxKind.ColonToken)
+	);
+}
 
-		let captureTokenRange: IExcerptTokenRange | undefined;
-
-		if (transform) {
-			captureTokenRange = transform.captureTokenRange;
-			if (transform.replacementText !== undefined) {
-				excerptTokens.push({
-					kind: ExcerptTokenKind.Content,
-					text: transform.replacementText,
-				});
-				state.lastAppendedTokenIsSeparator = false;
-
-				if (captureTokenRange) {
-					captureTokenRange.startIndex = excerptTokens.length;
-					captureTokenRange.endIndex = captureTokenRange.startIndex + 1;
-				}
-
-				return true;
-			}
-		}
-
-		let excerptStartIndex = 0;
-
-		if (captureTokenRange) {
-			// We will assign capturedTokenRange.startIndex to be the index of the next token to be appended
-			excerptStartIndex = excerptTokens.length;
-		}
-
-		if (span.prefix) {
-			let canonicalReference: DeclarationReference | undefined;
-
-			if (ts.isIdentifier(span.node)) {
-				const name: ts.Identifier = span.node;
-				canonicalReference = state.referenceGenerator.getDeclarationReferenceForIdentifier(name, state.entryPoint);
-			}
-
-			if (canonicalReference) {
-				ExcerptBuilder._appendToken(excerptTokens, ExcerptTokenKind.Reference, span.prefix, canonicalReference);
-			} else if (
-				ExcerptBuilder._isPrimitiveKeyword(span.node) ||
-				(ts.isIdentifier(span.node) &&
-					((ts.isTypeReferenceNode(span.node.parent) && span.node.parent.typeName === span.node) ||
-						(ts.isTypeParameterDeclaration(span.node.parent) && span.node.parent.name === span.node)))
-			) {
-				ExcerptBuilder._appendToken(excerptTokens, ExcerptTokenKind.Reference, span.prefix);
-			} else if (!ExcerptBuilder._isRedundantBarAfterColon(span)) {
-				ExcerptBuilder._appendToken(excerptTokens, ExcerptTokenKind.Content, span.prefix);
-			}
-
-			state.lastAppendedTokenIsSeparator = false;
-		}
-
-		for (const child of span.children) {
-			if (span.node === state.startingNode && state.stopBeforeChildKind && child.kind === state.stopBeforeChildKind) {
-				// We reached a child whose kind is stopBeforeChildKind, so stop traversing
-				return false;
-			}
-
-			if (!this._buildSpan(excerptTokens, child, state)) {
-				return false;
-			}
-		}
-
-		if (span.suffix) {
-			ExcerptBuilder._appendToken(excerptTokens, ExcerptTokenKind.Content, span.suffix);
-			state.lastAppendedTokenIsSeparator = false;
-		}
-
-		if (span.separator) {
-			ExcerptBuilder._appendToken(
-				excerptTokens,
-				ExcerptTokenKind.Content,
-				span.separator.replaceAll('\n', '').replaceAll(/\s{2}/g, ' '),
-			);
-			state.lastAppendedTokenIsSeparator = true;
-		}
-
-		// Are we building a excerpt?  If so, set its range
-		if (captureTokenRange) {
-			captureTokenRange.startIndex = excerptStartIndex;
-
-			// We will assign capturedTokenRange.startIndex to be the index after the last token
-			// that was appended so far. However, if the last appended token was a separator, omit
-			// it from the range.
-			let excerptEndIndex: number = excerptTokens.length;
-			if (state.lastAppendedTokenIsSeparator) {
-				excerptEndIndex--;
-			}
-
-			captureTokenRange.endIndex = excerptEndIndex;
-		}
-
+/**
+ * @returns false if we encountered a token that causes iteration to stop.
+ */
+function _buildSpan(excerptTokens: IExcerptToken[], span: Span, state: IBuildSpanState): boolean {
+	if (span.kind === ts.SyntaxKind.JSDoc) {
+		// Discard any comments
 		return true;
 	}
 
-	private static _appendToken(
-		excerptTokens: IExcerptToken[],
-		excerptTokenKind: ExcerptTokenKind,
-		text: string,
-		canonicalReference?: DeclarationReference,
-	): void {
-		if (text.length === 0) {
-			return;
-		}
+	// Can this node start a excerpt?
+	const transform: IExcerptBuilderNodeTransform | undefined = state.transformsByNode.get(span.node);
 
-		const excerptToken: IExcerptToken = { kind: excerptTokenKind, text };
-		if (canonicalReference !== undefined) {
-			excerptToken.canonicalReference = canonicalReference.toString();
-		}
+	let captureTokenRange: IExcerptTokenRange | undefined;
 
-		excerptTokens.push(excerptToken);
-	}
+	if (transform) {
+		captureTokenRange = transform.captureTokenRange;
+		if (transform.replacementText !== undefined) {
+			excerptTokens.push({
+				kind: ExcerptTokenKind.Content,
+				text: transform.replacementText,
+			});
+			state.lastAppendedTokenIsSeparator = false;
 
-	/**
-	 * Condenses the provided excerpt tokens by merging tokens where possible. Updates the provided token ranges to
-	 * remain accurate after token merging.
-	 *
-	 * @remarks
-	 * For example, suppose we have excerpt tokens ["A", "B", "C"] and a token range [0, 2]. If the excerpt tokens
-	 * are condensed to ["AB", "C"], then the token range would be updated to [0, 1]. Note that merges are only
-	 * performed if they are compatible with the provided token ranges. In the example above, if our token range was
-	 * originally [0, 1], we would not be able to merge tokens "A" and "B".
-	 */
-	private static _condenseTokens(excerptTokens: IExcerptToken[], tokenRanges: IExcerptTokenRange[]): void {
-		// This set is used to quickly lookup a start or end index.
-		const startOrEndIndices: Set<number> = new Set();
-		for (const tokenRange of tokenRanges) {
-			startOrEndIndices.add(tokenRange.startIndex);
-			startOrEndIndices.add(tokenRange.endIndex);
-		}
-
-		for (let currentIndex = 1; currentIndex < excerptTokens.length; ++currentIndex) {
-			while (currentIndex < excerptTokens.length) {
-				const prevPrevToken: IExcerptToken | undefined = excerptTokens[currentIndex - 2]; // May be undefined
-				const prevToken: IExcerptToken = excerptTokens[currentIndex - 1]!;
-				const currentToken: IExcerptToken = excerptTokens[currentIndex]!;
-
-				// The number of excerpt tokens that are merged in this iteration. We need this to determine
-				// how to update the start and end indices of our token ranges.
-				let mergeCount: number;
-
-				// There are two types of merges that can occur. We only perform these merges if they are
-				// compatible with all of our token ranges.
-				if (
-					prevPrevToken?.kind === ExcerptTokenKind.Reference &&
-					prevToken.kind === ExcerptTokenKind.Content &&
-					prevToken.text.trim() === '.' &&
-					currentToken.kind === ExcerptTokenKind.Reference &&
-					!startOrEndIndices.has(currentIndex) &&
-					!startOrEndIndices.has(currentIndex - 1)
-				) {
-					// If the current token is a reference token, the previous token is a ".", and the previous-
-					// previous token is a reference token, then merge all three tokens into a reference token.
-					//
-					// For example: Given ["MyNamespace" (R), ".", "MyClass" (R)], tokens "." and "MyClass" might
-					// be merged into "MyNamespace". The condensed token would be ["MyNamespace.MyClass" (R)].
-					prevPrevToken.text += prevToken.text + currentToken.text;
-					prevPrevToken.canonicalReference = currentToken.canonicalReference;
-					mergeCount = 2;
-					currentIndex--;
-				} else if (
-					// If the current and previous tokens are both content tokens, then merge the tokens into a
-					// single content token. For example: Given ["export ", "declare class"], these tokens
-					// might be merged into "export declare class".
-					prevToken.kind === ExcerptTokenKind.Content &&
-					prevToken.kind === currentToken.kind &&
-					!startOrEndIndices.has(currentIndex)
-				) {
-					prevToken.text += currentToken.text;
-					// Remove BarTokens from excerpts if they immediately follow a LessThanToken, e.g. `Promise< | Something>`
-					// would become `Promise<Something>`
-					if (/<(?:\s*\||\s+)/.test(prevToken.text)) {
-						prevToken.text = prevToken.text.replaceAll(/<\s*\|?\s*/g, '<');
-					}
-
-					if (/\s+>/.test(prevToken.text)) {
-						prevToken.text = prevToken.text.replaceAll(/\s*>/g, '>');
-					}
-
-					mergeCount = 1;
-				} else {
-					// Otherwise, no merging can occur here. Continue to the next index.
-					break;
-				}
-
-				// Remove the now redundant excerpt token(s), as they were merged into a previous token.
-				excerptTokens.splice(currentIndex, mergeCount);
-
-				// Update the start and end indices for all token ranges based upon how many excerpt
-				// tokens were merged and in what positions.
-				for (const tokenRange of tokenRanges) {
-					if (tokenRange.startIndex > currentIndex) {
-						tokenRange.startIndex -= mergeCount;
-					}
-
-					if (tokenRange.endIndex > currentIndex) {
-						tokenRange.endIndex -= mergeCount;
-					}
-				}
-
-				// Clear and repopulate our set with the updated indices.
-				startOrEndIndices.clear();
-				for (const tokenRange of tokenRanges) {
-					startOrEndIndices.add(tokenRange.startIndex);
-					startOrEndIndices.add(tokenRange.endIndex);
-				}
+			if (captureTokenRange) {
+				captureTokenRange.startIndex = excerptTokens.length;
+				captureTokenRange.endIndex = captureTokenRange.startIndex + 1;
 			}
-		}
-	} /*
 
-	private static _isDeclarationName(name: ts.Identifier): boolean {
-		return ExcerptBuilder._isDeclaration(name.parent) && name.parent.name === name;
+			return true;
+		}
 	}
 
-	private static _isDeclaration(node: ts.Node): node is ts.NamedDeclaration {
-		switch (node.kind) {
-			case ts.SyntaxKind.FunctionDeclaration:
-			case ts.SyntaxKind.FunctionExpression:
-			case ts.SyntaxKind.VariableDeclaration:
-			case ts.SyntaxKind.Parameter:
-			case ts.SyntaxKind.EnumDeclaration:
-			case ts.SyntaxKind.ClassDeclaration:
-			case ts.SyntaxKind.ClassExpression:
-			case ts.SyntaxKind.ModuleDeclaration:
-			case ts.SyntaxKind.MethodDeclaration:
-			case ts.SyntaxKind.MethodSignature:
-			case ts.SyntaxKind.PropertyDeclaration:
-			case ts.SyntaxKind.PropertySignature:
-			case ts.SyntaxKind.GetAccessor:
-			case ts.SyntaxKind.SetAccessor:
-			case ts.SyntaxKind.InterfaceDeclaration:
-			case ts.SyntaxKind.TypeAliasDeclaration:
-			case ts.SyntaxKind.TypeParameter:
-			case ts.SyntaxKind.EnumMember:
-			case ts.SyntaxKind.BindingElement:
-				return true;
-			default:
-				return false;
+	let excerptStartIndex = 0;
+
+	if (captureTokenRange) {
+		// We will assign capturedTokenRange.startIndex to be the index of the next token to be appended
+		excerptStartIndex = excerptTokens.length;
+	}
+
+	if (span.prefix) {
+		let canonicalReference: DeclarationReference | undefined;
+
+		if (ts.isIdentifier(span.node)) {
+			const name: ts.Identifier = span.node;
+			canonicalReference = state.referenceGenerator.getDeclarationReferenceForIdentifier(name, state.entryPoint);
 		}
-	} // */
+
+		if (canonicalReference) {
+			_appendToken(excerptTokens, ExcerptTokenKind.Reference, span.prefix, canonicalReference);
+		} else if (
+			_isPrimitiveKeyword(span.node) ||
+			(ts.isIdentifier(span.node) &&
+				((ts.isTypeReferenceNode(span.node.parent) && span.node.parent.typeName === span.node) ||
+					(ts.isTypeParameterDeclaration(span.node.parent) && span.node.parent.name === span.node)))
+		) {
+			_appendToken(excerptTokens, ExcerptTokenKind.Reference, span.prefix);
+		} else if (!_isRedundantBarAfterColon(span)) {
+			_appendToken(excerptTokens, ExcerptTokenKind.Content, span.prefix);
+		}
+
+		state.lastAppendedTokenIsSeparator = false;
+	}
+
+	for (const child of span.children) {
+		if (span.node === state.startingNode && state.stopBeforeChildKind && child.kind === state.stopBeforeChildKind) {
+			// We reached a child whose kind is stopBeforeChildKind, so stop traversing
+			return false;
+		}
+
+		if (!_buildSpan(excerptTokens, child, state)) {
+			return false;
+		}
+	}
+
+	if (span.suffix) {
+		_appendToken(excerptTokens, ExcerptTokenKind.Content, span.suffix);
+		state.lastAppendedTokenIsSeparator = false;
+	}
+
+	if (span.separator) {
+		_appendToken(
+			excerptTokens,
+			ExcerptTokenKind.Content,
+			span.separator.replaceAll('\n', '').replaceAll(/\s{2}/g, ' '),
+		);
+		state.lastAppendedTokenIsSeparator = true;
+	}
+
+	// Are we building a excerpt?  If so, set its range
+	if (captureTokenRange) {
+		captureTokenRange.startIndex = excerptStartIndex;
+
+		// We will assign capturedTokenRange.startIndex to be the index after the last token
+		// that was appended so far. However, if the last appended token was a separator, omit
+		// it from the range.
+		let excerptEndIndex: number = excerptTokens.length;
+		if (state.lastAppendedTokenIsSeparator) {
+			excerptEndIndex--;
+		}
+
+		captureTokenRange.endIndex = excerptEndIndex;
+	}
+
+	return true;
 }
+
+function _appendToken(
+	excerptTokens: IExcerptToken[],
+	excerptTokenKind: ExcerptTokenKind,
+	text: string,
+	canonicalReference?: DeclarationReference,
+): void {
+	if (text.length === 0) {
+		return;
+	}
+
+	const excerptToken: IExcerptToken = { kind: excerptTokenKind, text };
+	if (canonicalReference !== undefined) {
+		excerptToken.canonicalReference = canonicalReference.toString();
+	}
+
+	excerptTokens.push(excerptToken);
+} /*
+
+function _isDeclarationName(name: ts.Identifier): boolean {
+	return _isDeclaration(name.parent) && name.parent.name === name;
+}
+
+function _isDeclaration(node: ts.Node): node is ts.NamedDeclaration {
+	switch (node.kind) {
+		case ts.SyntaxKind.FunctionDeclaration:
+		case ts.SyntaxKind.FunctionExpression:
+		case ts.SyntaxKind.VariableDeclaration:
+		case ts.SyntaxKind.Parameter:
+		case ts.SyntaxKind.EnumDeclaration:
+		case ts.SyntaxKind.ClassDeclaration:
+		case ts.SyntaxKind.ClassExpression:
+		case ts.SyntaxKind.ModuleDeclaration:
+		case ts.SyntaxKind.MethodDeclaration:
+		case ts.SyntaxKind.MethodSignature:
+		case ts.SyntaxKind.PropertyDeclaration:
+		case ts.SyntaxKind.PropertySignature:
+		case ts.SyntaxKind.GetAccessor:
+		case ts.SyntaxKind.SetAccessor:
+		case ts.SyntaxKind.InterfaceDeclaration:
+		case ts.SyntaxKind.TypeAliasDeclaration:
+		case ts.SyntaxKind.TypeParameter:
+		case ts.SyntaxKind.EnumMember:
+		case ts.SyntaxKind.BindingElement:
+			return true;
+		default:
+			return false;
+	}
+} // */

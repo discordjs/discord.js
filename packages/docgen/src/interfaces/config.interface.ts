@@ -3,5 +3,4 @@ export interface Config {
 	input: string[];
 	output: string;
 	root: string;
-	typescript: boolean;
 }
