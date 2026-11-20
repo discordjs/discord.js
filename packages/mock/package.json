@@ -1,0 +1,114 @@
+{
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "@discordjs/mock",
+	"version": "0.1.0",
+	"description": "A fake Discord, gateway and REST, for testing discord.js applications",
+	"scripts": {
+		"build": "tsc --noEmit && tsup",
+		"build:docs": "tsc -p tsconfig.docs.json",
+		"test": "vitest run --config ../../vitest.config.ts",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
+		"fmt": "pnpm run format",
+		"docs": "pnpm run build:docs && api-extractor run --local",
+		"prepack": "pnpm run build && pnpm run lint",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/mock/*'",
+		"release": "cliff-jumper"
+	},
+	"exports": {
+		".": {
+			"require": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			}
+		},
+		"./world": {
+			"require": {
+				"types": "./dist/world.d.ts",
+				"default": "./dist/world.js"
+			},
+			"import": {
+				"types": "./dist/world.d.mts",
+				"default": "./dist/world.mjs"
+			}
+		},
+		"./gateway": {
+			"require": {
+				"types": "./dist/gateway.d.ts",
+				"default": "./dist/gateway.js"
+			},
+			"import": {
+				"types": "./dist/gateway.d.mts",
+				"default": "./dist/gateway.mjs"
+			}
+		}
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"directories": {
+		"lib": "src",
+		"test": "__tests__"
+	},
+	"files": [
+		"dist"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"DD <didinele.dev@gmail.com>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [
+		"discord",
+		"api",
+		"mock",
+		"testing",
+		"discordapp",
+		"discordjs"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/mock"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
+	"dependencies": {
+		"@discordjs/util": "workspace:^",
+		"@sapphire/snowflake": "^3.5.5",
+		"discord-api-types": "^0.38.54",
+		"tslib": "^2.8.1"
+	},
+	"devDependencies": {
+		"@discordjs/api-extractor": "workspace:^",
+		"@discordjs/scripts": "workspace:^",
+		"@favware/cliff-jumper": "^6.1.0",
+		"@types/node": "^24.13.3",
+		"@vitest/coverage-v8": "^4.1.11",
+		"cross-env": "^10.1.0",
+		"esbuild-plugin-version-injector": "^1.2.1",
+		"eslint": "^9.39.5",
+		"eslint-config-neon": "^0.3.2",
+		"eslint-formatter-compact": "^9.0.1",
+		"eslint-formatter-pretty": "^7.1.0",
+		"prettier": "~3.8.1",
+		"tsup": "^8.5.1",
+		"turbo": "^2.10.12",
+		"typescript": "~5.9.3",
+		"vitest": "^4.1.11"
+	},
+	"engines": {
+		"node": ">=24.17.0"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	}
+}

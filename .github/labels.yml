@@ -74,6 +74,8 @@
   color: fbca04
 - name: packages:formatters
   color: fbca04
+- name: packages:mock
+  color: fbca04
 - name: packages:next
   color: fbca04
 - name: packages:proxy
