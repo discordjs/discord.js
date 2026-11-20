@@ -3,7 +3,6 @@ import { DiscordSnowflake } from '@sapphire/snowflake';
 import { ChannelType, Routes } from 'discord-api-types/v10';
 import { ChannelFlagsBitField } from '../util/ChannelFlagsBitField.js';
 import { ThreadChannelTypes } from '../util/Constants.js';
-import { PermissionsBitField } from '../util/PermissionsBitField.js';
 import { Base } from './Base.js';
 
 /**
@@ -46,30 +45,22 @@ export class BaseChannel extends Base {
      */
     this.id = data.id;
 
-    if ('permissions' in data) {
-      /**
-       * The computed permissions of the user who invoked the interaction in this channel, including overwrites.
-       * <info>This is only present on channels received through an interaction's resolved data.</info>
-       *
-       * @type {?Readonly<PermissionsBitField>}
-       */
-      this.permissions = new PermissionsBitField(data.permissions).freeze();
-    } else {
-      this.permissions ??= null;
-    }
+    /**
+     * The computed permissions of the user who invoked the interaction in this channel, including overwrites.
+     * <info>This is only present on channels received through an interaction's resolved data.</info>
+     *
+     * @type {?Readonly<PermissionsBitField>}
+     */
+    this.permissions ??= null;
 
-    if ('app_permissions' in data) {
-      /**
-       * The computed permissions of the application in this channel, including overwrites.
-       * <info>This is only present on channels received through an interaction's resolved data, and only when the
-       * application's bot user is in the guild.</info>
-       *
-       * @type {?Readonly<PermissionsBitField>}
-       */
-      this.appPermissions = new PermissionsBitField(data.app_permissions).freeze();
-    } else {
-      this.appPermissions ??= null;
-    }
+    /**
+     * The computed permissions of the application in this channel, including overwrites.
+     * <info>This is only present on channels received through an interaction's resolved data, and only when the
+     * application's bot user is in the guild.</info>
+     *
+     * @type {?Readonly<PermissionsBitField>}
+     */
+    this.appPermissions ??= null;
   }
 
   /**
