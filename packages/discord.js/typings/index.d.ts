@@ -2949,8 +2949,8 @@ export class PollAnswerVoterManager extends CachedManager<Snowflake, User, UserR
 }
 
 export class Poll extends Base {
-  private constructor(client: Client<true>, data: APIPoll, message: Message, channel: TextBasedChannel);
-  public readonly channel: TextBasedChannel;
+  private constructor(client: Client<true>, data: APIPoll, message: Message, channel: TextBasedChannel | null);
+  public readonly channel: TextBasedChannel | null;
   public channelId: Snowflake;
   public readonly message: Message;
   public messageId: Snowflake;
