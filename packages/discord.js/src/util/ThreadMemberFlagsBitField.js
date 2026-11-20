@@ -1,14 +1,12 @@
-'use strict';
-
-const { ThreadMemberFlags } = require('discord-api-types/v10');
-const { BitField } = require('./BitField.js');
+import { ThreadMemberFlags } from 'discord-api-types/v10';
+import { BitField } from './BitField.js';
 
 /**
  * Data structure that makes it easy to interact with a {@link ThreadMember#flags} bitfield.
  *
  * @extends {BitField}
  */
-class ThreadMemberFlagsBitField extends BitField {
+export class ThreadMemberFlagsBitField extends BitField {
   /**
    * Numeric thread member flags. There are currently no bitflags relevant to bots for this.
    *
@@ -31,5 +29,3 @@ class ThreadMemberFlagsBitField extends BitField {
  * @type {number}
  * @name ThreadMemberFlagsBitField#bitfield
  */
-
-exports.ThreadMemberFlagsBitField = ThreadMemberFlagsBitField;

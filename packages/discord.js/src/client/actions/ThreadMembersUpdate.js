@@ -1,10 +1,8 @@
-'use strict';
+import { Collection } from '@discordjs/collection';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const { Collection } = require('@discordjs/collection');
-const { Events } = require('../../util/Events.js');
-const { Action } = require('./Action.js');
-
-class ThreadMembersUpdateAction extends Action {
+export class ThreadMembersUpdateAction extends Action {
   handle(data) {
     const client = this.client;
     const thread = client.channels.cache.get(data.id);
@@ -45,5 +43,3 @@ class ThreadMembersUpdateAction extends Action {
     return {};
   }
 }
-
-exports.ThreadMembersUpdateAction = ThreadMembersUpdateAction;

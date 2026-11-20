@@ -1,18 +1,16 @@
-'use strict';
-
-const { userMention } = require('@discordjs/formatters');
-const { calculateUserDefaultAvatarIndex } = require('@discordjs/rest');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { _transformCollectibles } = require('../util/Transformers.js');
-const { UserFlagsBitField } = require('../util/UserFlagsBitField.js');
-const { Base } = require('./Base.js');
+import { userMention } from '@discordjs/formatters';
+import { calculateUserDefaultAvatarIndex } from '@discordjs/rest';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { _transformCollectibles } from '../util/Transformers.js';
+import { UserFlagsBitField } from '../util/UserFlagsBitField.js';
+import { Base } from './Base.js';
 
 /**
  * Represents a user on Discord.
  *
  * @extends {Base}
  */
-class User extends Base {
+export class User extends Base {
   constructor(client, data) {
     super(client);
 
@@ -499,5 +497,3 @@ class User extends Base {
     return json;
   }
 }
-
-exports.User = User;

@@ -1,13 +1,11 @@
-'use strict';
-
-const { Snowflake } = require('@sapphire/snowflake');
-const { PermissionFlagsBits, ChannelType } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { PermissionOverwriteManager } = require('../managers/PermissionOverwriteManager.js');
-const { VoiceBasedChannelTypes } = require('../util/Constants.js');
-const { PermissionsBitField } = require('../util/PermissionsBitField.js');
-const { getSortableGroupTypes } = require('../util/Util.js');
-const { BaseChannel } = require('./BaseChannel.js');
+import { Snowflake } from '@sapphire/snowflake';
+import { PermissionFlagsBits, ChannelType } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { PermissionOverwriteManager } from '../managers/PermissionOverwriteManager.js';
+import { VoiceBasedChannelTypes } from '../util/Constants.js';
+import { PermissionsBitField } from '../util/PermissionsBitField.js';
+import { getSortableGroupTypes } from '../util/Util.js';
+import { BaseChannel } from './BaseChannel.js';
 
 /**
  * Represents a guild channel from any of the following:
@@ -22,7 +20,7 @@ const { BaseChannel } = require('./BaseChannel.js');
  * @extends {BaseChannel}
  * @abstract
  */
-class GuildChannel extends BaseChannel {
+export class GuildChannel extends BaseChannel {
   constructor(guild, data, client, immediatePatch = true) {
     super(client, data, false);
 
@@ -507,5 +505,3 @@ class GuildChannel extends BaseChannel {
     return this;
   }
 }
-
-exports.GuildChannel = GuildChannel;

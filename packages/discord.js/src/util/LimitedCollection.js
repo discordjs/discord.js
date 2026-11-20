@@ -1,7 +1,5 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+import { Collection } from '@discordjs/collection';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
 
 /**
  * Options for defining the behavior of a LimitedCollection
@@ -19,7 +17,7 @@ const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
  * @param {LimitedCollectionOptions} [options={}] Options for constructing the Collection.
  * @param {Iterable} [iterable=null] Optional entries passed to the Map constructor.
  */
-class LimitedCollection extends Collection {
+export class LimitedCollection extends Collection {
   constructor(options = {}, iterable = undefined) {
     if (typeof options !== 'object' || options === null) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
@@ -71,5 +69,3 @@ class LimitedCollection extends Collection {
     return Collection;
   }
 }
-
-exports.LimitedCollection = LimitedCollection;

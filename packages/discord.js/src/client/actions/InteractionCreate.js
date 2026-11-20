@@ -1,22 +1,20 @@
-'use strict';
+import { InteractionType, ComponentType, ApplicationCommandType } from 'discord-api-types/v10';
+import { AutocompleteInteraction } from '../../structures/AutocompleteInteraction.js';
+import { ButtonInteraction } from '../../structures/ButtonInteraction.js';
+import { ChannelSelectMenuInteraction } from '../../structures/ChannelSelectMenuInteraction.js';
+import { ChatInputCommandInteraction } from '../../structures/ChatInputCommandInteraction.js';
+import { MentionableSelectMenuInteraction } from '../../structures/MentionableSelectMenuInteraction.js';
+import { MessageContextMenuCommandInteraction } from '../../structures/MessageContextMenuCommandInteraction.js';
+import { ModalSubmitInteraction } from '../../structures/ModalSubmitInteraction.js';
+import { PrimaryEntryPointCommandInteraction } from '../../structures/PrimaryEntryPointCommandInteraction.js';
+import { RoleSelectMenuInteraction } from '../../structures/RoleSelectMenuInteraction.js';
+import { StringSelectMenuInteraction } from '../../structures/StringSelectMenuInteraction.js';
+import { UserContextMenuCommandInteraction } from '../../structures/UserContextMenuCommandInteraction.js';
+import { UserSelectMenuInteraction } from '../../structures/UserSelectMenuInteraction.js';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const { InteractionType, ComponentType, ApplicationCommandType } = require('discord-api-types/v10');
-const { AutocompleteInteraction } = require('../../structures/AutocompleteInteraction.js');
-const { ButtonInteraction } = require('../../structures/ButtonInteraction.js');
-const { ChannelSelectMenuInteraction } = require('../../structures/ChannelSelectMenuInteraction.js');
-const { ChatInputCommandInteraction } = require('../../structures/ChatInputCommandInteraction.js');
-const { MentionableSelectMenuInteraction } = require('../../structures/MentionableSelectMenuInteraction.js');
-const { MessageContextMenuCommandInteraction } = require('../../structures/MessageContextMenuCommandInteraction.js');
-const { ModalSubmitInteraction } = require('../../structures/ModalSubmitInteraction.js');
-const { PrimaryEntryPointCommandInteraction } = require('../../structures/PrimaryEntryPointCommandInteraction.js');
-const { RoleSelectMenuInteraction } = require('../../structures/RoleSelectMenuInteraction.js');
-const { StringSelectMenuInteraction } = require('../../structures/StringSelectMenuInteraction.js');
-const { UserContextMenuCommandInteraction } = require('../../structures/UserContextMenuCommandInteraction.js');
-const { UserSelectMenuInteraction } = require('../../structures/UserSelectMenuInteraction.js');
-const { Events } = require('../../util/Events.js');
-const { Action } = require('./Action.js');
-
-class InteractionCreateAction extends Action {
+export class InteractionCreateAction extends Action {
   handle(data) {
     const client = this.client;
 
@@ -106,5 +104,3 @@ class InteractionCreateAction extends Action {
     client.emit(Events.InteractionCreate, interaction);
   }
 }
-
-exports.InteractionCreateAction = InteractionCreateAction;

@@ -1,21 +1,19 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { isJSONEncodable } = require('@discordjs/util');
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { ApplicationCommand } = require('../structures/ApplicationCommand.js');
-const { PermissionsBitField } = require('../util/PermissionsBitField.js');
-const { ApplicationCommandPermissionsManager } = require('./ApplicationCommandPermissionsManager.js');
-const { CachedManager } = require('./CachedManager.js');
+import { Collection } from '@discordjs/collection';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { isJSONEncodable } from '@discordjs/util';
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { ApplicationCommand } from '../structures/ApplicationCommand.js';
+import { PermissionsBitField } from '../util/PermissionsBitField.js';
+import { ApplicationCommandPermissionsManager } from './ApplicationCommandPermissionsManager.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for application commands and stores their cache.
  *
  * @extends {CachedManager}
  */
-class ApplicationCommandManager extends CachedManager {
+export class ApplicationCommandManager extends CachedManager {
   constructor(client, iterable) {
     super(client, ApplicationCommand, iterable);
 
@@ -301,5 +299,3 @@ class ApplicationCommandManager extends CachedManager {
     };
   }
 }
-
-exports.ApplicationCommandManager = ApplicationCommandManager;
