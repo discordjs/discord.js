@@ -203,6 +203,7 @@ import type {
   StringSelectMenuComponent,
   StringSelectMenuComponentData,
   StringSelectMenuInteraction,
+  Sweepers,
   TextBasedChannel,
   TextBasedChannelTypes,
   ThreadManager,
@@ -3634,3 +3635,24 @@ declare const authorizingIntegrationOwners: AuthorizingIntegrationOwners;
   expect(authorizingIntegrationOwners.user).type.toBe<User | null>();
   expect(authorizingIntegrationOwners[ApplicationIntegrationType.GuildInstall]).type.toBe<Snowflake | undefined>();
 }
+
+// Sweep filters may be asynchronous
+new Client({
+  intents: [],
+  sweepers: {
+    ...Options.DefaultSweeperSettings,
+    messages: {
+      interval: 3_600,
+      filter: async () => (message: Message) => message.author.bot,
+    },
+    users: {
+      interval: 3_600,
+      filter: async () => null,
+    },
+  },
+});
+
+// Built-in sweep filter factories stay synchronous
+expect<ReturnType<ReturnType<typeof Sweepers.outdatedMessageSweepFilter>>>().type.toBe<
+  ((value: Message, key: Snowflake, collection: Collection<Snowflake, Message>) => boolean) | null
+>();
