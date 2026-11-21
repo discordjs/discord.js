@@ -2,6 +2,7 @@ import { VscSymbolEvent } from '@react-icons/all-files/vsc/VscSymbolEvent';
 import { ChevronDown, ChevronUp, Code2, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { ENV } from '@/util/env';
+import { eventAnchor } from '@/util/eventAnchor';
 import { Badges } from './Badges';
 import { DeprecatedNode } from './DeprecatedNode';
 import { ExampleNode } from './ExampleNode';
@@ -15,28 +16,33 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/Collap
 import { Tab, TabList, TabPanel, Tabs } from './ui/Tabs';
 import { UnstableNode } from './UnstableNode';
 
+const scrollMargin = ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8';
+
 async function EventBodyNode({
 	event,
+	legacyAnchor,
 	packageName,
 	version,
 	overload = false,
 }: {
 	readonly event: any;
+	readonly legacyAnchor?: string | undefined;
 	readonly overload?: boolean;
 	readonly packageName: string;
 	readonly version: string;
 }) {
+	const anchor = eventAnchor(event.displayName);
 	return (
 		<>
 			<div className="flex flex-col gap-4">
-				<div className="flex place-content-between place-items-center gap-1">
+				<div className={`${scrollMargin} flex place-content-between place-items-center gap-1`} id={legacyAnchor}>
 					<h3
-						className={`${overload ? (ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-24' : 'scroll-mt-16') : ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group px-2 font-mono font-semibold break-all`}
-						id={event.displayName}
+						className={`${scrollMargin} group px-2 font-mono font-semibold break-all`}
+						id={overload ? undefined : anchor}
 					>
 						<Badges node={event} /> {event.displayName}
 						<span>
-							<Link className="float-left -ml-6 hidden pr-2 pb-2 group-hover:block" href={`#${event.displayName}`}>
+							<Link className="float-left -ml-6 hidden pr-2 pb-2 group-hover:block" href={`#${anchor}`}>
 								<LinkIcon aria-hidden size={16} />
 							</Link>
 							{event.typeParameters?.length ? (
@@ -100,45 +106,51 @@ async function EventBodyNode({
 
 async function OverloadNode({
 	event,
+	legacyAnchor,
 	packageName,
 	version,
 }: {
 	readonly event: any;
+	readonly legacyAnchor?: string | undefined;
 	readonly packageName: string;
 	readonly version: string;
 }) {
 	return (
-		<Tabs className="flex flex-col gap-4">
-			<TabList className="flex flex-wrap gap-2">
+		<div className={scrollMargin} id={legacyAnchor}>
+			<Tabs className={`${scrollMargin} flex flex-col gap-4`} id={eventAnchor(event.displayName)}>
+				<TabList className="flex flex-wrap gap-2">
+					{event.overloads.map((overload: any) => (
+						<Tab
+							className="cursor-pointer rounded-full bg-neutral-800/10 px-2 py-1 font-sans text-sm leading-none font-normal whitespace-nowrap text-neutral-800 hover:bg-neutral-800/20 data-[selected]:bg-neutral-500 data-[selected]:text-neutral-100 dark:bg-neutral-200/10 dark:text-neutral-200 dark:hover:bg-neutral-200/20 dark:data-[selected]:bg-neutral-500/70"
+							id={`overload-${overload.displayName}-${overload.overloadIndex}`}
+							key={`overload-tab-${overload.displayName}-${overload.overloadIndex}`}
+						>
+							<span>Overload {overload.overloadIndex}</span>
+						</Tab>
+					))}
+				</TabList>
 				{event.overloads.map((overload: any) => (
-					<Tab
-						className="cursor-pointer rounded-full bg-neutral-800/10 px-2 py-1 font-sans text-sm leading-none font-normal whitespace-nowrap text-neutral-800 hover:bg-neutral-800/20 data-[selected]:bg-neutral-500 data-[selected]:text-neutral-100 dark:bg-neutral-200/10 dark:text-neutral-200 dark:hover:bg-neutral-200/20 dark:data-[selected]:bg-neutral-500/70"
+					<TabPanel
+						className="flex flex-col gap-4"
 						id={`overload-${overload.displayName}-${overload.overloadIndex}`}
-						key={`overload-tab-${overload.displayName}-${overload.overloadIndex}`}
+						key={`overload-tab-panel-${overload.displayName}-${overload.overloadIndex}`}
 					>
-						<span>Overload {overload.overloadIndex}</span>
-					</Tab>
+						<EventBodyNode event={overload} overload packageName={packageName} version={version} />
+					</TabPanel>
 				))}
-			</TabList>
-			{event.overloads.map((overload: any) => (
-				<TabPanel
-					className="flex flex-col gap-4"
-					id={`overload-${overload.displayName}-${overload.overloadIndex}`}
-					key={`overload-tab-panel-${overload.displayName}-${overload.overloadIndex}`}
-				>
-					<EventBodyNode event={overload} overload packageName={packageName} version={version} />
-				</TabPanel>
-			))}
-		</Tabs>
+			</Tabs>
+		</div>
 	);
 }
 
 export async function EventNode({
 	node,
+	nonEventNames,
 	packageName,
 	version,
 }: {
 	readonly node: any;
+	readonly nonEventNames: ReadonlySet<string>;
 	readonly packageName: string;
 	readonly version: string;
 }) {
@@ -154,23 +166,18 @@ export async function EventNode({
 
 			<CollapsibleContent>
 				<div className="flex flex-col gap-4">
-					{node.map((event: any) =>
-						event.overloads?.length ? (
-							<OverloadNode
+					{node.map((event: any) => {
+						const Component = event.overloads?.length ? OverloadNode : EventBodyNode;
+						return (
+							<Component
 								event={event}
 								key={`${event.displayName}-${event.overloadIndex}`}
+								legacyAnchor={nonEventNames.has(event.displayName) ? undefined : event.displayName}
 								packageName={packageName}
 								version={version}
 							/>
-						) : (
-							<EventBodyNode
-								event={event}
-								key={`${event.displayName}-${event.overloadIndex}`}
-								packageName={packageName}
-								version={version}
-							/>
-						),
-					)}
+						);
+					})}
 				</div>
 			</CollapsibleContent>
 		</Collapsible>

@@ -29,6 +29,10 @@ function hasOverloadIndex(item: ApiItem): item is ApiFunction | ApiMethod | ApiM
 	return 'overloadIndex' in item;
 }
 
+export function eventAnchor(name: string) {
+	return `${name}:event`;
+}
+
 export function generatePath(items: readonly ApiItem[], version: string) {
 	let path = '/docs/packages';
 
@@ -51,9 +55,11 @@ export function generatePath(items: readonly ApiItem[], version: string) {
 					hasOverloadIndex(item) && item.overloadIndex > 1 ? `:${item.overloadIndex}` : ''
 				}`;
 				break;
+			case ApiItemKind.Event:
+				path += `#${eventAnchor(item.displayName)}`;
+				break;
 			case ApiItemKind.Property:
 			case ApiItemKind.PropertySignature:
-			case ApiItemKind.Event:
 			case ApiItemKind.EnumMember:
 				path += `#${item.displayName}`;
 				break;
