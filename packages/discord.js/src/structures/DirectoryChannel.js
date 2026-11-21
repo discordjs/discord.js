@@ -1,13 +1,11 @@
-'use strict';
-
-const { BaseChannel } = require('./BaseChannel.js');
+import { BaseChannel } from './BaseChannel.js';
 
 /**
  * Represents a channel that displays a directory of guilds.
  *
  * @extends {BaseChannel}
  */
-class DirectoryChannel extends BaseChannel {
+export class DirectoryChannel extends BaseChannel {
   constructor(guild, data, client) {
     super(client, data);
 
@@ -36,5 +34,3 @@ class DirectoryChannel extends BaseChannel {
     this.name = data.name;
   }
 }
-
-exports.DirectoryChannel = DirectoryChannel;

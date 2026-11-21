@@ -32,7 +32,6 @@ import type {
 	RPCSubscribeResultData,
 } from 'discord-api-types/v10';
 import { RPCEvents, RPCCommands, Routes, RouteBases } from 'discord-api-types/v10';
-import { RPCEventError } from './RPCEventError.js';
 import type {
 	EventAndArgsParameters,
 	MappedRPCCommandsArgs,
@@ -42,6 +41,7 @@ import type {
 } from './constants.js';
 import { Events } from './constants.js';
 import { IPCTransport } from './ipc.js';
+import { RPCEventError } from './RPCEventError.js';
 import { getPid, isValidTimestamp } from './util.js';
 
 export interface RPCClientOptions {
@@ -163,9 +163,9 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 
 		const signal = options?.signal ?? AbortSignal.timeout(10e3);
 		const onAbort: (_: Event) => void = (_: Event) => {
-			// eslint-disable-next-line @typescript-eslint/no-use-before-define
+			// eslint-disable-next-line typescript/no-use-before-define
 			this.removeListener(RPCEvents.Ready, onReady);
-			// eslint-disable-next-line @typescript-eslint/no-use-before-define
+			// eslint-disable-next-line typescript/no-use-before-define
 			this.transport.removeListener('close', onClose);
 
 			const reason = signal.reason instanceof Error ? signal.reason : new Error(String(signal.reason));
@@ -286,7 +286,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 			nonce,
 		};
 		if (cmd === RPCCommands.Subscribe || cmd === RPCCommands.Unsubscribe) {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+			// eslint-disable-next-line typescript/no-non-null-asserted-optional-chain
 			payload.evt = options?.evt!;
 		}
 

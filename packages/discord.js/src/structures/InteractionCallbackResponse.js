@@ -1,12 +1,10 @@
-'use strict';
-
-const { InteractionCallback } = require('./InteractionCallback.js');
-const { InteractionCallbackResource } = require('./InteractionCallbackResource.js');
+import { InteractionCallback } from './InteractionCallback.js';
+import { InteractionCallbackResource } from './InteractionCallbackResource.js';
 
 /**
  * Represents an interaction's response
  */
-class InteractionCallbackResponse {
+export class InteractionCallbackResponse {
   constructor(client, data) {
     /**
      * The client that instantiated this
@@ -32,5 +30,3 @@ class InteractionCallbackResponse {
     this.resource = data.resource ? new InteractionCallbackResource(client, data.resource) : null;
   }
 }
-
-exports.InteractionCallbackResponse = InteractionCallbackResponse;

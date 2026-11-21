@@ -1,4 +1,4 @@
-import type { DeclarationReflection, SignatureReflection } from 'typedoc';
+import type { DeclarationReflection, SignatureReflection } from '../index.js';
 import type { Constructor } from '../interfaces/index.js';
 import { DocumentedItem } from './item.js';
 import { DocumentedParam } from './param.js';
@@ -17,7 +17,7 @@ export class DocumentedConstructor extends DocumentedItem<Constructor | Declarat
 
 			return {
 				name: signature.name,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+				// eslint-disable-next-line no-param-reassign
 				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				see,
 				access:
@@ -25,12 +25,12 @@ export class DocumentedConstructor extends DocumentedItem<Constructor | Declarat
 					signature.comment?.blockTags?.some((block) => block.tag === '@private' || block.tag === '@internal')
 						? 'private'
 						: undefined,
-				// @ts-expect-error: No type for params
-				params: signature.parameters
-					? (signature as SignatureReflection).parameters?.map((param) =>
-							new DocumentedParam(param, this.config).serialize(),
-						)
-					: undefined,
+				params:
+					'parameters' in signature
+						? (signature as SignatureReflection).parameters?.map((param) =>
+								new DocumentedParam(param, this.config).serialize(),
+							)
+						: undefined,
 			};
 		}
 

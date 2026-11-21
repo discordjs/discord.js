@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import { makeURLSearchParams, type RawFile, type RequestData, type REST } from '@discordjs/rest';
 import {
 	Routes,
@@ -47,6 +45,13 @@ export interface CreateMessageOptions extends RESTPostAPIChannelMessageJSONBody 
 
 export interface EditMessageOptions extends RESTPatchAPIChannelMessageJSONBody {
 	files?: RawFile[];
+}
+
+export interface CreateInviteOptions extends RESTPostAPIChannelInviteJSONBody {
+	/**
+	 * A CSV file with a single column of user ids for all the users able to accept this invite
+	 */
+	targetUsersFile?: RawFile;
 }
 
 export class ChannelsAPI {
@@ -386,9 +391,9 @@ export class ChannelsAPI {
 	public async deleteMessage(
 		channelId: Snowflake,
 		messageId: Snowflake,
-		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
-		await this.rest.delete(Routes.channelMessage(channelId, messageId), { auth, reason, signal });
+		await this.rest.delete(Routes.channelMessage(channelId, messageId), { auth, signal });
 	}
 
 	/**
@@ -492,13 +497,14 @@ export class ChannelsAPI {
 	 */
 	public async createInvite(
 		channelId: Snowflake,
-		body: RESTPostAPIChannelInviteJSONBody,
+		{ targetUsersFile, ...body }: CreateInviteOptions,
 		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelInvites(channelId), {
 			auth,
 			reason,
 			body,
+			files: targetUsersFile ? [{ key: 'target_users_file', contentType: 'text/csv', ...targetUsersFile }] : [],
 			signal,
 		}) as Promise<RESTPostAPIChannelInviteResult>;
 	}

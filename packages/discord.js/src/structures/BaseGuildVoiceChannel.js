@@ -1,10 +1,8 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { PermissionFlagsBits } = require('discord-api-types/v10');
-const { GuildMessageManager } = require('../managers/GuildMessageManager.js');
-const { GuildChannel } = require('./GuildChannel.js');
-const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
+import { Collection } from '@discordjs/collection';
+import { PermissionFlagsBits } from 'discord-api-types/v10';
+import { GuildMessageManager } from '../managers/GuildMessageManager.js';
+import { GuildChannel } from './GuildChannel.js';
+import { TextBasedChannel } from './interfaces/TextBasedChannel.js';
 
 /**
  * Represents a voice-based guild channel on Discord.
@@ -12,7 +10,7 @@ const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
  * @extends {GuildChannel}
  * @implements {TextBasedChannel}
  */
-class BaseGuildVoiceChannel extends GuildChannel {
+export class BaseGuildVoiceChannel extends GuildChannel {
   constructor(guild, data, client) {
     super(guild, data, client, false);
     /**
@@ -261,5 +259,3 @@ class BaseGuildVoiceChannel extends GuildChannel {
 }
 
 TextBasedChannel.applyToClass(BaseGuildVoiceChannel, ['lastPinAt']);
-
-exports.BaseGuildVoiceChannel = BaseGuildVoiceChannel;

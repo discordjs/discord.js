@@ -18,7 +18,7 @@ import {
 } from 'discord-api-types/v10';
 import { WebSocket, type Data } from 'ws';
 import type * as ZlibSync from 'zlib-sync';
-import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
+import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy.js';
 import {
 	CompressionMethod,
 	CompressionParameterMap,
@@ -326,7 +326,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			return;
 		}
 
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		if (!options.code) {
 			options.code = options.recover === WebSocketShardDestroyRecovery.Resume ? CloseCodes.Resuming : CloseCodes.Normal;
 		}
@@ -747,7 +746,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					this.replayedEvents++;
 				}
 
-				// eslint-disable-next-line sonarjs/no-nested-switch, @typescript-eslint/switch-exhaustiveness-check
 				switch (payload.t) {
 					case GatewayDispatchEvents.Ready: {
 						this.#status = WebSocketShardStatus.Ready;

@@ -16,9 +16,6 @@ import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
 import { resolveBuilder } from '../util/resolveBuilder.js';
 import { validate } from '../util/validation.js';
 import { actionRowPredicate } from './Assertions.js';
-import { ComponentBuilder } from './Component.js';
-import type { AnyActionRowComponentBuilder } from './Components.js';
-import { createComponentBuilder } from './Components.js';
 import {
 	DangerButtonBuilder,
 	PrimaryButtonBuilder,
@@ -27,6 +24,9 @@ import {
 } from './button/CustomIdButton.js';
 import { LinkButtonBuilder } from './button/LinkButton.js';
 import { PremiumButtonBuilder } from './button/PremiumButton.js';
+import { ComponentBuilder } from './Component.js';
+import type { AnyActionRowComponentBuilder } from './Components.js';
+import { createComponentBuilder } from './Components.js';
 import { ChannelSelectMenuBuilder } from './selectMenu/ChannelSelectMenu.js';
 import { MentionableSelectMenuBuilder } from './selectMenu/MentionableSelectMenu.js';
 import { RoleSelectMenuBuilder } from './selectMenu/RoleSelectMenu.js';

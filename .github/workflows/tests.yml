@@ -44,13 +44,13 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: pnpm exec turbo run test --filter="...[HEAD^1]" --concurrency=4
 
-      - name: ESLint (PR)
+      - name: Oxlint and Oxfmt (PR)
         if: ${{ github.event_name != 'push' }}
-        run: pnpm exec turbo run lint --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=4 -- --format=compact
+        run: pnpm exec turbo run lint --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=4
 
-      - name: ESLint (Push)
+      - name: Oxlint and Oxfmt (Push)
         if: ${{ github.event_name == 'push' }}
-        run: pnpm exec turbo run lint --filter="...[HEAD^1]" --concurrency=4 -- --format=compact
+        run: pnpm exec turbo run lint --filter="...[HEAD^1]" --concurrency=4
 
       - name: Docs (PR)
         if: ${{ github.event_name != 'push' }}

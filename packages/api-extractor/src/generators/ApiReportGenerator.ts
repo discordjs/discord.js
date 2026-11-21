@@ -1,5 +1,4 @@
 /* eslint-disable no-case-declarations */
-/* eslint-disable @typescript-eslint/require-array-sort-compare */
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
@@ -17,11 +16,11 @@ import { Span } from '../analyzer/Span.js';
 import { TypeScriptHelpers } from '../analyzer/TypeScriptHelpers.js';
 import type { ExtractorMessage } from '../api/ExtractorMessage.js';
 import { ExtractorMessageId } from '../api/ExtractorMessageId.js';
-import type { ApiReportVariant } from '../api/IConfigFile';
+import type { ApiReportVariant } from '../api/IConfigFile.js';
 import type { ApiItemMetadata } from '../collector/ApiItemMetadata.js';
 import { Collector } from '../collector/Collector.js';
 import type { CollectorEntity } from '../collector/CollectorEntity.js';
-import type { SymbolMetadata } from '../collector/SymbolMetadata';
+import type { SymbolMetadata } from '../collector/SymbolMetadata.js';
 import { DtsEmitHelpers } from './DtsEmitHelpers.js';
 import { IndentedWriter } from './IndentedWriter.js';
 

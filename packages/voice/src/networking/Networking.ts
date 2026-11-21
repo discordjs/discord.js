@@ -1,19 +1,17 @@
-/* eslint-disable jsdoc/check-param-names */
 /* eslint-disable id-length */
-/* eslint-disable @typescript-eslint/unbound-method */
 import { Buffer } from 'node:buffer';
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import type { VoiceReceivePayload, VoiceSpeakingFlags } from 'discord-api-types/voice/v8';
 import { VoiceEncryptionMode, VoiceOpcodes } from 'discord-api-types/voice/v8';
 import type { CloseEvent } from 'ws';
-import * as secretbox from '../util/Secretbox';
-import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants';
-import { noop } from '../util/util';
-import { DAVESession, getMaxProtocolVersion } from './DAVESession';
-import { VoiceUDPSocket } from './VoiceUDPSocket';
-import type { BinaryWebSocketMessage } from './VoiceWebSocket';
-import { VoiceWebSocket } from './VoiceWebSocket';
+import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants.js';
+import * as secretbox from '../util/Secretbox.js';
+import { noop } from '../util/util.js';
+import { DAVESession, getMaxProtocolVersion } from './DAVESession.js';
+import { VoiceUDPSocket } from './VoiceUDPSocket.js';
+import type { BinaryWebSocketMessage } from './VoiceWebSocket.js';
+import { VoiceWebSocket } from './VoiceWebSocket.js';
 
 // The number of audio channels required by Discord
 const CHANNELS = 2;
@@ -583,7 +581,10 @@ export class Networking extends EventEmitter {
 	 * @param message - The received message
 	 */
 	private onWsBinary(message: BinaryWebSocketMessage) {
-		if (this.state.code === NetworkingStatusCode.Ready && this.state.dave) {
+		if (
+			(this.state.code === NetworkingStatusCode.Ready || this.state.code === NetworkingStatusCode.Resuming) &&
+			this.state.dave
+		) {
 			if (message.op === VoiceOpcodes.DaveMlsExternalSender) {
 				this.state.dave.setExternalSender(message.payload);
 			} else if (message.op === VoiceOpcodes.DaveMlsProposals) {
@@ -600,7 +601,10 @@ export class Networking extends EventEmitter {
 						});
 				}
 			} else if (message.op === VoiceOpcodes.DaveMlsWelcome) {
-				const { transitionId, success } = this.state.dave.processWelcome(message.payload);
+				const { transitionId, success } = this.state.dave.processWelcome(
+					message.payload,
+					this.state.connectionData.connectedClients,
+				);
 				if (success) {
 					if (transitionId === 0) this.emit('transitioned', transitionId);
 					else
@@ -619,7 +623,11 @@ export class Networking extends EventEmitter {
 	 * @param keyPackage - The new key package
 	 */
 	private onDaveKeyPackage(keyPackage: Buffer) {
-		if (this.state.code === NetworkingStatusCode.SelectingProtocol || this.state.code === NetworkingStatusCode.Ready)
+		if (
+			this.state.code === NetworkingStatusCode.SelectingProtocol ||
+			this.state.code === NetworkingStatusCode.Ready ||
+			this.state.code === NetworkingStatusCode.Resuming
+		)
 			this.state.ws.sendBinaryMessage(VoiceOpcodes.DaveMlsKeyPackage, keyPackage);
 	}
 
@@ -629,7 +637,11 @@ export class Networking extends EventEmitter {
 	 * @param transitionId - The transition to invalidate
 	 */
 	private onDaveInvalidateTransition(transitionId: number) {
-		if (this.state.code === NetworkingStatusCode.SelectingProtocol || this.state.code === NetworkingStatusCode.Ready)
+		if (
+			this.state.code === NetworkingStatusCode.SelectingProtocol ||
+			this.state.code === NetworkingStatusCode.Ready ||
+			this.state.code === NetworkingStatusCode.Resuming
+		)
 			this.state.ws.sendPacket({
 				op: VoiceOpcodes.DaveMlsInvalidCommitWelcome,
 				d: { transition_id: transitionId },
@@ -742,8 +754,12 @@ export class Networking extends EventEmitter {
 	 * @param opusPacket - The Opus packet to prepare
 	 * @param connectionData - The current connection data of the instance
 	 * @param daveSession - The DAVE session to use for encryption
+	 * @returns The audio packet, or `undefined` if the packet should be dropped
 	 */
 	private createAudioPacket(opusPacket: Buffer, connectionData: ConnectionData, daveSession?: DAVESession) {
+		const packet = daveSession ? daveSession.encrypt(opusPacket) : opusPacket;
+		if (!packet) return;
+
 		const rtpHeader = Buffer.alloc(12);
 		rtpHeader[0] = 0x80;
 		rtpHeader[1] = RTP_OPUS_PAYLOAD_TYPE;
@@ -755,25 +771,17 @@ export class Networking extends EventEmitter {
 		rtpHeader.writeUIntBE(ssrc, 8, 4);
 
 		rtpHeader.copy(nonce, 0, 0, 12);
-		return Buffer.concat([rtpHeader, ...this.encryptOpusPacket(opusPacket, connectionData, rtpHeader, daveSession)]);
+		return Buffer.concat([rtpHeader, ...this.encryptOpusPacket(packet, connectionData, rtpHeader)]);
 	}
 
 	/**
 	 * Encrypts an Opus packet using the format agreed upon by the instance and Discord.
 	 *
-	 * @param opusPacket - The Opus packet to encrypt
+	 * @param packet - The Opus packet to encrypt, already end-to-end encrypted if in a DAVE session
 	 * @param connectionData - The current connection data of the instance
-	 * @param daveSession - The DAVE session to use for encryption
 	 */
-	private encryptOpusPacket(
-		opusPacket: Buffer,
-		connectionData: ConnectionData,
-		additionalData: Buffer,
-		daveSession?: DAVESession,
-	) {
+	private encryptOpusPacket(packet: Buffer, connectionData: ConnectionData, additionalData: Buffer) {
 		const { secretKey, encryptionMode } = connectionData;
-
-		const packet = daveSession?.encrypt(opusPacket) ?? opusPacket;
 
 		// Both supported encryption methods want the nonce to be an incremental integer
 		connectionData.nonce++;

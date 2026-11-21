@@ -530,7 +530,6 @@ export function heading<Content extends string>(content: Content, level: Heading
 export function heading<Content extends string>(content: Content, level: HeadingLevel.Three): `### ${Content}`;
 
 export function heading(content: string, level?: HeadingLevel) {
-	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (level) {
 		case HeadingLevel.Three:
 			return `### ${content}`;

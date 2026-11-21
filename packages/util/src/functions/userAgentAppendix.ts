@@ -1,5 +1,3 @@
-/* eslint-disable n/prefer-global/process */
-
 /**
  * Resolves the user agent appendix string for the current environment.
  */
