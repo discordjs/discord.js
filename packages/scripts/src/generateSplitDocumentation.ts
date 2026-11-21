@@ -35,6 +35,7 @@ import {
 	ExcerptToken,
 	ApiOptionalMixin,
 } from '@discordjs/api-extractor-model';
+import { eventAnchor } from '@discordjs/api-extractor-utils';
 import { DocNodeKind, SelectorKind, StandardTags } from '@microsoft/tsdoc';
 import type {
 	DocEscapedText,
@@ -62,6 +63,10 @@ function findMember(entry: ApiEntryPoint, memberName: string | undefined) {
 	return entry.findMembersByName(memberName)[0];
 }
 
+function memberAnchor(item: { kind: string; displayName: string }) {
+	return item.kind === ApiItemKind.Event ? eventAnchor(item.displayName) : item.displayName;
+}
+
 /**
  * Resolves all inherited members (including merged members) of a given parent.
  *
@@ -74,7 +79,8 @@ export function resolveMembers<WantedItem extends ApiItem>(
 ) {
 	const seenItems = new Set<string>();
 	const inheritedMembers = parent.findMembersWithInheritance().items.reduce((acc, item) => {
-		if (predicate(item) && !seenItems.has(item.displayName)) {
+		const anchor = memberAnchor(item);
+		if (predicate(item) && !seenItems.has(anchor)) {
 			acc.push({
 				item,
 				inherited:
@@ -83,7 +89,7 @@ export function resolveMembers<WantedItem extends ApiItem>(
 						: (item.parent as ApiItemContainerMixin | undefined),
 			});
 
-			seenItems.add(item.displayName);
+			seenItems.add(anchor);
 		}
 
 		return acc;
@@ -93,7 +99,7 @@ export function resolveMembers<WantedItem extends ApiItem>(
 		.getMergedSiblings()
 		.filter((sibling) => sibling.containerKey !== parent.containerKey)
 		.flatMap((sibling) => (sibling as ApiItemContainerMixin).findMembersWithInheritance().items)
-		.filter((item) => predicate(item) && !seenItems.has(item.displayName))
+		.filter((item) => predicate(item) && !seenItems.has(memberAnchor(item)))
 		.map((item) => ({
 			item: item as WantedItem,
 			inherited: item.parent ? (item.parent as ApiItemContainerMixin) : undefined,
@@ -226,7 +232,7 @@ function resolveItemURI(item: ApiItemLike, entryPoint?: ApiEntryPoint): string {
 	return `${actualEntryPoint?.importPath ? `${actualEntryPoint.importPath}/` : ''}${
 		!item.parent || item.parent.kind === ApiItemKind.EntryPoint
 			? `${item.displayName}:${item.kind}`
-			: `${item.parent.displayName}:${item.parent.kind}#${item.displayName}`
+			: `${item.parent.displayName}:${item.parent.kind}#${memberAnchor(item)}`
 	}`;
 }
 
