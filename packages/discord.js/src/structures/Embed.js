@@ -1,12 +1,10 @@
-'use strict';
-
-const { embedLength } = require('@discordjs/util');
-const isEqual = require('fast-deep-equal');
+import { embedLength } from '@discordjs/util';
+import isEqual from 'fast-deep-equal';
 
 /**
  * Represents an embed.
  */
-class Embed {
+export class Embed {
   constructor(data) {
     /**
      * The API embed data.
@@ -250,5 +248,3 @@ class Embed {
     );
   }
 }
-
-exports.Embed = Embed;

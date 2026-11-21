@@ -1,9 +1,9 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APIPollAnswer, APIPollMedia } from 'discord-api-types/v10';
-import { resolveBuilder } from '../../util/resolveBuilder';
-import { validate } from '../../util/validation';
-import { pollAnswerPredicate } from './Assertions';
-import { PollAnswerMediaBuilder } from './PollAnswerMedia';
+import { resolveBuilder } from '../../util/resolveBuilder.js';
+import { validate } from '../../util/validation.js';
+import { pollAnswerPredicate } from './Assertions.js';
+import { PollAnswerMediaBuilder } from './PollAnswerMedia.js';
 
 export interface PollAnswerData extends Omit<APIPollAnswer, 'answer_id' | 'poll_media'> {
 	poll_media: PollAnswerMediaBuilder;

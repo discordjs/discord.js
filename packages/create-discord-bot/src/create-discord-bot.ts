@@ -51,7 +51,7 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 	const lang = typescript ? 'TypeScript' : 'JavaScript';
 	const templateBasePath = deno ? 'Deno' : bun ? `Bun/${lang}` : lang;
 
-	await cp(new URL(`../template/${templateBasePath}`, import.meta.url), root, {
+	await cp(new URL(`../../template/${templateBasePath}`, import.meta.url), root, {
 		recursive: true,
 	});
 

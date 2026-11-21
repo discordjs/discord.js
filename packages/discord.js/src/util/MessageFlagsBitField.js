@@ -1,14 +1,12 @@
-'use strict';
-
-const { MessageFlags } = require('discord-api-types/v10');
-const { BitField } = require('./BitField.js');
+import { MessageFlags } from 'discord-api-types/v10';
+import { BitField } from './BitField.js';
 
 /**
  * Data structure that makes it easy to interact with a {@link Message#flags} bitfield.
  *
  * @extends {BitField}
  */
-class MessageFlagsBitField extends BitField {
+export class MessageFlagsBitField extends BitField {
   /**
    * Numeric message flags.
    *
@@ -41,5 +39,3 @@ class MessageFlagsBitField extends BitField {
  * @type {number}
  * @name MessageFlagsBitField#bitfield
  */
-
-exports.MessageFlagsBitField = MessageFlagsBitField;

@@ -1,14 +1,12 @@
-'use strict';
-
-const { SeparatorSpacingSize } = require('discord-api-types/v10');
-const { Component } = require('./Component.js');
+import { SeparatorSpacingSize } from 'discord-api-types/v10';
+import { Component } from './Component.js';
 
 /**
  * Represents a separator component
  *
  * @extends {Component}
  */
-class SeparatorComponent extends Component {
+export class SeparatorComponent extends Component {
   /**
    * The spacing of this separator
    *
@@ -29,5 +27,3 @@ class SeparatorComponent extends Component {
     return this.data.divider ?? true;
   }
 }
-
-exports.SeparatorComponent = SeparatorComponent;

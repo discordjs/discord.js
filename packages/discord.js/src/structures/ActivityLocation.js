@@ -1,13 +1,11 @@
-'use strict';
-
-const { Base } = require('./Base.js');
+import { Base } from './Base.js';
 
 /**
  * Represents the location of an activity instance.
  *
  * @extends {Base}
  */
-class ActivityLocation extends Base {
+export class ActivityLocation extends Base {
   constructor(client, data) {
     super(client);
 
@@ -61,5 +59,3 @@ class ActivityLocation extends Base {
     return this.client.guilds.cache.get(this.guildId) ?? null;
   }
 }
-
-exports.ActivityLocation = ActivityLocation;
