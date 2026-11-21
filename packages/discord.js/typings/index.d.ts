@@ -393,12 +393,12 @@ export type ComponentInLabelData =
   | CheckboxComponentData
   | CheckboxGroupComponentData
   | RadioGroupComponentData
-  | StringSelectMenuComponentData<true>
+  | StringSelectMenuComponentData
   | TextInputComponentData
-  | UserSelectMenuComponentData<true>
-  | ChannelSelectMenuComponentData<true>
-  | RoleSelectMenuComponentData<true>
-  | MentionableSelectMenuComponentData<true>
+  | UserSelectMenuComponentData
+  | ChannelSelectMenuComponentData
+  | RoleSelectMenuComponentData
+  | MentionableSelectMenuComponentData
   | FileUploadComponentData;
 
 export interface LabelComponentData extends BaseComponentData {
@@ -898,7 +898,7 @@ export class ButtonBuilder extends BuilderButtonComponent {
 }
 
 export class StringSelectMenuBuilder extends BuilderStringSelectMenuComponent {
-  public constructor(data?: Partial<StringSelectMenuComponentData<boolean> | APIStringSelectComponent>);
+  public constructor(data?: Partial<StringSelectMenuComponentData | APIStringSelectComponent>);
   private static normalizeEmoji(
     selectMenuOption: JSONEncodable<APISelectMenuOption> | SelectMenuComponentOptionData,
   ): (APISelectMenuOption | StringSelectMenuOptionBuilder)[];
@@ -921,24 +921,24 @@ export {
 };
 
 export class UserSelectMenuBuilder extends BuilderUserSelectMenuComponent {
-  public constructor(data?: Partial<UserSelectMenuComponentData<boolean> | APIUserSelectComponent>);
+  public constructor(data?: Partial<UserSelectMenuComponentData | APIUserSelectComponent>);
   public static from(other: JSONEncodable<APIUserSelectComponent> | APIUserSelectComponent): UserSelectMenuBuilder;
 }
 
 export class RoleSelectMenuBuilder extends BuilderRoleSelectMenuComponent {
-  public constructor(data?: Partial<RoleSelectMenuComponentData<boolean> | APIRoleSelectComponent>);
+  public constructor(data?: Partial<RoleSelectMenuComponentData | APIRoleSelectComponent>);
   public static from(other: JSONEncodable<APIRoleSelectComponent> | APIRoleSelectComponent): RoleSelectMenuBuilder;
 }
 
 export class MentionableSelectMenuBuilder extends BuilderMentionableSelectMenuComponent {
-  public constructor(data?: Partial<MentionableSelectMenuComponentData<boolean> | APIMentionableSelectComponent>);
+  public constructor(data?: Partial<MentionableSelectMenuComponentData | APIMentionableSelectComponent>);
   public static from(
     other: JSONEncodable<APIMentionableSelectComponent> | APIMentionableSelectComponent,
   ): MentionableSelectMenuBuilder;
 }
 
 export class ChannelSelectMenuBuilder extends BuilderChannelSelectMenuComponent {
-  public constructor(data?: Partial<ChannelSelectMenuComponentData<boolean> | APIChannelSelectComponent>);
+  public constructor(data?: Partial<ChannelSelectMenuComponentData | APIChannelSelectComponent>);
   public static from(
     other: JSONEncodable<APIChannelSelectComponent> | APIChannelSelectComponent,
   ): ChannelSelectMenuBuilder;
@@ -7514,48 +7514,38 @@ export interface MessageReference {
 
 export type MessageResolvable = Message | Snowflake;
 
-export interface BaseSelectMenuComponentData<InLabel extends boolean = false> extends BaseComponentData {
+export interface BaseSelectMenuComponentData extends BaseComponentData {
   customId: string;
   disabled?: boolean;
   maxValues?: number;
   minValues?: number;
   placeholder?: string;
-  required?: InLabel extends true ? boolean : true;
+  required?: boolean;
 }
 
-export interface StringSelectMenuComponentData<
-  InLabel extends boolean = false,
-> extends BaseSelectMenuComponentData<InLabel> {
+export interface StringSelectMenuComponentData extends BaseSelectMenuComponentData {
   type: ComponentType.StringSelect;
   options: readonly SelectMenuComponentOptionData[];
 }
 
-export interface UserSelectMenuComponentData<
-  InLabel extends boolean = false,
-> extends BaseSelectMenuComponentData<InLabel> {
+export interface UserSelectMenuComponentData extends BaseSelectMenuComponentData {
   type: ComponentType.UserSelect;
   defaultValues?: readonly APISelectMenuDefaultValue<SelectMenuDefaultValueType.User>[];
 }
 
-export interface RoleSelectMenuComponentData<
-  InLabel extends boolean = false,
-> extends BaseSelectMenuComponentData<InLabel> {
+export interface RoleSelectMenuComponentData extends BaseSelectMenuComponentData {
   type: ComponentType.RoleSelect;
   defaultValues?: readonly APISelectMenuDefaultValue<SelectMenuDefaultValueType.Role>[];
 }
 
-export interface MentionableSelectMenuComponentData<
-  InLabel extends boolean = false,
-> extends BaseSelectMenuComponentData<InLabel> {
+export interface MentionableSelectMenuComponentData extends BaseSelectMenuComponentData {
   type: ComponentType.MentionableSelect;
   defaultValues?: readonly APISelectMenuDefaultValue<
     SelectMenuDefaultValueType.Role | SelectMenuDefaultValueType.User
   >[];
 }
 
-export interface ChannelSelectMenuComponentData<
-  InLabel extends boolean = false,
-> extends BaseSelectMenuComponentData<InLabel> {
+export interface ChannelSelectMenuComponentData extends BaseSelectMenuComponentData {
   type: ComponentType.ChannelSelect;
   channelTypes?: readonly ChannelType[];
   defaultValues?: readonly APISelectMenuDefaultValue<SelectMenuDefaultValueType.Channel>[];
