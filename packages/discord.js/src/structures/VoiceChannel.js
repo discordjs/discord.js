@@ -56,6 +56,32 @@ export class VoiceChannel extends BaseGuildVoiceChannel {
       },
     });
   }
+
+  /**
+   * Sets the status of the voice channel.
+   * Requires the {@link PermissionFlagsBits.SetVoiceChannelStatus} permission.
+   * If the client user is not connected to the channel, {@link PermissionFlagsBits.ManageChannels} is also required.
+   *
+   * @param {?string} status The new status (up to 500 characters), or `null` to clear it
+   * @param {string} [reason] The reason for changing the voice channel status
+   * @returns {Promise<void>}
+   * @example
+   * // Set a voice channel status
+   * channel.setStatus('Playing music!')
+   *   .then(() => console.log('Voice channel status set'))
+   *   .catch(console.error);
+   * @example
+   * // Clear a voice channel status
+   * channel.setStatus(null)
+   *   .then(() => console.log('Voice channel status cleared'))
+   *   .catch(console.error);
+   */
+  async setStatus(status, reason) {
+    await this.client.rest.put(Routes.channelVoiceStatus(this.id), {
+      body: { status },
+      reason,
+    });
+  }
 }
 
 /**

@@ -8,6 +8,7 @@
  * @property {string} CacheSweep cacheSweep
  * @property {string} ChannelCreate channelCreate
  * @property {string} ChannelDelete channelDelete
+ * @property {string} ChannelInfo channelInfo
  * @property {string} ChannelPinsUpdate channelPinsUpdate
  * @property {string} ChannelUpdate channelUpdate
  * @property {string} ClientReady clientReady
@@ -79,6 +80,8 @@
  * @property {string} TypingStart typingStart
  * @property {string} UserUpdate userUpdate
  * @property {string} VoiceChannelEffectSend voiceChannelEffectSend
+ * @property {string} VoiceChannelStartTimeUpdate voiceChannelStartTimeUpdate
+ * @property {string} VoiceChannelStatusUpdate voiceChannelStatusUpdate
  * @property {string} VoiceServerUpdate voiceServerUpdate
  * @property {string} VoiceStateUpdate voiceStateUpdate
  * @property {string} Warn warn
@@ -99,6 +102,7 @@ export const Events = {
   CacheSweep: 'cacheSweep',
   ChannelCreate: 'channelCreate',
   ChannelDelete: 'channelDelete',
+  ChannelInfo: 'channelInfo',
   ChannelPinsUpdate: 'channelPinsUpdate',
   ChannelUpdate: 'channelUpdate',
   ClientReady: 'clientReady',
@@ -170,6 +174,8 @@ export const Events = {
   TypingStart: 'typingStart',
   UserUpdate: 'userUpdate',
   VoiceChannelEffectSend: 'voiceChannelEffectSend',
+  VoiceChannelStartTimeUpdate: 'voiceChannelStartTimeUpdate',
+  VoiceChannelStatusUpdate: 'voiceChannelStatusUpdate',
   VoiceServerUpdate: 'voiceServerUpdate',
   VoiceStateUpdate: 'voiceStateUpdate',
   Warn: 'warn',
