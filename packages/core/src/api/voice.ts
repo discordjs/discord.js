@@ -1,4 +1,4 @@
-import type { RequestData, REST } from '@discordjs/rest';
+import type { REST } from '@discordjs/rest';
 import {
 	Routes,
 	type Snowflake,
@@ -8,6 +8,7 @@ import {
 	type RESTPatchAPIGuildVoiceStateUserJSONBody,
 	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
 } from 'discord-api-types/v10';
+import type { RequestOptions, RequestOptionsWithReason } from '../util/types.js';
 
 export class VoiceAPI {
 	public constructor(private readonly rest: REST) {}
@@ -18,8 +19,8 @@ export class VoiceAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/voice#list-voice-regions}
 	 * @param options - The options for fetching the voice regions
 	 */
-	public async getVoiceRegions({ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.get(Routes.voiceRegions(), { auth, signal }) as Promise<RESTGetAPIVoiceRegionsResult>;
+	public async getVoiceRegions(options: RequestOptions = {}) {
+		return this.rest.get(Routes.voiceRegions(), options) as Promise<RESTGetAPIVoiceRegionsResult>;
 	}
 
 	/**
@@ -28,15 +29,11 @@ export class VoiceAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/voice#get-user-voice-state}
 	 * @param options - The options for fetching user voice state
 	 */
-	public async getUserVoiceState(
-		guildId: Snowflake,
-		userId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
-	) {
-		return this.rest.get(Routes.guildVoiceState(guildId, userId), {
-			auth,
-			signal,
-		}) as Promise<RESTGetAPIGuildVoiceStateUserResult>;
+	public async getUserVoiceState(guildId: Snowflake, userId: Snowflake, options: RequestOptions = {}) {
+		return this.rest.get(
+			Routes.guildVoiceState(guildId, userId),
+			options,
+		) as Promise<RESTGetAPIGuildVoiceStateUserResult>;
 	}
 
 	/**
@@ -45,11 +42,11 @@ export class VoiceAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/voice#get-current-user-voice-state}
 	 * @param options - The options for fetching user voice state
 	 */
-	public async getVoiceState(guildId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.get(Routes.guildVoiceState(guildId, '@me'), {
-			auth,
-			signal,
-		}) as Promise<RESTGetAPIGuildVoiceStateCurrentMemberResult>;
+	public async getVoiceState(guildId: Snowflake, options: RequestOptions = {}) {
+		return this.rest.get(
+			Routes.guildVoiceState(guildId, '@me'),
+			options,
+		) as Promise<RESTGetAPIGuildVoiceStateCurrentMemberResult>;
 	}
 
 	/**
@@ -65,13 +62,11 @@ export class VoiceAPI {
 		guildId: Snowflake,
 		userId: Snowflake,
 		body: RESTPatchAPIGuildVoiceStateUserJSONBody,
-		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
+		options: RequestOptionsWithReason = {},
 	) {
 		await this.rest.patch(Routes.guildVoiceState(guildId, userId), {
-			auth,
-			reason,
+			...options,
 			body,
-			signal,
 		});
 	}
 
@@ -86,12 +81,11 @@ export class VoiceAPI {
 	public async editVoiceState(
 		guildId: Snowflake,
 		body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {},
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		options: RequestOptions = {},
 	) {
 		await this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
-			auth,
+			...options,
 			body,
-			signal,
 		});
 	}
 }

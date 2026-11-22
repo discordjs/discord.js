@@ -1,13 +1,11 @@
-'use strict';
-
-const { MessageManager } = require('./MessageManager.js');
+import { MessageManager } from './MessageManager.js';
 
 /**
  * Manages API methods for messages in direct message channels and holds their cache.
  *
  * @extends {MessageManager}
  */
-class DMMessageManager extends MessageManager {
+export class DMMessageManager extends MessageManager {
   /**
    * The channel that the messages belong to
    *
@@ -15,5 +13,3 @@ class DMMessageManager extends MessageManager {
    * @type {DMChannel}
    */
 }
-
-exports.DMMessageManager = DMMessageManager;

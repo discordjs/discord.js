@@ -5,22 +5,16 @@ packages:
 
 allowBuilds:
   '@discordjs/opus': true
-  '@tailwindcss/oxide': true
   bufferutil: true
   core-js-pure: false
   esbuild: true
-  protobufjs: true
   rclone.js: true
-  sharp: true
   unrs-resolver: false
   utf-8-validate: true
   workerd: true
   zlib-sync: true
 
 autoInstallPeers: false
-
-minimumReleaseAgeExclude:
-  - '@discordjs/opus@0.11.0'
 
 peerDependencyRules:
   allowAny:

@@ -1,8 +1,6 @@
-'use strict';
+import { ErrorCodes } from './ErrorCodes.js';
 
-const { ErrorCodes } = require('./ErrorCodes.js');
-
-const Messages = {
+export const Messages = {
   [ErrorCodes.ClientInvalidOption]: (prop, must) => `The ${prop} option must be ${must}`,
   [ErrorCodes.ClientInvalidProvidedShards]: 'None of the provided shards were valid.',
   [ErrorCodes.ClientMissingIntents]: 'Valid intents must be provided for the Client.',
@@ -95,6 +93,9 @@ const Messages = {
     `Soundboard sound is a default (non-guild) soundboard sound and can't be ${action}.`,
   [ErrorCodes.NotGuildSticker]: 'Sticker is a standard (non-guild) sticker and has no author.',
 
+  [ErrorCodes.SearchIndexNotYetAvailable]: (indexed, retryAfter) =>
+    `Search index not yet available (currently ${indexed} indexed) and opted out of retrying. You can retry in ${retryAfter} seconds.`,
+
   [ErrorCodes.ReactionResolveUser]: "Couldn't resolve the user id to remove from the reaction.",
 
   [ErrorCodes.InviteResolveCode]: 'Could not resolve the code to fetch the invite.',
@@ -155,5 +156,3 @@ const Messages = {
     `"overwrite.id" is a ${expected.toLowerCase()} object, ` +
     `but "overwrite.type" is defined and not equal to OverwriteType.${expected}`,
 };
-
-exports.Messages = Messages;

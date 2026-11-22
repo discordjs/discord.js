@@ -1,6 +1,4 @@
 /* eslint-disable jsdoc/require-property-description */
-'use strict';
-
 /**
  * @typedef {Object} DiscordjsErrorCodes
  * @property {'ClientInvalidOption'} ClientInvalidOption
@@ -87,6 +85,8 @@
  *
  * @property {'NotGuildSoundboardSound'} NotGuildSoundboardSound
  * @property {'NotGuildSticker'} NotGuildSticker
+ *
+ * @property {'SearchIndexNotYetAvailable'} SearchIndexNotYetAvailable
  *
  * @property {'ReactionResolveUser'} ReactionResolveUser
  *
@@ -222,6 +222,8 @@ const keys = [
   'NotGuildSoundboardSound',
   'NotGuildSticker',
 
+  'SearchIndexNotYetAvailable',
+
   'ReactionResolveUser',
 
   'InviteResolveCode',
@@ -275,6 +277,4 @@ const keys = [
  * @type {DiscordjsErrorCodes}
  * @ignore
  */
-const ErrorCodes = Object.fromEntries(keys.map(key => [key, key]));
-
-exports.ErrorCodes = ErrorCodes;
+export const ErrorCodes = Object.fromEntries(keys.map(key => [key, key]));

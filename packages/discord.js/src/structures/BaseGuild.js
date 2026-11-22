@@ -1,9 +1,7 @@
-'use strict';
-
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes, GuildFeature } = require('discord-api-types/v10');
-const { Base } = require('./Base.js');
+import { makeURLSearchParams } from '@discordjs/rest';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { Routes, GuildFeature } from 'discord-api-types/v10';
+import { Base } from './Base.js';
 
 /**
  * The base class for {@link Guild}, {@link OAuth2Guild} and {@link InviteGuild}.
@@ -11,7 +9,7 @@ const { Base } = require('./Base.js');
  * @extends {Base}
  * @abstract
  */
-class BaseGuild extends Base {
+export class BaseGuild extends Base {
   constructor(client, data) {
     super(client);
 
@@ -130,5 +128,3 @@ class BaseGuild extends Base {
     return this.name;
   }
 }
-
-exports.BaseGuild = BaseGuild;

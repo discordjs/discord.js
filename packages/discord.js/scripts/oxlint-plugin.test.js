@@ -8,33 +8,12 @@ import { describe, it, test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 import { RuleTester } from 'oxlint/plugins-dev';
-import plugin from './oxlint-plugin.mjs';
+import plugin from './oxlint-plugin.js';
 
 RuleTester.describe = describe;
 RuleTester.it = it;
 
 const tester = new RuleTester({ languageOptions: { parserOptions: { lang: 'ts' } } });
-
-tester.run('require-strict', plugin.rules['require-strict'], {
-  valid: ['', "'use strict'; const value = 1;"],
-  invalid: [
-    { code: 'const value = 1;', errors: [/must begin with 'use strict'/] },
-    { code: "'other'; 'use strict';", errors: [/must begin with 'use strict'/] },
-  ],
-});
-
-tester.run('named-exports', plugin.rules['named-exports'], {
-  valid: ['exports.value = 1;', 'module.exports.value = 1;', "module['exports'] = {};"],
-  invalid: [{ code: 'module.exports = {};', errors: [/Use named exports/] }],
-});
-
-tester.run('destructure-local-require', plugin.rules['destructure-local-require'], {
-  valid: ["const { value } = require('./local');", "const value = require('external');"],
-  invalid: [
-    { code: "const value = require('./local');", errors: [/Use object destructuring/] },
-    { code: "const value = require('../local');", errors: [/Use object destructuring/] },
-  ],
-});
 
 tester.run('readonly-arrays', plugin.rules['readonly-arrays'], {
   valid: [
@@ -75,15 +54,12 @@ test('repository config scopes rules, allows handler exports, and honors inline 
   const root = await mkdtemp(join(tmpdir(), 'discord-oxlint-'));
   context.after(() => rm(root, { recursive: true, force: true }));
   const files = {
-    'packages/discord.js/src/client/websocket/handlers/READY.js': "'use strict'; module.exports = () => {};",
-    'packages/discord.js/src/client/websocket/handlers-extra/invalid.js': "'use strict'; module.exports = {};",
     'packages/discord.js/typings/invalid.d.ts': 'declare function invalid(value: string[]): void;',
     'packages/discord.js/typings/invalid.d.mts': 'declare function invalid(value: Collection<string, string>): void;',
     'packages/discord.js/typings/exception.d.ts': `interface PartialPoll {
       // oxlint-disable-next-line discordjs/readonly-collections -- Retain the mutable answers collection.
       answers: Collection<number, PartialPollAnswer>;
     }`,
-    'packages/other/src/unaffected.js': 'module.exports = {};',
   };
   for (const [path, code] of Object.entries(files)) {
     await mkdir(dirname(join(root, path)), { recursive: true });
@@ -95,7 +71,7 @@ test('repository config scopes rules, allows handler exports, and honors inline 
     `import config from ${JSON.stringify(join(repositoryRoot, 'oxlint.config.ts'))};
      export default {
        ...config, extends: [], rules: {},
-       jsPlugins: [${JSON.stringify(join(repositoryRoot, 'packages/discord.js/scripts/oxlint-plugin.mjs'))}],
+       jsPlugins: [${JSON.stringify(join(repositoryRoot, 'packages/discord.js/scripts/oxlint-plugin.js'))}],
        overrides: config.overrides.map(override => ({
          files: override.files,
          rules: Object.fromEntries(Object.entries(override.rules).filter(([name]) => name.startsWith('discordjs/'))),
@@ -111,7 +87,6 @@ test('repository config scopes rules, allows handler exports, and honors inline 
       assert.deepEqual(
         diagnostics.map(diagnostic => [diagnostic.filename.replaceAll('\\', '/'), diagnostic.code]).sort(),
         [
-          ['packages/discord.js/src/client/websocket/handlers-extra/invalid.js', 'discordjs(named-exports)'],
           ['packages/discord.js/typings/invalid.d.mts', 'discordjs(readonly-collections)'],
           ['packages/discord.js/typings/invalid.d.ts', 'discordjs(readonly-arrays)'],
         ],

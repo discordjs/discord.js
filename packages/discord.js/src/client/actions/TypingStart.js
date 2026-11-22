@@ -1,10 +1,8 @@
-'use strict';
+import { Typing } from '../../structures/Typing.js';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const { Typing } = require('../../structures/Typing.js');
-const { Events } = require('../../util/Events.js');
-const { Action } = require('./Action.js');
-
-class TypingStartAction extends Action {
+export class TypingStartAction extends Action {
   handle(data) {
     const channel = this.getChannel({ id: data.channel_id, ...('guild_id' in data && { guild_id: data.guild_id }) });
     if (!channel) return;
@@ -26,5 +24,3 @@ class TypingStartAction extends Action {
     }
   }
 }
-
-exports.TypingStartAction = TypingStartAction;

@@ -1,19 +1,17 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { Routes, EntitlementOwnerType } = require('discord-api-types/v10');
-const { ErrorCodes, DiscordjsTypeError } = require('../errors/index.js');
-const { Entitlement } = require('../structures/Entitlement.js');
-const { resolveSKUId } = require('../util/Util.js');
-const { CachedManager } = require('./CachedManager.js');
+import { Collection } from '@discordjs/collection';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { Routes, EntitlementOwnerType } from 'discord-api-types/v10';
+import { ErrorCodes, DiscordjsTypeError } from '../errors/index.js';
+import { Entitlement } from '../structures/Entitlement.js';
+import { resolveSKUId } from '../util/Util.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for entitlements and stores their cache.
  *
  * @extends {CachedManager}
  */
-class EntitlementManager extends CachedManager {
+export class EntitlementManager extends CachedManager {
   constructor(client, iterable) {
     super(client, Entitlement, iterable);
   }
@@ -181,5 +179,3 @@ class EntitlementManager extends CachedManager {
     await this.client.rest.post(Routes.consumeEntitlement(this.client.application.id, entitlementId));
   }
 }
-
-exports.EntitlementManager = EntitlementManager;

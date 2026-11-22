@@ -1,8 +1,6 @@
-'use strict';
+import { Events } from '../../../util/Events.js';
 
-const { Events } = require('../../../util/Events.js');
-
-module.exports = (client, { d: data }) => {
+export default (client, { d: data }) => {
   client.emit(
     Events.Debug,
     `[VOICE] received voice server: ${JSON.stringify({ ...data, token: '*'.repeat(data.token.length) })}`,

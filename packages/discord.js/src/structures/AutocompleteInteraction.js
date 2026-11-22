@@ -1,16 +1,14 @@
-'use strict';
-
-const { InteractionResponseType, Routes } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { BaseInteraction } = require('./BaseInteraction.js');
-const { CommandInteractionOptionResolver } = require('./CommandInteractionOptionResolver.js');
+import { InteractionResponseType, Routes } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { BaseInteraction } from './BaseInteraction.js';
+import { CommandInteractionOptionResolver } from './CommandInteractionOptionResolver.js';
 
 /**
  * Represents an autocomplete interaction.
  *
  * @extends {BaseInteraction}
  */
-class AutocompleteInteraction extends BaseInteraction {
+export class AutocompleteInteraction extends BaseInteraction {
   constructor(client, data) {
     super(client, data);
 
@@ -108,5 +106,3 @@ class AutocompleteInteraction extends BaseInteraction {
     this.responded = true;
   }
 }
-
-exports.AutocompleteInteraction = AutocompleteInteraction;

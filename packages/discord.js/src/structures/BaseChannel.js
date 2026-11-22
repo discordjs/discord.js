@@ -1,12 +1,10 @@
-'use strict';
-
-const { channelLink, channelMention } = require('@discordjs/formatters');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ChannelType, Routes } = require('discord-api-types/v10');
-const { ChannelFlagsBitField } = require('../util/ChannelFlagsBitField.js');
-const { ThreadChannelTypes } = require('../util/Constants.js');
-const { PermissionsBitField } = require('../util/PermissionsBitField.js');
-const { Base } = require('./Base.js');
+import { channelLink, channelMention } from '@discordjs/formatters';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { ChannelType, Routes } from 'discord-api-types/v10';
+import { ChannelFlagsBitField } from '../util/ChannelFlagsBitField.js';
+import { ThreadChannelTypes } from '../util/Constants.js';
+import { PermissionsBitField } from '../util/PermissionsBitField.js';
+import { Base } from './Base.js';
 
 /**
  * Represents any channel on Discord.
@@ -14,7 +12,7 @@ const { Base } = require('./Base.js');
  * @extends {Base}
  * @abstract
  */
-class BaseChannel extends Base {
+export class BaseChannel extends Base {
   constructor(client, data, immediatePatch = true) {
     super(client);
 
@@ -210,5 +208,3 @@ class BaseChannel extends Base {
     return super.toJSON({ createdTimestamp: true }, ...props);
   }
 }
-
-exports.BaseChannel = BaseChannel;
