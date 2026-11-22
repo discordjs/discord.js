@@ -1,18 +1,17 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v10');
-const { ApplicationCommandManager } = require('../managers/ApplicationCommandManager.js');
-const { ApplicationEmojiManager } = require('../managers/ApplicationEmojiManager.js');
-const { EntitlementManager } = require('../managers/EntitlementManager.js');
-const { SubscriptionManager } = require('../managers/SubscriptionManager.js');
-const { ApplicationFlagsBitField } = require('../util/ApplicationFlagsBitField.js');
-const { resolveImage } = require('../util/DataResolver.js');
-const { PermissionsBitField } = require('../util/PermissionsBitField.js');
-const { ApplicationRoleConnectionMetadata } = require('./ApplicationRoleConnectionMetadata.js');
-const { SKU } = require('./SKU.js');
-const { Team } = require('./Team.js');
-const { Application } = require('./interfaces/Application.js');
+import { Collection } from '@discordjs/collection';
+import { Routes } from 'discord-api-types/v10';
+import { ApplicationCommandManager } from '../managers/ApplicationCommandManager.js';
+import { ApplicationEmojiManager } from '../managers/ApplicationEmojiManager.js';
+import { EntitlementManager } from '../managers/EntitlementManager.js';
+import { SubscriptionManager } from '../managers/SubscriptionManager.js';
+import { ApplicationFlagsBitField } from '../util/ApplicationFlagsBitField.js';
+import { resolveImage } from '../util/DataResolver.js';
+import { PermissionsBitField } from '../util/PermissionsBitField.js';
+import { ActivityInstance } from './ActivityInstance.js';
+import { ApplicationRoleConnectionMetadata } from './ApplicationRoleConnectionMetadata.js';
+import { Application } from './interfaces/Application.js';
+import { SKU } from './SKU.js';
+import { Team } from './Team.js';
 
 /**
  * @typedef {Object} ClientApplicationInstallParams
@@ -25,7 +24,7 @@ const { Application } = require('./interfaces/Application.js');
  *
  * @extends {Application}
  */
-class ClientApplication extends Application {
+export class ClientApplication extends Application {
   constructor(client, data) {
     super(client, data);
 
@@ -444,6 +443,15 @@ class ClientApplication extends Application {
     const skus = await this.client.rest.get(Routes.skus(this.id));
     return skus.reduce((coll, sku) => coll.set(sku.id, new SKU(this.client, sku)), new Collection());
   }
-}
 
-exports.ClientApplication = ClientApplication;
+  /**
+   * Fetches an activity instance for this application.
+   *
+   * @param {string} instanceId The id of the activity instance
+   * @returns {Promise<ActivityInstance>}
+   */
+  async fetchActivityInstance(instanceId) {
+    const data = await this.client.rest.get(Routes.applicationActivityInstance(this.id, instanceId));
+    return new ActivityInstance(this.client, data);
+  }
+}

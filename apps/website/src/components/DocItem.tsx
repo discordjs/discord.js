@@ -14,8 +14,9 @@ import { SeeNode } from './SeeNode';
 import { SummaryNode } from './SummaryNode';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
 import { TypeParameterNode } from './TypeParameterNode';
-import { UnionMember } from './UnionMember';
 import { Tab, TabList, TabPanel, Tabs } from './ui/Tabs';
+import { UnionMember } from './UnionMember';
+import { UnstableNode } from './UnstableNode';
 
 async function OverloadNode({
 	node,
@@ -79,6 +80,10 @@ export async function DocItem({
 
 			{node.summary?.deprecatedBlock.length ? (
 				<DeprecatedNode deprecatedBlock={node.summary.deprecatedBlock} version={version} />
+			) : null}
+
+			{node.summary?.unstableBlock?.length ? (
+				<UnstableNode unstableBlock={node.summary.unstableBlock} version={version} />
 			) : null}
 
 			{node.summary?.summarySection ? <SummaryNode node={node.summary.summarySection} version={version} /> : null}

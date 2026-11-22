@@ -1,8 +1,7 @@
-/* eslint-disable jsdoc/check-param-names */
-
-import type { RequestData, REST } from '@discordjs/rest';
+import type { REST } from '@discordjs/rest';
 import {
 	Routes,
+	type RESTGetAPIApplicationActivityInstanceResult,
 	type RESTGetAPIApplicationEmojiResult,
 	type RESTGetAPIApplicationEmojisResult,
 	type RESTGetCurrentApplicationResult,
@@ -14,6 +13,7 @@ import {
 	type RESTPostAPIApplicationEmojiResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
+import type { RequestOptions } from '../util/types.js';
 
 export class ApplicationsAPI {
 	public constructor(private readonly rest: REST) {}
@@ -24,8 +24,8 @@ export class ApplicationsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/application#get-current-application}
 	 * @param options - The options for fetching the application
 	 */
-	public async getCurrent({ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.get(Routes.currentApplication(), { auth, signal }) as Promise<RESTGetCurrentApplicationResult>;
+	public async getCurrent(options: RequestOptions = {}) {
+		return this.rest.get(Routes.currentApplication(), options) as Promise<RESTGetCurrentApplicationResult>;
 	}
 
 	/**
@@ -35,14 +35,10 @@ export class ApplicationsAPI {
 	 * @param body - The new application data
 	 * @param options - The options for editing the application
 	 */
-	public async editCurrent(
-		body: RESTPatchCurrentApplicationJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
-	) {
+	public async editCurrent(body: RESTPatchCurrentApplicationJSONBody, options: RequestOptions = {}) {
 		return this.rest.patch(Routes.currentApplication(), {
-			auth,
+			...options,
 			body,
-			signal,
 		}) as Promise<RESTPatchCurrentApplicationResult>;
 	}
 
@@ -53,11 +49,11 @@ export class ApplicationsAPI {
 	 * @param applicationId - The id of the application to fetch the emojis of
 	 * @param options - The options for fetching the emojis
 	 */
-	public async getEmojis(applicationId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.get(Routes.applicationEmojis(applicationId), {
-			auth,
-			signal,
-		}) as Promise<RESTGetAPIApplicationEmojisResult>;
+	public async getEmojis(applicationId: Snowflake, options: RequestOptions = {}) {
+		return this.rest.get(
+			Routes.applicationEmojis(applicationId),
+			options,
+		) as Promise<RESTGetAPIApplicationEmojisResult>;
 	}
 
 	/**
@@ -68,15 +64,11 @@ export class ApplicationsAPI {
 	 * @param emojiId - The id of the emoji to fetch
 	 * @param options - The options for fetching the emoji
 	 */
-	public async getEmoji(
-		applicationId: Snowflake,
-		emojiId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
-	) {
-		return this.rest.get(Routes.applicationEmoji(applicationId, emojiId), {
-			auth,
-			signal,
-		}) as Promise<RESTGetAPIApplicationEmojiResult>;
+	public async getEmoji(applicationId: Snowflake, emojiId: Snowflake, options: RequestOptions = {}) {
+		return this.rest.get(
+			Routes.applicationEmoji(applicationId, emojiId),
+			options,
+		) as Promise<RESTGetAPIApplicationEmojiResult>;
 	}
 
 	/**
@@ -90,12 +82,11 @@ export class ApplicationsAPI {
 	public async createEmoji(
 		applicationId: Snowflake,
 		body: RESTPostAPIApplicationEmojiJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		options: RequestOptions = {},
 	) {
 		return this.rest.post(Routes.applicationEmojis(applicationId), {
-			auth,
+			...options,
 			body,
-			signal,
 		}) as Promise<RESTPostAPIApplicationEmojiResult>;
 	}
 
@@ -112,12 +103,11 @@ export class ApplicationsAPI {
 		applicationId: Snowflake,
 		emojiId: Snowflake,
 		body: RESTPatchAPIApplicationEmojiJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		options: RequestOptions = {},
 	) {
 		return this.rest.patch(Routes.applicationEmoji(applicationId, emojiId), {
-			auth,
+			...options,
 			body,
-			signal,
 		}) as Promise<RESTPatchAPIApplicationEmojiResult>;
 	}
 
@@ -129,11 +119,22 @@ export class ApplicationsAPI {
 	 * @param emojiId - The id of the emoji to delete
 	 * @param options - The options for deleting the emoji
 	 */
-	public async deleteEmoji(
-		applicationId: Snowflake,
-		emojiId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
-	) {
-		await this.rest.delete(Routes.applicationEmoji(applicationId, emojiId), { auth, signal });
+	public async deleteEmoji(applicationId: Snowflake, emojiId: Snowflake, options: RequestOptions = {}) {
+		await this.rest.delete(Routes.applicationEmoji(applicationId, emojiId), options);
+	}
+
+	/**
+	 * Fetches an activity instance of an application
+	 *
+	 * @see {@link https://docs.discord.com/developers/resources/application#get-application-activity-instance}
+	 * @param applicationId - The id of the application to fetch the activity instance of
+	 * @param instanceId - The id of the activity instance to fetch
+	 * @param options - The options for fetching the activity instance
+	 */
+	public async getActivityInstance(applicationId: Snowflake, instanceId: string, options: RequestOptions = {}) {
+		return this.rest.get(
+			Routes.applicationActivityInstance(applicationId, instanceId),
+			options,
+		) as Promise<RESTGetAPIApplicationActivityInstanceResult>;
 	}
 }

@@ -1,8 +1,6 @@
-'use strict';
+import { Events } from '../../../util/Events.js';
 
-const { Events } = require('../../../util/Events.js');
-
-module.exports = (client, { d: data }) => {
+export default (client, { d: data }) => {
   const guild = client.guilds.cache.get(data.id);
   if (!guild) return;
 
@@ -22,16 +20,5 @@ module.exports = (client, { d: data }) => {
     return;
   }
 
-  for (const channel of guild.channels.cache.values()) client.channels._remove(channel.id);
-  client.voice.adapters.get(data.id)?.destroy();
-
-  client.guilds.cache.delete(guild.id);
-
-  /**
-   * Emitted whenever a guild kicks the client or the guild is deleted/left.
-   *
-   * @event Client#guildDelete
-   * @param {Guild} guild The guild that was deleted
-   */
-  client.emit(Events.GuildDelete, guild);
+  client.actions.GuildDelete.handle(guild);
 };

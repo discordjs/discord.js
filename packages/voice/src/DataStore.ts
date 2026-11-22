@@ -1,6 +1,6 @@
 import { GatewayOpcodes } from 'discord-api-types/v10';
-import type { VoiceConnection } from './VoiceConnection';
-import type { AudioPlayer } from './audio/index';
+import type { AudioPlayer } from './audio/index.js';
+import type { VoiceConnection } from './VoiceConnection.js';
 
 export interface JoinConfig {
 	channelId: string | null;
@@ -120,7 +120,6 @@ function audioCycleStep() {
 	const available = audioPlayers.filter((player) => player.checkPlayable());
 
 	for (const player of available) {
-		// eslint-disable-next-line @typescript-eslint/dot-notation
 		player['_stepDispatch']();
 	}
 
@@ -136,13 +135,12 @@ function prepareNextAudioFrame(players: AudioPlayer[]) {
 
 	if (!nextPlayer) {
 		if (nextTime !== -1) {
-			audioCycleInterval = setTimeout(() => audioCycleStep(), nextTime - Date.now());
+			audioCycleInterval = setTimeout(() => audioCycleStep(), Math.max(1, nextTime - Date.now()));
 		}
 
 		return;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/dot-notation
 	nextPlayer['_stepPrepare']();
 
 	// setImmediate to avoid long audio player chains blocking other scheduled tasks

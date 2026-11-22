@@ -19,7 +19,7 @@ export type Event<EventName extends keyof ClientEvents = keyof ClientEvents> = {
 	/**
 	 * Whether or not the event should only be listened to once
 	 *
-	 * @defaultValue false
+	 * @defaultValue `false`
 	 */
 	once?: boolean;
 };

@@ -1,6 +1,6 @@
 import { mkdir, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { cwd } from 'node:process';
+import process from 'node:process';
 import {
 	type ApiClass,
 	type ApiConstructor,
@@ -151,7 +151,6 @@ function resolveCanonicalReference(
 					return canonicalReference.source as ModuleSource;
 				},
 			},
-			// eslint-disable-next-line unicorn/better-regex
 			version: apiPackage?.dependencies?.[canonicalReference.source.packageName]?.replace(/[~^]/, ''),
 		};
 	else if (
@@ -174,7 +173,6 @@ function resolveCanonicalReference(
 					return canonicalReference;
 				},
 			},
-			// eslint-disable-next-line unicorn/better-regex
 			version: apiPackage?.dependencies?.[canonicalReference.packageName ?? '']?.replace(/[~^]/, ''),
 		};
 	}
@@ -358,7 +356,10 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 
 					return {
 						kind: DocNodeKind.LinkTag,
-						text: linkText ?? foundItem?.displayName ?? resolved!.item.displayName,
+						text:
+							linkText ??
+							foundItem?.displayName ??
+							[resolved!.item.displayName, ...(resolved?.item.members?.map((mem) => mem.displayName) ?? [])].join('.'),
 						uri: resolveItemURI(foundItem ?? resolved!.item),
 						resolvedPackage: {
 							packageName: resolved?.package ?? apiItem.getAssociatedPackage()?.displayName.replace('@discordjs/', ''),
@@ -413,6 +414,8 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 					(block) => block.blockTag.tagNameWithUpperCase === StandardTags.defaultValue.tagNameWithUpperCase,
 				);
 
+				const unstableBlock = comment.customBlocks.find((block) => block.blockTag.tagNameWithUpperCase === '@UNSTABLE');
+
 				const mixesBlocks = comment.customBlocks.filter((block) => block.blockTag.tagNameWithUpperCase === '@MIXES');
 
 				return {
@@ -439,6 +442,11 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 						: [],
 					returnsBlock: comment.returnsBlock
 						? createNode(comment.returnsBlock.content)
+								.flat(1)
+								.filter((val: any) => val.kind !== DocNodeKind.SoftBreak)
+						: [],
+					unstableBlock: unstableBlock
+						? createNode(unstableBlock.content)
 								.flat(1)
 								.filter((val: any) => val.kind !== DocNodeKind.SoftBreak)
 						: [],
@@ -530,10 +538,14 @@ function resolveFileUrl(item: ApiDeclaredItem) {
 				sourceURL: `/docs/packages/${pkgName}/${version}/${(currentItem.parent as ApiEntryPoint).importPath}/${currentItem.displayName}:${currentItem.kind}`,
 			};
 		}
-	} else if (fileUrl?.includes('/dist/') && fileUrl.includes('/main/packages/')) {
-		const [, pkg] = fileUrl.split('/main/packages/');
+	} else if (fileUrl?.includes('/dist/') && fileUrl.includes('/packages/')) {
+		const [dir, pkg] = fileUrl.split('/packages/');
 		const pkgName = pkg!.split('/')[0];
-		const version = 'main';
+		const prefix = pkgName === 'discord.js' ? '' : '@discordjs/';
+		const version =
+			dir?.split('/').at(-1) === 'main'
+				? 'main'
+				: item.getAssociatedPackage()?.dependencies?.[`${prefix}${pkgName}`]?.replace(/[~^]/, '');
 
 		// https://github.com/discordjs/discord.js/tree/main/packages/builders/dist/index.d.ts
 		let currentItem = item;
@@ -941,7 +953,6 @@ function itemEnum(item: ApiEnum) {
 }
 
 function memberKind(member: ApiItem | null) {
-	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (member?.kind) {
 		case 'Class': {
 			const classMember = member as ApiClass;
@@ -994,14 +1005,14 @@ async function writeSplitDocsToFileSystem({
 	const dir = 'split';
 
 	try {
-		(await stat(join(cwd(), 'docs', packageName, dir))).isDirectory();
+		(await stat(join(process.cwd(), 'docs', packageName, dir))).isDirectory();
 	} catch {
-		await mkdir(join(cwd(), 'docs', packageName, dir), { recursive: true });
+		await mkdir(join(process.cwd(), 'docs', packageName, dir), { recursive: true });
 	}
 
 	await writeFile(
 		join(
-			cwd(),
+			process.cwd(),
 			'docs',
 			packageName,
 			dir,
@@ -1048,7 +1059,6 @@ export async function generateSplitDocumentation({
 			for (const entry of entries) {
 				const members = entry.members
 					.filter((item) => {
-						// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 						switch (item.kind) {
 							case ApiItemKind.Function:
 								return (item as ApiFunction).overloadIndex === 1;

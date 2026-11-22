@@ -13,6 +13,7 @@ export function Badge({ children, className = '' }: PropsWithChildren<{ readonly
 
 export async function Badges({ node }: { readonly node: any }) {
 	const isDeprecated = Boolean(node.summary?.deprecatedBlock?.length);
+	const isUnstable = Boolean(node.summary?.unstableBlock?.length);
 	const isProtected = node.isProtected;
 	const isStatic = node.isStatic;
 	const isAbstract = node.isAbstract;
@@ -20,14 +21,19 @@ export async function Badges({ node }: { readonly node: any }) {
 	const isOptional = node.isOptional;
 	const isExternal = node.isExternal;
 
-	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-	const isAny = isDeprecated || isProtected || isStatic || isAbstract || isReadonly || isOptional || isExternal;
+	const isAny =
+		isDeprecated || isUnstable || isProtected || isStatic || isAbstract || isReadonly || isOptional || isExternal;
 
 	return isAny ? (
 		<div className="mb-1 flex flex-wrap gap-3">
 			{isDeprecated ? (
 				<Badge className="bg-red-500/20 text-red-500">
 					<AlertTriangle aria-hidden size={14} /> deprecated
+				</Badge>
+			) : null}
+			{isUnstable ? (
+				<Badge className="bg-red-500/20 text-red-500">
+					<AlertTriangle aria-hidden size={14} /> unstable
 				</Badge>
 			) : null}
 			{isProtected ? <Badge className="bg-purple-500/20 text-purple-500">protected</Badge> : null}

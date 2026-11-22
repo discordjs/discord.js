@@ -1,16 +1,14 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { Role } = require('../structures/Role.js');
-const { DataManager } = require('./DataManager.js');
+import { Collection } from '@discordjs/collection';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { Role } from '../structures/Role.js';
+import { DataManager } from './DataManager.js';
 
 /**
  * Manages API methods for roles belonging to emojis and stores their cache.
  *
  * @extends {DataManager}
  */
-class GuildEmojiRoleManager extends DataManager {
+export class GuildEmojiRoleManager extends DataManager {
   constructor(emoji) {
     super(emoji.client, Role);
 
@@ -35,7 +33,15 @@ class GuildEmojiRoleManager extends DataManager {
    * @readonly
    */
   get cache() {
-    return this.guild.roles.cache.filter(role => this.emoji._roles.includes(role.id));
+    const cache = new Collection();
+    for (const roleId of this.emoji._roles) {
+      const role = this.guild.roles.cache.get(roleId);
+      if (role !== undefined) {
+        cache.set(roleId, role);
+      }
+    }
+
+    return cache;
   }
 
   /**
@@ -124,5 +130,3 @@ class GuildEmojiRoleManager extends DataManager {
     return this.cache;
   }
 }
-
-exports.GuildEmojiRoleManager = GuildEmojiRoleManager;

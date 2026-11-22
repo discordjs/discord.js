@@ -1,9 +1,7 @@
-'use strict';
-
-const { Attachment } = require('./Attachment.js');
-const { BaseInteraction } = require('./BaseInteraction.js');
-const { InteractionWebhook } = require('./InteractionWebhook.js');
-const { InteractionResponses } = require('./interfaces/InteractionResponses.js');
+import { Attachment } from './Attachment.js';
+import { BaseInteraction } from './BaseInteraction.js';
+import { InteractionWebhook } from './InteractionWebhook.js';
+import { InteractionResponses } from './interfaces/InteractionResponses.js';
 
 /**
  * Represents a command interaction.
@@ -12,7 +10,7 @@ const { InteractionResponses } = require('./interfaces/InteractionResponses.js')
  * @implements {InteractionResponses}
  * @abstract
  */
-class CommandInteraction extends BaseInteraction {
+export class CommandInteraction extends BaseInteraction {
   constructor(client, data) {
     super(client, data);
 
@@ -96,6 +94,7 @@ class CommandInteraction extends BaseInteraction {
    * @property {Collection<Snowflake, GuildMember|APIGuildMember>} [members] The resolved guild members
    * @property {Collection<Snowflake, Role|APIRole>} [roles] The resolved roles
    * @property {Collection<Snowflake, BaseChannel|APIChannel>} [channels] The resolved channels
+   * @property {Collection<Snowflake, Attachment>} [attachments] The resolved attachments
    */
 
   /**
@@ -103,7 +102,6 @@ class CommandInteraction extends BaseInteraction {
    *
    * @typedef {BaseInteractionResolvedData} CommandInteractionResolvedData
    * @property {Collection<Snowflake, Message|APIMessage>} [messages] The resolved messages
-   * @property {Collection<Snowflake, Attachment>} [attachments] The resolved attachments
    */
 
   /**
@@ -184,5 +182,3 @@ class CommandInteraction extends BaseInteraction {
 }
 
 InteractionResponses.applyToClass(CommandInteraction, ['deferUpdate', 'update']);
-
-exports.CommandInteraction = CommandInteraction;

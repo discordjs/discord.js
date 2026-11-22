@@ -1,15 +1,14 @@
-'use strict';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const { Events } = require('../../util/Events.js');
-const { Action } = require('./Action.js');
-
-class MessageCreateAction extends Action {
+export class MessageCreateAction extends Action {
   handle(data) {
     const client = this.client;
     const channel = this.getChannel({
       id: data.channel_id,
       author: data.author,
       ...('guild_id' in data && { guild_id: data.guild_id }),
+      ...('channel_type' in data && { type: data.channel_type }),
     });
     if (channel) {
       if (!channel.isTextBased()) return {};
@@ -38,5 +37,3 @@ class MessageCreateAction extends Action {
     return {};
   }
 }
-
-exports.MessageCreateAction = MessageCreateAction;

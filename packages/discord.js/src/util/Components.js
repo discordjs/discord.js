@@ -1,8 +1,21 @@
-/* eslint-disable no-use-before-define */
-'use strict';
-
-// eslint-disable-next-line import-x/order
-const { ComponentType } = require('discord-api-types/v10');
+import { ComponentType } from 'discord-api-types/v10';
+import { ActionRow } from '../structures/ActionRow.js';
+import { ButtonComponent } from '../structures/ButtonComponent.js';
+import { ChannelSelectMenuComponent } from '../structures/ChannelSelectMenuComponent.js';
+import { Component } from '../structures/Component.js';
+import { ContainerComponent } from '../structures/ContainerComponent.js';
+import { FileComponent } from '../structures/FileComponent.js';
+import { LabelComponent } from '../structures/LabelComponent.js';
+import { MediaGalleryComponent } from '../structures/MediaGalleryComponent.js';
+import { MentionableSelectMenuComponent } from '../structures/MentionableSelectMenuComponent.js';
+import { RoleSelectMenuComponent } from '../structures/RoleSelectMenuComponent.js';
+import { SectionComponent } from '../structures/SectionComponent.js';
+import { SeparatorComponent } from '../structures/SeparatorComponent.js';
+import { StringSelectMenuComponent } from '../structures/StringSelectMenuComponent.js';
+import { TextDisplayComponent } from '../structures/TextDisplayComponent.js';
+import { TextInputComponent } from '../structures/TextInputComponent.js';
+import { ThumbnailComponent } from '../structures/ThumbnailComponent.js';
+import { UserSelectMenuComponent } from '../structures/UserSelectMenuComponent.js';
 
 /**
  * @typedef {Object} BaseComponentData
@@ -24,7 +37,8 @@ const { ComponentType } = require('discord-api-types/v10');
 
 /**
  * @typedef {StringSelectMenuComponentData|TextInputComponentData|UserSelectMenuComponentData|
- * RoleSelectMenuComponentData|MentionableSelectMenuComponentData|ChannelSelectMenuComponentData} ComponentInLabelData
+ * RoleSelectMenuComponentData|MentionableSelectMenuComponentData|ChannelSelectMenuComponentData|FileUploadComponentData|
+ * RadioGroupComponentData|CheckboxGroupComponentData|CheckboxComponentData} ComponentInLabelData
  */
 
 /**
@@ -45,11 +59,59 @@ const { ComponentType } = require('discord-api-types/v10');
  */
 
 /**
+ * @typedef {BaseComponentData} FileUploadComponentData
+ * @property {string} customId The custom id of the file upload
+ * @property {number} [minValues] The minimum number of files that must be uploaded (0-10)
+ * @property {number} [maxValues] The maximum number of files that can be uploaded (1-10)
+ * @property {FileUploadType[]} [fileTypes] The allowed types of files that can be uploaded (maximum of 10).
+ * When only using extensions, include `.jpg` for images and both `.mp4` and `.mov` for videos for mobile compatibility
+ * @property {boolean} [required] Whether this component is required in modals
+ */
+
+/**
+ * @typedef {Object} RadioGroupOption
+ * @property {string} value The value of the radio group option
+ * @property {string} label The label to use
+ * @property {string} [description] The optional description for the radio group option
+ * @property {boolean} [default] Whether this option is default selected
+ */
+
+/**
+ * @typedef {BaseComponentData} RadioGroupComponentData
+ * @property {string} customId The custom id of the radio group
+ * @property {RadioGroupOption[]} options The options in this radio group (2-10)
+ * @property {boolean} [required] Whether this component is required in modals
+ */
+
+/**
+ * @typedef {Object} CheckboxGroupOption
+ * @property {string} value The value of the checkbox group option
+ * @property {string} label The label to use
+ * @property {string} [description] The optional description for the checkbox group option
+ * @property {boolean} [default] Whether this option is default selected
+ */
+
+/**
+ * @typedef {BaseComponentData} CheckboxGroupComponentData
+ * @property {string} customId The custom id of the checkbox group
+ * @property {CheckboxGroupOption[]} options The options in this checkbox group
+ * @property {number} [minValues] The minimum number of options that must be selected (0-10)
+ * @property {number} [maxValues] The maximum number of options that can be selected (defaults to options length)
+ * @property {boolean} [required] Whether this component is required in modals
+ */
+
+/**
+ * @typedef {BaseComponentData} CheckboxComponentData
+ * @property {string} customId The custom id of the checkbox
+ * @property {boolean} [default] Whether this component is default selected in modals
+ */
+
+/**
  * @typedef {BaseComponentData} BaseSelectMenuComponentData
  * @property {string} customId The custom id of the select menu
  * @property {boolean} [disabled] Whether the select menu is disabled or not
  * @property {number} [maxValues] The maximum amount of options that can be selected
- * @property {number} [minValues] The minimum amount of options that can be selected
+ * @property {number} [minValues] The minimum amount of options that must be selected
  * @property {string} [placeholder] The placeholder of the select menu
  * @property {boolean} [required] Whether this component is required in modals
  */
@@ -184,6 +246,25 @@ const { ComponentType } = require('discord-api-types/v10');
  * SectionComponent|SeparatorComponent|TextDisplayComponent} MessageTopLevelComponent
  */
 
+const ComponentTypeToClass = {
+  [ComponentType.ActionRow]: ActionRow,
+  [ComponentType.Button]: ButtonComponent,
+  [ComponentType.StringSelect]: StringSelectMenuComponent,
+  [ComponentType.TextInput]: TextInputComponent,
+  [ComponentType.UserSelect]: UserSelectMenuComponent,
+  [ComponentType.RoleSelect]: RoleSelectMenuComponent,
+  [ComponentType.MentionableSelect]: MentionableSelectMenuComponent,
+  [ComponentType.ChannelSelect]: ChannelSelectMenuComponent,
+  [ComponentType.Container]: ContainerComponent,
+  [ComponentType.TextDisplay]: TextDisplayComponent,
+  [ComponentType.File]: FileComponent,
+  [ComponentType.MediaGallery]: MediaGalleryComponent,
+  [ComponentType.Section]: SectionComponent,
+  [ComponentType.Separator]: SeparatorComponent,
+  [ComponentType.Thumbnail]: ThumbnailComponent,
+  [ComponentType.Label]: LabelComponent,
+};
+
 /**
  * Transforms API data into a component
  *
@@ -191,7 +272,7 @@ const { ComponentType } = require('discord-api-types/v10');
  * @returns {Component}
  * @ignore
  */
-function createComponent(data) {
+export function createComponent(data) {
   return data instanceof Component ? data : new (ComponentTypeToClass[data.type] ?? Component)(data);
 }
 
@@ -223,50 +304,10 @@ function extractInteractiveComponents(component) {
  * @returns {Component|APIMessageComponent}
  * @ignore
  */
-function findComponentByCustomId(components, customId) {
+export function findComponentByCustomId(components, customId) {
   return (
     components
       .flatMap(extractInteractiveComponents)
       .find(component => (component.customId ?? component.custom_id) === customId) ?? null
   );
 }
-
-exports.createComponent = createComponent;
-exports.findComponentByCustomId = findComponentByCustomId;
-
-const { ActionRow } = require('../structures/ActionRow.js');
-const { ButtonComponent } = require('../structures/ButtonComponent.js');
-const { ChannelSelectMenuComponent } = require('../structures/ChannelSelectMenuComponent.js');
-const { Component } = require('../structures/Component.js');
-const { ContainerComponent } = require('../structures/ContainerComponent.js');
-const { FileComponent } = require('../structures/FileComponent.js');
-const { LabelComponent } = require('../structures/LabelComponent.js');
-const { MediaGalleryComponent } = require('../structures/MediaGalleryComponent.js');
-const { MentionableSelectMenuComponent } = require('../structures/MentionableSelectMenuComponent.js');
-const { RoleSelectMenuComponent } = require('../structures/RoleSelectMenuComponent.js');
-const { SectionComponent } = require('../structures/SectionComponent.js');
-const { SeparatorComponent } = require('../structures/SeparatorComponent.js');
-const { StringSelectMenuComponent } = require('../structures/StringSelectMenuComponent.js');
-const { TextDisplayComponent } = require('../structures/TextDisplayComponent.js');
-const { TextInputComponent } = require('../structures/TextInputComponent.js');
-const { ThumbnailComponent } = require('../structures/ThumbnailComponent.js');
-const { UserSelectMenuComponent } = require('../structures/UserSelectMenuComponent.js');
-
-const ComponentTypeToClass = {
-  [ComponentType.ActionRow]: ActionRow,
-  [ComponentType.Button]: ButtonComponent,
-  [ComponentType.StringSelect]: StringSelectMenuComponent,
-  [ComponentType.TextInput]: TextInputComponent,
-  [ComponentType.UserSelect]: UserSelectMenuComponent,
-  [ComponentType.RoleSelect]: RoleSelectMenuComponent,
-  [ComponentType.MentionableSelect]: MentionableSelectMenuComponent,
-  [ComponentType.ChannelSelect]: ChannelSelectMenuComponent,
-  [ComponentType.Container]: ContainerComponent,
-  [ComponentType.TextDisplay]: TextDisplayComponent,
-  [ComponentType.File]: FileComponent,
-  [ComponentType.MediaGallery]: MediaGalleryComponent,
-  [ComponentType.Section]: SectionComponent,
-  [ComponentType.Separator]: SeparatorComponent,
-  [ComponentType.Thumbnail]: ThumbnailComponent,
-  [ComponentType.Label]: LabelComponent,
-};

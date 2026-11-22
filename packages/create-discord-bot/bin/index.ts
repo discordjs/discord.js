@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-// eslint-disable-next-line n/shebang
 import process from 'node:process';
 import { styleText } from 'node:util';
 import { Option, program } from 'commander';

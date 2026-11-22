@@ -6,7 +6,6 @@ import type { PropsWithChildren } from 'react';
 import { DESCRIPTION } from '@/util/constants';
 import { ENV } from '@/util/env';
 import { Providers } from './providers';
-
 import '@/styles/base.css';
 import 'overlayscrollbars/overlayscrollbars.css';
 
@@ -43,7 +42,6 @@ export const metadata: Metadata = {
 		type: 'website',
 		title: 'discord.js',
 		description: DESCRIPTION,
-		images: 'https://discordjs.dev/api/open-graph.png',
 	},
 
 	twitter: {

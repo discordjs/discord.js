@@ -1,9 +1,10 @@
 import process from 'node:process';
-import { setInterval, clearInterval } from 'node:timers';
 import { info, warning } from '@actions/core';
 import { getOctokit, context } from '@actions/github';
 import { $ } from 'bun';
 import type { ReleaseEntry } from './generateReleaseTree.js';
+
+const REGISTRY_CHECK_TIMEOUT_MS = 15 * 60 * 1_000;
 
 let octokit: ReturnType<typeof getOctokit> | undefined;
 
@@ -45,7 +46,7 @@ export async function releasePackage(release: ReleaseEntry, dry: boolean, devTag
 	// Sanity check against the registry first
 	if (await checkRegistry(release)) {
 		info(`${release.name}@${release.version} already published, skipping.`);
-		return;
+		return false;
 	}
 
 	if (dry) {
@@ -57,7 +58,7 @@ export async function releasePackage(release: ReleaseEntry, dry: boolean, devTag
 	// && !devTag just to be sure
 	if (doGitRelease && !devTag) await gitTagAndRelease(release, dry);
 
-	if (dry) return;
+	if (dry) return true;
 
 	const before = performance.now();
 
@@ -70,7 +71,7 @@ export async function releasePackage(release: ReleaseEntry, dry: boolean, devTag
 				return;
 			}
 
-			if (performance.now() > before + 5 * 60 * 1_000) {
+			if (performance.now() > before + REGISTRY_CHECK_TIMEOUT_MS) {
 				clearInterval(interval);
 				reject(new Error(`Release for ${release.name} failed.`));
 			}
@@ -88,8 +89,9 @@ export async function releasePackage(release: ReleaseEntry, dry: boolean, devTag
 	// Evil, but I can't think of a cleaner mechanism
 	if (release.name === 'create-discord-bot') {
 		await $`pnpm --filter=create-discord-bot run rename-to-app`;
-		// eslint-disable-next-line require-atomic-updates
 		release.name = 'create-discord-app';
 		await releasePackage(release, dry, devTag, false);
 	}
+
+	return true;
 }

@@ -1,8 +1,6 @@
-'use strict';
+import { ErrorCodes } from './ErrorCodes.js';
 
-const { ErrorCodes } = require('./ErrorCodes.js');
-
-const Messages = {
+export const Messages = {
   [ErrorCodes.ClientInvalidOption]: (prop, must) => `The ${prop} option must be ${must}`,
   [ErrorCodes.ClientInvalidProvidedShards]: 'None of the provided shards were valid.',
   [ErrorCodes.ClientMissingIntents]: 'Valid intents must be provided for the Client.',
@@ -82,19 +80,21 @@ const Messages = {
 
   [ErrorCodes.WebhookMessage]: 'The message was not sent by a webhook.',
   [ErrorCodes.WebhookTokenUnavailable]: 'This action requires a webhook token, but none is available.',
-  [ErrorCodes.WebhookURLInvalid]: 'The provided webhook URL is not valid.',
   [ErrorCodes.WebhookApplication]: 'This message webhook belongs to an application and cannot be fetched.',
 
   [ErrorCodes.MessageReferenceMissing]: 'The message does not reference another message',
 
   [ErrorCodes.EmojiType]: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
   [ErrorCodes.EmojiManaged]: 'Emoji is managed and has no Author.',
-  [ErrorCodes.MissingManageGuildExpressionsPermission]: guild =>
-    `Client must have Manage Guild Expressions permission in guild ${guild} to see emoji authors.`,
+  [ErrorCodes.MissingGuildExpressionsPermission]: guild =>
+    `Client must have Create Guild Expressions or Manage Guild Expressions permission in guild ${guild} to see emoji authors.`,
 
   [ErrorCodes.NotGuildSoundboardSound]: action =>
     `Soundboard sound is a default (non-guild) soundboard sound and can't be ${action}.`,
   [ErrorCodes.NotGuildSticker]: 'Sticker is a standard (non-guild) sticker and has no author.',
+
+  [ErrorCodes.SearchIndexNotYetAvailable]: (indexed, retryAfter) =>
+    `Search index not yet available (currently ${indexed} indexed) and opted out of retrying. You can retry in ${retryAfter} seconds.`,
 
   [ErrorCodes.ReactionResolveUser]: "Couldn't resolve the user id to remove from the reaction.",
 
@@ -156,5 +156,3 @@ const Messages = {
     `"overwrite.id" is a ${expected.toLowerCase()} object, ` +
     `but "overwrite.type" is defined and not equal to OverwriteType.${expected}`,
 };
-
-exports.Messages = Messages;

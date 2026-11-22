@@ -81,7 +81,7 @@ export class AstNamespaceImport extends AstSyntheticEntity {
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * {@inheritdoc AstEntity.localName}
 	 */
 	public get localName(): string {
 		// abstract

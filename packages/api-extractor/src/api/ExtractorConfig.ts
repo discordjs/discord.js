@@ -11,20 +11,18 @@ import {
 	FileSystem,
 	PackageJsonLookup,
 	type INodePackageJson,
+	Objects,
 	PackageName,
 	Text,
 	InternalError,
 	Path,
 	NewlineKind,
 } from '@rushstack/node-core-library';
-import type { MergeWithCustomizer } from 'lodash';
-import cloneDeep from 'lodash/cloneDeep.js';
-import mergeWith from 'lodash/mergeWith.js';
 import * as resolve from 'resolve';
 import { PackageMetadataManager } from '../analyzer/PackageMetadataManager.js';
 import { MessageRouter } from '../collector/MessageRouter.js';
-import type { IApiModelGenerationOptions } from '../generators/ApiModelGenerator';
-import apiExtractorSchema from '../schemas/api-extractor.schema.json' assert { type: 'json' };
+import type { IApiModelGenerationOptions } from '../generators/ApiModelGenerator.js';
+import apiExtractorSchema from '../schemas/api-extractor.schema.json' with { type: 'json' };
 import type {
 	ApiReportVariant,
 	IConfigApiReport,
@@ -234,10 +232,10 @@ interface IExtractorConfigParameters {
 	untrimmedFilePath: string;
 }
 
-// Lodash merges array values by default, which is unintuitive for config files (and makes it impossible for derived configurations to overwrite arrays).
-// For example, given a base config containing an array property with value ["foo", "bar"] and a derived config that specifies ["baz"] for that property, lodash will produce ["baz", "bar"], which is unintuitive.
-// This customizer function ensures that arrays are always overwritten.
-const mergeCustomizer: MergeWithCustomizer = (_objValue, srcValue) => {
+// Arrays are overwritten rather than merged, which is the intuitive behavior for config files.
+// For example, given a base config containing an array property with value ["foo", "bar"] and a
+// derived config that specifies ["baz"] for that property, the result is ["baz"] (not ["baz", "bar"]).
+const mergeCustomizer: Objects.MergeWithCustomizer = (_objValue, srcValue) => {
 	if (Array.isArray(srcValue)) {
 		return srcValue;
 	}
@@ -269,10 +267,10 @@ export class ExtractorConfig {
 	 *
 	 * @internal
 	 */
-	public static readonly _tsdocBaseFilePath: string = path.resolve(__dirname, './extends/tsdoc-base.json');
+	public static readonly _tsdocBaseFilePath: string = path.resolve(import.meta.dirname, '../extends/tsdoc-base.json');
 
 	private static readonly _defaultConfig: Partial<IConfigFile> = JsonFile.load(
-		path.join(__dirname, './schemas/api-extractor-defaults.json'),
+		path.join(import.meta.dirname, '../schemas/api-extractor-defaults.json'),
 	);
 
 	private static readonly _declarationFileExtensionRegExp: RegExp = /\.d\.[cm]?ts$/i;
@@ -727,11 +725,11 @@ export class ExtractorConfig {
 				}
 
 				// This step has to be performed in advance, since the currentConfigFolderPath information will be lost
-				// after lodash.merge() is performed.
+				// after merge() is performed.
 				ExtractorConfig._resolveConfigFileRelativePaths(baseConfig, currentConfigFolderPath);
 
 				// Merge extractorConfig into baseConfig, mutating baseConfig
-				mergeWith(baseConfig, configObject, mergeCustomizer);
+				Objects.mergeWith(baseConfig, configObject, mergeCustomizer);
 				configObject = baseConfig;
 
 				currentConfigFilePath = extendsField;
@@ -741,7 +739,11 @@ export class ExtractorConfig {
 		}
 
 		// Lastly, apply the defaults
-		configObject = mergeWith(cloneDeep(ExtractorConfig._defaultConfig), configObject, mergeCustomizer);
+		configObject = Objects.mergeWith(
+			structuredClone(ExtractorConfig._defaultConfig),
+			configObject,
+			mergeCustomizer,
+		) as Partial<IConfigFile>;
 
 		ExtractorConfig.jsonSchema.validateObject(configObject, jsonFilePath);
 

@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+# [create-discord-bot@4.1.0](https://github.com/discordjs/discord.js/compare/create-discord-bot@4.0.0...create-discord-bot@4.1.0) - (2025-10-24)
+
+## Bug Fixes
+
+- **guide:** Miscellaneous fixes (#11147) ([a97ac82](https://github.com/discordjs/discord.js/commit/a97ac82619f0a807a7b816afa0140ba9161aa50d)) by @Jiralite
+
+## Documentation
+
+- Replace Discord API with Discord Developers (#10968) ([3a060f7](https://github.com/discordjs/discord.js/commit/3a060f74945da78535440890be0a5df8bd0ee36b)) by @Jiralite
+
+## Features
+
+- Bump discord.js in create-discord-bot/app (#11048) ([4b6060d](https://github.com/discordjs/discord.js/commit/4b6060dcd8fc7b3f065fd51fb0fa1a576ee4fca7)) by @vladfrangu
+
+## Refactor
+
+- Update deno template and loader logic (#11060) ([8ca279e](https://github.com/discordjs/discord.js/commit/8ca279e0c3764f4f059c5d3f895b2c76678859e1)) by @almeidx
+- **create-discord-bot:** Replace deps with built-in apis (#10971) ([ee3ca6f](https://github.com/discordjs/discord.js/commit/ee3ca6f7c629b169a976edf66b54b0dfe5c3a486)) by @SuperchupuDev
+
+### New Contributors
+
+* @didinele made their first contribution in #11152
+* @Jiralite made their first contribution in #11147
+* @almeidx made their first contribution in #11133
+* @vladfrangu made their first contribution in #11048
+* @SuperchupuDev made their first contribution in #10971
+
 # [create-discord-bot@4.0.0](https://github.com/discordjs/discord.js/compare/create-discord-bot@1.0.0...create-discord-bot@4.0.0) - (2025-06-21)
 
 ## Bug Fixes

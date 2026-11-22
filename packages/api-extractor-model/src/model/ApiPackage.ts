@@ -5,8 +5,8 @@ import { Buffer } from 'node:buffer';
 import path from 'node:path';
 import util from 'node:util';
 import { TSDocConfiguration } from '@microsoft/tsdoc';
-import { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { TSDocConfigFile } from '@microsoft/tsdoc-config';
+import { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import {
 	JsonFile,
 	type IJsonFileSaveOptions,
@@ -28,9 +28,7 @@ import { DeserializerContext, ApiJsonSchemaVersion } from './DeserializerContext
  * @public
  */
 export interface IApiPackageOptions
-	extends IApiItemContainerMixinOptions,
-		IApiNameMixinOptions,
-		IApiDocumentedItemOptions {
+	extends IApiItemContainerMixinOptions, IApiNameMixinOptions, IApiDocumentedItemOptions {
 	dependencies?: Record<string, string> | undefined;
 	projectFolderUrl?: string | undefined;
 	tsdocConfiguration: TSDocConfiguration;
@@ -216,8 +214,9 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 					if (semVer === 'workspace:^') {
 						this._dependencies[pack] =
 							PackageJsonLookup.instance.tryLoadPackageJsonFor(pathToPackage)?.version ?? 'unknown';
-					} else if (FileSystem.exists(pathToPackage)) {
-						this._dependencies[pack] = semVer;
+					} else {
+						// if (FileSystem.exists(pathToPackage))
+						this._dependencies[pack] = semVer.replace(/^[\^~]/, '');
 					}
 				}
 			}
@@ -375,7 +374,7 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 	public saveToJsonFile(apiJsonFilename: string, options?: IApiPackageSaveOptions): void {
 		const ioptions = options ?? {};
 
-		const packageJson: IPackageJson = PackageJsonLookup.loadOwnPackageJson(__dirname);
+		const packageJson: IPackageJson = PackageJsonLookup.loadOwnPackageJson(import.meta.dirname);
 
 		const tsdocConfigFile: TSDocConfigFile = TSDocConfigFile.loadFromParser(this.tsdocConfiguration);
 		const tsdocConfig: JsonObject = tsdocConfigFile.saveToObject();

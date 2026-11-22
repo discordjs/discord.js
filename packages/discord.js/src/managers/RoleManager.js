@@ -1,14 +1,12 @@
-'use strict';
-
-const process = require('node:process');
-const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { Role } = require('../structures/Role.js');
-const { resolveImage } = require('../util/DataResolver.js');
-const { PermissionsBitField } = require('../util/PermissionsBitField.js');
-const { setPosition, resolveColor } = require('../util/Util.js');
-const { CachedManager } = require('./CachedManager.js');
+import process from 'node:process';
+import { Collection } from '@discordjs/collection';
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { Role } from '../structures/Role.js';
+import { resolveImage } from '../util/DataResolver.js';
+import { PermissionsBitField } from '../util/PermissionsBitField.js';
+import { setPosition, resolveColor } from '../util/Util.js';
+import { CachedManager } from './CachedManager.js';
 
 let cacheWarningEmitted = false;
 
@@ -17,7 +15,7 @@ let cacheWarningEmitted = false;
  *
  * @extends {CachedManager}
  */
-class RoleManager extends CachedManager {
+export class RoleManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, Role, iterable);
     if (!cacheWarningEmitted && this._cache.constructor.name !== 'Collection') {
@@ -82,6 +80,17 @@ class RoleManager extends CachedManager {
   }
 
   /**
+   * Fetches the member count of each role in the guild.
+   * <info>This does not include the `@everyone` role.</info>
+   *
+   * @returns {Promise<Collection<Snowflake, number>>} A collection mapping role ids to their respective member counts.
+   */
+  async fetchMemberCounts() {
+    const data = await this.client.rest.get(Routes.guildRoleMemberCounts(this.guild.id));
+    return new Collection(Object.entries(data));
+  }
+
+  /**
    * Data that can be resolved to a Role object. This can be:
    * - A Role
    * - A Snowflake
@@ -115,6 +124,16 @@ class RoleManager extends CachedManager {
    * @property {ColorResolvable} [secondaryColor] The secondary color of the role.
    * This will make the role a gradient between the other provided colors
    * @property {ColorResolvable} [tertiaryColor] The tertiary color of the role.
+   * When sending `tertiaryColor` the API enforces the role color to be a holographic style with values of `primaryColor = 11127295`, `secondaryColor = 16759788`, and `tertiaryColor = 16761760`.
+   * These values are available as a constant: `Constants.HolographicStyle`
+   */
+
+  /**
+   * @typedef {Object} RoleColorsEditResolvable
+   * @property {ColorResolvable} primaryColor The primary color of the role
+   * @property {?ColorResolvable} [secondaryColor] The secondary color of the role. Pass `null` to clear it.
+   * This will make the role a gradient between the other provided colors
+   * @property {?ColorResolvable} [tertiaryColor] The tertiary color of the role. Pass `null` to clear it.
    * When sending `tertiaryColor` the API enforces the role color to be a holographic style with values of `primaryColor = 11127295`, `secondaryColor = 16759788`, and `tertiaryColor = 16761760`.
    * These values are available as a constant: `Constants.HolographicStyle`
    */
@@ -212,6 +231,7 @@ class RoleManager extends CachedManager {
    * Options for editing a role
    *
    * @typedef {RoleData} RoleEditOptions
+   * @property {RoleColorsEditResolvable} [colors] The colors to set on the role
    * @property {string} [reason] The reason for editing this role
    */
 
@@ -420,5 +440,3 @@ class RoleManager extends CachedManager {
     return this.cache.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev), this.cache.first());
   }
 }
-
-exports.RoleManager = RoleManager;

@@ -10,6 +10,7 @@ import {
 	type APIApplicationCommandRoleOption,
 	type APIApplicationCommandStringOption,
 	type APIApplicationCommandUserOption,
+	type FileUploadType,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
@@ -188,8 +189,17 @@ describe('Application Command toJSON() results', () => {
 			type: ApplicationCommandOptionType.String,
 			required: true,
 			autocomplete: true,
-			// TODO
 			choices: [],
+		});
+
+		// Starting with zod 4.4.0 (potentially lower), this usecase was broken prior to #11532
+		// (i.e. choices not present at all with autocomplete: true)
+		expect(getStringOption().setAutocomplete(true).toJSON()).toEqual<APIApplicationCommandStringOption>({
+			name: 'owo',
+			description: 'Testing 123',
+			type: ApplicationCommandOptionType.String,
+			required: true,
+			autocomplete: true,
 		});
 
 		expect(
@@ -213,11 +223,45 @@ describe('Application Command toJSON() results', () => {
 	});
 
 	test('GIVEN an attachment option THEN calling toJSON should return a valid JSON', () => {
-		expect(getAttachmentOption().toJSON()).toEqual<APIApplicationCommandAttachmentOption>({
+		expect(
+			getAttachmentOption().setFileTypes(['image', '.pdf']).toJSON(),
+		).toEqual<APIApplicationCommandAttachmentOption>({
 			name: 'attachment',
 			description: 'attachment',
 			type: ApplicationCommandOptionType.Attachment,
 			required: true,
+			file_types: ['image', '.pdf'],
 		});
 	});
+
+	test('GIVEN attachment option file types THEN they can be added', () => {
+		expect(
+			Reflect.get(getAttachmentOption().addFileTypes('image').addFileTypes(['.pdf']).toJSON(), 'file_types'),
+		).toEqual(['image', '.pdf']);
+	});
+
+	test('GIVEN attachment option file types THEN they can be cleared', () => {
+		expect(
+			Reflect.get(getAttachmentOption().setFileTypes('audio', '.ogg').clearFileTypes().toJSON(), 'file_types'),
+		).toBeUndefined();
+	});
+
+	test('GIVEN too many attachment option file types THEN calling toJSON should throw', () => {
+		expect(() =>
+			getAttachmentOption()
+				.setFileTypes(Array.from({ length: 11 }, () => '.txt' as const))
+				.toJSON(),
+		).toThrow();
+	});
+
+	test.each(['document', 'pdf', '.'])(
+		'GIVEN invalid attachment file type %s THEN calling toJSON should throw',
+		(fileType) => {
+			expect(() =>
+				getAttachmentOption()
+					.setFileTypes(fileType as FileUploadType)
+					.toJSON(),
+			).toThrow();
+		},
+	);
 });

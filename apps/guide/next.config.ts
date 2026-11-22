@@ -4,7 +4,6 @@ import type { NextConfig } from 'next';
 const withMDX = createMDX();
 
 export default withMDX({
-	reactStrictMode: true,
 	serverExternalPackages: ['typescript', 'twoslash'],
 	images: {
 		dangerouslyAllowSVG: true,
@@ -22,14 +21,6 @@ export default withMDX({
 		fetches: {
 			fullUrl: true,
 		},
-	},
-	experimental: {
-		ppr: true,
-		useCache: true,
-		dynamicOnHover: true,
-	},
-	eslint: {
-		ignoreDuringBuilds: true,
 	},
 	reactCompiler: true,
 	typescript: {

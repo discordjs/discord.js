@@ -6,7 +6,12 @@ export type * from './lib/interfaces/Handler.js';
 export * from './lib/REST.js';
 export * from './lib/utils/constants.js';
 export * from './lib/utils/types.js';
-export { calculateUserDefaultAvatarIndex, makeURLSearchParams, parseResponse } from './lib/utils/utils.js';
+export {
+	calculateUserDefaultAvatarIndex,
+	makeURLSearchParams,
+	type MakeURLSearchParamsOptions,
+	parseResponse,
+} from './lib/utils/utils.js';
 
 /**
  * The {@link https://github.com/discordjs/discord.js/blob/main/packages/rest#readme | @discordjs/rest} version

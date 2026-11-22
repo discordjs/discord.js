@@ -1,6 +1,8 @@
 {
+	"$schema": "./node_modules/@favware/cliff-jumper/assets/cliff-jumper.schema.json",
 	"name": "rest",
 	"org": "discordjs",
 	"packagePath": "packages/rest",
-	"identifierBase": false
+	"identifierBase": false,
+	"skipTag": true
 }

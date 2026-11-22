@@ -1,9 +1,7 @@
-'use strict';
+import { VoiceState } from '../../../structures/VoiceState.js';
+import { Events } from '../../../util/Events.js';
 
-const { VoiceState } = require('../../../structures/VoiceState.js');
-const { Events } = require('../../../util/Events.js');
-
-module.exports = (client, { d: data }) => {
+export default (client, { d: data }) => {
   const guild = client.guilds.cache.get(data.guild_id);
   if (!guild) return;
 
@@ -23,7 +21,7 @@ module.exports = (client, { d: data }) => {
 
   // Emit event
   if (member?.user.id === client.user.id) {
-    client.emit('debug', `[VOICE] received voice state update: ${JSON.stringify(data)}`);
+    client.emit(Events.Debug, `[VOICE] received voice state update: ${JSON.stringify(data)}`);
     client.voice.onVoiceStateUpdate(data);
   }
 

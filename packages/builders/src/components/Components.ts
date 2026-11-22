@@ -7,7 +7,6 @@ import type {
 } from 'discord-api-types/v10';
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
 import { ActionRowBuilder } from './ActionRow.js';
-import { ComponentBuilder } from './Component.js';
 import type { BaseButtonBuilder } from './button/Button.js';
 import {
 	DangerButtonBuilder,
@@ -17,6 +16,8 @@ import {
 } from './button/CustomIdButton.js';
 import { LinkButtonBuilder } from './button/LinkButton.js';
 import { PremiumButtonBuilder } from './button/PremiumButton.js';
+import { ComponentBuilder } from './Component.js';
+import { FileUploadBuilder } from './fileUpload/FileUpload.js';
 import { LabelBuilder } from './label/Label.js';
 import { ChannelSelectMenuBuilder } from './selectMenu/ChannelSelectMenu.js';
 import { MentionableSelectMenuBuilder } from './selectMenu/MentionableSelectMenu.js';
@@ -55,7 +56,11 @@ export type MessageComponentBuilder =
 /**
  * The builders that may be used for modals.
  */
-export type ModalComponentBuilder = ActionRowBuilder | LabelBuilder | ModalActionRowComponentBuilder;
+export type ModalComponentBuilder =
+	| ActionRowBuilder
+	| FileUploadBuilder
+	| LabelBuilder
+	| ModalActionRowComponentBuilder;
 
 /**
  * Any button builder
@@ -92,7 +97,7 @@ export type AnyActionRowComponentBuilder = MessageActionRowComponentBuilder | Mo
 /**
  * Any modal component builder.
  */
-export type AnyModalComponentBuilder = LabelBuilder | TextDisplayBuilder;
+export type AnyModalComponentBuilder = FileUploadBuilder | LabelBuilder | TextDisplayBuilder;
 
 /**
  * Components here are mapped to their respective builder.
@@ -162,6 +167,10 @@ export interface MappedComponentTypes {
 	 * The label component type is associated with a {@link LabelBuilder}.
 	 */
 	[ComponentType.Label]: LabelBuilder;
+	/**
+	 * The file upload component type is associated with a {@link FileUploadBuilder}.
+	 */
+	[ComponentType.FileUpload]: FileUploadBuilder;
 }
 
 /**
@@ -171,7 +180,6 @@ export interface MappedComponentTypes {
  * @param data - The API data to transform to a component class
  */
 export function createComponentBuilder<ComponentType extends keyof MappedComponentTypes>(
-	// eslint-disable-next-line @typescript-eslint/sort-type-constituents
 	data: (APIModalComponent | APIMessageComponent) & { type: ComponentType },
 ): MappedComponentTypes[ComponentType];
 
@@ -225,8 +233,10 @@ export function createComponentBuilder(
 			return new ContainerBuilder(data);
 		case ComponentType.Label:
 			return new LabelBuilder(data);
+		case ComponentType.FileUpload:
+			return new FileUploadBuilder(data);
 		default:
-			// @ts-expect-error This case can still occur if we get a newer unsupported component type
+			// TODO: add back @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
 	}
 }

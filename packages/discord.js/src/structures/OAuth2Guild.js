@@ -1,14 +1,12 @@
-'use strict';
-
-const { PermissionsBitField } = require('../util/PermissionsBitField.js');
-const { BaseGuild } = require('./BaseGuild.js');
+import { PermissionsBitField } from '../util/PermissionsBitField.js';
+import { BaseGuild } from './BaseGuild.js';
 
 /**
  * A partial guild received when using {@link GuildManager#fetch} to fetch multiple guilds.
  *
  * @extends {BaseGuild}
  */
-class OAuth2Guild extends BaseGuild {
+export class OAuth2Guild extends BaseGuild {
   constructor(client, data) {
     super(client, data);
 
@@ -27,5 +25,3 @@ class OAuth2Guild extends BaseGuild {
     this.permissions = new PermissionsBitField(BigInt(data.permissions)).freeze();
   }
 }
-
-exports.OAuth2Guild = OAuth2Guild;

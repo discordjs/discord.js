@@ -1,0 +1,68 @@
+{
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "@discordjs/proxy-container",
+	"version": "1.0.0",
+	"description": "Lightweight HTTP proxy for Discord's API, brought to you as a container 📦",
+	"keywords": [
+		"api",
+		"discord",
+		"discordapp",
+		"discordjs",
+		"proxy",
+		"rest"
+	],
+	"homepage": "https://discord.js.org",
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"license": "Apache-2.0",
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"Amish Shah <amishshah.2k@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <me@vladfrangu.dev>",
+		"Aura Román <kyradiscord@gmail.com>",
+		"DD <didinele.dev@gmail.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "apps/proxy-container"
+	},
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
+	"directories": {
+		"lib": "src"
+	},
+	"files": [
+		"dist"
+	],
+	"type": "module",
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"scripts": {
+		"build": "tsc",
+		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
+		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions",
+		"fmt": "pnpm run format",
+		"prepack": "pnpm run lint && pnpm run build"
+	},
+	"dependencies": {
+		"@discordjs/proxy": "workspace:^",
+		"@discordjs/rest": "workspace:^",
+		"tslib": "^2.8.1"
+	},
+	"devDependencies": {
+		"@types/node": "^24.13.3",
+		"eslint-config-neon": "^0.5.4",
+		"oxfmt": "^0.78.0",
+		"oxlint": "^1.93.0",
+		"terser": "^5.51.2",
+		"turbo": "^2.11.11",
+		"typescript": "~7.0.2"
+	},
+	"engines": {
+		"node": ">=24.17.0"
+	}
+}

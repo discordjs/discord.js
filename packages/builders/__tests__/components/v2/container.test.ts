@@ -64,11 +64,11 @@ const containerWithSeparatorDataNoColor: APIContainerComponent = {
 describe('Container Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid components THEN do not throw', () => {
-			expect(() => new ContainerBuilder().addSeparatorComponents(new SeparatorBuilder())).not.toThrowError();
-			expect(() => new ContainerBuilder().spliceComponents(0, 0, new SeparatorBuilder())).not.toThrowError();
-			expect(() => new ContainerBuilder().addSeparatorComponents([new SeparatorBuilder()])).not.toThrowError();
+			expect(() => new ContainerBuilder().addSeparatorComponents(new SeparatorBuilder()).toJSON()).not.toThrowError();
+			expect(() => new ContainerBuilder().spliceComponents(0, 0, new SeparatorBuilder()).toJSON()).not.toThrowError();
+			expect(() => new ContainerBuilder().addSeparatorComponents([new SeparatorBuilder()]).toJSON()).not.toThrowError();
 			expect(() =>
-				new ContainerBuilder().spliceComponents(0, 0, [{ type: ComponentType.Separator }]),
+				new ContainerBuilder().spliceComponents(0, 0, [{ type: ComponentType.Separator }]).toJSON(),
 			).not.toThrowError();
 		});
 

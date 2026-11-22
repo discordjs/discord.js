@@ -21,8 +21,8 @@ import type { IApiStaticMixinJson } from '../mixins/ApiStaticMixin.js';
 import type { IApiTypeParameterListMixinJson } from '../mixins/ApiTypeParameterListMixin.js';
 import { ApiCallSignature, type IApiCallSignatureOptions } from './ApiCallSignature.js';
 import { ApiClass, type IApiClassOptions, type IApiClassJson } from './ApiClass.js';
-import { ApiConstructSignature, type IApiConstructSignatureOptions } from './ApiConstructSignature.js';
 import { ApiConstructor, type IApiConstructorOptions } from './ApiConstructor.js';
+import { ApiConstructSignature, type IApiConstructSignatureOptions } from './ApiConstructSignature.js';
 import { ApiEntryPoint, type IApiEntryPointOptions } from './ApiEntryPoint.js';
 import { ApiEnum, type IApiEnumOptions } from './ApiEnum.js';
 import { ApiEnumMember, type IApiEnumMemberOptions } from './ApiEnumMember.js';
@@ -267,7 +267,8 @@ function mapParam(
 }
 
 interface IApiMethodJson
-	extends IApiAbstractMixinJson,
+	extends
+		IApiAbstractMixinJson,
 		IApiDeclaredItemJson,
 		IApiNameMixinJson,
 		IApiOptionalMixinJson,
@@ -279,10 +280,7 @@ interface IApiMethodJson
 		IApiTypeParameterListMixinJson {}
 
 interface IApiConstructorJson
-	extends IApiParameterListJson,
-		IApiProtectedMixinJson,
-		IApiReleaseTagMixinJson,
-		IApiDeclaredItemJson {}
+	extends IApiParameterListJson, IApiProtectedMixinJson, IApiReleaseTagMixinJson, IApiDeclaredItemJson {}
 
 function mapMethod(method: DocgenMethodJson, _package: string, parent?: DocgenClassJson): IApiMethodJson {
 	const excerptTokens: IExcerptToken[] = [];

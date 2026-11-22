@@ -1,6 +1,5 @@
 import type { APIPublicThreadChannel, ChannelType } from 'discord-api-types/v10';
-import { Mixin } from '../Mixin.js';
-import type { MixinTypes } from '../MixinTypes.d.ts';
+import { Mixin, type MixinTypes } from '../Mixin.js';
 import type { Partialize } from '../utils/types.js';
 import { Channel } from './Channel.js';
 import { AppliedTagsMixin } from './mixins/AppliedTagsMixin.js';
@@ -11,19 +10,18 @@ import { ChannelSlowmodeMixin } from './mixins/ChannelSlowmodeMixin.js';
 import { TextChannelMixin } from './mixins/TextChannelMixin.js';
 import { ThreadChannelMixin } from './mixins/ThreadChannelMixin.js';
 
-export interface PublicThreadChannel<Omitted extends keyof APIPublicThreadChannel | '' = ''>
-	extends MixinTypes<
-		Channel<ChannelType.PublicThread>,
-		[
-			TextChannelMixin<ChannelType.PublicThread>,
-			ChannelOwnerMixin<ChannelType.PublicThread>,
-			ChannelParentMixin<ChannelType.PublicThread>,
-			ChannelPinMixin<ChannelType.PublicThread>,
-			ChannelSlowmodeMixin<ChannelType.PublicThread>,
-			ThreadChannelMixin<ChannelType.PublicThread>,
-			AppliedTagsMixin,
-		]
-	> {}
+export interface PublicThreadChannel<Omitted extends keyof APIPublicThreadChannel | '' = ''> extends MixinTypes<
+	Channel<ChannelType.PublicThread>,
+	[
+		TextChannelMixin<ChannelType.PublicThread>,
+		ChannelOwnerMixin<ChannelType.PublicThread>,
+		ChannelParentMixin<ChannelType.PublicThread>,
+		ChannelPinMixin<ChannelType.PublicThread>,
+		ChannelSlowmodeMixin<ChannelType.PublicThread>,
+		ThreadChannelMixin<ChannelType.PublicThread>,
+		AppliedTagsMixin,
+	]
+> {}
 
 /**
  * Sample Implementation of a structure for public thread channels, usable by direct end consumers.

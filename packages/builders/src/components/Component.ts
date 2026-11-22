@@ -10,9 +10,9 @@ export interface ComponentBuilderBaseData {
  *
  * @typeParam Component - The type of API data that is stored within the builder
  */
-export abstract class ComponentBuilder<Component extends APIBaseComponent<ComponentType>>
-	implements JSONEncodable<Component>
-{
+export abstract class ComponentBuilder<
+	Component extends APIBaseComponent<ComponentType>,
+> implements JSONEncodable<Component> {
 	/**
 	 * @internal
 	 */

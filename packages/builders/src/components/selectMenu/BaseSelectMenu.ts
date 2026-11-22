@@ -47,9 +47,9 @@ export abstract class BaseSelectMenuBuilder<Data extends APISelectMenuComponent>
 	}
 
 	/**
-	 * Sets the maximum values that must be selected in the select menu.
+	 * Sets the maximum values that can be selected in the select menu.
 	 *
-	 * @param maxValues - The maximum values that must be selected
+	 * @param maxValues - The maximum values that can be selected
 	 */
 	public setMaxValues(maxValues: number) {
 		this.data.max_values = maxValues;

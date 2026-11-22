@@ -1,19 +1,22 @@
-'use strict';
-
-const { Routes, PermissionFlagsBits, InviteType } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { InviteFlagsBitField } = require('../util/InviteFlagsBitField.js');
-const { BaseInvite } = require('./BaseInvite.js');
-const { GuildScheduledEvent } = require('./GuildScheduledEvent.js');
-const { IntegrationApplication } = require('./IntegrationApplication.js');
-const { InviteGuild } = require('./InviteGuild.js');
+import { Buffer } from 'node:buffer';
+import { Collection } from '@discordjs/collection';
+import { Routes, PermissionFlagsBits, InviteType } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { resolveInviteTargetUsersFile } from '../util/DataResolver.js';
+import { InviteFlagsBitField } from '../util/InviteFlagsBitField.js';
+import { _transformAPIInviteTargetUsersJobStatus } from '../util/Transformers.js';
+import { BaseInvite } from './BaseInvite.js';
+import { GuildScheduledEvent } from './GuildScheduledEvent.js';
+import { IntegrationApplication } from './IntegrationApplication.js';
+import { InviteGuild } from './InviteGuild.js';
+import { InviteRole } from './InviteRole.js';
 
 /**
  * A channel invite leading to a guild.
  *
  * @extends {BaseInvite}
  */
-class GuildInvite extends BaseInvite {
+export class GuildInvite extends BaseInvite {
   constructor(client, data) {
     super(client, data);
 
@@ -178,6 +181,21 @@ class GuildInvite extends BaseInvite {
     } else {
       this.approximatePresenceCount ??= null;
     }
+
+    if ('roles' in data || 'role_ids' in data) {
+      /**
+       * The roles assigned to the user upon accepting the invite.
+       *
+       * @type {?Collection<Snowflake, Role|InviteRole>}
+       */
+      this.roles = new Collection(
+        data.roles?.map(role => [role.id, this.guild?.roles?._add(role, false) ?? new InviteRole(this.client, role)]) ??
+          // `role_ids` is only received from gateway `INVITE_CREATE` event, so `this.guild` should be "Guild" instance
+          data.role_ids?.map(roleId => [roleId, this.guild.roles.resolve(roleId)]),
+      );
+    } else {
+      this.roles ??= null;
+    }
   }
 
   /**
@@ -192,7 +210,7 @@ class GuildInvite extends BaseInvite {
     if (!guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
     return Boolean(
       this.channel?.permissionsFor(this.client.user).has(PermissionFlagsBits.ManageChannels, false) ||
-        guild.members.me.permissions.has(PermissionFlagsBits.ManageGuild),
+      guild.members.me.permissions.has(PermissionFlagsBits.ManageGuild),
     );
   }
 
@@ -206,18 +224,52 @@ class GuildInvite extends BaseInvite {
     await this.client.rest.delete(Routes.invite(this.code), { reason });
   }
 
+  /**
+   * Update target users of this invite.
+   *
+   * @param {UserResolvable[]|BufferResolvable} targetUsersFile An array of users or a CSV file with a single column of user ids
+   * for all the users able to accept this invite
+   * @returns {Promise<void>}
+   */
+  async updateTargetUsers(targetUsersFile) {
+    await this.client.rest.put(Routes.inviteTargetUsers(this.code), {
+      files: [
+        {
+          key: 'target_users_file',
+          data: await resolveInviteTargetUsersFile(this.client, targetUsersFile),
+          name: 'users.csv',
+          contentType: 'text/csv',
+        },
+      ],
+    });
+  }
+
+  /**
+   * Get target users of this invite.
+   *
+   * @returns {Promise<Buffer>}
+   */
+  async fetchTargetUsers() {
+    const arrayBuff = await this.client.rest.get(Routes.inviteTargetUsers(this.code));
+
+    return Buffer.from(arrayBuff);
+  }
+
+  /**
+   * Get status of the job processing target users of this invite.
+   *
+   * @returns {Promise<TargetUsersJobStatusForInvite>}
+   */
+  async fetchTargetUsersJobStatus() {
+    const job = await this.client.rest.get(Routes.inviteTargetUsersJobStatus(this.code));
+    return _transformAPIInviteTargetUsersJobStatus(job);
+  }
+
   toJSON() {
     return super.toJSON({
-      url: true,
-      expiresTimestamp: true,
       presenceCount: false,
       memberCount: false,
-      uses: false,
-      channel: 'channelId',
-      inviter: 'inviterId',
       guild: 'guildId',
     });
   }
 }
-
-exports.GuildInvite = GuildInvite;

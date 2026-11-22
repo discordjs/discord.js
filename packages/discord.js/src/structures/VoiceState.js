@@ -1,15 +1,13 @@
-'use strict';
-
-const { ChannelType, Routes } = require('discord-api-types/v10');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { Base } = require('./Base.js');
+import { ChannelType, Routes } from 'discord-api-types/v10';
+import { DiscordjsError, DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { Base } from './Base.js';
 
 /**
  * Represents the voice state for a Guild Member.
  *
  * @extends {Base}
  */
-class VoiceState extends Base {
+export class VoiceState extends Base {
   constructor(guild, data) {
     super(guild.client);
     /**
@@ -334,5 +332,3 @@ class VoiceState extends Base {
     });
   }
 }
-
-exports.VoiceState = VoiceState;

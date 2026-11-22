@@ -1,6 +1,5 @@
 import type { APIGuildStageVoiceChannel, ChannelType } from 'discord-api-types/v10';
-import { Mixin } from '../Mixin.js';
-import type { MixinTypes } from '../MixinTypes.d.ts';
+import { Mixin, type MixinTypes } from '../Mixin.js';
 import type { Partialize } from '../utils/types.js';
 import { Channel } from './Channel.js';
 import { ChannelParentMixin } from './mixins/ChannelParentMixin.js';
@@ -9,17 +8,16 @@ import { ChannelSlowmodeMixin } from './mixins/ChannelSlowmodeMixin.js';
 import { ChannelWebhookMixin } from './mixins/ChannelWebhookMixin.js';
 import { VoiceChannelMixin } from './mixins/VoiceChannelMixin.js';
 
-export interface StageChannel<Omitted extends keyof APIGuildStageVoiceChannel | '' = ''>
-	extends MixinTypes<
-		Channel<ChannelType.GuildStageVoice>,
-		[
-			ChannelParentMixin<ChannelType.GuildStageVoice>,
-			ChannelPermissionMixin<ChannelType.GuildStageVoice>,
-			ChannelSlowmodeMixin<ChannelType.GuildStageVoice>,
-			ChannelWebhookMixin<ChannelType.GuildStageVoice>,
-			VoiceChannelMixin<ChannelType.GuildStageVoice>,
-		]
-	> {}
+export interface StageChannel<Omitted extends keyof APIGuildStageVoiceChannel | '' = ''> extends MixinTypes<
+	Channel<ChannelType.GuildStageVoice>,
+	[
+		ChannelParentMixin<ChannelType.GuildStageVoice>,
+		ChannelPermissionMixin<ChannelType.GuildStageVoice>,
+		ChannelSlowmodeMixin<ChannelType.GuildStageVoice>,
+		ChannelWebhookMixin<ChannelType.GuildStageVoice>,
+		VoiceChannelMixin<ChannelType.GuildStageVoice>,
+	]
+> {}
 
 export class StageChannel<Omitted extends keyof APIGuildStageVoiceChannel | '' = ''> extends Channel<
 	ChannelType.GuildStageVoice,

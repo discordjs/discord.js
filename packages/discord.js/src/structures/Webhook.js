@@ -1,19 +1,17 @@
-'use strict';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { lazy } from '@discordjs/util';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { Routes, WebhookType } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { resolveImage } from '../util/DataResolver.js';
+import { MessagePayload } from './MessagePayload.js';
 
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { lazy } = require('@discordjs/util');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes, WebhookType } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { resolveImage } = require('../util/DataResolver.js');
-const { MessagePayload } = require('./MessagePayload.js');
-
-const getMessage = lazy(() => require('./Message.js').Message);
+const getMessage = lazy(async () => (await import('./Message.js')).Message);
 
 /**
  * Represents a webhook.
  */
-class Webhook {
+export class Webhook {
   constructor(client, data) {
     /**
      * The client that instantiated the webhook
@@ -23,7 +21,7 @@ class Webhook {
      * @readonly
      */
     Object.defineProperty(this, 'client', { value: client });
-    if (data) this._patch(data);
+    this._patch(data);
   }
 
   _patch(data) {
@@ -95,9 +93,9 @@ class Webhook {
       /**
        * The owner of the webhook
        *
-       * @type {?(User|APIUser)}
+       * @type {?User}
        */
-      this.owner = this.client.users?._add(data.user) ?? data.user;
+      this.owner = this.client.users._add(data.user);
     } else {
       this.owner ??= null;
     }
@@ -119,7 +117,7 @@ class Webhook {
        *
        * @type {?(Guild|APIGuild)}
        */
-      this.sourceGuild = this.client.guilds?.cache.get(data.source_guild.id) ?? data.source_guild;
+      this.sourceGuild = this.client.guilds.cache.get(data.source_guild.id) ?? data.source_guild;
     } else {
       this.sourceGuild ??= null;
     }
@@ -130,7 +128,7 @@ class Webhook {
        *
        * @type {?(AnnouncementChannel|APIChannel)}
        */
-      this.sourceChannel = this.client.channels?.cache.get(data.source_channel?.id) ?? data.source_channel;
+      this.sourceChannel = this.client.channels.cache.get(data.source_channel?.id) ?? data.source_channel;
     } else {
       this.sourceChannel ??= null;
     }
@@ -248,10 +246,9 @@ class Webhook {
       auth: false,
     });
 
-    if (!this.client.channels) return data;
     return (
       this.client.channels.cache.get(data.channel_id)?.messages._add(data, false) ??
-      new (getMessage())(this.client, data)
+      new (await getMessage())(this.client, data)
     );
   }
 
@@ -345,10 +342,9 @@ class Webhook {
       auth: false,
     });
 
-    if (!this.client.channels) return data;
     return (
       this.client.channels.cache.get(data.channel_id)?.messages._add(data, false) ??
-      new (getMessage())(this.client, data)
+      new (await getMessage())(this.client, data)
     );
   }
 
@@ -384,11 +380,8 @@ class Webhook {
       },
     );
 
-    const channelManager = this.client.channels;
-    if (!channelManager) return data;
-
-    const messageManager = channelManager.cache.get(data.channel_id)?.messages;
-    if (!messageManager) return new (getMessage())(this.client, data);
+    const messageManager = this.client.channels.cache.get(data.channel_id)?.messages;
+    if (!messageManager) return new (await getMessage())(this.client, data);
 
     const existing = messageManager.cache.get(data.id);
     if (!existing) return messageManager._add(data);
@@ -521,5 +514,3 @@ class Webhook {
     }
   }
 }
-
-exports.Webhook = Webhook;

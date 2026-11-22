@@ -12,17 +12,17 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - name: Install Node.js v22
-        uses: actions/setup-node@v5
+      - name: Install Node.js v24
+        uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24
           package-manager-cache: false
 
       - name: Install dependencies
@@ -44,13 +44,13 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: pnpm exec turbo run test --filter="...[HEAD^1]" --concurrency=4
 
-      - name: ESLint (PR)
+      - name: Oxlint and Oxfmt (PR)
         if: ${{ github.event_name != 'push' }}
-        run: pnpm exec turbo run lint --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=4 -- --format=compact
+        run: pnpm exec turbo run lint --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=4
 
-      - name: ESLint (Push)
+      - name: Oxlint and Oxfmt (Push)
         if: ${{ github.event_name == 'push' }}
-        run: pnpm exec turbo run lint --filter="...[HEAD^1]" --concurrency=4 -- --format=compact
+        run: pnpm exec turbo run lint --filter="...[HEAD^1]" --concurrency=4
 
       - name: Docs (PR)
         if: ${{ github.event_name != 'push' }}

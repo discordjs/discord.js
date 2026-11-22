@@ -1,16 +1,14 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v10');
-const { Base } = require('./Base.js');
-const { WidgetMember } = require('./WidgetMember.js');
+import { Collection } from '@discordjs/collection';
+import { Routes } from 'discord-api-types/v10';
+import { Base } from './Base.js';
+import { WidgetMember } from './WidgetMember.js';
 
 /**
  * Represents a Widget.
  *
  * @extends {Base}
  */
-class Widget extends Base {
+export class Widget extends Base {
   constructor(client, data) {
     super(client);
     this._patch(data);
@@ -103,5 +101,3 @@ class Widget extends Base {
     return this.client.guilds.widgetImageURL(this.id, style);
   }
 }
-
-exports.Widget = Widget;

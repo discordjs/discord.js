@@ -1,6 +1,4 @@
-/* eslint-disable jsdoc/check-param-names */
-
-import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/rest';
+import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import {
 	Routes,
 	type RESTGetAPIEntitlementsQuery,
@@ -14,6 +12,7 @@ import {
 	type RESTPostAPIEntitlementResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
+import type { RequestOptions } from '../util/types.js';
 
 export class MonetizationAPI {
 	public constructor(private readonly rest: REST) {}
@@ -25,8 +24,8 @@ export class MonetizationAPI {
 	 * @param applicationId - The application id to fetch SKUs for
 	 * @param options - The options for fetching the SKUs.
 	 */
-	public async getSKUs(applicationId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.get(Routes.skus(applicationId), { auth, signal }) as Promise<RESTGetAPISKUsResult>;
+	public async getSKUs(applicationId: Snowflake, options: RequestOptions = {}) {
+		return this.rest.get(Routes.skus(applicationId), options) as Promise<RESTGetAPISKUsResult>;
 	}
 
 	/**
@@ -40,11 +39,10 @@ export class MonetizationAPI {
 	public async getSKUSubscriptions(
 		skuId: Snowflake,
 		query: RESTGetAPISKUSubscriptionsQuery = {},
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		options: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.skuSubscriptions(skuId), {
-			auth,
-			signal,
+			...options,
 			query: makeURLSearchParams(query),
 		}) as Promise<RESTGetAPISKUSubscriptionsResult>;
 	}
@@ -57,15 +55,11 @@ export class MonetizationAPI {
 	 * @param subscriptionId - The subscription id to fetch
 	 * @param options - The options for fetching the subscription
 	 */
-	public async getSKUSubscription(
-		skuId: Snowflake,
-		subscriptionId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
-	) {
-		return this.rest.get(Routes.skuSubscription(skuId, subscriptionId), {
-			auth,
-			signal,
-		}) as Promise<RESTGetAPISKUSubscriptionResult>;
+	public async getSKUSubscription(skuId: Snowflake, subscriptionId: Snowflake, options: RequestOptions = {}) {
+		return this.rest.get(
+			Routes.skuSubscription(skuId, subscriptionId),
+			options,
+		) as Promise<RESTGetAPISKUSubscriptionResult>;
 	}
 
 	/**
@@ -79,11 +73,10 @@ export class MonetizationAPI {
 	public async getEntitlements(
 		applicationId: Snowflake,
 		query: RESTGetAPIEntitlementsQuery = {},
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		options: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.entitlements(applicationId), {
-			auth,
-			signal,
+			...options,
 			query: makeURLSearchParams(query),
 		}) as Promise<RESTGetAPIEntitlementsResult>;
 	}
@@ -96,15 +89,11 @@ export class MonetizationAPI {
 	 * @param entitlementId - The entitlement id to fetch
 	 * @param options - The options for fetching the entitlement
 	 */
-	public async getEntitlement(
-		applicationId: Snowflake,
-		entitlementId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
-	) {
-		return this.rest.get(Routes.entitlement(applicationId, entitlementId), {
-			auth,
-			signal,
-		}) as Promise<RESTGetAPIEntitlementResult>;
+	public async getEntitlement(applicationId: Snowflake, entitlementId: Snowflake, options: RequestOptions = {}) {
+		return this.rest.get(
+			Routes.entitlement(applicationId, entitlementId),
+			options,
+		) as Promise<RESTGetAPIEntitlementResult>;
 	}
 
 	/**
@@ -118,12 +107,11 @@ export class MonetizationAPI {
 	public async createTestEntitlement(
 		applicationId: Snowflake,
 		body: RESTPostAPIEntitlementJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		options: RequestOptions = {},
 	) {
 		return this.rest.post(Routes.entitlements(applicationId), {
-			auth,
+			...options,
 			body,
-			signal,
 		}) as Promise<RESTPostAPIEntitlementResult>;
 	}
 
@@ -135,12 +123,8 @@ export class MonetizationAPI {
 	 * @param entitlementId - The entitlement id to delete
 	 * @param options - The options for deleting the entitlement
 	 */
-	public async deleteTestEntitlement(
-		applicationId: Snowflake,
-		entitlementId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
-	) {
-		await this.rest.delete(Routes.entitlement(applicationId, entitlementId), { auth, signal });
+	public async deleteTestEntitlement(applicationId: Snowflake, entitlementId: Snowflake, options: RequestOptions = {}) {
+		await this.rest.delete(Routes.entitlement(applicationId, entitlementId), options);
 	}
 
 	/**
@@ -151,11 +135,7 @@ export class MonetizationAPI {
 	 * @param entitlementId - The entitlement id to consume
 	 * @param options - The options for consuming the entitlement
 	 */
-	public async consumeEntitlement(
-		applicationId: Snowflake,
-		entitlementId: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
-	) {
-		await this.rest.post(Routes.consumeEntitlement(applicationId, entitlementId), { auth, signal });
+	public async consumeEntitlement(applicationId: Snowflake, entitlementId: Snowflake, options: RequestOptions = {}) {
+		await this.rest.post(Routes.consumeEntitlement(applicationId, entitlementId), options);
 	}
 }

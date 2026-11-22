@@ -13,6 +13,7 @@ import { SummaryNode } from './SummaryNode';
 import { TypeParameterNode } from './TypeParameterNode';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/Collapsible';
 import { Tab, TabList, TabPanel, Tabs } from './ui/Tabs';
+import { UnstableNode } from './UnstableNode';
 
 async function EventBodyNode({
 	event,
@@ -66,6 +67,10 @@ async function EventBodyNode({
 
 				{event.summary?.deprecatedBlock.length ? (
 					<DeprecatedNode deprecatedBlock={event.summary.deprecatedBlock} version={version} />
+				) : null}
+
+				{event.summary?.unstableBlock?.length ? (
+					<UnstableNode unstableBlock={event.summary.unstableBlock} version={version} />
 				) : null}
 
 				{event.summary?.summarySection.length ? (

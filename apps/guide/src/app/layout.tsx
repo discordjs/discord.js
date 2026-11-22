@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/react';
+import type { Item } from 'fumadocs-core/page-tree';
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
-import { RootProvider } from 'fumadocs-ui/provider';
+import { RootProvider } from 'fumadocs-ui/provider/next';
 import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
 import type { Metadata, Viewport } from 'next';
@@ -9,7 +10,6 @@ import { Body } from '@/app/layout.client';
 import { source } from '@/lib/source';
 import { ENV } from '@/util/env';
 import { baseOptions } from './layout.config';
-
 import '@/styles/base.css';
 
 export const viewport: Viewport = {
@@ -29,47 +29,25 @@ export const metadata: Metadata = {
 	icons: {
 		other: [
 			{
-				url: '/favicon-32x32.png',
-				sizes: '32x32',
-				type: 'image/png',
-			},
-			{
-				url: '/favicon-16x16.png',
-				sizes: '16x16',
+				url: '/favicon-96x96.png',
+				sizes: '96x96',
 				type: 'image/png',
 			},
 		],
-		apple: [
-			'/apple-touch-icon.png',
-			{
-				url: '/safari-pinned-tab.svg',
-				rel: 'mask-icon',
-			},
-		],
+		apple: ['/apple-touch-icon.png'],
 	},
 
 	manifest: '/site.webmanifest',
-
-	appleWebApp: {
-		title: 'discord.js',
-	},
-
-	applicationName: 'discord.js',
 
 	openGraph: {
 		siteName: 'discord.js',
 		type: 'website',
 		title: 'discord.js',
-		images: 'https://discordjs.dev/api/open-graph.png',
 	},
 
 	twitter: {
 		card: 'summary_large_image',
 		creator: '@iCrawlToGo',
-	},
-
-	other: {
-		'msapplication-TileColor': '#1a1a1e',
 	},
 };
 
@@ -82,14 +60,22 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 						sidebar={{
 							tabs: {
 								transform(option, node) {
+									// fumadocs links a folder's tab to its first page, which in some cases is an external link
+									// that would send the tab off-site instead of into the guide section
+									const landingPage = node.children.find(
+										(child): child is Item => child.type === 'page' && !child.external,
+									);
+									const url = landingPage?.url ?? option.url;
+
 									const meta = source.getNodeMeta(node);
-									if (!meta || !node.icon) return option;
+									if (!meta || !node.icon) return { ...option, url };
 
 									// category selection color based on path src/styles/base.css
 									const color = `var(--${meta.path.split('/')[0]}-color, var(--color-fd-foreground))`;
 
 									return {
 										...option,
+										url,
 										icon: (
 											<div
 												className="size-full rounded-lg text-(--tab-color) max-md:border max-md:bg-(--tab-color)/10 max-md:p-1.5 [&_svg]:size-full"

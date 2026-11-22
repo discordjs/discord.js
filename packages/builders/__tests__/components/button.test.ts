@@ -5,7 +5,13 @@ import {
 	type APIButtonComponentWithURL,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import { PrimaryButtonBuilder, PremiumButtonBuilder, LinkButtonBuilder } from '../../src/index.js';
+import {
+	PrimaryButtonBuilder,
+	PremiumButtonBuilder,
+	LinkButtonBuilder,
+	DangerButtonBuilder,
+	SecondaryButtonBuilder,
+} from '../../src/index.js';
 
 const longStr =
 	'looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong';
@@ -13,7 +19,7 @@ const longStr =
 describe('Button Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid fields THEN builder does not throw', () => {
-			expect(() => new PrimaryButtonBuilder().setCustomId('custom').setLabel('test')).not.toThrowError();
+			expect(() => new PrimaryButtonBuilder().setCustomId('custom').setLabel('test').toJSON()).not.toThrowError();
 
 			expect(() => {
 				const button = new PrimaryButtonBuilder()
@@ -22,6 +28,26 @@ describe('Button Components', () => {
 					.setDisabled(true)
 					.setEmoji({ name: 'test' });
 
+				button.toJSON();
+			}).not.toThrowError();
+
+			expect(() => {
+				const button = new SecondaryButtonBuilder().setCustomId('custom').setLabel('a'.repeat(80));
+				button.toJSON();
+			}).not.toThrowError();
+
+			expect(() => {
+				const button = new DangerButtonBuilder().setCustomId('custom').setEmoji({ name: 'ok' });
+				button.toJSON();
+			}).not.toThrowError();
+
+			expect(() => {
+				const button = new LinkButtonBuilder().setURL('https://discord.js.org').setLabel('a'.repeat(80));
+				button.toJSON();
+			}).not.toThrowError();
+
+			expect(() => {
+				const button = new LinkButtonBuilder().setURL('https://discord.js.org').setEmoji({ name: 'ok' });
 				button.toJSON();
 			}).not.toThrowError();
 

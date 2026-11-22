@@ -1,8 +1,8 @@
 import type { RequestInit } from 'undici';
-import type { REST } from '../REST.js';
 import type { DiscordErrorData, OAuthErrorData } from '../errors/DiscordAPIError.js';
 import { DiscordAPIError } from '../errors/DiscordAPIError.js';
 import { HTTPError } from '../errors/HTTPError.js';
+import type { REST } from '../REST.js';
 import { RESTEvents } from '../utils/constants.js';
 import type { ResponseLike, HandlerRequestData, RouteData } from '../utils/types.js';
 import { normalizeRetryBackoff, normalizeTimeout, parseResponse, shouldRetry, sleep } from '../utils/utils.js';
@@ -69,12 +69,17 @@ export async function makeNetworkRequest(
 		() => controller.abort(),
 		normalizeTimeout(manager.options.timeout, routeId.bucketRoute, requestData.body),
 	);
-	if (requestData.signal) {
+	const userSignal = requestData.signal;
+	let onUserAbort: (() => void) | undefined;
+	if (userSignal) {
 		// If the user signal was aborted, abort the controller, else abort the local signal.
 		// The reason why we don't re-use the user's signal, is because users may use the same signal for multiple
 		// requests, and we do not want to cause unexpected side-effects.
-		if (requestData.signal.aborted) controller.abort();
-		else requestData.signal.addEventListener('abort', () => controller.abort());
+		if (userSignal.aborted) controller.abort();
+		else {
+			onUserAbort = () => controller.abort();
+			userSignal.addEventListener('abort', onUserAbort);
+		}
 	}
 
 	let res: ResponseLike;
@@ -106,6 +111,7 @@ export async function makeNetworkRequest(
 		throw error;
 	} finally {
 		clearTimeout(timeout);
+		if (onUserAbort) userSignal!.removeEventListener('abort', onUserAbort);
 	}
 
 	if (manager.listenerCount(RESTEvents.Response)) {
@@ -119,7 +125,7 @@ export async function makeNetworkRequest(
 				data: requestData,
 				retries,
 			},
-			res instanceof Response ? res.clone() : { ...res },
+			res.clone?.() ?? { ...res },
 		);
 	}
 

@@ -1,11 +1,9 @@
-'use strict';
-
-const { userMention } = require('@discordjs/formatters');
-const { ChannelType } = require('discord-api-types/v10');
-const { DMMessageManager } = require('../managers/DMMessageManager.js');
-const { Partials } = require('../util/Partials.js');
-const { BaseChannel } = require('./BaseChannel.js');
-const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
+import { userMention } from '@discordjs/formatters';
+import { ChannelType } from 'discord-api-types/v10';
+import { DMMessageManager } from '../managers/DMMessageManager.js';
+import { Partials } from '../util/Partials.js';
+import { BaseChannel } from './BaseChannel.js';
+import { TextBasedChannel } from './interfaces/TextBasedChannel.js';
 
 /**
  * Represents a direct message channel between two users.
@@ -13,7 +11,7 @@ const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
  * @extends {BaseChannel}
  * @implements {TextBasedChannel}
  */
-class DMChannel extends BaseChannel {
+export class DMChannel extends BaseChannel {
   constructor(client, data) {
     super(client, data);
 
@@ -32,17 +30,19 @@ class DMChannel extends BaseChannel {
     super._patch(data);
 
     if (data.recipients) {
-      const recipient = data.recipients[0];
-
       /**
-       * The recipient's id
+       * The recipients' ids
        *
-       * @type {Snowflake}
+       * @type {Snowflake[]}
        */
-      this.recipientId = recipient.id;
+      this.recipientIds = [
+        ...new Set([...(this.recipientIds ?? []), ...data.recipients.map(recipient => recipient.id)]),
+      ];
 
-      if ('username' in recipient || this.client.options.partials.includes(Partials.User)) {
-        this.client.users._add(recipient);
+      for (const recipient of data.recipients) {
+        if ('username' in recipient || this.client.options.partials.includes(Partials.User)) {
+          this.client.users._add(recipient);
+        }
       }
     }
 
@@ -78,7 +78,21 @@ class DMChannel extends BaseChannel {
   }
 
   /**
-   * The recipient on the other end of the DM
+   * The recipient's id, if this is a DMChannel with the client user.
+   *
+   * @type {?Snowflake}
+   * @readonly
+   */
+  get recipientId() {
+    if (this.recipientIds.includes(this.client.user.id)) {
+      return this.recipientIds.find(recipientId => recipientId !== this.client.user.id) ?? null;
+    }
+
+    return null;
+  }
+
+  /**
+   * The recipient on the other end of the DM, if this is a DMChannel with the client user.
    *
    * @type {?User}
    * @readonly
@@ -142,5 +156,3 @@ TextBasedChannel.applyToClass(DMChannel, [
   'setRateLimitPerUser',
   'setNSFW',
 ]);
-
-exports.DMChannel = DMChannel;

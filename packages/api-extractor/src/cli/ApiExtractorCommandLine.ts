@@ -3,9 +3,9 @@
 
 import * as os from 'node:os';
 import process from 'node:process';
-import { InternalError } from '@rushstack/node-core-library';
+import { AlreadyReportedError, InternalError } from '@rushstack/node-core-library';
+import { Colorize } from '@rushstack/terminal';
 import { CommandLineParser, type CommandLineFlagParameter } from '@rushstack/ts-command-line';
-import colors from 'colors';
 import { InitAction } from './InitAction.js';
 import { RunAction } from './RunAction.js';
 
@@ -42,10 +42,12 @@ export class ApiExtractorCommandLine extends CommandLineParser {
 			await super.onExecuteAsync();
 			process.exitCode = 0;
 		} catch (error: any) {
-			if (this._debugParameter.value) {
-				console.error(os.EOL + error.stack);
-			} else {
-				console.error(os.EOL + colors.red('ERROR: ' + error.message.trim()));
+			if (!(error instanceof AlreadyReportedError)) {
+				if (this._debugParameter.value) {
+					console.error(os.EOL + error.stack);
+				} else {
+					console.error(os.EOL + Colorize.red('ERROR: ' + error.message.trim()));
+				}
 			}
 		}
 	}

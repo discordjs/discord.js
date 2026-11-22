@@ -81,9 +81,9 @@ export const DefaultRedisBrokerOptions = {
  * Helper class with shared Redis logic
  */
 export abstract class BaseRedisBroker<
-		TEvents extends Record<string, any[]>,
-		TResponses extends Record<keyof TEvents, any> | undefined = undefined,
-	>
+	TEvents extends Record<string, any[]>,
+	TResponses extends Record<keyof TEvents, any> | undefined = undefined,
+>
 	extends AsyncEventEmitter<ToEventMap<TEvents, TResponses>>
 	implements IBaseBroker<TEvents>
 {
@@ -129,7 +129,7 @@ export abstract class BaseRedisBroker<
 		this.group = this.options.group === kUseRandomGroupName ? randomBytes(16).toString('hex') : this.options.group;
 		redisClient.defineCommand('xcleangroup', {
 			numberOfKeys: 1,
-			lua: readFileSync(resolve(__dirname, '..', 'scripts', 'xcleangroup.lua'), 'utf8'),
+			lua: readFileSync(resolve(import.meta.dirname, '..', '..', '..', 'scripts', 'xcleangroup.lua'), 'utf8'),
 		});
 		this.streamReadClient = redisClient.duplicate();
 	}

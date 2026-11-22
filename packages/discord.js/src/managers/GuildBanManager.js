@@ -1,18 +1,16 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { GuildBan } = require('../structures/GuildBan.js');
-const { CachedManager } = require('./CachedManager.js');
+import { Collection } from '@discordjs/collection';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { GuildBan } from '../structures/GuildBan.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for guild bans and stores their cache.
  *
  * @extends {CachedManager}
  */
-class GuildBanManager extends CachedManager {
+export class GuildBanManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, GuildBan, iterable);
 
@@ -124,12 +122,12 @@ class GuildBanManager extends CachedManager {
     return this._add(data, cache);
   }
 
-  async _fetchMany(options = {}) {
+  async _fetchMany({ cache, ...apiOptions } = {}) {
     const data = await this.client.rest.get(Routes.guildBans(this.guild.id), {
-      query: makeURLSearchParams(options),
+      query: makeURLSearchParams(apiOptions),
     });
 
-    return data.reduce((col, ban) => col.set(ban.user.id, this._add(ban, options.cache)), new Collection());
+    return data.reduce((col, ban) => col.set(ban.user.id, this._add(ban, cache)), new Collection());
   }
 
   /**
@@ -220,5 +218,3 @@ class GuildBanManager extends CachedManager {
     return { bannedUsers: result.banned_users, failedUsers: result.failed_users };
   }
 }
-
-exports.GuildBanManager = GuildBanManager;

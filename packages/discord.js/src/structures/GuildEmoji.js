@@ -1,16 +1,14 @@
-'use strict';
-
-const { PermissionFlagsBits } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { GuildEmojiRoleManager } = require('../managers/GuildEmojiRoleManager.js');
-const { BaseGuildEmoji } = require('./BaseGuildEmoji.js');
+import { PermissionFlagsBits } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { GuildEmojiRoleManager } from '../managers/GuildEmojiRoleManager.js';
+import { BaseGuildEmoji } from './BaseGuildEmoji.js';
 
 /**
  * Represents a custom emoji.
  *
  * @extends {BaseGuildEmoji}
  */
-class GuildEmoji extends BaseGuildEmoji {
+export class GuildEmoji extends BaseGuildEmoji {
   constructor(client, data, guild) {
     super(client, data, guild);
 
@@ -55,13 +53,20 @@ class GuildEmoji extends BaseGuildEmoji {
 
   /**
    * Whether the emoji is deletable by the client user
+   * <info>This may be `false` if the client user has the {@link PermissionFlagsBits.CreateGuildExpressions} permission
+   * but the emoji's author is not cached.</info>
    *
    * @type {boolean}
    * @readonly
    */
   get deletable() {
+    if (this.managed) return false;
     if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
-    return !this.managed && this.guild.members.me.permissions.has(PermissionFlagsBits.ManageGuildExpressions);
+
+    const { permissions } = this.guild.members.me;
+    if (permissions.has(PermissionFlagsBits.ManageGuildExpressions)) return true;
+
+    return permissions.has(PermissionFlagsBits.CreateGuildExpressions) && this.author?.id === this.client.user.id;
   }
 
   /**
@@ -156,5 +161,3 @@ class GuildEmoji extends BaseGuildEmoji {
     }
   }
 }
-
-exports.GuildEmoji = GuildEmoji;

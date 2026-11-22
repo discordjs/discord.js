@@ -10,7 +10,6 @@ export default defineConfig({
 		},
 		coverage: {
 			enabled: true,
-			all: true,
 			reporter: ['text', 'lcov', 'cobertura'],
 			provider: 'v8',
 			include: ['src'],
@@ -22,6 +21,8 @@ export default defineConfig({
 				'**/index.{js,ts}',
 				// All exports files that make subpackages available as submodules
 				'**/exports/*.{js,ts}',
+				// Actions
+				'**/*.yml',
 			],
 		},
 	},

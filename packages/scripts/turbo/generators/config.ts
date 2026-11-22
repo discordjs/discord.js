@@ -32,7 +32,7 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
 			{
 				type: 'add',
 				path: `${plop.getDestBasePath()}/../{{name}}/src/index.ts`,
-				template: "console.log('Hello, from @discordjs/{{name}}');",
+				template: "console.log('Hello, from @discordjs/{{name}}');\n",
 			},
 			{
 				type: 'add',

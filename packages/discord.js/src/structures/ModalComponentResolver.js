@@ -1,8 +1,6 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { ComponentType } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+import { Collection } from '@discordjs/collection';
+import { ComponentType } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
 
 /**
  * @typedef {Object} ModalSelectedMentionables
@@ -14,7 +12,7 @@ const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 /**
  * A resolver for modal submit components
  */
-class ModalComponentResolver {
+export class ModalComponentResolver {
   constructor(client, components, resolved) {
     /**
      * The client that instantiated this.
@@ -79,7 +77,7 @@ class ModalComponentResolver {
    *
    * @param {string} customId The custom id of the component.
    * @param {ComponentType[]} allowedTypes The allowed types of the component.
-   * @param {string[]} properties The properties to check for for `required`.
+   * @param {string[]} properties The properties to check for `required`.
    * @param {boolean} required Whether to throw an error if the component value(s) are not found.
    * @returns {ModalData} The option, if found.
    * @private
@@ -222,6 +220,46 @@ class ModalComponentResolver {
 
     return null;
   }
-}
 
-exports.ModalComponentResolver = ModalComponentResolver;
+  /**
+   * Gets file upload component
+   *
+   * @param {string} customId The custom id of the component
+   * @param {boolean} [required=false] Whether to throw an error if the component value is not found or empty
+   * @returns {?Collection<Snowflake, Attachment>} The uploaded files, or null if none were uploaded and not required
+   */
+  getUploadedFiles(customId, required = false) {
+    return this._getTypedComponent(customId, [ComponentType.FileUpload], ['attachments'], required).attachments ?? null;
+  }
+
+  /**
+   * Get radio group component
+   *
+   * @param {string} customId The custom id of the component
+   * @param {boolean} [required=false] Whether to throw an error if the component value is not found or empty
+   * @returns {?string} The selected radio group option value, or null if none were selected and not required
+   */
+  getRadioGroup(customId, required = false) {
+    return this._getTypedComponent(customId, [ComponentType.RadioGroup], ['value'], required).value;
+  }
+
+  /**
+   * Get checkbox group component
+   *
+   * @param {string} customId The custom id of the component
+   * @returns {string[]} The selected checkbox group option values
+   */
+  getCheckboxGroup(customId) {
+    return this._getTypedComponent(customId, [ComponentType.CheckboxGroup]).values;
+  }
+
+  /**
+   * Get checkbox component
+   *
+   * @param {string} customId The custom id of the component
+   * @returns {boolean} Whether this checkbox was selected
+   */
+  getCheckbox(customId) {
+    return this._getTypedComponent(customId, [ComponentType.Checkbox]).value;
+  }
+}

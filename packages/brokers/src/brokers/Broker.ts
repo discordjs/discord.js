@@ -54,8 +54,7 @@ export interface IBaseBroker<TEvents extends {}> {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface IPubSubBroker<TEvents extends {}>
-	extends IBaseBroker<TEvents>,
-		AsyncEventEmitter<ToEventMap<TEvents>> {
+	extends IBaseBroker<TEvents>, AsyncEventEmitter<ToEventMap<TEvents>> {
 	/**
 	 * Publishes an event
 	 */
@@ -63,8 +62,7 @@ export interface IPubSubBroker<TEvents extends {}>
 }
 
 export interface IRPCBroker<TEvents extends Record<string, any[]>, TResponses extends Record<keyof TEvents, any>>
-	extends IBaseBroker<TEvents>,
-		AsyncEventEmitter<ToEventMap<TEvents, TResponses>> {
+	extends IBaseBroker<TEvents>, AsyncEventEmitter<ToEventMap<TEvents, TResponses>> {
 	/**
 	 * Makes an RPC call
 	 */

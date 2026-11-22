@@ -1,6 +1,4 @@
-/* eslint-disable jsdoc/tag-lines, jsdoc/require-property-description */
-'use strict';
-
+/* eslint-disable jsdoc/require-property-description */
 /**
  * @typedef {Object} DiscordjsErrorCodes
  * @property {'ClientInvalidOption'} ClientInvalidOption
@@ -77,17 +75,18 @@
  *
  * @property {'WebhookMessage'} WebhookMessage
  * @property {'WebhookTokenUnavailable'} WebhookTokenUnavailable
- * @property {'WebhookURLInvalid'} WebhookURLInvalid
  * @property {'WebhookApplication'} WebhookApplication
  *
  * @property {'MessageReferenceMissing'} MessageReferenceMissing
  *
  * @property {'EmojiType'} EmojiType
  * @property {'EmojiManaged'} EmojiManaged
- * @property {'MissingManageGuildExpressionsPermission'} MissingManageGuildExpressionsPermission
+ * @property {'MissingGuildExpressionsPermission'} MissingGuildExpressionsPermission
  *
  * @property {'NotGuildSoundboardSound'} NotGuildSoundboardSound
  * @property {'NotGuildSticker'} NotGuildSticker
+ *
+ * @property {'SearchIndexNotYetAvailable'} SearchIndexNotYetAvailable
  *
  * @property {'ReactionResolveUser'} ReactionResolveUser
  *
@@ -212,17 +211,18 @@ const keys = [
 
   'WebhookMessage',
   'WebhookTokenUnavailable',
-  'WebhookURLInvalid',
   'WebhookApplication',
 
   'MessageReferenceMissing',
 
   'EmojiType',
   'EmojiManaged',
-  'MissingManageGuildExpressionsPermission',
+  'MissingGuildExpressionsPermission',
 
   'NotGuildSoundboardSound',
   'NotGuildSticker',
+
+  'SearchIndexNotYetAvailable',
 
   'ReactionResolveUser',
 
@@ -277,6 +277,4 @@ const keys = [
  * @type {DiscordjsErrorCodes}
  * @ignore
  */
-const ErrorCodes = Object.fromEntries(keys.map(key => [key, key]));
-
-exports.ErrorCodes = ErrorCodes;
+export const ErrorCodes = Object.fromEntries(keys.map(key => [key, key]));

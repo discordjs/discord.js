@@ -1,17 +1,15 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { Role } = require('../structures/Role.js');
-const { DataManager } = require('./DataManager.js');
+import { Collection } from '@discordjs/collection';
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { Role } from '../structures/Role.js';
+import { DataManager } from './DataManager.js';
 
 /**
  * Manages API methods for roles of a GuildMember and stores their cache.
  *
  * @extends {DataManager}
  */
-class GuildMemberRoleManager extends DataManager {
+export class GuildMemberRoleManager extends DataManager {
   constructor(member) {
     super(member.client, Role);
 
@@ -37,8 +35,17 @@ class GuildMemberRoleManager extends DataManager {
    * @readonly
    */
   get cache() {
-    const everyone = this.guild.roles.everyone;
-    return this.guild.roles.cache.filter(role => this.member._roles.includes(role.id)).set(everyone.id, everyone);
+    const cache = new Collection();
+    cache.set(this.guild.id, this.guild.roles.everyone);
+
+    for (const roleId of this.member._roles) {
+      const role = this.guild.roles.cache.get(roleId);
+      if (role !== undefined) {
+        cache.set(roleId, role);
+      }
+    }
+
+    return cache;
   }
 
   /**
@@ -219,5 +226,3 @@ class GuildMemberRoleManager extends DataManager {
     return clone;
   }
 }
-
-exports.GuildMemberRoleManager = GuildMemberRoleManager;

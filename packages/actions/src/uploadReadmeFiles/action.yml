@@ -1,0 +1,5 @@
+name: 'Upload README.md files'
+description: 'Uploads the README.md files for packages that have api-extractor.json to the website.'
+runs:
+  using: node24
+  main: ../../dist/uploadReadmeFiles/index.js

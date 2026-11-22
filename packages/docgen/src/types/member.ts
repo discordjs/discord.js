@@ -1,4 +1,5 @@
-import type { DeclarationReflection } from 'typedoc';
+import { ReflectionKind } from 'typedoc';
+import type { DeclarationReflection } from '../index.js';
 import type { Member } from '../interfaces/index.js';
 import { parseType } from '../util/parseType.js';
 import { DocumentedItemMeta } from './item-meta.js';
@@ -26,7 +27,7 @@ export class DocumentedMember extends DocumentedItem<DeclarationReflection | Mem
 
 			const base = {
 				name: signature.name,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+				// eslint-disable-next-line no-param-reassign
 				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				see,
 				scope: data.flags.isStatic ? 'static' : undefined,
@@ -36,7 +37,6 @@ export class DocumentedMember extends DocumentedItem<DeclarationReflection | Mem
 						? 'private'
 						: undefined,
 				readonly: data.flags.isReadonly,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				abstract: signature.comment?.blockTags?.some((block) => block.tag === '@abstract') || undefined,
 				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
 					? (signature.comment.blockTags
@@ -51,7 +51,6 @@ export class DocumentedMember extends DocumentedItem<DeclarationReflection | Mem
 						?.find((block) => block.tag === '@default')
 						// eslint-disable-next-line no-param-reassign
 						?.content.reduce((prev, curr) => (prev += curr.text), '')
-						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 						.trim() ||
 						undefined),
 				type: signature.type
@@ -60,7 +59,7 @@ export class DocumentedMember extends DocumentedItem<DeclarationReflection | Mem
 				meta,
 			};
 
-			if (data.kindString === 'Accessor') {
+			if (data.kind === ReflectionKind.Accessor) {
 				const getter = data.getSignature;
 				const hasSetter = data.setSignature;
 
@@ -80,7 +79,7 @@ export class DocumentedMember extends DocumentedItem<DeclarationReflection | Mem
 
 				return {
 					...base,
-					// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+					// eslint-disable-next-line no-param-reassign
 					description: getter.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 					see,
 					access:
@@ -89,7 +88,6 @@ export class DocumentedMember extends DocumentedItem<DeclarationReflection | Mem
 							? 'private'
 							: undefined,
 					readonly: base.readonly || !hasSetter,
-					// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 					abstract: getter.comment?.blockTags?.some((block) => block.tag === '@abstract') || undefined,
 					deprecated: getter.comment?.blockTags?.some((block) => block.tag === '@deprecated')
 						? (getter.comment.blockTags
@@ -104,7 +102,6 @@ export class DocumentedMember extends DocumentedItem<DeclarationReflection | Mem
 							?.find((block) => block.tag === '@default')
 							// eslint-disable-next-line no-param-reassign
 							?.content.reduce((prev, curr) => (prev += curr.text), '')
-							// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 							.trim() ||
 							undefined),
 					type: getter.type ? parseType(getter.type) : undefined,

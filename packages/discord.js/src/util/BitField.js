@@ -1,12 +1,10 @@
 /* eslint-disable unicorn/prefer-number-properties */
-'use strict';
-
-const { DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
+import { DiscordjsRangeError, ErrorCodes } from '../errors/index.js';
 
 /**
  * Data structure that makes it easy to interact with a bitfield.
  */
-class BitField {
+export class BitField {
   /**
    * Numeric bitfield flags.
    * <info>Defined in extension classes</info>
@@ -131,7 +129,7 @@ class BitField {
   serialize(...hasParams) {
     const serialized = {};
     for (const [flag, bit] of Object.entries(this.constructor.Flags)) {
-      if (isNaN(flag)) serialized[flag] = this.has(bit, ...hasParams);
+      if (isNaN(flag) && bit > 0) serialized[flag] = this.has(bit, ...hasParams);
     }
 
     return serialized;
@@ -156,8 +154,8 @@ class BitField {
   }
 
   *[Symbol.iterator](...hasParams) {
-    for (const bitName of Object.keys(this.constructor.Flags)) {
-      if (isNaN(bitName) && this.has(bitName, ...hasParams)) yield bitName;
+    for (const [bitName, bit] of Object.entries(this.constructor.Flags)) {
+      if (isNaN(bitName) && bit > 0 && this.has(bit, ...hasParams)) yield bitName;
     }
   }
 
@@ -193,5 +191,3 @@ class BitField {
     throw new DiscordjsRangeError(ErrorCodes.BitFieldInvalid, bit);
   }
 }
-
-exports.BitField = BitField;

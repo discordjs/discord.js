@@ -1,28 +1,26 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
-	"name": "[REPLACE_ME]",
+	"name": "@discordjs/template-bun-typescript",
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"lint": "tsc && prettier --check . && eslint --ext .[REPLACE_IMPORT_EXT] --format=pretty src",
-		"deploy": "bun run src/util/deploy.[REPLACE_IMPORT_EXT]",
-		"format": "prettier --write . && eslint --ext .[REPLACE_IMPORT_EXT] --fix --format=pretty src",
-		"start": "bun run src/index.[REPLACE_IMPORT_EXT]"
+		"lint": "tsc && oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
+		"deploy": "bun --env-file=.env src/util/deploy.ts",
+		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions",
+		"start": "bun --env-file=.env src/index.ts"
 	},
 	"dependencies": {
-		"@discordjs/core": "^2.2.2",
-		"discord.js": "^14.22.1"
+		"@discordjs/core": "^2.6.0",
+		"discord.js": "^14.28.1"
 	},
 	"devDependencies": {
-		"@sapphire/ts-config": "^5.0.1",
-		"@types/bun": "^1.2.23",
-		"eslint": "^9.37.0",
-		"eslint-config-neon": "^0.2.7",
-		"eslint-formatter-compact": "^8.40.0",
-		"eslint-formatter-pretty": "^7.0.0",
-		"prettier": "^3.6.2",
-		"typescript": "~5.9.3",
-		"zod": "^3.25.76"
+		"@sapphire/ts-config": "^6.0.0",
+		"@types/bun": "^1.4.0",
+		"eslint-config-neon": "^0.5.4",
+		"oxfmt": "^0.78.0",
+		"oxlint": "^1.93.0",
+		"typescript": "~7.0.2",
+		"zod": "^4.5.4"
 	}
 }

@@ -1,6 +1,6 @@
 import type { RESTPostAPIApplicationCommandsJSONBody, CommandInteraction } from 'discord.js';
 import { z } from 'zod';
-import type { StructurePredicate } from '../util/loaders.[REPLACE_IMPORT_EXT]';
+import type { StructurePredicate } from '../util/loaders.ts';
 
 /**
  * Defines the structure of a command
@@ -22,7 +22,7 @@ export type Command = {
  * Defines the schema for a command
  */
 export const schema = z.object({
-	data: z.record(z.any()),
+	data: z.record(z.string(), z.any()),
 	execute: z.function(),
 });
 

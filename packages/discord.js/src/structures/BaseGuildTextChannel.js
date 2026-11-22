@@ -1,9 +1,7 @@
-'use strict';
-
-const { GuildMessageManager } = require('../managers/GuildMessageManager.js');
-const { GuildTextThreadManager } = require('../managers/GuildTextThreadManager.js');
-const { GuildChannel } = require('./GuildChannel.js');
-const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
+import { GuildMessageManager } from '../managers/GuildMessageManager.js';
+import { GuildTextThreadManager } from '../managers/GuildTextThreadManager.js';
+import { GuildChannel } from './GuildChannel.js';
+import { TextBasedChannel } from './interfaces/TextBasedChannel.js';
 
 /**
  * Represents a text-based guild channel on Discord.
@@ -11,7 +9,7 @@ const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
  * @extends {GuildChannel}
  * @implements {TextBasedChannel}
  */
-class BaseGuildTextChannel extends GuildChannel {
+export class BaseGuildTextChannel extends GuildChannel {
   constructor(guild, data, client) {
     super(guild, data, client, false);
 
@@ -161,6 +159,9 @@ class BaseGuildTextChannel extends GuildChannel {
    * required if `targetType` is {@link InviteTargetType.Stream}, the application must have the
    * {@link InviteTargetType.EmbeddedApplication} flag
    * @property {InviteTargetType} [targetType] The type of the target for this voice channel invite
+   * @property {UserResolvable[]|BufferResolvable} [targetUsersFile] An array of users or a CSV file with a single column of user ids
+   * for all the users able to accept this invite
+   * @property {RoleResolvable[]} [roles] The roles in the guild given to users that accept this invite
    * @property {string} [reason] The reason for creating the invite
    */
 
@@ -221,5 +222,3 @@ class BaseGuildTextChannel extends GuildChannel {
 }
 
 TextBasedChannel.applyToClass(BaseGuildTextChannel);
-
-exports.BaseGuildTextChannel = BaseGuildTextChannel;

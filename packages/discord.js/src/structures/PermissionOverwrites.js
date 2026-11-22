@@ -1,17 +1,15 @@
-'use strict';
-
-const { OverwriteType } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { PermissionsBitField } = require('../util/PermissionsBitField.js');
-const { Base } = require('./Base.js');
-const { Role } = require('./Role.js');
+import { OverwriteType } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { PermissionsBitField } from '../util/PermissionsBitField.js';
+import { Base } from './Base.js';
+import { Role } from './Role.js';
 
 /**
  * Represents a permission overwrite for a role or member in a guild channel.
  *
  * @extends {Base}
  */
-class PermissionOverwrites extends Base {
+export class PermissionOverwrites extends Base {
   constructor(client, data, channel) {
     super(client);
 
@@ -24,7 +22,7 @@ class PermissionOverwrites extends Base {
      */
     Object.defineProperty(this, 'channel', { value: channel });
 
-    if (data) this._patch(data);
+    this._patch(data);
   }
 
   _patch(data) {
@@ -217,5 +215,3 @@ class PermissionOverwrites extends Base {
     };
   }
 }
-
-exports.PermissionOverwrites = PermissionOverwrites;

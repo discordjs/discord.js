@@ -1,26 +1,20 @@
 packages:
   - apps/*
   - packages/*
+  - packages/create-discord-bot/template/**/*
+
+allowBuilds:
+  '@discordjs/opus': true
+  bufferutil: true
+  core-js-pure: false
+  esbuild: true
+  rclone.js: true
+  unrs-resolver: false
+  utf-8-validate: true
+  workerd: true
+  zlib-sync: true
 
 autoInstallPeers: false
-
-ignoredBuiltDependencies:
-  - core-js-pure
-  - unrs-resolver
-
-onlyBuiltDependencies:
-  - '@discordjs/opus'
-  - '@tailwindcss/oxide'
-  - bufferutil
-  - esbuild
-  - protobufjs
-  - sharp
-  - utf-8-validate
-  - zlib-sync
-
-patchedDependencies:
-  '@microsoft/tsdoc-config@0.17.1': patches/@microsoft__tsdoc-config@0.17.1.patch
-  eslint-config-neon@0.2.7: patches/eslint-config-neon@0.2.7.patch
 
 peerDependencyRules:
   allowAny:
@@ -29,8 +23,6 @@ peerDependencyRules:
     - '*'
 
 publicHoistPattern:
-  - '*eslint*'
-  - '*prettier*'
   - '*@rushstack/node-core-library*'
   - '*jju*'
 

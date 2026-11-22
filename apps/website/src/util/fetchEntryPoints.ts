@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { PACKAGES_WITH_ENTRY_POINTS } from './constants';
 import { ENV } from './env';
 
-export async function fetchEntryPoints(packageName: string, version: string) {
+export async function fetchEntryPoints(packageName: string, version: string): Promise<EntryPoint[] | null> {
 	const hasEntryPoint = PACKAGES_WITH_ENTRY_POINTS.includes(packageName);
 
 	if (!hasEntryPoint) {
@@ -36,4 +36,8 @@ export async function fetchEntryPoints(packageName: string, version: string) {
 	}
 
 	return fileContent.json();
+}
+
+export interface EntryPoint {
+	readonly entryPoint: string;
 }
