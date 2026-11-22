@@ -124,6 +124,10 @@ const Messages = {
     `Soundboard sound is a default (non-guild) soundboard sound and can't be ${action}.`,
   [DjsErrorCodes.NotGuildSticker]: 'Sticker is a standard (non-guild) sticker and has no author.',
 
+  [DjsErrorCodes.SearchIndexNotYetAvailable]: (indexed, retryAfter) =>
+    // eslint-disable-next-line max-len
+    `Search index not yet available (currently ${indexed} indexed) and opted out of retrying. You can retry in ${retryAfter} seconds.`,
+
   [DjsErrorCodes.ReactionResolveUser]: "Couldn't resolve the user id to remove from the reaction.",
 
   [DjsErrorCodes.VanityURL]: 'This guild does not have the vanity URL feature enabled.',

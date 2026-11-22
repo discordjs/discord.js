@@ -135,7 +135,9 @@
 
  * @property {'NotGuildSoundboardSound'} NotGuildSoundboardSound
  * @property {'NotGuildSticker'} NotGuildSticker
-
+ *
+ * @property {'SearchIndexNotYetAvailable'} SearchIndexNotYetAvailable
+ *
  * @property {'ReactionResolveUser'} ReactionResolveUser
 
  * @property {'VanityURL'} VanityURL
@@ -298,6 +300,8 @@ const keys = [
 
   'NotGuildSoundboardSound',
   'NotGuildSticker',
+
+  'SearchIndexNotYetAvailable',
 
   'ReactionResolveUser',
 
