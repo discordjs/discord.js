@@ -371,7 +371,7 @@ class GuildChannelManager extends CachedManager {
       );
     }
 
-    if (options.defaultReactionEmoji?.id || options.DefaultReactionEmoji?.name) {
+    if (options.defaultReactionEmoji?.id || options.defaultReactionEmoji?.name) {
       snakeCaseBody.default_reaction_emoji = transformGuildDefaultReaction(options.defaultReactionEmoji);
     }
 
