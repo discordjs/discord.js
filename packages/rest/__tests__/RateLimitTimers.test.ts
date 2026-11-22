@@ -11,6 +11,16 @@ afterEach(() => {
 	vitest.useRealTimers();
 });
 
+// Promise.withResolvers() needs Node.js 22, which this branch does not require.
+function withResolvers<Value>() {
+	let resolvePromise!: (value: Value) => void;
+	const promise = new Promise<Value>((resolve) => {
+		resolvePromise = resolve;
+	});
+
+	return { promise, resolve: resolvePromise };
+}
+
 test('rejecting a global rate limit cancels its unused shared timer', async () => {
 	const makeRequest = vitest.fn();
 	const api = new REST({ hashSweepInterval: 0, handlerSweepInterval: 0, offset: 0, makeRequest }).setToken(
@@ -210,8 +220,8 @@ test.each([true, false])(
 		);
 		api.globalRemaining = 0;
 		api.globalReset = Date.now() + 1_000;
-		const firstPolicy = Promise.withResolvers<boolean>();
-		const secondPolicy = Promise.withResolvers<boolean>();
+		const firstPolicy = withResolvers<boolean>();
+		const secondPolicy = withResolvers<boolean>();
 		const first = expect(
 			api.get('/first', { rejectOnRateLimit: async () => firstPolicy.promise }),
 		).rejects.toBeInstanceOf(RateLimitError);
@@ -241,7 +251,7 @@ test('a rejection after an expired global delay does not cancel a newer delay', 
 	);
 	api.globalRemaining = 0;
 	api.globalReset = Date.now() + 1_000;
-	const policy = Promise.withResolvers<boolean>();
+	const policy = withResolvers<boolean>();
 	const rejected = expect(
 		api.get('/rejected', { rejectOnRateLimit: async () => policy.promise }),
 	).rejects.toBeInstanceOf(RateLimitError);
