@@ -14,11 +14,13 @@ export default (client, { d: data }) => {
   }
 
   // Update the state
-  const oldState = guild.voiceStates.cache.get(data.user_id)?._clone() ?? new VoiceState(guild, {
-    user_id: data.user_id,
-    mute: member._serverMute,
-    deaf: member._serverDeaf,
-  });
+  const oldState =
+    guild.voiceStates.cache.get(data.user_id)?._clone() ??
+    new VoiceState(guild, {
+      user_id: data.user_id,
+      mute: member._serverMute,
+      deaf: member._serverDeaf,
+    });
 
   const newState = guild.voiceStates._add(data);
 

@@ -213,11 +213,14 @@ export class GuildMember extends Base {
    * @readonly
    */
   get voice() {
-    return this.guild.voiceStates.cache.get(this.id) ?? new VoiceState(this.guild, {
-      user_id: this.id,
-      mute: this._serverMute,
-      deaf: this._serverDeaf,
-    });
+    return (
+      this.guild.voiceStates.cache.get(this.id) ??
+      new VoiceState(this.guild, {
+        user_id: this.id,
+        mute: this._serverMute,
+        deaf: this._serverDeaf,
+      })
+    );
   }
 
   /**
