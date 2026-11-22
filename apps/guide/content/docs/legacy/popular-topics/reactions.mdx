@@ -1,0 +1,327 @@
+---
+title: Reactions
+---
+
+## Reacting to messages
+
+One of the first things many people want to know is how to react with emojis, both custom and "regular" (Unicode). There are different routes you need to take for each of those, so let's look at both.
+
+Here's the base code we'll be using:
+
+```js title="reactionsample.js" lineNumbers
+const { Client, Events, GatewayIntentBits } = require('discord.js');
+
+const client = new Client({
+	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
+});
+
+client.once(Events.ClientReady, (readyClient) => {
+	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+});
+
+client.on(Events.InteractionCreate, (interaction) => {
+	// ...
+});
+
+client.login('your-token-goes-here');
+```
+
+### Unicode emojis
+
+To react with a Unicode emoji, you will need the actual Unicode character of the emoji. There are many ways to get a Unicode character of an emoji, but the easiest way would be through Discord itself. If you send a message with a Unicode emoji (such as `:smile:`, for example) and put a `\` before it, it will "escape" the emoji and display the Unicode character instead of the standard emoji image.
+
+To react with an emoji, you need to use the `message.react()` method. Once you have the emoji character, all you need to do is copy & paste it as a string inside the `.react()` method!
+
+```js title="reactionsample.js" lineNumbers=11
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+
+	const { commandName } = interaction;
+
+	if (commandName === 'react') {
+		const response = await interaction.reply({ content: 'You can react with Unicode emojis!', withResponse: true });
+		response.resource.message.react('😄'); // [!code word:react]
+	}
+});
+```
+
+### Custom emojis
+
+For custom emojis, there are multiple ways of reacting. Like Unicode emojis, you can also escape custom emojis. However, when you escape a custom emoji, the result will be different.
+
+This format is essentially the name of the emoji, followed by its ID. Copy & paste the ID into the `.react()` method as a string.
+
+```js title="reactionsample.js" lineNumbers=11
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+
+	const { commandName } = interaction;
+
+	if (commandName === 'react-custom') {
+		const response = await interaction.reply({ content: 'You can react with custom emojis!', withResponse: true });
+		response.resource.message.react('😄'); // [!code --]
+		response.resource.message.react('123456789012345678'); // [!code word:123456789012345678] [!code ++]
+	}
+});
+```
+
+<Callout>
+    You can also pass different formats of the emoji to the `.react()` method.   
+    In the emoji mention format, animated emoji are prefixed with an `a`:
+
+    ```js
+    message.react('<:blobreach:123456789012345678>');
+    message.react('blobreach:123456789012345678');
+    message.react('<a:animated_blobreach:123456789012345678>'); // [!code word:a\:]
+    message.react('a:animated_blobreach:123456789012345678');
+    ```
+
+</Callout>
+
+Great! This route may not always be available to you, though. Sometimes you'll need to react with an emoji programmatically. To do so, you'll need to retrieve the emoji object.
+
+Two of the easiest ways you can retrieve an emoji would be:
+
+- Use `.find()` on a Collection of Emojis.
+- Use `.get()` on the `client.emojis.cache` Collection.
+
+<Callout>
+	Two or more emojis can have the same name, and using `.find()` will only return the **first** entry it finds. As such,
+	this can cause unexpected results.
+</Callout>
+
+Using `.find()`, your code would look something like this:
+
+```js title="reactionsample.js" lineNumbers=16
+if (commandName === 'react-custom') {
+	const response = await interaction.reply({ content: 'You can react with custom emojis!', withResponse: true });
+	const message = response.resource.message;
+	const reactionEmoji = message.guild.emojis.cache.find((emoji) => emoji.name === 'blobreach'); // [!code word:find]
+	message.react(reactionEmoji);
+}
+```
+
+Using `.get()`, your code would look something like this:
+
+```js title="reactionsample.js" lineNumbers=16
+if (commandName === 'react-custom') {
+	const response = await interaction.reply({ content: 'You can react with custom emojis!', withResponse: true });
+	const reactionEmoji = client.emojis.cache.get('123456789012345678'); // [!code word:get]
+	response.resource.message.react(reactionEmoji);
+}
+```
+
+Of course, if you already have the emoji ID, you should put that directly inside the `.react()` method. But if you want to do other things with the emoji data later on (e.g., display the name or image URL), it's best to retrieve the full emoji object.
+
+### Reacting in order
+
+If you just put one `message.react()` under another, it won't always react in order as-is. This is because `.react()` an asynchronous operation. Meaning `react('🍊')` will not wait for `react('🍎')` to complete before making the API call and cause a race condition. If you run this code multiple times you should be able to observe this inconsistent order:
+
+```js title="reactionsample.js" lineNumbers=11
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+
+	const { commandName } = interaction;
+
+	if (commandName === 'fruits') {
+		const response = await interaction.reply({ content: 'Reacting with fruits!', withResponse: true });
+		const { message } = response.resource;
+		message.react('🍎');
+		message.react('🍊');
+		message.react('🍇');
+	}
+});
+```
+
+As you can see, if you leave it like that, it won't display as you want. It was able to react correctly on the first try but reacts differently each time after that.
+
+Luckily, there are two easy solutions to this. The first would be to chain `.then()`s in the order you want it to display.
+
+```js title="reactionsample.js" lineNumbers=11
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+
+	const { commandName } = interaction;
+
+	if (commandName === 'fruits') {
+		const response = await interaction.reply({ content: 'Reacting with fruits!', withResponse: true });
+
+		response.resource.message
+			.react('🍎')
+			.then(() => message.react('🍊'))
+			.then(() => message.react('🍇'))
+			.catch((error) => console.error('One of the emojis failed to react:', error));
+	}
+});
+```
+
+The other would be to use the `async`/`await` keywords.
+
+```js title="reactionsample.js" lineNumbers=11
+// [!code word:async]
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+
+	const { commandName } = interaction;
+
+	if (commandName === 'fruits') {
+		const response = await interaction.reply({ content: 'Reacting with fruits!', withResponse: true });
+		const { message } = response.resource;
+
+		try {
+			await message.react('🍎'); // [!code word:await]
+			await message.react('🍊');
+			await message.react('🍇');
+		} catch (error) {
+			console.error('One of the emojis failed to react:', error);
+		}
+	}
+});
+```
+
+If you try again with either of the code blocks above, you'll get the result you originally wanted!
+
+<Callout>
+	If you aren't familiar with Promises or `async`/`await`, you can read more about them on
+	[MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise) or [our guide page on
+	async/await](../additional-info/async-await.md)!
+</Callout>
+
+### Handling multiple reactions if the order doesn't matter
+
+However, if you don't mind the order the emojis react in, you can take advantage of `Promise.all()`, like so:
+
+```js title="reactionsample.js" lineNumbers=16
+if (commandName === 'fruits') {
+	const message = await interaction.reply({ content: 'Reacting with fruits!' });
+	Promise.all([message.react('🍎'), message.react('🍊'), message.react('🍇')]).catch((error) =>
+		console.error('One of the emojis failed to react:', error),
+	);
+}
+```
+
+This small optimization allows you to use `.then()` to handle when all of the Promises have resolved, or `.catch()` when one fails. You can also `await` it to do things **after** all the reactions resolved since it returns a Promise.
+
+## Removing reactions
+
+Now that you know how to add reactions, you might be asking, how do you remove them? In this section, you will learn how to remove all reactions, remove reactions by user, and remove reactions by emoji.
+
+<Callout type="warn">
+	All of these methods require `ManageMessages` permissions. Ensure your bot has permissions before attempting to
+	utilize any of these methods, as it will error if it doesn't.
+</Callout>
+
+### Removing all reactions
+
+Removing all reactions from a message is the easiest, the API allows you to do this through a single call. It can be done through the `message.reactions.removeAll()` method.
+
+```js
+message.reactions.removeAll().catch((error) => console.error('Failed to clear reactions:', error)); // [!code word:removeAll]
+```
+
+### Removing reactions by emoji
+
+Removing reactions by emoji is easily done by using `MessageReaction#remove`.
+
+```js
+message.reactions.cache
+	.get('123456789012345678')
+	.remove() // [!code word:remove]
+	.catch((error) => console.error('Failed to remove reactions:', error));
+```
+
+### Removing reactions by user
+
+<Callout>
+	If you are not familiar with `Collection#filter` and
+	[`Map.has()`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/has) take the time to
+	understand what they do and then come back.
+</Callout>
+
+Removing reactions by a user is not as straightforward as removing by emoji or removing all reactions. The API does not provide a method for selectively removing the reactions of a user. This means you will have to iterate through reactions that include the user and remove them.
+
+```js
+const userReactions = message.reactions.cache.filter((reaction) => reaction.users.cache.has(userId));
+
+try {
+	for (const reaction of userReactions.values()) {
+		await reaction.users.remove(userId);
+	}
+} catch (error) {
+	console.error('Failed to remove reactions.');
+}
+```
+
+## Awaiting reactions
+
+A common use case for reactions in commands is having a user confirm or deny an action or creating a poll system. Luckily, we actually [already have a guide page covering this](./collectors)! Check out that page if you want a more in-depth explanation. Otherwise, here's a basic example for reference:
+
+```js
+message.react('👍').then(() => message.react('👎'));
+
+const collectorFilter = (reaction, user) => {
+	return ['👍', '👎'].includes(reaction.emoji.name) && user.id === interaction.user.id;
+};
+
+message
+	.awaitReactions({ filter: collectorFilter, max: 1, time: 60_000, errors: ['time'] })
+	.then((collected) => {
+		const reaction = collected.first();
+
+		if (reaction.emoji.name === '👍') {
+			message.reply('You reacted with a thumbs up.');
+		} else {
+			message.reply('You reacted with a thumbs down.');
+		}
+	})
+	.catch((collected) => {
+		message.reply('You reacted with neither a thumbs up, nor a thumbs down.');
+	});
+```
+
+## Listening for reactions on old messages
+
+Messages sent before your bot started are uncached unless you fetch them first. By default, the library does not emit client events if the data received and cached is not sufficient to build fully functional objects.
+Since version 12, you can change this behavior by activating partials. For a full explanation of partials see [this page](./partials).
+
+Make sure you enable partial structures for `Message`, `Channel`, and `Reaction` when instantiating your client if you want reaction events on uncached messages for both server and direct message channels. If you do not want to support direct message channels, you can exclude `Channel`.
+
+<Callout>
+	If you use [gateway intents](./intents) but can't or don't want to use the privileged `GuildPresences` intent, you
+	additionally need the `User` partial.
+</Callout>
+
+```js title="old-reactions.js"
+const { Client, Events, GatewayIntentBits, Partials } = require('discord.js');
+
+const client = new Client({
+	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
+	// [!code word:Partials]
+	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
+});
+
+client.on(Events.MessageReactionAdd, async (reaction, user) => {
+	// When a reaction is received, check if the structure is partial
+	if (reaction.partial) {
+		// If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
+		try {
+			await reaction.fetch();
+		} catch (error) {
+			console.error('Something went wrong when fetching the message:', error);
+			// Return as `reaction.message.author` may be undefined/null
+			return;
+		}
+	}
+
+	// Now the message has been cached and is fully available
+	console.log(`${reaction.message.author}'s message "${reaction.message.content}" gained a reaction!`);
+	// The reaction is now also fully available and the properties will be reflected accurately:
+	console.log(`${reaction.count} user(s) have given the same reaction to this message!`);
+});
+```
+
+<Callout>
+	Partial structures are enabled **globally**. You cannot only make them work for a specific event or cache, and you
+	very likely **need to adapt other parts of your code** that are accessing data from the relevant caches. All caches
+	holding the respective structure type might return partials as well! For more info, check out [this page](./partials).
+</Callout>

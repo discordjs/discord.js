@@ -1,11 +1,10 @@
-'use strict';
-
-const { Routes } = require('discord-api-types/v10');
-const Base = require('./Base');
-const IntegrationApplication = require('./IntegrationApplication');
+import { Routes } from 'discord-api-types/v10';
+import { Base } from './Base.js';
+import { IntegrationApplication } from './IntegrationApplication.js';
 
 /**
  * The information account for an integration
+ *
  * @typedef {Object} IntegrationAccount
  * @property {Snowflake|string} id The id of the account
  * @property {string} name The name of the account
@@ -13,47 +12,54 @@ const IntegrationApplication = require('./IntegrationApplication');
 
 /**
  * The type of an {@link Integration}. This can be:
- * * `twitch`
- * * `youtube`
- * * `discord`
- * * `guild_subscription`
+ * - `twitch`
+ * - `youtube`
+ * - `discord`
+ * - `guild_subscription`
+ *
  * @typedef {string} IntegrationType
  */
 
 /**
  * Represents a guild integration.
+ *
  * @extends {Base}
  */
-class Integration extends Base {
+export class Integration extends Base {
   constructor(client, data, guild) {
     super(client);
 
     /**
      * The guild this integration belongs to
+     *
      * @type {Guild}
      */
     this.guild = guild;
 
     /**
      * The integration id
+     *
      * @type {Snowflake|string}
      */
     this.id = data.id;
 
     /**
      * The integration name
+     *
      * @type {string}
      */
     this.name = data.name;
 
     /**
      * The integration type
+     *
      * @type {IntegrationType}
      */
     this.type = data.type;
 
     /**
      * Whether this integration is enabled
+     *
      * @type {?boolean}
      */
     this.enabled = data.enabled ?? null;
@@ -61,6 +67,7 @@ class Integration extends Base {
     if ('syncing' in data) {
       /**
        * Whether this integration is syncing
+       *
        * @type {?boolean}
        */
       this.syncing = data.syncing;
@@ -70,6 +77,7 @@ class Integration extends Base {
 
     /**
      * The role that this integration uses for subscribers
+     *
      * @type {?Role}
      */
     this.role = this.guild.roles.resolve(data.role_id);
@@ -77,6 +85,7 @@ class Integration extends Base {
     if ('enable_emoticons' in data) {
       /**
        * Whether emoticons should be synced for this integration (twitch only currently)
+       *
        * @type {?boolean}
        */
       this.enableEmoticons = data.enable_emoticons;
@@ -87,6 +96,7 @@ class Integration extends Base {
     if (data.user) {
       /**
        * The user for this integration
+       *
        * @type {?User}
        */
       this.user = this.client.users._add(data.user);
@@ -96,6 +106,7 @@ class Integration extends Base {
 
     /**
      * The account integration information
+     *
      * @type {IntegrationAccount}
      */
     this.account = data.account;
@@ -103,6 +114,7 @@ class Integration extends Base {
     if ('synced_at' in data) {
       /**
        * The timestamp at which this integration was last synced at
+       *
        * @type {?number}
        */
       this.syncedTimestamp = Date.parse(data.synced_at);
@@ -113,6 +125,7 @@ class Integration extends Base {
     if ('subscriber_count' in data) {
       /**
        * How many subscribers this integration has
+       *
        * @type {?number}
        */
       this.subscriberCount = data.subscriber_count;
@@ -123,6 +136,7 @@ class Integration extends Base {
     if ('revoked' in data) {
       /**
        * Whether this integration has been revoked
+       *
        * @type {?boolean}
        */
       this.revoked = data.revoked;
@@ -135,6 +149,7 @@ class Integration extends Base {
 
   /**
    * The date at which this integration was last synced at
+   *
    * @type {?Date}
    * @readonly
    */
@@ -144,6 +159,7 @@ class Integration extends Base {
 
   /**
    * All roles that are managed by this integration
+   *
    * @type {Collection<Snowflake, Role>}
    * @readonly
    */
@@ -156,6 +172,7 @@ class Integration extends Base {
     if ('expire_behavior' in data) {
       /**
        * The behavior of expiring subscribers
+       *
        * @type {?IntegrationExpireBehavior}
        */
       this.expireBehavior = data.expire_behavior;
@@ -166,6 +183,7 @@ class Integration extends Base {
     if ('expire_grace_period' in data) {
       /**
        * The grace period (in days) before expiring subscribers
+       *
        * @type {?number}
        */
       this.expireGracePeriod = data.expire_grace_period;
@@ -179,6 +197,7 @@ class Integration extends Base {
       } else {
         /**
          * The application for this integration
+         *
          * @type {?IntegrationApplication}
          */
         this.application = new IntegrationApplication(this.client, data.application);
@@ -190,6 +209,7 @@ class Integration extends Base {
     if ('scopes' in data) {
       /**
        * The scopes this application has been authorized for
+       *
        * @type {OAuth2Scopes[]}
        */
       this.scopes = data.scopes;
@@ -200,6 +220,7 @@ class Integration extends Base {
 
   /**
    * Deletes this integration.
+   *
    * @returns {Promise<Integration>}
    * @param {string} [reason] Reason for deleting this integration
    */
@@ -216,5 +237,3 @@ class Integration extends Base {
     });
   }
 }
-
-module.exports = Integration;

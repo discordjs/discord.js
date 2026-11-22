@@ -1,27 +1,25 @@
 import { mkdir, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { cwd } from 'node:process';
-import type {
-	ApiClass,
-	ApiConstructor,
-	ApiDeclaredItem,
-	ApiDocumentedItem,
-	ApiEntryPoint,
-	ApiEnum,
-	ApiEnumMember,
-	ApiEvent,
-	ApiInterface,
-	ApiItem,
-	ApiItemContainerMixin,
-	ApiMethod,
-	ApiMethodSignature,
-	ApiProperty,
-	ApiPropertySignature,
-	ApiTypeAlias,
-	ApiTypeParameterListMixin,
-	ApiVariable,
-} from '@discordjs/api-extractor-model';
+import process from 'node:process';
 import {
+	type ApiClass,
+	type ApiConstructor,
+	type ApiDeclaredItem,
+	type ApiDocumentedItem,
+	type ApiEntryPoint,
+	type ApiEnum,
+	type ApiEnumMember,
+	type ApiEvent,
+	type ApiInterface,
+	type ApiItem,
+	type ApiItemContainerMixin,
+	type ApiMethod,
+	type ApiMethodSignature,
+	type ApiProperty,
+	type ApiPropertySignature,
+	type ApiTypeAlias,
+	type ApiVariable,
+	ApiTypeParameterListMixin,
 	Excerpt,
 	Meaning,
 	ApiAbstractMixin,
@@ -39,6 +37,7 @@ import {
 } from '@discordjs/api-extractor-model';
 import { DocNodeKind, SelectorKind, StandardTags } from '@microsoft/tsdoc';
 import type {
+	DocEscapedText,
 	DocNode,
 	DocNodeContainer,
 	DocDeclarationReference,
@@ -47,25 +46,20 @@ import type {
 	DocFencedCode,
 	DocComment,
 } from '@microsoft/tsdoc';
-import type { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
+import type { DeclarationReference, ModuleSource } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
+import { BuiltinDocumentationLinks } from './builtinDocumentationLinks.js';
 import { PACKAGES, fetchVersionDocs, fetchVersions } from './shared.js';
 
-function resolvePackageName(packageName: string) {
-	return packageName === 'discord.js' ? packageName : `@discordjs/${packageName}`;
+function findMemberByKey(entry: ApiEntryPoint, containerKey: string) {
+	return entry.tryGetMemberByKey(containerKey);
 }
 
-function findMemberByKey(model: ApiModel, packageName: string, containerKey: string) {
-	const pkg = model.tryGetPackageByName(resolvePackageName(packageName))!;
-	return (pkg.members[0] as ApiEntryPoint).tryGetMemberByKey(containerKey);
-}
-
-function findMember(model: ApiModel, packageName: string, memberName: string | undefined) {
+function findMember(entry: ApiEntryPoint, memberName: string | undefined) {
 	if (!memberName) {
 		return undefined;
 	}
 
-	const pkg = model.tryGetPackageByName(resolvePackageName(packageName))!;
-	return pkg.entryPoints[0]?.findMembersByName(memberName)[0];
+	return entry.findMembersByName(memberName)[0];
 }
 
 /**
@@ -99,7 +93,7 @@ export function resolveMembers<WantedItem extends ApiItem>(
 		.getMergedSiblings()
 		.filter((sibling) => sibling.containerKey !== parent.containerKey)
 		.flatMap((sibling) => (sibling as ApiItemContainerMixin).findMembersWithInheritance().items)
-		.filter((item) => predicate(item) && !seenItems.has(item.containerKey))
+		.filter((item) => predicate(item) && !seenItems.has(item.displayName))
 		.map((item) => ({
 			item: item as WantedItem,
 			inherited: item.parent ? (item.parent as ApiItemContainerMixin) : undefined,
@@ -153,8 +147,10 @@ function resolveCanonicalReference(
 				containerKey: `|${
 					canonicalReference.symbol.meaning
 				}|${canonicalReference.symbol.componentPath.component.toString()}`,
+				getAssociatedEntryPoint() {
+					return canonicalReference.source as ModuleSource;
+				},
 			},
-			// eslint-disable-next-line unicorn/better-regex
 			version: apiPackage?.dependencies?.[canonicalReference.source.packageName]?.replace(/[~^]/, ''),
 		};
 	else if (
@@ -173,8 +169,10 @@ function resolveCanonicalReference(
 				members: canonicalReference.memberReferences
 					.slice(1)
 					.map((member) => ({ kind: member.kind, displayName: member.memberIdentifier!.identifier! })),
+				getAssociatedEntryPoint() {
+					return canonicalReference;
+				},
 			},
-			// eslint-disable-next-line unicorn/better-regex
 			version: apiPackage?.dependencies?.[canonicalReference.packageName ?? '']?.replace(/[~^]/, ''),
 		};
 	}
@@ -210,54 +208,31 @@ export function hasEvents(item: ApiItemContainerMixin) {
 	return resolveMembers(item, memberPredicate).some(({ item: member }) => member.kind === ApiItemKind.Event);
 }
 
+interface ApiEntryPointLike {
+	importPath: string | undefined;
+}
+
 interface ApiItemLike {
 	containerKey?: string;
 	displayName: string;
+	getAssociatedEntryPoint?(): ApiEntryPointLike | undefined;
 	kind: string;
 	members?: readonly ApiItemLike[];
 	parent?: ApiItemLike | undefined;
 }
 
-function resolveItemURI(item: ApiItemLike): string {
-	return !item.parent || item.parent.kind === ApiItemKind.EntryPoint
-		? `${item.displayName}:${item.kind}`
-		: `${item.parent.displayName}:${item.parent.kind}#${item.displayName}`;
+function resolveItemURI(item: ApiItemLike, entryPoint?: ApiEntryPoint): string {
+	const actualEntryPoint = entryPoint ?? item.getAssociatedEntryPoint?.();
+	return `${actualEntryPoint?.importPath ? `${actualEntryPoint.importPath}/` : ''}${
+		!item.parent || item.parent.kind === ApiItemKind.EntryPoint
+			? `${item.displayName}:${item.kind}`
+			: `${item.parent.displayName}:${item.parent.kind}#${item.displayName}`
+	}`;
 }
 
-function itemExcerptText(excerpt: Excerpt, apiPackage: ApiPackage) {
-	const DISCORD_API_TYPES_VERSION = 'v10';
-	const DISCORD_API_TYPES_DOCS_URL = `https://discord-api-types.dev/api/discord-api-types-${DISCORD_API_TYPES_VERSION}`;
-
+function itemExcerptText(excerpt: Excerpt, apiPackage: ApiPackage, parent?: ApiTypeParameterListMixin) {
 	return excerpt.spannedTokens.map((token) => {
 		if (token.kind === ExcerptTokenKind.Reference) {
-			const source = token.canonicalReference?.source;
-			const symbol = token.canonicalReference?.symbol;
-
-			if (source && 'packageName' in source && source.packageName === 'discord-api-types' && symbol) {
-				const { meaning, componentPath: path } = symbol;
-				let href = DISCORD_API_TYPES_DOCS_URL;
-
-				// dapi-types doesn't have routes for class members
-				// so we can assume this member is for an enum
-				if (meaning === 'member' && path && 'parent' in path) {
-					// unless it's a variable like FormattingPatterns.Role
-					if (path.parent.toString() === '__type') {
-						href += `#${token.text.split('.')[0]}`;
-					} else {
-						href += `/enum/${path.parent}#${path.component}`;
-					}
-				} else if (meaning === 'type' || meaning === 'var') {
-					href += `#${token.text}`;
-				} else {
-					href += `/${meaning}/${token.text}`;
-				}
-
-				return {
-					text: token.text,
-					href,
-				};
-			}
-
 			if (token.canonicalReference) {
 				const resolved = resolveCanonicalReference(token.canonicalReference, apiPackage);
 
@@ -285,6 +260,27 @@ function itemExcerptText(excerpt: Excerpt, apiPackage: ApiPackage) {
 				};
 			}
 
+			if (token.text in BuiltinDocumentationLinks) {
+				return {
+					text: token.text,
+					href: BuiltinDocumentationLinks[token.text as keyof typeof BuiltinDocumentationLinks],
+				};
+			}
+
+			if (parent?.typeParameters.some((type) => type.name === token.text)) {
+				const resolvedParent = resolveCanonicalReference(parent.canonicalReference, apiPackage);
+				return {
+					text: token.text,
+					resolvedItem: {
+						kind: 'TypeParameter',
+						displayName: token.text,
+						containerKey: `${parent.containerKey}|${token.text}`,
+						uri: `${resolveItemURI(parent)}#${token.text}`,
+						packageName: resolvedParent?.package?.replace('@discordjs/', ''),
+					},
+				};
+			}
+
 			return {
 				text: token.text,
 			};
@@ -297,15 +293,17 @@ function itemExcerptText(excerpt: Excerpt, apiPackage: ApiPackage) {
 }
 
 function itemTsDoc(item: DocNode, apiItem: ApiItem) {
-	const DISCORD_API_TYPES_VERSION = 'v10';
-	const DISCORD_API_TYPES_DOCS_URL = `https://discord-api-types.dev/api/discord-api-types-${DISCORD_API_TYPES_VERSION}`;
-
 	const createNode = (node: DocNode): any => {
 		switch (node.kind) {
 			case DocNodeKind.PlainText:
 				return {
 					kind: DocNodeKind.PlainText,
 					text: (node as DocPlainText).text,
+				};
+			case DocNodeKind.EscapedText:
+				return {
+					kind: DocNodeKind.PlainText,
+					text: (node as DocEscapedText).decodedText,
 				};
 			case DocNodeKind.Section:
 			case DocNodeKind.Paragraph:
@@ -340,43 +338,33 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 					const resolved = resolveCanonicalReference(codeDestination, apiItem.getAssociatedPackage());
 
 					if (!foundItem && !resolved) {
-						return {
-							kind: DocNodeKind.LinkTag,
-							text: codeDestination.memberReferences[0]?.memberIdentifier?.identifier ?? null,
-						};
-					}
+						const itemName = codeDestination.memberReferences[0]?.memberIdentifier?.identifier;
 
-					if (resolved && resolved.package === 'discord-api-types') {
-						const { displayName, kind, members, containerKey } = resolved.item;
-						let href = DISCORD_API_TYPES_DOCS_URL;
-
-						// dapi-types doesn't have routes for class members
-						// so we can assume this member is for an enum
-						if (kind === 'enum' && members?.[0]) {
-							href += `/enum/${displayName}#${members[0].displayName}`;
-						} else if (kind === 'type' || kind === 'var') {
-							href += `#${displayName}`;
-						} else {
-							href += `/${kind}/${displayName}`;
+						if (itemName && itemName in BuiltinDocumentationLinks) {
+							return {
+								kind: DocNodeKind.LinkTag,
+								text: itemName,
+								uri: BuiltinDocumentationLinks[itemName as keyof typeof BuiltinDocumentationLinks],
+							};
 						}
 
 						return {
 							kind: DocNodeKind.LinkTag,
-							text: displayName,
-							containerKey,
-							uri: href,
-							members: members?.map((member) => `.${member.displayName}`).join('') ?? '',
+							text: itemName ?? null,
 						};
 					}
 
 					return {
 						kind: DocNodeKind.LinkTag,
-						text: linkText ?? foundItem?.displayName ?? resolved!.item.displayName,
+						text:
+							linkText ??
+							foundItem?.displayName ??
+							[resolved!.item.displayName, ...(resolved?.item.members?.map((mem) => mem.displayName) ?? [])].join('.'),
 						uri: resolveItemURI(foundItem ?? resolved!.item),
 						resolvedPackage: {
 							packageName: resolved?.package ?? apiItem.getAssociatedPackage()?.displayName.replace('@discordjs/', ''),
 							version: resolved?.package
-								? apiItem.getAssociatedPackage()?.dependencies?.[resolved.package] ?? null
+								? (apiItem.getAssociatedPackage()?.dependencies?.[resolved.package] ?? null)
 								: null,
 						},
 					};
@@ -419,12 +407,16 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 				const comment = node as DocComment;
 
 				const exampleBlocks = comment.customBlocks.filter(
-					(block) => block.blockTag.tagName.toUpperCase() === StandardTags.example.tagNameWithUpperCase,
+					(block) => block.blockTag.tagNameWithUpperCase === StandardTags.example.tagNameWithUpperCase,
 				);
 
 				const defaultValueBlock = comment.customBlocks.find(
-					(block) => block.blockTag.tagName.toUpperCase() === StandardTags.defaultValue.tagNameWithUpperCase,
+					(block) => block.blockTag.tagNameWithUpperCase === StandardTags.defaultValue.tagNameWithUpperCase,
 				);
+
+				const unstableBlock = comment.customBlocks.find((block) => block.blockTag.tagNameWithUpperCase === '@UNSTABLE');
+
+				const mixesBlocks = comment.customBlocks.filter((block) => block.blockTag.tagNameWithUpperCase === '@MIXES');
 
 				return {
 					kind: DocNodeKind.Comment,
@@ -453,10 +445,18 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 								.flat(1)
 								.filter((val: any) => val.kind !== DocNodeKind.SoftBreak)
 						: [],
+					unstableBlock: unstableBlock
+						? createNode(unstableBlock.content)
+								.flat(1)
+								.filter((val: any) => val.kind !== DocNodeKind.SoftBreak)
+						: [],
 					exampleBlocks: exampleBlocks
 						.flatMap((block) => createNode(block.content).flat(1))
 						.filter((val: any) => val.kind !== DocNodeKind.SoftBreak),
 					seeBlocks: comment.seeBlocks
+						.flatMap((block) => createNode(block.content).flat(1))
+						.filter((val: any) => val.kind !== DocNodeKind.SoftBreak),
+					mixesBlocks: mixesBlocks
 						.flatMap((block) => createNode(block.content).flat(1))
 						.filter((val: any) => val.kind !== DocNodeKind.SoftBreak),
 				};
@@ -476,6 +476,7 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 
 function itemInfo(item: ApiDeclaredItem) {
 	const sourceExcerpt = item.excerpt.text.trim();
+	const { sourceURL, sourceLine } = resolveFileUrl(item);
 
 	const isStatic = ApiStaticMixin.isBaseClassOf(item) && item.isStatic;
 	const isProtected = ApiProtectedMixin.isBaseClassOf(item) && item.isProtected;
@@ -483,14 +484,14 @@ function itemInfo(item: ApiDeclaredItem) {
 	const isAbstract = ApiAbstractMixin.isBaseClassOf(item) && item.isAbstract;
 	const isOptional = ApiOptionalMixin.isBaseClassOf(item) && item.isOptional;
 	const isDeprecated = Boolean(item.tsdocComment?.deprecatedBlock);
-
+	const isExternal = Boolean(sourceLine === undefined);
 	const hasSummary = Boolean(item.tsdocComment?.summarySection);
 
 	return {
 		kind: item.kind,
 		displayName: item.displayName,
-		sourceURL: item.sourceLocation.fileUrl,
-		sourceLine: item.sourceLocation.fileLine,
+		sourceURL,
+		sourceLine,
 		sourceExcerpt,
 		summary: hasSummary ? itemTsDoc(item.tsdocComment!, item) : null,
 		isStatic,
@@ -499,6 +500,66 @@ function itemInfo(item: ApiDeclaredItem) {
 		isAbstract,
 		isDeprecated,
 		isOptional,
+		isExternal,
+	};
+}
+
+function resolveFileUrl(item: ApiDeclaredItem) {
+	const {
+		sourceLocation: { fileUrl, fileLine },
+	} = item;
+	if (fileUrl?.includes('/node_modules/')) {
+		const [, pkg] = fileUrl.split('/node_modules/');
+		const parts = pkg?.split('/')[1]?.split('@');
+		const unscoped = parts?.[0]?.length;
+		if (!unscoped) parts?.shift();
+		const pkgName = parts?.shift();
+		const version = parts?.shift()?.split('_')?.[0];
+
+		// https://github.com/discordjs/discord.js/tree/main/node_modules/.pnpm/@discordjs+builders@1.9.0/node_modules/@discordjs/builders/dist/index.d.ts#L1764
+		// https://github.com/discordjs/discord.js/tree/main/node_modules/.pnpm/@discordjs+ws@1.1.1_bufferutil@4.0.8_utf-8-validate@6.0.4/node_modules/@discordjs/ws/dist/index.d.ts#L...
+		if (!unscoped && pkgName?.startsWith('discordjs+')) {
+			let currentItem = item;
+			while (currentItem.parent && currentItem.parent.kind !== ApiItemKind.EntryPoint)
+				currentItem = currentItem.parent as ApiDeclaredItem;
+
+			return {
+				sourceURL: `/docs/packages/${pkgName.replace('discordjs+', '')}/${version}/${currentItem.displayName}:${currentItem.kind}`,
+			};
+		}
+
+		// https://github.com/discordjs/discord.js/tree/main/node_modules/.pnpm/discord-api-types@0.37.97/node_modules/discord-api-types/payloads/v10/gateway.d.ts#L240
+		if (pkgName === 'discord-api-types') {
+			let currentItem = item;
+			while (currentItem.parent && currentItem.parent.kind !== ApiItemKind.EntryPoint)
+				currentItem = currentItem.parent as ApiDeclaredItem;
+
+			return {
+				sourceURL: `/docs/packages/${pkgName}/${version}/${(currentItem.parent as ApiEntryPoint).importPath}/${currentItem.displayName}:${currentItem.kind}`,
+			};
+		}
+	} else if (fileUrl?.includes('/dist/') && fileUrl.includes('/packages/')) {
+		const [dir, pkg] = fileUrl.split('/packages/');
+		const pkgName = pkg!.split('/')[0];
+		const prefix = pkgName === 'discord.js' ? '' : '@discordjs/';
+		const version =
+			dir?.split('/').at(-1) === 'main'
+				? 'main'
+				: item.getAssociatedPackage()?.dependencies?.[`${prefix}${pkgName}`]?.replace(/[~^]/, '');
+
+		// https://github.com/discordjs/discord.js/tree/main/packages/builders/dist/index.d.ts
+		let currentItem = item;
+		while (currentItem.parent && currentItem.parent.kind !== ApiItemKind.EntryPoint)
+			currentItem = currentItem.parent as ApiDeclaredItem;
+
+		return {
+			sourceURL: `/docs/packages/${pkgName}/${version}/${currentItem.displayName}:${currentItem.kind}`,
+		};
+	}
+
+	return {
+		sourceURL: fileUrl,
+		sourceLine: fileLine,
 	};
 }
 
@@ -528,6 +589,7 @@ function resolveParameters(item: ApiDocumentedItem & ApiParameterListMixin) {
 			isOptional: param.isOptional,
 			isRest: param.isRest,
 			parameterTypeExcerpt: param.parameterTypeExcerpt,
+			defaultValue: param.defaultValue,
 		};
 	});
 }
@@ -547,9 +609,9 @@ function itemTypeParameters(item: ApiTypeParameterListMixin) {
 
 	return item.typeParameters.map((typeParam) => ({
 		name: typeParam.name,
-		constraintsExcerpt: itemExcerptText(typeParam.constraintExcerpt, item.getAssociatedPackage()!),
+		constraintsExcerpt: itemExcerptText(typeParam.constraintExcerpt, item.getAssociatedPackage()!, item),
 		isOptional: typeParam.isOptional,
-		defaultExcerpt: itemExcerptText(typeParam.defaultTypeExcerpt, item.getAssociatedPackage()!),
+		defaultExcerpt: itemExcerptText(typeParam.defaultTypeExcerpt, item.getAssociatedPackage()!, item),
 		description: typeParam.tsdocTypeParamBlock ? itemTsDoc(typeParam.tsdocTypeParamBlock.content, item) : null,
 	}));
 }
@@ -566,20 +628,21 @@ function itemParameters(item: ApiDocumentedItem & ApiParameterListMixin) {
 
 	return params.map((param) => ({
 		name: param.isRest ? `...${param.name}` : param.name,
-		typeExcerpt: itemExcerptText(param.parameterTypeExcerpt, item.getAssociatedPackage()!),
+		typeExcerpt: itemExcerptText(
+			param.parameterTypeExcerpt,
+			item.getAssociatedPackage()!,
+			item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
+		),
 		isOptional: param.isOptional,
 		description: param.description ? itemTsDoc(param.description, item) : null,
+		defaultValue: param.defaultValue,
 	}));
 }
 
 function itemConstructor(item: ApiConstructor) {
 	return {
-		kind: item.kind,
-		name: item.displayName,
-		sourceURL: item.sourceLocation.fileUrl,
-		sourceLine: item.sourceLocation.fileLine,
+		...itemInfo(item),
 		parametersString: parametersString(item),
-		summary: item.tsdocComment ? itemTsDoc(item.tsdocComment, item) : null,
 		parameters: itemParameters(item),
 	};
 }
@@ -616,7 +679,11 @@ function itemProperty(item: ApiItemContainerMixin) {
 		return {
 			...itemInfo(property.item),
 			inheritedFrom: property.inherited ? resolveItemURI(property.inherited) : null,
-			typeExcerpt: itemExcerptText(property.item.propertyTypeExcerpt, property.item.getAssociatedPackage()!),
+			typeExcerpt: itemExcerptText(
+				property.item.propertyTypeExcerpt,
+				property.item.getAssociatedPackage()!,
+				property.item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
+			),
 			summary: hasSummary ? itemTsDoc(property.item.tsdocComment!, property.item) : null,
 		};
 	});
@@ -652,7 +719,11 @@ function itemMethod(item: ApiItemContainerMixin) {
 			...itemInfo(method.item),
 			overloadIndex: method.item.overloadIndex,
 			parametersString: parametersString(method.item),
-			returnTypeExcerpt: itemExcerptText(method.item.returnTypeExcerpt, method.item.getAssociatedPackage()!),
+			returnTypeExcerpt: itemExcerptText(
+				method.item.returnTypeExcerpt,
+				method.item.getAssociatedPackage()!,
+				method.item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
+			),
 			inheritedFrom: method.inherited ? resolveItemURI(method.inherited) : null,
 			typeParameters: itemTypeParameters(method.item),
 			parameters: itemParameters(method.item),
@@ -745,12 +816,14 @@ export function itemHierarchyText({
 	// 	</div>
 	// );
 
-	return excerpts.map((excerpt) => {
-		return {
-			type,
-			excerpts: itemExcerptText(excerpt, item.getAssociatedPackage()!),
-		};
-	});
+	return excerpts.map((excerpt) => ({
+		type,
+		excerpts: itemExcerptText(
+			excerpt,
+			item.getAssociatedPackage()!,
+			item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
+		),
+	}));
 }
 
 function itemClass(item: ApiClass) {
@@ -763,20 +836,18 @@ function itemClass(item: ApiClass) {
 		extends: itemHierarchyText({ item, type: 'Extends' }),
 		implements: itemHierarchyText({ item, type: 'Implements' }),
 		typeParameters: itemTypeParameters(item),
-		constructor: constructor ? itemConstructor(constructor) : null,
+		construct: constructor ? itemConstructor(constructor) : null,
 		members: itemMembers(item),
 	};
 }
 
 function itemFunction(item: ApiFunction) {
-	const functionItem = (item: ApiFunction) => {
-		return {
-			...itemInfo(item),
-			overloadIndex: item.overloadIndex,
-			typeParameters: itemTypeParameters(item),
-			parameters: itemParameters(item),
-		};
-	};
+	const functionItem = (item: ApiFunction) => ({
+		...itemInfo(item),
+		overloadIndex: item.overloadIndex,
+		typeParameters: itemTypeParameters(item),
+		parameters: itemParameters(item),
+	});
 
 	const hasOverloads = item.getMergedSiblings().length > 1;
 	const overloads = item.getMergedSiblings().map((sibling) => functionItem(sibling as ApiFunction));
@@ -796,13 +867,13 @@ function itemInterface(item: ApiInterface) {
 	};
 }
 
-function itemUnion(item: ApiTypeAlias) {
+function itemUnion(item: Excerpt) {
 	const union: ExcerptToken[][] = [];
 	let currentUnionMember: ExcerptToken[] = [];
 	let depth = 0;
-	for (const token of item.typeExcerpt.spannedTokens) {
+	for (const token of item.spannedTokens) {
 		if (token.text.includes('?')) {
-			return [item.typeExcerpt.spannedTokens];
+			return [item.spannedTokens];
 		}
 
 		depth += token.text.split('<').length - token.text.split('>').length;
@@ -841,8 +912,12 @@ function itemTypeAlias(item: ApiTypeAlias) {
 	return {
 		...itemInfo(item),
 		typeParameters: itemTypeParameters(item),
-		unionMembers: itemUnion(item).map((member) =>
-			itemExcerptText(new Excerpt(member, { startIndex: 0, endIndex: member.length }), item.getAssociatedPackage()!),
+		unionMembers: itemUnion(item.typeExcerpt).map((member) =>
+			itemExcerptText(
+				new Excerpt(member, { startIndex: 0, endIndex: member.length }),
+				item.getAssociatedPackage()!,
+				item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
+			),
 		),
 	};
 }
@@ -850,6 +925,13 @@ function itemTypeAlias(item: ApiTypeAlias) {
 function itemVariable(item: ApiVariable) {
 	return {
 		...itemInfo(item),
+		unionMembers: itemUnion(item.variableTypeExcerpt).map((member) =>
+			itemExcerptText(
+				new Excerpt(member, { startIndex: 0, endIndex: member.length }),
+				item.getAssociatedPackage()!,
+				item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
+			),
+		),
 	};
 }
 
@@ -908,11 +990,13 @@ function memberKind(member: ApiItem | null) {
 }
 
 async function writeSplitDocsToFileSystem({
+	entry,
 	member,
 	packageName,
 	tag = 'main',
 	overrideName,
 }: {
+	entry?: string;
 	member: Record<string, any>;
 	overrideName?: string;
 	packageName: string;
@@ -921,18 +1005,18 @@ async function writeSplitDocsToFileSystem({
 	const dir = 'split';
 
 	try {
-		(await stat(join(cwd(), 'docs', packageName, dir))).isDirectory();
+		(await stat(join(process.cwd(), 'docs', packageName, dir))).isDirectory();
 	} catch {
-		await mkdir(join(cwd(), 'docs', packageName, dir), { recursive: true });
+		await mkdir(join(process.cwd(), 'docs', packageName, dir), { recursive: true });
 	}
 
 	await writeFile(
 		join(
-			cwd(),
+			process.cwd(),
 			'docs',
 			packageName,
 			dir,
-			`${tag}.${overrideName ?? `${member.displayName.toLowerCase()}.${member.kind.toLowerCase()}`}.api.json`,
+			`${tag}.${entry ? `${entry.replaceAll('/', '.')}.` : ''}${overrideName ?? `${member.displayName.toLowerCase()}.${member.kind.toLowerCase()}`}.api.json`,
 		),
 		JSON.stringify(member),
 	);
@@ -950,9 +1034,9 @@ export async function generateSplitDocumentation({
 			const model = new ApiModel();
 			model.addMember(ApiPackage.loadFromJson(data));
 			const pkg = model.tryGetPackageByName(pkgName);
-			const entry = pkg?.entryPoints[0];
+			const entries = pkg?.entryPoints;
 
-			if (!entry) {
+			if (!entries) {
 				continue;
 			}
 
@@ -963,51 +1047,69 @@ export async function generateSplitDocumentation({
 				overrideName: 'dependencies',
 			});
 
-			const members = entry.members
-				.filter((item) => {
-					switch (item.kind) {
-						case ApiItemKind.Function:
-							return (item as ApiFunction).overloadIndex === 1;
-						case ApiItemKind.Interface:
-							return !entry.members.some(
-								(innerItem) => innerItem.kind === ApiItemKind.Class && innerItem.displayName === item.displayName,
-							);
-						default:
-							return true;
-					}
-				})
-				.map((item) => ({
-					kind: item.kind,
-					name: item.displayName,
-					href: resolveItemURI(item),
-				}));
-
 			await writeSplitDocsToFileSystem({
-				member: members,
+				member: entries.map((entry) => ({
+					entryPoint: entry.importPath,
+				})),
 				packageName: pkgName,
 				tag: version,
-				overrideName: 'sitemap',
+				overrideName: 'entrypoints',
 			});
 
-			for (const member of members) {
-				const item = `${member.name}:${member.kind}`;
-				const [memberName, overloadIndex] = decodeURIComponent(item).split(':');
+			for (const entry of entries) {
+				const members = entry.members
+					.filter((item) => {
+						switch (item.kind) {
+							case ApiItemKind.Function:
+								return (item as ApiFunction).overloadIndex === 1;
+							case ApiItemKind.Interface:
+								return !entry.members.some(
+									(innerItem) => innerItem.kind === ApiItemKind.Class && innerItem.displayName === item.displayName,
+								);
+							default:
+								return true;
+						}
+					})
+					.map((item) => ({
+						kind: item.kind,
+						name: item.displayName,
+						href: resolveItemURI(item),
+						entry: entry.importPath,
+					}));
 
-				// eslint-disable-next-line prefer-const
-				let { containerKey, displayName: name } = findMember(model, pkgName, memberName) ?? {};
-				if (name && overloadIndex && !Number.isNaN(Number.parseInt(overloadIndex, 10))) {
-					containerKey = ApiFunction.getContainerKey(name, Number.parseInt(overloadIndex, 10));
+				await writeSplitDocsToFileSystem({
+					member: members,
+					packageName: pkgName,
+					tag: version,
+					overrideName: 'sitemap',
+					entry: entry.importPath,
+				});
+
+				for (const member of members) {
+					const item = `${member.name}:${member.kind}`;
+					const [memberName, overloadIndex] = decodeURIComponent(item).split(':');
+
+					// eslint-disable-next-line prefer-const
+					let { containerKey, displayName: name } = findMember(entry, memberName) ?? {};
+					if (name && overloadIndex && !Number.isNaN(Number.parseInt(overloadIndex, 10))) {
+						containerKey = ApiFunction.getContainerKey(name, Number.parseInt(overloadIndex, 10));
+					}
+
+					const foundMember = memberName && containerKey ? (findMemberByKey(entry, containerKey) ?? null) : null;
+
+					const returnValue = memberKind(foundMember);
+
+					if (!returnValue) {
+						continue;
+					}
+
+					await writeSplitDocsToFileSystem({
+						member: returnValue,
+						packageName: pkgName,
+						tag: version,
+						entry: entry.importPath,
+					});
 				}
-
-				const foundMember = memberName && containerKey ? findMemberByKey(model, pkgName, containerKey) ?? null : null;
-
-				const returnValue = memberKind(foundMember);
-
-				if (!returnValue) {
-					continue;
-				}
-
-				await writeSplitDocsToFileSystem({ member: returnValue, packageName: pkgName, tag: version });
 			}
 		}
 	}

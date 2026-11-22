@@ -1,23 +1,24 @@
-'use strict';
-
-const { channelLink, channelMention } = require('@discordjs/formatters');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ChannelType, Routes } = require('discord-api-types/v10');
-const Base = require('./Base');
-const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
-const { ThreadChannelTypes } = require('../util/Constants');
+import { channelLink, channelMention } from '@discordjs/formatters';
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { ChannelType, Routes } from 'discord-api-types/v10';
+import { ChannelFlagsBitField } from '../util/ChannelFlagsBitField.js';
+import { ThreadChannelTypes } from '../util/Constants.js';
+import { PermissionsBitField } from '../util/PermissionsBitField.js';
+import { Base } from './Base.js';
 
 /**
  * Represents any channel on Discord.
+ *
  * @extends {Base}
  * @abstract
  */
-class BaseChannel extends Base {
+export class BaseChannel extends Base {
   constructor(client, data, immediatePatch = true) {
     super(client);
 
     /**
      * The type of the channel
+     *
      * @type {ChannelType}
      */
     this.type = data.type;
@@ -30,6 +31,7 @@ class BaseChannel extends Base {
       /**
        * The flags that are applied to the channel.
        * <info>This is only `null` in a {@link PartialGroupDMChannel}. In all other cases, it is not `null`.</info>
+       *
        * @type {?Readonly<ChannelFlagsBitField>}
        */
       this.flags = new ChannelFlagsBitField(data.flags).freeze();
@@ -39,13 +41,40 @@ class BaseChannel extends Base {
 
     /**
      * The channel's id
+     *
      * @type {Snowflake}
      */
     this.id = data.id;
+
+    if ('permissions' in data) {
+      /**
+       * The computed permissions of the user who invoked the interaction in this channel, including overwrites.
+       * <info>This is only present on channels received through an interaction's resolved data.</info>
+       *
+       * @type {?Readonly<PermissionsBitField>}
+       */
+      this.permissions = new PermissionsBitField(data.permissions).freeze();
+    } else {
+      this.permissions ??= null;
+    }
+
+    if ('app_permissions' in data) {
+      /**
+       * The computed permissions of the application in this channel, including overwrites.
+       * <info>This is only present on channels received through an interaction's resolved data, and only when the
+       * application's bot user is in the guild.</info>
+       *
+       * @type {?Readonly<PermissionsBitField>}
+       */
+      this.appPermissions = new PermissionsBitField(data.app_permissions).freeze();
+    } else {
+      this.appPermissions ??= null;
+    }
   }
 
   /**
    * The timestamp the channel was created at
+   *
    * @type {number}
    * @readonly
    */
@@ -55,6 +84,7 @@ class BaseChannel extends Base {
 
   /**
    * The time the channel was created at
+   *
    * @type {Date}
    * @readonly
    */
@@ -64,6 +94,7 @@ class BaseChannel extends Base {
 
   /**
    * The URL to the channel
+   *
    * @type {string}
    * @readonly
    */
@@ -74,6 +105,7 @@ class BaseChannel extends Base {
   /**
    * Whether this Channel is a partial
    * <info>This is always false outside of DM channels.</info>
+   *
    * @type {boolean}
    * @readonly
    */
@@ -83,6 +115,7 @@ class BaseChannel extends Base {
 
   /**
    * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
+   *
    * @returns {string}
    * @example
    * // Logs: Hello from <#123456789012345678>!
@@ -94,6 +127,7 @@ class BaseChannel extends Base {
 
   /**
    * Deletes this channel.
+   *
    * @returns {Promise<BaseChannel>}
    * @example
    * // Delete the channel
@@ -108,15 +142,17 @@ class BaseChannel extends Base {
 
   /**
    * Fetches this channel.
+   *
    * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<BaseChannel>}
    */
-  fetch(force = true) {
+  async fetch(force = true) {
     return this.client.channels.fetch(this.id, { force });
   }
 
   /**
    * Indicates whether this channel is a {@link ThreadChannel}.
+   *
    * @returns {boolean}
    */
   isThread() {
@@ -125,6 +161,7 @@ class BaseChannel extends Base {
 
   /**
    * Indicates whether this channel is {@link TextBasedChannels text-based}.
+   *
    * @returns {boolean}
    */
   isTextBased() {
@@ -133,6 +170,7 @@ class BaseChannel extends Base {
 
   /**
    * Indicates whether this channel is DM-based (either a {@link DMChannel} or a {@link PartialGroupDMChannel}).
+   *
    * @returns {boolean}
    */
   isDMBased() {
@@ -141,6 +179,7 @@ class BaseChannel extends Base {
 
   /**
    * Indicates whether this channel is {@link BaseGuildVoiceChannel voice-based}.
+   *
    * @returns {boolean}
    */
   isVoiceBased() {
@@ -149,15 +188,23 @@ class BaseChannel extends Base {
 
   /**
    * Indicates whether this channel is {@link ThreadOnlyChannel thread-only}.
+   *
    * @returns {boolean}
    */
   isThreadOnly() {
     return 'availableTags' in this;
   }
 
+  /**
+   * Indicates whether this channel is sendable.
+   *
+   * @returns {boolean}
+   */
+  isSendable() {
+    return 'send' in this;
+  }
+
   toJSON(...props) {
     return super.toJSON({ createdTimestamp: true }, ...props);
   }
 }
-
-exports.BaseChannel = BaseChannel;

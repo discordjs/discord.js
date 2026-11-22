@@ -5,8 +5,8 @@ import { Buffer } from 'node:buffer';
 import path from 'node:path';
 import util from 'node:util';
 import { TSDocConfiguration } from '@microsoft/tsdoc';
-import { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { TSDocConfigFile } from '@microsoft/tsdoc-config';
+import { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import {
 	JsonFile,
 	type IJsonFileSaveOptions,
@@ -28,9 +28,7 @@ import { DeserializerContext, ApiJsonSchemaVersion } from './DeserializerContext
  * @public
  */
 export interface IApiPackageOptions
-	extends IApiItemContainerMixinOptions,
-		IApiNameMixinOptions,
-		IApiDocumentedItemOptions {
+	extends IApiItemContainerMixinOptions, IApiNameMixinOptions, IApiDocumentedItemOptions {
 	dependencies?: Record<string, string> | undefined;
 	projectFolderUrl?: string | undefined;
 	tsdocConfiguration: TSDocConfiguration;
@@ -41,6 +39,7 @@ const MinifyJSONMapping = {
 	constraintTokenRange: 'ctr',
 	dependencies: 'dp',
 	defaultTypeTokenRange: 'dtr',
+	defaultValue: 'dv',
 	docComment: 'd',
 	endIndex: 'en',
 	excerptTokens: 'ex',
@@ -215,8 +214,9 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 					if (semVer === 'workspace:^') {
 						this._dependencies[pack] =
 							PackageJsonLookup.instance.tryLoadPackageJsonFor(pathToPackage)?.version ?? 'unknown';
-					} else if (FileSystem.exists(pathToPackage)) {
-						this._dependencies[pack] = semVer;
+					} else {
+						// if (FileSystem.exists(pathToPackage))
+						this._dependencies[pack] = semVer.replace(/^[\^~]/, '');
 					}
 				}
 			}
@@ -293,7 +293,11 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 
 		const tsdocConfiguration: TSDocConfiguration = new TSDocConfiguration();
 
-		if (versionToDeserialize >= ApiJsonSchemaVersion.V_1004 && 'tsdocConfiguration' in jsonObject) {
+		if (
+			versionToDeserialize >= ApiJsonSchemaVersion.V_1004 &&
+			'tsdocConfig' in jsonObject.metadata &&
+			'$schema' in jsonObject.metadata.tsdocConfig
+		) {
 			const tsdocConfigFile: TSDocConfigFile = TSDocConfigFile.loadFromObject(jsonObject.metadata.tsdocConfig);
 			if (tsdocConfigFile.hasErrors) {
 				throw new Error(`Error loading ${apiJsonFilename}:\n` + tsdocConfigFile.getErrorSummary());
@@ -370,7 +374,7 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 	public saveToJsonFile(apiJsonFilename: string, options?: IApiPackageSaveOptions): void {
 		const ioptions = options ?? {};
 
-		const packageJson: IPackageJson = PackageJsonLookup.loadOwnPackageJson(__dirname);
+		const packageJson: IPackageJson = PackageJsonLookup.loadOwnPackageJson(import.meta.dirname);
 
 		const tsdocConfigFile: TSDocConfigFile = TSDocConfigFile.loadFromParser(this.tsdocConfiguration);
 		const tsdocConfig: JsonObject = tsdocConfigFile.saveToObject();
@@ -380,7 +384,7 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 				toolPackage: ioptions.toolPackage ?? packageJson.name,
 				// In test mode, we don't write the real version, since that would cause spurious diffs whenever
 				// the version is bumped.  Instead we write a placeholder string.
-				toolVersion: ioptions.testMode ? '[test mode]' : ioptions.toolVersion ?? packageJson.version,
+				toolVersion: ioptions.testMode ? '[test mode]' : (ioptions.toolVersion ?? packageJson.version),
 				schemaVersion: ApiJsonSchemaVersion.LATEST,
 				oldestForwardsCompatibleVersion: ApiJsonSchemaVersion.OLDEST_FORWARDS_COMPATIBLE,
 				tsdocConfig,
@@ -420,6 +424,8 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 				for (const key of Object.keys(item)) {
 					if (key === 'dependencies') {
 						result[MinifyJSONMapping.dependencies] = item.dependencies;
+					} else if (key === 'tsdocConfig') {
+						result[MinifyJSONMapping.tsdocConfig] = item.tsdocConfig;
 					} else
 						result[MinifyJSONMapping[key as keyof typeof MinifyJSONMapping]] =
 							typeof item[key] === 'object' ? mapper(item[key]) : item[key];
@@ -440,6 +446,8 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 				for (const key of Object.keys(item)) {
 					if (key === MinifyJSONMapping.dependencies) {
 						result.dependencies = item[MinifyJSONMapping.dependencies];
+					} else if (key === MinifyJSONMapping.tsdocConfig) {
+						result.tsdocConfig = item[MinifyJSONMapping.tsdocConfig];
 					} else
 						result[
 							Object.keys(MinifyJSONMapping).find(

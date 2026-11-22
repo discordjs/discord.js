@@ -5,6 +5,13 @@
  */
 export interface EscapeMarkdownOptions {
 	/**
+	 * Whether to escape block quotes.
+	 *
+	 * @defaultValue `true`
+	 */
+	blockQuote?: boolean;
+
+	/**
 	 * Whether to escape bold text.
 	 *
 	 * @defaultValue `true`
@@ -14,7 +21,7 @@ export interface EscapeMarkdownOptions {
 	/**
 	 * Whether to escape bulleted lists.
 	 *
-	 * @defaultValue `false`
+	 * @defaultValue `true`
 	 */
 	bulletedList?: boolean;
 
@@ -42,7 +49,7 @@ export interface EscapeMarkdownOptions {
 	/**
 	 * Whether to escape headings.
 	 *
-	 * @defaultValue `false`
+	 * @defaultValue `true`
 	 */
 	heading?: boolean;
 
@@ -69,16 +76,23 @@ export interface EscapeMarkdownOptions {
 	/**
 	 * Whether to escape masked links.
 	 *
-	 * @defaultValue `false`
+	 * @defaultValue `true`
 	 */
 	maskedLink?: boolean;
 
 	/**
 	 * Whether to escape numbered lists.
 	 *
-	 * @defaultValue `false`
+	 * @defaultValue `true`
 	 */
 	numberedList?: boolean;
+
+	/**
+	 * Whether to escape block quotes.
+	 *
+	 * @defaultValue `true`
+	 */
+	quote?: boolean;
 
 	/**
 	 * Whether to escape spoilers.
@@ -120,10 +134,12 @@ export function escapeMarkdown(text: string, options: EscapeMarkdownOptions = {}
 		codeBlockContent = true,
 		inlineCodeContent = true,
 		escape = true,
-		heading = false,
-		bulletedList = false,
-		numberedList = false,
-		maskedLink = false,
+		heading = true,
+		bulletedList = true,
+		numberedList = true,
+		maskedLink = true,
+		blockQuote = true,
+		quote = true,
 	} = options;
 
 	if (!codeBlockContent) {
@@ -144,6 +160,8 @@ export function escapeMarkdown(text: string, options: EscapeMarkdownOptions = {}
 					bulletedList,
 					numberedList,
 					maskedLink,
+					blockQuote,
+					quote,
 				});
 			})
 			.join(codeBlock ? '\\`\\`\\`' : '```');
@@ -166,6 +184,8 @@ export function escapeMarkdown(text: string, options: EscapeMarkdownOptions = {}
 					bulletedList,
 					numberedList,
 					maskedLink,
+					blockQuote,
+					quote,
 				});
 			})
 			.join(inlineCode ? '\\`' : '`');
@@ -184,6 +204,8 @@ export function escapeMarkdown(text: string, options: EscapeMarkdownOptions = {}
 	if (bulletedList) res = escapeBulletedList(res);
 	if (numberedList) res = escapeNumberedList(res);
 	if (maskedLink) res = escapeMaskedLink(res);
+	if (quote) res = escapeQuote(res);
+	if (blockQuote) res = escapeBlockQuote(res);
 	return res;
 }
 
@@ -212,15 +234,21 @@ export function escapeInlineCode(text: string): string {
  */
 export function escapeItalic(text: string): string {
 	let idx = 0;
-	const newText = text.replaceAll(/(?<=^|[^*])\*([^*]|\*\*|$)/g, (_, match) => {
-		if (match === '**') return ++idx % 2 ? `\\*${match}` : `${match}\\*`;
-		return `\\*${match}`;
-	});
+	const newText = text.replaceAll(
+		/(?<=^|[^*])(?<!(?<!<)https?:\/\/\S*|<[^\s:]+:\/[^\s>]*)\*([^*]|\*\*|$)/g,
+		(_, match) => {
+			if (match === '**') return ++idx % 2 ? `\\*${match}` : `${match}\\*`;
+			return `\\*${match}`;
+		},
+	);
 	idx = 0;
-	return newText.replaceAll(/(?<=^|[^_])(?<!<a?:.+|https?:\/\/\S+)_(?!:\d+>)([^_]|__|$)/g, (_, match) => {
-		if (match === '__') return ++idx % 2 ? `\\_${match}` : `${match}\\_`;
-		return `\\_${match}`;
-	});
+	return newText.replaceAll(
+		/(?<=^|[^_])(?<!<a?:.+|(?<!<)https?:\/\/\S*|<[^\s:]:\/[^\s>]*)_(?!:\d+>)([^_]|__|$)/g,
+		(_, match) => {
+			if (match === '__') return ++idx % 2 ? `\\_${match}` : `${match}\\_`;
+			return `\\_${match}`;
+		},
+	);
 }
 
 /**
@@ -310,4 +338,22 @@ export function escapeNumberedList(text: string): string {
  */
 export function escapeMaskedLink(text: string): string {
 	return text.replaceAll(/\[.+]\(.+\)/gm, '\\$&');
+}
+
+/**
+ * Escapes quote characters in a string.
+ *
+ * @param text - Content to escape
+ */
+export function escapeQuote(text: string): string {
+	return text.replaceAll(/^(\s*)>(\s+)/gm, '$1\\>$2');
+}
+
+/**
+ * Escapes block quote characters in a string.
+ *
+ * @param text - Content to escape
+ */
+export function escapeBlockQuote(text: string): string {
+	return text.replaceAll(/^(\s*)>>>(\s+)/gm, '$1\\>>>$2');
 }

@@ -1,8 +1,6 @@
-'use strict';
+import { Action } from './Action.js';
 
-const Action = require('./Action');
-
-class GuildRolesPositionUpdate extends Action {
+export class GuildRolesPositionUpdateAction extends Action {
   handle(data) {
     const client = this.client;
 
@@ -17,5 +15,3 @@ class GuildRolesPositionUpdate extends Action {
     return { guild };
   }
 }
-
-module.exports = GuildRolesPositionUpdate;

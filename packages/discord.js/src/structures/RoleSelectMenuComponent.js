@@ -1,11 +1,8 @@
-'use strict';
-
-const BaseSelectMenuComponent = require('./BaseSelectMenuComponent');
+import { BaseSelectMenuComponent } from './BaseSelectMenuComponent.js';
 
 /**
  * Represents a role select menu component
+ *
  * @extends {BaseSelectMenuComponent}
  */
-class RoleSelectMenuComponent extends BaseSelectMenuComponent {}
-
-module.exports = RoleSelectMenuComponent;
+export class RoleSelectMenuComponent extends BaseSelectMenuComponent {}

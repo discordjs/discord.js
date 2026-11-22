@@ -1,16 +1,15 @@
-'use strict';
+import process from 'node:process';
+import { inspect } from 'node:util';
+import { codeBlock } from '@discordjs/formatters';
+import { GatewayIntentBits } from 'discord-api-types/v10';
+import { Client, Events, Options, RESTEvents } from '../src/index.js';
+import { token, prefix, owner } from './auth.js';
 
-const process = require('node:process');
-const { GatewayIntentBits } = require('discord-api-types/v10');
-const { token, prefix, owner } = require('./auth.js');
-const { Client, Options, Formatters } = require('../src');
-
-// eslint-disable-next-line no-console
 const log = (...args) => console.log(process.uptime().toFixed(3), ...args);
 
 const client = new Client({
   // 😏
-  intents: Object.values(GatewayIntentBits).reduce((acc, p) => acc | p, 0),
+  intents: Object.values(GatewayIntentBits).reduce((acc, intent) => acc | intent, 0),
   makeCache: Options.cacheWithLimits({
     MessageManager: 10,
     PresenceManager: 10,
@@ -25,38 +24,38 @@ const client = new Client({
   }),
 });
 
-client.on('debug', log);
-client.on('ready', () => {
+client.on(Events.Debug, log);
+client.on(Events.ClientReady, () => {
   log('READY', client.user.tag, client.user.id);
 });
-client.on('rateLimit', log);
-client.on('error', console.error);
+client.rest.on(RESTEvents.RateLimited, log);
+client.on(Events.Error, console.error);
 
 const commands = {
   eval: message => {
     if (message.author.id !== owner) return;
     let res;
     try {
+      // eslint-disable-next-line no-eval
       res = eval(message.content);
-      if (typeof res !== 'string') res = require('node:util').inspect(res);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error(err.stack);
-      res = err.message;
+      if (typeof res !== 'string') res = inspect(res);
+    } catch (error) {
+      console.error(error.stack);
+      res = error.message;
     }
-    message.channel.send(Formatters.codeBlock(res));
+
+    message.channel.send(codeBlock(String(res).slice(0, 1_992)));
   },
   ping: message => message.channel.send('pong'),
 };
 
-client.on('messageCreate', message => {
+client.on(Events.MessageCreate, message => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
   message.content = message.content.replace(prefix, '').trim().split(' ');
   const command = message.content.shift();
   message.content = message.content.join(' ');
 
-  // eslint-disable-next-line no-console
   console.log('COMMAND', command, message.content);
 
   if (command in commands) commands[command](message);
@@ -64,5 +63,4 @@ client.on('messageCreate', message => {
 
 client.login(token);
 
-// eslint-disable-next-line no-console
 process.on('unhandledRejection', console.error);

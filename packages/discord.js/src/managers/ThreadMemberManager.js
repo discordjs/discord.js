@@ -1,22 +1,22 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const ThreadMember = require('../structures/ThreadMember');
+import { Collection } from '@discordjs/collection';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { ThreadMember } from '../structures/ThreadMember.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
+ *
  * @extends {CachedManager}
  */
-class ThreadMemberManager extends CachedManager {
+export class ThreadMemberManager extends CachedManager {
   constructor(thread, iterable) {
     super(thread.client, ThreadMember, iterable);
 
     /**
      * The thread this manager belongs to
+     *
      * @type {ThreadChannel}
      */
     this.thread = thread;
@@ -24,6 +24,7 @@ class ThreadMemberManager extends CachedManager {
 
   /**
    * The cache of this Manager
+   *
    * @type {Collection<Snowflake, ThreadMember>}
    * @name ThreadMemberManager#cache
    */
@@ -40,44 +41,49 @@ class ThreadMemberManager extends CachedManager {
 
   /**
    * Fetches the client user as a ThreadMember of the thread.
+   *
    * @param {BaseFetchOptions} [options] The options for fetching the member
    * @returns {Promise<ThreadMember>}
    */
-  fetchMe(options) {
+  async fetchMe(options) {
     return this.fetch({ ...options, member: this.client.user.id });
   }
 
   /**
    * The client user as a ThreadMember of this ThreadChannel
+   *
    * @type {?ThreadMember}
    * @readonly
    */
   get me() {
-    return this.resolve(this.client.user.id);
+    return this.cache.get(this.client.user.id) ?? null;
   }
 
   /**
    * Data that resolves to give a ThreadMember object. This can be:
-   * * A ThreadMember object
-   * * A User resolvable
+   * - A ThreadMember object
+   * - A User resolvable
+   *
    * @typedef {ThreadMember|UserResolvable} ThreadMemberResolvable
    */
 
   /**
    * Resolves a {@link ThreadMemberResolvable} to a {@link ThreadMember} object.
+   *
    * @param {ThreadMemberResolvable} member The user that is part of the thread
    * @returns {?GuildMember}
    */
   resolve(member) {
     const memberResolvable = super.resolve(member);
     if (memberResolvable) return memberResolvable;
-    const userResolvable = this.client.users.resolveId(member);
-    if (userResolvable) return super.resolve(userResolvable);
+    const userId = this.client.users.resolveId(member);
+    if (userId) return super.cache.get(userId) ?? null;
     return null;
   }
 
   /**
    * Resolves a {@link ThreadMemberResolvable} to a {@link ThreadMember} id string.
+   *
    * @param {ThreadMemberResolvable} member The user that is part of the guild
    * @returns {?Snowflake}
    */
@@ -90,32 +96,33 @@ class ThreadMemberManager extends CachedManager {
 
   /**
    * Adds a member to the thread.
+   *
    * @param {UserResolvable|'@me'} member The member to add
-   * @param {string} [reason] The reason for adding this member
    * @returns {Promise<Snowflake>}
    */
-  async add(member, reason) {
+  async add(member) {
     const id = member === '@me' ? member : this.client.users.resolveId(member);
     if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'member', 'UserResolvable');
-    await this.client.rest.put(Routes.threadMembers(this.thread.id, id), { reason });
+    await this.client.rest.put(Routes.threadMembers(this.thread.id, id));
     return id;
   }
 
   /**
    * Remove a user from the thread.
+   *
    * @param {UserResolvable|'@me'} member The member to remove
-   * @param {string} [reason] The reason for removing this member from the thread
    * @returns {Promise<Snowflake>}
    */
-  async remove(member, reason) {
+  async remove(member) {
     const id = member === '@me' ? member : this.client.users.resolveId(member);
     if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'member', 'UserResolvable');
-    await this.client.rest.delete(Routes.threadMembers(this.thread.id, id), { reason });
+    await this.client.rest.delete(Routes.threadMembers(this.thread.id, id));
     return id;
   }
 
   /**
    * Options used to fetch a thread member.
+   *
    * @typedef {BaseFetchOptions} FetchThreadMemberOptions
    * @property {ThreadMemberResolvable} member The thread member to fetch
    * @property {boolean} [withMember] Whether to also return the guild member associated with this thread member
@@ -124,6 +131,7 @@ class ThreadMemberManager extends CachedManager {
   /**
    * Options used to fetch multiple thread members with guild member data.
    * <info>With `withMember` set to `true`, pagination is enabled.</info>
+   *
    * @typedef {Object} FetchThreadMembersWithGuildMemberDataOptions
    * @property {true} withMember Whether to also return the guild member data
    * @property {Snowflake} [after] Consider only thread members after this id
@@ -133,6 +141,7 @@ class ThreadMemberManager extends CachedManager {
 
   /**
    * Options used to fetch multiple thread members without guild member data.
+   *
    * @typedef {Object} FetchThreadMembersWithoutGuildMemberDataOptions
    * @property {false} [withMember] Whether to also return the guild member data
    * @property {boolean} [cache] Whether to cache the fetched thread members
@@ -140,6 +149,7 @@ class ThreadMemberManager extends CachedManager {
 
   /**
    * Options used to fetch multiple thread members.
+   *
    * @typedef {FetchThreadMembersWithGuildMemberDataOptions|
    * FetchThreadMembersWithoutGuildMemberDataOptions} FetchThreadMembersOptions
    */
@@ -147,11 +157,12 @@ class ThreadMemberManager extends CachedManager {
   /**
    * Fetches thread member(s) from Discord.
    * <info>This method requires the {@link GatewayIntentBits.GuildMembers} privileged gateway intent.</info>
+   *
    * @param {ThreadMemberResolvable|FetchThreadMemberOptions|FetchThreadMembersOptions} [options]
    * Options for fetching thread member(s)
    * @returns {Promise<ThreadMember|Collection<Snowflake, ThreadMember>>}
    */
-  fetch(options) {
+  async fetch(options) {
     if (!options) return this._fetchMany();
     const { member, withMember, cache, force } = options;
     const resolvedMember = this.resolveId(member ?? options);
@@ -180,5 +191,3 @@ class ThreadMemberManager extends CachedManager {
     return data.reduce((col, member) => col.set(member.user_id, this._add(member, cache)), new Collection());
   }
 }
-
-module.exports = ThreadMemberManager;

@@ -1,9 +1,11 @@
 export * from './api/index.js';
 export * from './client.js';
-export * from './Gateway.js';
+export type * from './Gateway.js';
 export * from './util/index.js';
 
 export * from 'discord-api-types/v10';
+
+export { GatewayRateLimitError } from '@discordjs/util';
 
 /**
  * The {@link https://github.com/discordjs/discord.js/blob/main/packages/core#readme | @discordjs/core} version

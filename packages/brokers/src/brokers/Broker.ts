@@ -30,17 +30,18 @@ export const DefaultBrokerOptions = {
 } as const satisfies Required<BaseBrokerOptions>;
 
 export type ToEventMap<
-	TRecord extends Record<string, any>,
+	TRecord extends Record<string, any[]>,
 	TResponses extends Record<keyof TRecord, any> | undefined = undefined,
 > = {
 	[TKey in keyof TRecord]: [
 		event: TResponses extends Record<keyof TRecord, any>
 			? { ack(): Promise<void>; reply(data: TResponses[TKey]): Promise<void> }
-			: { ack(): Promise<void> } & { data: TRecord[TKey] },
+			: { ack(): Promise<void>; data: TRecord[TKey] },
 	];
-} & { [K: string]: any };
+};
 
-export interface IBaseBroker<TEvents extends Record<string, any>> {
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface IBaseBroker<TEvents extends {}> {
 	/**
 	 * Subscribes to the given events
 	 */
@@ -51,18 +52,17 @@ export interface IBaseBroker<TEvents extends Record<string, any>> {
 	unsubscribe(events: (keyof TEvents)[]): Promise<void>;
 }
 
-export interface IPubSubBroker<TEvents extends Record<string, any>>
-	extends IBaseBroker<TEvents>,
-		AsyncEventEmitter<ToEventMap<TEvents>> {
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface IPubSubBroker<TEvents extends {}>
+	extends IBaseBroker<TEvents>, AsyncEventEmitter<ToEventMap<TEvents>> {
 	/**
 	 * Publishes an event
 	 */
 	publish<Event extends keyof TEvents>(event: Event, data: TEvents[Event]): Promise<void>;
 }
 
-export interface IRPCBroker<TEvents extends Record<string, any>, TResponses extends Record<keyof TEvents, any>>
-	extends IBaseBroker<TEvents>,
-		AsyncEventEmitter<ToEventMap<TEvents, TResponses>> {
+export interface IRPCBroker<TEvents extends Record<string, any[]>, TResponses extends Record<keyof TEvents, any>>
+	extends IBaseBroker<TEvents>, AsyncEventEmitter<ToEventMap<TEvents, TResponses>> {
 	/**
 	 * Makes an RPC call
 	 */

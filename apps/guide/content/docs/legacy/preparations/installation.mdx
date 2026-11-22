@@ -1,0 +1,129 @@
+---
+title: Installing Node.js and discord.js
+---
+
+import { Grid2x2, Apple, Cpu, Zap, Package } from 'lucide-react';
+
+## Installing Node.js
+
+To use discord.js, you'll need to install the latest LTS version of [Node.js](https://nodejs.org/).
+
+<Callout>
+	To check if you already have Node installed on your machine \(e.g., if you're using a VPS\), run `node -v` in your
+	terminal. It is recommended to use the latest LTS version of Node.
+</Callout>
+
+<Cards>
+	<Card icon={<Zap />} title="Volta" href="https://volta.sh/">
+		Use volta to manage your node version cross-platform.
+	</Card>
+	<Card icon={<Package />} title="Fast Node Manager" href="https://github.com/Schniz/fnm">
+		Use `Fast node Manager` to manage your node version cross-platform.
+	</Card>
+	<Card icon={<Grid2x2 />} title="Windows" href="https://nodejs.org/en/download">
+		Download the latest version from the Node.js website, open the downloaded file, and follow the steps from the
+		installer.
+	</Card>
+	<Card icon={<Apple />} title="macOS" href="https://nodejs.org/en/download">
+		Download the latest version from the Node.js website, open the package installer, and follow the instructions.
+		Alternatively you can use a package manager like Homebrew with the command `brew install node`
+	</Card>
+	<Card icon={<Cpu />} title="Linux" href="https://nodejs.org/en/download">
+		Determine how you should install Node with out package manager of choice.
+	</Card>
+</Cards>
+
+## Preparing the essentials
+
+To use discord.js, you'll need to install it via npm \(Node's package manager\). npm comes with every Node installation, so you don't have to worry about installing that. However, before you install anything, you should set up a new project folder.
+
+Navigate to a suitable place on your machine and create a new folder named `discord-bot` (or whatever you want). Next you'll need to open your terminal.
+
+## Opening the terminal
+
+<Callout>
+	If you use [Visual Studio Code](https://code.visualstudio.com/), you can press <kbd>Ctrl</kbd>
+	<kbd>`</kbd> (backtick) to open its integrated terminal.
+</Callout>
+
+On Windows, either:
+
+- Hold <kbd>Shift</kbd> and right-click inside your project directory and choose the "Open command window here" option
+- Press <kbd>Win</kbd> <kbd>R</kbd> and run `cmd.exe`, and then `cd` into your project directory
+
+On macOS, either:
+
+- Open Launchpad or Spotlight and search for "Terminal"
+- In your "Applications" folder, under "Utilities", open the Terminal app
+
+On Linux, you can quickly open the terminal with <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>T</kbd>.
+
+With the terminal open, run the `node -v` command to make sure you've successfully installed Node.js.
+
+## Initiating a project folder
+
+```sh tab="npm"
+npm init
+```
+
+```sh tab="yarn"
+yarn init
+```
+
+```sh tab="pnpm"
+pnpm init
+```
+
+```sh tab="bun"
+bun init
+```
+
+This is the next command you'll be running. This command creates a `package.json` file for you, which will keep track of the dependencies your project uses, as well as other info.
+
+This command will ask you a sequence of questions–you should fill them out as you see fit. If you're not sure of something or want to skip it as a whole, leave it blank and press enter.
+
+To get started quickly, you can run the following command to have it fill out everything for you.
+
+```sh tab="npm"
+npm init -y
+```
+
+```sh tab="yarn"
+yarn init -y
+```
+
+```sh tab="pnpm"
+pnpm init
+```
+
+```sh tab="bun"
+bun init -y
+```
+
+Once you're done with that, you're ready to install discord.js!
+
+## Installing discord.js
+
+Now that you've installed Node.js and know how to open your console and run commands, you can finally install discord.js! Run the following command in your terminal:
+
+```sh tab="npm"
+npm install discord.js
+```
+
+```sh tab="yarn"
+yarn add discord.js
+```
+
+```sh tab="pnpm"
+pnpm add discord.js
+```
+
+```sh tab="bun"
+bun add discord.js
+```
+
+And that's it! With all the necessities installed, you're almost ready to start coding your bot.
+
+## Installing a linter
+
+While you are coding, it's possible to run into numerous syntax errors or code in an inconsistent style. You should [install a linter](./linter) to ease these troubles. While code editors generally can point out syntax errors, linters coerce your code into a specific style as defined by the configuration. While this is not required, it is advised.

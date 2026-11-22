@@ -20,6 +20,7 @@ export enum Encoding {
 export enum CompressionMethod {
 	ZlibNative,
 	ZlibSync,
+	ZstdNative,
 }
 
 export const DefaultDeviceProperty = `@discordjs/ws [VI]{{inject}}[/VI]` as `@discordjs/ws ${string}`;
@@ -29,17 +30,17 @@ const getDefaultSessionStore = lazy(() => new Collection<number, SessionInfo | n
 export const CompressionParameterMap = {
 	[CompressionMethod.ZlibNative]: 'zlib-stream',
 	[CompressionMethod.ZlibSync]: 'zlib-stream',
+	[CompressionMethod.ZstdNative]: 'zstd-stream',
 } as const satisfies Record<CompressionMethod, string>;
 
 /**
  * Default options used by the manager
  */
 export const DefaultWebSocketManagerOptions = {
-	async buildIdentifyThrottler(manager: WebSocketManager) {
-		const info = await manager.fetchGatewayInformation();
-		return new SimpleIdentifyThrottler(info.session_start_limit.max_concurrency);
-	},
+	buildIdentifyThrottler: (manager: WebSocketManager) =>
+		new SimpleIdentifyThrottler(manager.getGatewayInformation().session_start_limit.max_concurrency),
 	buildStrategy: (manager) => new SimpleShardingStrategy(manager),
+	capabilities: 0,
 	shardCount: null,
 	shardIds: null,
 	largeThreshold: null,
@@ -82,5 +83,3 @@ export function getInitialSendRateLimitState(): SendRateLimitState {
 		resetAt: Date.now() + 60_000,
 	};
 }
-
-export const KnownNetworkErrorCodes = new Set(['ECONNRESET', 'ECONNREFUSED', 'ETIMEDOUT', 'EAI_AGAIN']);

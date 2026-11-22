@@ -1,6 +1,4 @@
-/* eslint-disable jsdoc/check-param-names */
-
-import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/rest';
+import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import {
 	Routes,
 	type RESTGetAPIPollAnswerVotersQuery,
@@ -8,6 +6,7 @@ import {
 	type RESTPostAPIPollExpireResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
+import type { RequestOptions } from '../util/types.js';
 
 export class PollAPI {
 	public constructor(private readonly rest: REST) {}
@@ -26,11 +25,11 @@ export class PollAPI {
 		channelId: Snowflake,
 		messageId: Snowflake,
 		answerId: number,
-		query: RESTGetAPIPollAnswerVotersQuery,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		query: RESTGetAPIPollAnswerVotersQuery = {},
+		options: RequestOptions = {},
 	) {
 		return this.rest.get(Routes.pollAnswerVoters(channelId, messageId, answerId), {
-			signal,
+			...options,
 			query: makeURLSearchParams(query),
 		}) as Promise<RESTGetAPIPollAnswerVotersResult>;
 	}
@@ -43,9 +42,7 @@ export class PollAPI {
 	 * @param messageId - The id of the message containing the poll
 	 * @param options - The options for expiring the poll
 	 */
-	public async expirePoll(channelId: Snowflake, messageId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
-		return this.rest.post(Routes.expirePoll(channelId, messageId), {
-			signal,
-		}) as Promise<RESTPostAPIPollExpireResult>;
+	public async expirePoll(channelId: Snowflake, messageId: Snowflake, options: RequestOptions = {}) {
+		return this.rest.post(Routes.expirePoll(channelId, messageId), options) as Promise<RESTPostAPIPollExpireResult>;
 	}
 }

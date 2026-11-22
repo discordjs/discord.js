@@ -20,24 +20,27 @@ export async function fetchDependencies({
 
 			return Object.entries<string>(parsedDependencies)
 				.filter(([key]) => key.startsWith('@discordjs/') && !key.includes('api-extractor'))
-				.map(([key, value]) => `${key.replace('@discordjs/', '').replaceAll('.', '-')}-${value.replaceAll('.', '-')}`);
+				.map(([key, value]) => `${key.replace('@discordjs/', '').replaceAll('.', '-')}-${sanitizeVersion(value)}`);
 		} catch {
 			return [];
 		}
 	}
 
 	try {
-		const isMainVersion = version === 'main';
 		const fileContent = await fetch(
-			`${process.env.BLOB_STORAGE_URL}/rewrite/${packageName}/${version}.dependencies.api.json`,
-			{ next: isMainVersion ? { revalidate: 0 } : { revalidate: 604_800 } },
+			`${process.env.CF_R2_DOCS_BUCKET_URL}/${packageName}/${version}.dependencies.api.json`,
+			{ cache: 'no-store' },
 		);
 		const parsedDependencies = await fileContent.json();
 
 		return Object.entries<string>(parsedDependencies)
 			.filter(([key]) => key.startsWith('@discordjs/') && !key.includes('api-extractor'))
-			.map(([key, value]) => `${key.replace('@discordjs/', '').replaceAll('.', '-')}-${value.replaceAll('.', '-')}`);
+			.map(([key, value]) => `${key.replace('@discordjs/', '').replaceAll('.', '-')}-${sanitizeVersion(value)}`);
 	} catch {
 		return [];
 	}
+}
+
+function sanitizeVersion(version: string) {
+	return version.replaceAll('.', '-').replace(/^[\^~]/, '');
 }

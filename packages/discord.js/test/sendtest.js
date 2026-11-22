@@ -1,14 +1,13 @@
-'use strict';
-
-const fs = require('node:fs');
-const path = require('node:path');
-const process = require('node:process');
-const { setTimeout: sleep } = require('node:timers/promises');
-const util = require('node:util');
-const { GatewayIntentBits } = require('discord-api-types/v10');
-const { fetch } = require('undici');
-const { owner, token } = require('./auth.js');
-const { Client, MessageAttachment, Embed } = require('../src');
+import { Buffer } from 'node:buffer';
+import fs from 'node:fs';
+import path from 'node:path';
+import process from 'node:process';
+import { setTimeout as sleep } from 'node:timers/promises';
+import util from 'node:util';
+import { GatewayIntentBits } from 'discord-api-types/v10';
+import { fetch } from 'undici';
+import { Client, MessageAttachment, Embed, Events } from '../src/index.js';
+import { owner, token } from './auth.js';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 
@@ -88,7 +87,7 @@ const tests = [
   m => m.channel.send('Done!'),
 ];
 
-client.on('messageCreate', async message => {
+client.on(Events.MessageCreate, async message => {
   if (message.author.id !== owner) return;
   const match = message.content.match(/^do (.+)$/);
   if (match?.[1] === 'it') {

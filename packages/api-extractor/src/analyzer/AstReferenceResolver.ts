@@ -5,7 +5,7 @@ import * as tsdoc from '@microsoft/tsdoc';
 import * as ts from 'typescript';
 import type { Collector } from '../collector/Collector.js';
 import type { DeclarationMetadata } from '../collector/DeclarationMetadata.js';
-import type { WorkingPackage } from '../collector/WorkingPackage.js';
+import type { IWorkingPackageEntryPoint, WorkingPackage } from '../collector/WorkingPackage.js';
 import type { AstDeclaration } from './AstDeclaration.js';
 import type { AstEntity } from './AstEntity.js';
 import type { AstModule } from './AstModule.js';
@@ -52,7 +52,10 @@ export class AstReferenceResolver {
 		this._workingPackage = collector.workingPackage;
 	}
 
-	public resolve(declarationReference: tsdoc.DocDeclarationReference): AstDeclaration | ResolverFailure {
+	public resolve(
+		declarationReference: tsdoc.DocDeclarationReference,
+		entryPoint: IWorkingPackageEntryPoint,
+	): AstDeclaration | ResolverFailure {
 		// Is it referring to the working package?
 		if (
 			declarationReference.packageName !== undefined &&
@@ -66,9 +69,7 @@ export class AstReferenceResolver {
 			return new ResolverFailure('Import paths are not supported');
 		}
 
-		const astModule: AstModule = this._astSymbolTable.fetchAstModuleFromWorkingPackage(
-			this._workingPackage.entryPointSourceFile,
-		);
+		const astModule: AstModule = this._astSymbolTable.fetchAstModuleFromWorkingPackage(entryPoint.sourceFile);
 
 		if (declarationReference.memberReferences.length === 0) {
 			return new ResolverFailure('Package references are not supported');

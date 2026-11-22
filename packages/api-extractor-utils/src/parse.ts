@@ -36,7 +36,6 @@ export function generatePath(items: readonly ApiItem[], version: string) {
 		switch (item.kind) {
 			case ApiItemKind.Model:
 			case ApiItemKind.EntryPoint:
-			case ApiItemKind.EnumMember:
 				break;
 			case ApiItemKind.Package:
 				path += `/${item.displayName}`;
@@ -55,6 +54,7 @@ export function generatePath(items: readonly ApiItem[], version: string) {
 			case ApiItemKind.Property:
 			case ApiItemKind.PropertySignature:
 			case ApiItemKind.Event:
+			case ApiItemKind.EnumMember:
 				path += `#${item.displayName}`;
 				break;
 			default:
@@ -199,7 +199,7 @@ export function genToken(model: ApiModel, token: ExcerptToken, version: string) 
 	}
 
 	const item = token.canonicalReference
-		? model.resolveDeclarationReference(token.canonicalReference, undefined).resolvedApiItem ?? null
+		? (model.resolveDeclarationReference(token.canonicalReference, undefined).resolvedApiItem ?? null)
 		: null;
 
 	return {

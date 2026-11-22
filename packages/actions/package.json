@@ -2,16 +2,29 @@
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/actions",
 	"version": "0.1.0",
-	"description": "A set of actions that we use for our workflows",
 	"private": true,
-	"scripts": {
-		"test": "vitest run",
-		"build": "tsc --noEmit --lib ESNext,DOM && tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
-		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
-		"fmt": "pnpm run format"
+	"description": "A set of actions that we use for our workflows",
+	"keywords": [
+		"api",
+		"bot",
+		"client",
+		"discordjs",
+		"node"
+	],
+	"homepage": "https://discord.js.org",
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
 	},
-	"type": "module",
+	"license": "Apache-2.0",
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/actions"
+	},
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"directories": {
 		"lib": "src",
 		"test": "__tests__"
@@ -19,52 +32,42 @@
 	"files": [
 		"dist"
 	],
-	"contributors": [
-		"Crawl <icrawltogo@gmail.com>"
-	],
-	"license": "Apache-2.0",
-	"keywords": [
-		"api",
-		"bot",
-		"client",
-		"node",
-		"discordjs"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git",
-		"directory": "packages/actions"
+	"type": "module",
+	"scripts": {
+		"test": "vitest run --config ../../vitest.config.ts",
+		"build": "tsc",
+		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src __tests__",
+		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src __tests__ --fix --fix-suggestions",
+		"fmt": "pnpm run format"
 	},
-	"bugs": {
-		"url": "https://github.com/discordjs/discord.js/issues"
-	},
-	"homepage": "https://discord.js.org",
-	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"@actions/core": "^1.10.1",
-		"@actions/glob": "^0.4.0",
+		"@actions/core": "^3.0.1",
+		"@actions/github": "^9.1.1",
+		"@actions/glob": "^0.7.0",
+		"@aws-sdk/client-s3": "^3.1169.0",
 		"@discordjs/scripts": "workspace:^",
-		"@vercel/blob": "^0.22.3",
-		"@vercel/postgres": "^0.8.0",
-		"meilisearch": "^0.38.0",
-		"p-limit": "^5.0.0",
-		"tslib": "^2.6.2",
-		"undici": "6.18.2"
+		"cloudflare": "^7.1.0",
+		"commander": "^15.1.0",
+		"meilisearch": "^0.63.0",
+		"p-limit": "^7.3.2",
+		"p-queue": "^10.0.0",
+		"tslib": "^2.8.1",
+		"undici": "^8.12.4"
 	},
 	"devDependencies": {
-		"@types/node": "18.18.8",
-		"@vitest/coverage-v8": "^1.6.0",
-		"cross-env": "^7.0.3",
-		"eslint": "^8.57.0",
-		"eslint-config-neon": "^0.1.62",
-		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.3.0",
-		"tsup": "^8.1.0",
-		"turbo": "^1.13.3",
-		"typescript": "^5.4.5",
-		"vitest": "^1.6.0"
+		"@npm/types": "^2.1.0",
+		"@types/bun": "^1.4.0",
+		"@types/node": "^24.13.3",
+		"@vitest/coverage-v8": "^4.1.11",
+		"eslint-config-neon": "^0.5.4",
+		"oxfmt": "^0.78.0",
+		"oxlint": "^1.93.0",
+		"terser": "^5.51.2",
+		"turbo": "^2.11.11",
+		"typescript": "~7.0.2",
+		"vitest": "^4.1.11"
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=24.17.0"
 	}
 }

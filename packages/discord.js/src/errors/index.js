@@ -1,5 +1,3 @@
-'use strict';
-
-module.exports = require('./DJSError');
-module.exports.ErrorCodes = require('./ErrorCodes');
-module.exports.Messages = require('./Messages');
+export { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError } from './DJSError.js';
+export { ErrorCodes } from './ErrorCodes.js';
+export { Messages } from './Messages.js';

@@ -1,3 +1,32 @@
 packages:
-  - 'apps/*'
-  - 'packages/*'
+  - apps/*
+  - packages/*
+  - packages/create-discord-bot/template/**/*
+
+allowBuilds:
+  '@discordjs/opus': true
+  bufferutil: true
+  core-js-pure: false
+  esbuild: true
+  rclone.js: true
+  unrs-resolver: false
+  utf-8-validate: true
+  workerd: true
+  zlib-sync: true
+
+autoInstallPeers: false
+
+peerDependencyRules:
+  allowAny:
+    - '*'
+  ignoreMissing:
+    - '*'
+
+publicHoistPattern:
+  - '*@rushstack/node-core-library*'
+  - '*jju*'
+
+updateConfig:
+  ignoreDependencies:
+    - jsdoc-to-markdown
+    - typedoc

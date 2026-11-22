@@ -1,6 +1,8 @@
 {
+	"$schema": "./node_modules/@favware/cliff-jumper/assets/cliff-jumper.schema.json",
 	"name": "formatters",
 	"org": "discordjs",
 	"packagePath": "packages/formatters",
-	"identifierBase": false
+	"identifierBase": false,
+	"skipTag": true
 }

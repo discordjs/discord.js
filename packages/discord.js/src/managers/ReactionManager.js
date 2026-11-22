@@ -1,19 +1,19 @@
-'use strict';
-
-const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
-const MessageReaction = require('../structures/MessageReaction');
+import { Routes } from 'discord-api-types/v10';
+import { MessageReaction } from '../structures/MessageReaction.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for reactions and holds their cache.
+ *
  * @extends {CachedManager}
  */
-class ReactionManager extends CachedManager {
+export class ReactionManager extends CachedManager {
   constructor(message, iterable) {
     super(message.client, MessageReaction, iterable);
 
     /**
      * The message that this manager belongs to
+     *
      * @type {Message}
      */
     this.message = message;
@@ -25,20 +25,23 @@ class ReactionManager extends CachedManager {
 
   /**
    * The reaction cache of this manager
+   *
    * @type {Collection<string|Snowflake, MessageReaction>}
    * @name ReactionManager#cache
    */
 
   /**
    * Data that can be resolved to a MessageReaction object. This can be:
-   * * A MessageReaction
-   * * A Snowflake
-   * * The Unicode representation of an emoji
+   * - A MessageReaction
+   * - A Snowflake
+   * - The Unicode representation of an emoji
+   *
    * @typedef {MessageReaction|Snowflake} MessageReactionResolvable
    */
 
   /**
    * Resolves a {@link MessageReactionResolvable} to a {@link MessageReaction} object.
+   *
    * @method resolve
    * @memberof ReactionManager
    * @instance
@@ -48,6 +51,7 @@ class ReactionManager extends CachedManager {
 
   /**
    * Resolves a {@link MessageReactionResolvable} to a {@link MessageReaction} id.
+   *
    * @method resolveId
    * @memberof ReactionManager
    * @instance
@@ -57,6 +61,7 @@ class ReactionManager extends CachedManager {
 
   /**
    * Removes all reactions from a message.
+   *
    * @returns {Promise<Message>}
    */
   async removeAll() {
@@ -64,5 +69,3 @@ class ReactionManager extends CachedManager {
     return this.message;
   }
 }
-
-module.exports = ReactionManager;

@@ -1,6 +1,4 @@
-/* eslint-disable jsdoc/check-param-names */
-
-import type { RawFile, RequestData, REST } from '@discordjs/rest';
+import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
 import {
 	InteractionResponseType,
 	Routes,
@@ -8,17 +6,54 @@ import {
 	type APIInteractionResponseCallbackData,
 	type APIInteractionResponseDeferredChannelMessageWithSource,
 	type APIModalInteractionResponseCallbackData,
-	type APIPremiumRequiredInteractionResponse,
 	type RESTGetAPIWebhookWithTokenMessageResult,
+	type RESTPostAPIInteractionCallbackQuery,
+	type RESTPostAPIInteractionCallbackWithResponseResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
+import type { BaseRequestOptions } from '../util/types.js';
 import type { WebhooksAPI } from './webhook.js';
+
+export interface CreateInteractionResponseOptions
+	extends APIInteractionResponseCallbackData, RESTPostAPIInteractionCallbackQuery {
+	files?: RawFile[];
+}
+
+export type CreateInteractionDeferResponseOptions = APIInteractionResponseDeferredChannelMessageWithSource['data'] &
+	RESTPostAPIInteractionCallbackQuery;
+
+export type CreateInteractionFollowUpResponseOptions = APIInteractionResponseCallbackData & { files?: RawFile[] };
+export type EditInteractionResponseOptions = APIInteractionResponseCallbackData & { files?: RawFile[] };
+
+export type CreateInteractionUpdateMessageResponseOptions = APIInteractionResponseCallbackData &
+	RESTPostAPIInteractionCallbackQuery & { files?: RawFile[] };
+
+export type CreateAutocompleteResponseOptions = APICommandAutocompleteInteractionResponseCallbackData &
+	RESTPostAPIInteractionCallbackQuery;
+
+export type CreateModalResponseOptions = APIModalInteractionResponseCallbackData & RESTPostAPIInteractionCallbackQuery;
 
 export class InteractionsAPI {
 	public constructor(
 		private readonly rest: REST,
 		private readonly webhooks: WebhooksAPI,
 	) {}
+
+	/**
+	 * Replies to an interaction and returns an interaction callback object
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param body - The callback data for replying
+	 * @param options - The options for replying
+	 */
+	public async reply(
+		interactionId: Snowflake,
+		interactionToken: string,
+		body: CreateInteractionResponseOptions & { with_response: true },
+		options?: BaseRequestOptions,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
 	 * Replies to an interaction
@@ -32,19 +67,61 @@ export class InteractionsAPI {
 	public async reply(
 		interactionId: Snowflake,
 		interactionToken: string,
-		{ files, ...data }: APIInteractionResponseCallbackData & { files?: RawFile[] },
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		body: CreateInteractionResponseOptions & { with_response?: false },
+		options?: BaseRequestOptions,
+	): Promise<undefined>;
+
+	/**
+	 * Replies to an interaction
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param body - The callback data for replying
+	 * @param options - The options for replying
+	 */
+	public async reply(
+		interactionId: Snowflake,
+		interactionToken: string,
+		body: CreateInteractionResponseOptions,
+		options?: BaseRequestOptions,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
+
+	public async reply(
+		interactionId: Snowflake,
+		interactionToken: string,
+		{ files, with_response, ...data }: CreateInteractionResponseOptions,
+		options: BaseRequestOptions = {},
 	) {
-		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			...options,
+			query: makeURLSearchParams({ with_response }),
 			files,
 			auth: false,
 			body: {
 				type: InteractionResponseType.ChannelMessageWithSource,
 				data,
 			},
-			signal,
 		});
+
+		return with_response ? response : undefined;
 	}
+
+	/**
+	 * Defers the reply to an interaction and returns an interaction callback object
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param body - The callback data for deferring the reply
+	 * @param options - The options for deferring
+	 */
+	public async defer(
+		interactionId: Snowflake,
+		interactionToken: string,
+		body: CreateInteractionDeferResponseOptions & { with_response: true },
+		options?: BaseRequestOptions,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
 	 * Defers the reply to an interaction
@@ -52,24 +129,66 @@ export class InteractionsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
-	 * @param data - The data for deferring the reply
+	 * @param body - The callback data for deferring the reply
 	 * @param options - The options for deferring
 	 */
 	public async defer(
 		interactionId: Snowflake,
 		interactionToken: string,
-		data?: APIInteractionResponseDeferredChannelMessageWithSource['data'],
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		body?: CreateInteractionDeferResponseOptions & { with_response?: false },
+		options?: BaseRequestOptions,
+	): Promise<undefined>;
+
+	/**
+	 * Defers the reply to an interaction
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param body - The callback data for deferring the reply
+	 * @param options - The options for deferring
+	 */
+	public async defer(
+		interactionId: Snowflake,
+		interactionToken: string,
+		body?: CreateInteractionDeferResponseOptions,
+		options?: BaseRequestOptions,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
+
+	public async defer(
+		interactionId: Snowflake,
+		interactionToken: string,
+		{ with_response, ...data }: CreateInteractionDeferResponseOptions = {},
+		options: BaseRequestOptions = {},
 	) {
-		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			...options,
+			query: makeURLSearchParams({ with_response }),
 			auth: false,
 			body: {
 				type: InteractionResponseType.DeferredChannelMessageWithSource,
 				data,
 			},
-			signal,
 		});
+
+		return with_response ? response : undefined;
 	}
+
+	/**
+	 * Defers an update from a message component interaction and returns an interaction callback object
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param body - The callback data for deferring the update
+	 * @param options - The options for deferring
+	 */
+	public async deferMessageUpdate(
+		interactionId: Snowflake,
+		interactionToken: string,
+		body: RESTPostAPIInteractionCallbackQuery & { with_response: true },
+		options?: BaseRequestOptions,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
 	 * Defers an update from a message component interaction
@@ -77,20 +196,48 @@ export class InteractionsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
+	 * @param body - The callback data for deferring the update
 	 * @param options - The options for deferring
 	 */
 	public async deferMessageUpdate(
 		interactionId: Snowflake,
 		interactionToken: string,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		body?: RESTPostAPIInteractionCallbackQuery & { with_response?: false },
+		options?: BaseRequestOptions,
+	): Promise<undefined>;
+
+	/**
+	 * Defers an update from a message component interaction
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param body - The callback data for deferring the update
+	 * @param options - The options for deferring
+	 */
+	public async deferMessageUpdate(
+		interactionId: Snowflake,
+		interactionToken: string,
+		body?: RESTPostAPIInteractionCallbackQuery,
+		options?: BaseRequestOptions,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
+
+	public async deferMessageUpdate(
+		interactionId: Snowflake,
+		interactionToken: string,
+		{ with_response }: RESTPostAPIInteractionCallbackQuery = {},
+		options: BaseRequestOptions = {},
 	) {
-		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			...options,
+			query: makeURLSearchParams({ with_response }),
 			auth: false,
 			body: {
 				type: InteractionResponseType.DeferredMessageUpdate,
 			},
-			signal,
 		});
+
+		return with_response ? response : undefined;
 	}
 
 	/**
@@ -105,10 +252,10 @@ export class InteractionsAPI {
 	public async followUp(
 		applicationId: Snowflake,
 		interactionToken: string,
-		body: APIInteractionResponseCallbackData & { files?: RawFile[] },
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		body: CreateInteractionFollowUpResponseOptions,
+		options: BaseRequestOptions = {},
 	) {
-		return this.webhooks.execute(applicationId, interactionToken, { ...body, wait: true }, { signal });
+		return this.webhooks.execute(applicationId, interactionToken, { ...body, wait: true }, options);
 	}
 
 	/**
@@ -125,13 +272,11 @@ export class InteractionsAPI {
 	public async editReply(
 		applicationId: Snowflake,
 		interactionToken: string,
-		callbackData: APIInteractionResponseCallbackData & { files?: RawFile[] },
+		callbackData: EditInteractionResponseOptions,
 		messageId?: Snowflake | '@original',
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		options: BaseRequestOptions = {},
 	) {
-		return this.webhooks.editMessage(applicationId, interactionToken, messageId ?? '@original', callbackData, {
-			signal,
-		});
+		return this.webhooks.editMessage(applicationId, interactionToken, messageId ?? '@original', callbackData, options);
 	}
 
 	/**
@@ -142,17 +287,13 @@ export class InteractionsAPI {
 	 * @param interactionToken - The token of the interaction
 	 * @param options - The options for fetching the reply
 	 */
-	public async getOriginalReply(
-		applicationId: Snowflake,
-		interactionToken: string,
-		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	public async getOriginalReply(applicationId: Snowflake, interactionToken: string, options: BaseRequestOptions = {}) {
 		return this.webhooks.getMessage(
 			applicationId,
 			interactionToken,
 			'@original',
 			{},
-			{ signal },
+			options,
 		) as Promise<RESTGetAPIWebhookWithTokenMessageResult>;
 	}
 
@@ -170,10 +311,26 @@ export class InteractionsAPI {
 		applicationId: Snowflake,
 		interactionToken: string,
 		messageId?: Snowflake | '@original',
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		options: BaseRequestOptions = {},
 	) {
-		await this.webhooks.deleteMessage(applicationId, interactionToken, messageId ?? '@original', {}, { signal });
+		await this.webhooks.deleteMessage(applicationId, interactionToken, messageId ?? '@original', {}, options);
 	}
+
+	/**
+	 * Updates the message the component interaction was triggered on and returns an interaction callback object
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param callbackData - The callback data for updating the interaction
+	 * @param options - The options for updating the interaction
+	 */
+	public async updateMessage(
+		interactionId: Snowflake,
+		interactionToken: string,
+		callbackData: CreateInteractionUpdateMessageResponseOptions & { with_response: true },
+		options?: BaseRequestOptions,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
 	 * Updates the message the component interaction was triggered on
@@ -187,19 +344,61 @@ export class InteractionsAPI {
 	public async updateMessage(
 		interactionId: Snowflake,
 		interactionToken: string,
-		{ files, ...data }: APIInteractionResponseCallbackData & { files?: RawFile[] },
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		callbackData: CreateInteractionUpdateMessageResponseOptions & { with_response?: false },
+		options?: BaseRequestOptions,
+	): Promise<undefined>;
+
+	/**
+	 * Updates the message the component interaction was triggered on
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param callbackData - The callback data for updating the interaction
+	 * @param options - The options for updating the interaction
+	 */
+	public async updateMessage(
+		interactionId: Snowflake,
+		interactionToken: string,
+		callbackData: CreateInteractionUpdateMessageResponseOptions,
+		options?: BaseRequestOptions,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
+
+	public async updateMessage(
+		interactionId: Snowflake,
+		interactionToken: string,
+		{ files, with_response, ...data }: CreateInteractionUpdateMessageResponseOptions,
+		options: BaseRequestOptions = {},
 	) {
-		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			...options,
+			query: makeURLSearchParams({ with_response }),
 			files,
 			auth: false,
 			body: {
 				type: InteractionResponseType.UpdateMessage,
 				data,
 			},
-			signal,
 		});
+
+		return with_response ? response : undefined;
 	}
+
+	/**
+	 * Sends an autocomplete response to an interaction and returns an interaction callback object
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param callbackData - The callback data for the autocomplete response
+	 * @param options - The options for sending the autocomplete response
+	 */
+	public async createAutocompleteResponse(
+		interactionId: Snowflake,
+		interactionToken: string,
+		callbackData: CreateAutocompleteResponseOptions & { with_response: true },
+		options?: BaseRequestOptions,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
 	 * Sends an autocomplete response to an interaction
@@ -213,18 +412,60 @@ export class InteractionsAPI {
 	public async createAutocompleteResponse(
 		interactionId: Snowflake,
 		interactionToken: string,
-		callbackData: APICommandAutocompleteInteractionResponseCallbackData,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		callbackData: CreateAutocompleteResponseOptions & { with_response?: false },
+		options?: BaseRequestOptions,
+	): Promise<undefined>;
+
+	/**
+	 * Sends an autocomplete response to an interaction
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param callbackData - The callback data for the autocomplete response
+	 * @param options - The options for sending the autocomplete response
+	 */
+	public async createAutocompleteResponse(
+		interactionId: Snowflake,
+		interactionToken: string,
+		callbackData: CreateAutocompleteResponseOptions,
+		options?: BaseRequestOptions,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
+
+	public async createAutocompleteResponse(
+		interactionId: Snowflake,
+		interactionToken: string,
+		{ with_response, ...data }: CreateAutocompleteResponseOptions,
+		options: BaseRequestOptions = {},
 	) {
-		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			...options,
+			query: makeURLSearchParams({ with_response }),
 			auth: false,
 			body: {
 				type: InteractionResponseType.ApplicationCommandAutocompleteResult,
-				data: callbackData,
+				data,
 			},
-			signal,
 		});
+
+		return with_response ? response : undefined;
 	}
+
+	/**
+	 * Sends a modal response to an interaction and returns an interaction callback object
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param callbackData - The modal callback data to send
+	 * @param options - The options for sending the modal
+	 */
+	public async createModal(
+		interactionId: Snowflake,
+		interactionToken: string,
+		callbackData: CreateModalResponseOptions & { with_response: true },
+		options?: BaseRequestOptions,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
 	 * Sends a modal response to an interaction
@@ -238,39 +479,108 @@ export class InteractionsAPI {
 	public async createModal(
 		interactionId: Snowflake,
 		interactionToken: string,
-		callbackData: APIModalInteractionResponseCallbackData,
-		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
-		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
-			auth: false,
-			body: {
-				type: InteractionResponseType.Modal,
-				data: callbackData,
-			},
-			signal,
-		});
-	}
+		callbackData: CreateModalResponseOptions & { with_response?: false },
+		options?: BaseRequestOptions,
+	): Promise<undefined>;
 
 	/**
-	 * Sends a premium required response to an interaction
+	 * Sends a modal response to an interaction
 	 *
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
-	 * @param options - The options for sending the premium required response
-	 * @deprecated Sending a premium-style button is the new Discord behaviour.
+	 * @param callbackData - The modal callback data to send
+	 * @param options - The options for sending the modal
 	 */
-	public async sendPremiumRequired(
+	public async createModal(
 		interactionId: Snowflake,
 		interactionToken: string,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		callbackData: CreateModalResponseOptions,
+		options?: BaseRequestOptions,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
+
+	public async createModal(
+		interactionId: Snowflake,
+		interactionToken: string,
+		{ with_response, ...data }: CreateModalResponseOptions,
+		options: BaseRequestOptions = {},
 	) {
-		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			...options,
+			query: makeURLSearchParams({ with_response }),
 			auth: false,
 			body: {
-				type: InteractionResponseType.PremiumRequired,
-			} satisfies APIPremiumRequiredInteractionResponse,
-			signal,
+				type: InteractionResponseType.Modal,
+				data,
+			},
 		});
+
+		return with_response ? response : undefined;
+	}
+
+	/**
+	 * Launches an activity and returns an interaction callback object
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param body - The callback data for launching the activity
+	 * @param options - The options for launching the activity
+	 */
+	public async launchActivity(
+		interactionId: Snowflake,
+		interactionToken: string,
+		body: RESTPostAPIInteractionCallbackQuery & { with_response: true },
+		options?: BaseRequestOptions,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
+
+	/**
+	 * Launches an activity
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param body - The callback data for launching the activity
+	 * @param options - The options for launching the activity
+	 */
+	public async launchActivity(
+		interactionId: Snowflake,
+		interactionToken: string,
+		body?: RESTPostAPIInteractionCallbackQuery & { with_response?: false },
+		options?: BaseRequestOptions,
+	): Promise<undefined>;
+
+	/**
+	 * Launches an activity
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param body - The callback data for launching the activity
+	 * @param options - The options for launching the activity
+	 */
+	public async launchActivity(
+		interactionId: Snowflake,
+		interactionToken: string,
+		body?: RESTPostAPIInteractionCallbackQuery,
+		options?: BaseRequestOptions,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
+
+	public async launchActivity(
+		interactionId: Snowflake,
+		interactionToken: string,
+		{ with_response }: RESTPostAPIInteractionCallbackQuery = {},
+		options: BaseRequestOptions = {},
+	) {
+		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			...options,
+			query: makeURLSearchParams({ with_response }),
+			auth: false,
+			body: {
+				type: InteractionResponseType.LaunchActivity,
+			},
+		});
+
+		return with_response ? response : undefined;
 	}
 }

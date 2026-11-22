@@ -1,12 +1,15 @@
-'use strict';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
-
-class MessageCreateAction extends Action {
+export class MessageCreateAction extends Action {
   handle(data) {
     const client = this.client;
-    const channel = this.getChannel(data);
+    const channel = this.getChannel({
+      id: data.channel_id,
+      author: data.author,
+      ...('guild_id' in data && { guild_id: data.guild_id }),
+      ...('channel_type' in data && { type: data.channel_type }),
+    });
     if (channel) {
       if (!channel.isTextBased()) return {};
 
@@ -22,6 +25,7 @@ class MessageCreateAction extends Action {
 
       /**
        * Emitted whenever a message is created.
+       *
        * @event Client#messageCreate
        * @param {Message} message The created message
        */
@@ -33,5 +37,3 @@ class MessageCreateAction extends Action {
     return {};
   }
 }
-
-module.exports = MessageCreateAction;

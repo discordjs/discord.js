@@ -1,14 +1,14 @@
-'use strict';
-
-const BaseSelectMenuComponent = require('./BaseSelectMenuComponent');
+import { BaseSelectMenuComponent } from './BaseSelectMenuComponent.js';
 
 /**
  * Represents a string select menu component
+ *
  * @extends {BaseSelectMenuComponent}
  */
-class StringSelectMenuComponent extends BaseSelectMenuComponent {
+export class StringSelectMenuComponent extends BaseSelectMenuComponent {
   /**
    * The options in this select menu
+   *
    * @type {APISelectMenuOption[]}
    * @readonly
    */
@@ -16,5 +16,3 @@ class StringSelectMenuComponent extends BaseSelectMenuComponent {
     return this.data.options;
   }
 }
-
-module.exports = StringSelectMenuComponent;

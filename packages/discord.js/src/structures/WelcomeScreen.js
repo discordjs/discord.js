@@ -1,32 +1,34 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { GuildFeature } = require('discord-api-types/v10');
-const Base = require('./Base');
-const WelcomeChannel = require('./WelcomeChannel');
+import { Collection } from '@discordjs/collection';
+import { GuildFeature } from 'discord-api-types/v10';
+import { Base } from './Base.js';
+import { WelcomeChannel } from './WelcomeChannel.js';
 
 /**
  * Represents a welcome screen.
+ *
  * @extends {Base}
  */
-class WelcomeScreen extends Base {
+export class WelcomeScreen extends Base {
   constructor(guild, data) {
     super(guild.client);
 
     /**
      * The guild for this welcome screen
+     *
      * @type {Guild}
      */
     this.guild = guild;
 
     /**
      * The description of this welcome screen
+     *
      * @type {?string}
      */
     this.description = data.description ?? null;
 
     /**
      * Collection of welcome channels belonging to this welcome screen
+     *
      * @type {Collection<Snowflake, WelcomeChannel>}
      */
     this.welcomeChannels = new Collection();
@@ -39,11 +41,10 @@ class WelcomeScreen extends Base {
 
   /**
    * Whether the welcome screen is enabled on the guild
+   *
    * @type {boolean}
    */
   get enabled() {
     return this.guild.features.includes(GuildFeature.WelcomeScreenEnabled);
   }
 }
-
-module.exports = WelcomeScreen;

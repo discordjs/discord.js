@@ -1,10 +1,25 @@
-'use strict';
+import { ComponentType } from 'discord-api-types/v10';
+import { ActionRow } from '../structures/ActionRow.js';
+import { ButtonComponent } from '../structures/ButtonComponent.js';
+import { ChannelSelectMenuComponent } from '../structures/ChannelSelectMenuComponent.js';
+import { Component } from '../structures/Component.js';
+import { ContainerComponent } from '../structures/ContainerComponent.js';
+import { FileComponent } from '../structures/FileComponent.js';
+import { LabelComponent } from '../structures/LabelComponent.js';
+import { MediaGalleryComponent } from '../structures/MediaGalleryComponent.js';
+import { MentionableSelectMenuComponent } from '../structures/MentionableSelectMenuComponent.js';
+import { RoleSelectMenuComponent } from '../structures/RoleSelectMenuComponent.js';
+import { SectionComponent } from '../structures/SectionComponent.js';
+import { SeparatorComponent } from '../structures/SeparatorComponent.js';
+import { StringSelectMenuComponent } from '../structures/StringSelectMenuComponent.js';
+import { TextDisplayComponent } from '../structures/TextDisplayComponent.js';
+import { TextInputComponent } from '../structures/TextInputComponent.js';
+import { ThumbnailComponent } from '../structures/ThumbnailComponent.js';
+import { UserSelectMenuComponent } from '../structures/UserSelectMenuComponent.js';
 
-// This file contains the typedefs for camel-cased JSON data
-const { ComponentBuilder } = require('@discordjs/builders');
-const { ComponentType } = require('discord-api-types/v10');
 /**
  * @typedef {Object} BaseComponentData
+ * @property {number} [id] the id of this component
  * @property {ComponentType} type The type of component
  */
 
@@ -14,32 +29,136 @@ const { ComponentType } = require('discord-api-types/v10');
  */
 
 /**
- * @typedef {BaseComponentData} ButtonComponentData
- * @property {ButtonStyle} style The style of the button
- * @property {?boolean} disabled Whether this button is disabled
- * @property {string} label The label of this button
- * @property {?APIMessageComponentEmoji} emoji The emoji on this button
- * @property {?string} customId The custom id of the button
- * @property {?string} url The URL of the button
+ * @typedef {Object} ModalComponentData
+ * @property {string} title The title of the modal
+ * @property {string} customId The custom id of the modal
+ * @property {Array<TextDisplayComponentData|LabelData>} components The components within this modal
  */
 
 /**
- * @typedef {object} SelectMenuComponentOptionData
+ * @typedef {StringSelectMenuComponentData|TextInputComponentData|UserSelectMenuComponentData|
+ * RoleSelectMenuComponentData|MentionableSelectMenuComponentData|ChannelSelectMenuComponentData|FileUploadComponentData|
+ * RadioGroupComponentData|CheckboxGroupComponentData|CheckboxComponentData} ComponentInLabelData
+ */
+
+/**
+ * @typedef {BaseComponentData} LabelData
+ * @property {string} label The label to use
+ * @property {string} [description] The optional description for the label
+ * @property {ComponentInLabelData} component The component within the label
+ */
+
+/**
+ * @typedef {BaseComponentData} ButtonComponentData
+ * @property {ButtonStyle} style The style of the button
+ * @property {boolean} [disabled] Whether this button is disabled
+ * @property {string} label The label of this button
+ * @property {APIMessageComponentEmoji} [emoji] The emoji on this button
+ * @property {string} [customId] The custom id of the button
+ * @property {string} [url] The URL of the button
+ */
+
+/**
+ * @typedef {BaseComponentData} FileUploadComponentData
+ * @property {string} customId The custom id of the file upload
+ * @property {number} [minValues] The minimum number of files that must be uploaded (0-10)
+ * @property {number} [maxValues] The maximum number of files that can be uploaded (1-10)
+ * @property {FileUploadType[]} [fileTypes] The allowed types of files that can be uploaded (maximum of 10).
+ * When only using extensions, include `.jpg` for images and both `.mp4` and `.mov` for videos for mobile compatibility
+ * @property {boolean} [required] Whether this component is required in modals
+ */
+
+/**
+ * @typedef {Object} RadioGroupOption
+ * @property {string} value The value of the radio group option
+ * @property {string} label The label to use
+ * @property {string} [description] The optional description for the radio group option
+ * @property {boolean} [default] Whether this option is default selected
+ */
+
+/**
+ * @typedef {BaseComponentData} RadioGroupComponentData
+ * @property {string} customId The custom id of the radio group
+ * @property {RadioGroupOption[]} options The options in this radio group (2-10)
+ * @property {boolean} [required] Whether this component is required in modals
+ */
+
+/**
+ * @typedef {Object} CheckboxGroupOption
+ * @property {string} value The value of the checkbox group option
+ * @property {string} label The label to use
+ * @property {string} [description] The optional description for the checkbox group option
+ * @property {boolean} [default] Whether this option is default selected
+ */
+
+/**
+ * @typedef {BaseComponentData} CheckboxGroupComponentData
+ * @property {string} customId The custom id of the checkbox group
+ * @property {CheckboxGroupOption[]} options The options in this checkbox group
+ * @property {number} [minValues] The minimum number of options that must be selected (0-10)
+ * @property {number} [maxValues] The maximum number of options that can be selected (defaults to options length)
+ * @property {boolean} [required] Whether this component is required in modals
+ */
+
+/**
+ * @typedef {BaseComponentData} CheckboxComponentData
+ * @property {string} customId The custom id of the checkbox
+ * @property {boolean} [default] Whether this component is default selected in modals
+ */
+
+/**
+ * @typedef {BaseComponentData} BaseSelectMenuComponentData
+ * @property {string} customId The custom id of the select menu
+ * @property {boolean} [disabled] Whether the select menu is disabled or not
+ * @property {number} [maxValues] The maximum amount of options that can be selected
+ * @property {number} [minValues] The minimum amount of options that must be selected
+ * @property {string} [placeholder] The placeholder of the select menu
+ * @property {boolean} [required] Whether this component is required in modals
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} StringSelectMenuComponentData
+ * @property {SelectMenuComponentOptionData[]} [options] The options in this select menu
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} UserSelectMenuComponentData
+ * @property {APISelectMenuDefaultValue[]} [defaultValues] The default selected values in this select menu
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} RoleSelectMenuComponentData
+ * @property {APISelectMenuDefaultValue[]} [defaultValues] The default selected values in this select menu
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} MentionableSelectMenuComponentData
+ * @property {APISelectMenuDefaultValue[]} [defaultValues] The default selected values in this select menu
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} ChannelSelectMenuComponentData
+ * @property {APISelectMenuDefaultValue[]} [defaultValues] The default selected values in this select menu
+ * @property {ChannelType[]} [channelTypes] The types of channels that can be selected
+ */
+
+/**
+ * @typedef {Object} SelectMenuComponentOptionData
  * @property {string} label The label of the option
  * @property {string} value The value of the option
- * @property {?string} description The description of the option
- * @property {?APIMessageComponentEmoji} emoji The emoji on the option
- * @property {?boolean} default Whether this option is selected by default
+ * @property {string} [description] The description of the option
+ * @property {APIMessageComponentEmoji} [emoji] The emoji on the option
+ * @property {boolean} [default] Whether this option is selected by default
  */
 
 /**
  * @typedef {BaseComponentData} SelectMenuComponentData
  * @property {string} customId The custom id of the select menu
- * @property {?boolean} disabled Whether the select menu is disabled or not
- * @property {?number} maxValues The maximum amount of options that can be selected
- * @property {?number} minValues The minimum amount of options that can be selected
- * @property {?SelectMenuComponentOptionData[]} options The options in this select menu
- * @property {?string} placeholder The placeholder of the select menu
+ * @property {boolean} [disabled] Whether the select menu is disabled or not
+ * @property {number} [maxValues] The maximum amount of options that can be selected
+ * @property {number} [minValues] The minimum amount of options that can be selected
+ * @property {SelectMenuComponentOptionData[]} [options] The options in this select menu
+ * @property {string} [placeholder] The placeholder of the select menu
  */
 
 /**
@@ -50,103 +169,145 @@ const { ComponentType } = require('discord-api-types/v10');
  * @typedef {BaseComponentData} TextInputComponentData
  * @property {string} customId The custom id of the text input
  * @property {TextInputStyle} style The style of the text input
- * @property {string} label The text that appears on top of the text input field
- * @property {?number} minLength The minimum number of characters that can be entered in the text input
- * @property {?number} maxLength The maximum number of characters that can be entered in the text input
- * @property {?boolean} required Whether or not the text input is required or not
- * @property {?string} value The pre-filled text in the text input
- * @property {?string} placeholder Placeholder for the text input
+ * @property {number} [minLength] The minimum number of characters that can be entered in the text input
+ * @property {number} [maxLength] The maximum number of characters that can be entered in the text input
+ * @property {boolean} [required] Whether or not the text input is required or not
+ * @property {string} [value] The pre-filled text in the text input
+ * @property {string} [placeholder] Placeholder for the text input
  */
 
 /**
- * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData|TextInputComponentData} ComponentData
+ * @typedef {Object} UnfurledMediaItemData
+ * @property {string} url The url of this media item. Accepts either http:, https: or attachment: protocol
  */
 
 /**
- * Any emoji data that can be used within a button
- * @typedef {APIMessageComponentEmoji|string} ComponentEmojiResolvable
+ * @typedef {BaseComponentData} ThumbnailComponentData
+ * @property {UnfurledMediaItemData} media The media for the thumbnail
+ * @property {string} [description] The description of the thumbnail
+ * @property {boolean} [spoiler] Whether the thumbnail should be spoilered
  */
+
+/**
+ * @typedef {BaseComponentData} FileComponentData
+ * @property {UnfurledMediaItemData} file The file media in this component
+ * @property {boolean} [spoiler] Whether the file should be spoilered
+ */
+
+/**
+ * @typedef {Object} MediaGalleryItemData
+ * @property {UnfurledMediaItemData} media The media for the media gallery item
+ * @property {string} [description] The description of the media gallery item
+ * @property {boolean} [spoiler] Whether the media gallery item should be spoilered
+ */
+
+/**
+ * @typedef {BaseComponentData} MediaGalleryComponentData
+ * @property {MediaGalleryItemData[]} items The media gallery items in this media gallery component
+ */
+
+/**
+ * @typedef {BaseComponentData} SeparatorComponentData
+ * @property {SeparatorSpacingSize} [spacing] The spacing size of this component
+ * @property {boolean} [divider] Whether the separator shows as a divider
+ */
+
+/**
+ * @typedef {BaseComponentData} SectionComponentData
+ * @property {Components[]} components The components in this section
+ * @property {ButtonComponentData|ThumbnailComponentData} accessory The accessory shown next to this section
+ */
+
+/**
+ * @typedef {BaseComponentData} TextDisplayComponentData
+ * @property {string} content The content displayed in this component
+ */
+
+/**
+ * @typedef {ActionRowData|FileComponentData|MediaGalleryComponentData|SectionComponentData|
+ * SeparatorComponentData|TextDisplayComponentData} ComponentInContainerData
+ */
+
+/**
+ * @typedef {BaseComponentData} ContainerComponentData
+ * @property {ComponentInContainerData} components The components in this container
+ * @property {?number} [accentColor] The accent color of this container
+ * @property {boolean} [spoiler] Whether the container should be spoilered
+ */
+
+/**
+ * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData|TextInputComponentData|
+ * ThumbnailComponentData|FileComponentData|MediaGalleryComponentData|SeparatorComponentData|
+ * SectionComponentData|TextDisplayComponentData|ContainerComponentData} ComponentData
+ */
+
+/**
+ * @typedef {ActionRow|ContainerComponent|FileComponent|MediaGalleryComponent|
+ * SectionComponent|SeparatorComponent|TextDisplayComponent} MessageTopLevelComponent
+ */
+
+const ComponentTypeToClass = {
+  [ComponentType.ActionRow]: ActionRow,
+  [ComponentType.Button]: ButtonComponent,
+  [ComponentType.StringSelect]: StringSelectMenuComponent,
+  [ComponentType.TextInput]: TextInputComponent,
+  [ComponentType.UserSelect]: UserSelectMenuComponent,
+  [ComponentType.RoleSelect]: RoleSelectMenuComponent,
+  [ComponentType.MentionableSelect]: MentionableSelectMenuComponent,
+  [ComponentType.ChannelSelect]: ChannelSelectMenuComponent,
+  [ComponentType.Container]: ContainerComponent,
+  [ComponentType.TextDisplay]: TextDisplayComponent,
+  [ComponentType.File]: FileComponent,
+  [ComponentType.MediaGallery]: MediaGalleryComponent,
+  [ComponentType.Section]: SectionComponent,
+  [ComponentType.Separator]: SeparatorComponent,
+  [ComponentType.Thumbnail]: ThumbnailComponent,
+  [ComponentType.Label]: LabelComponent,
+};
 
 /**
  * Transforms API data into a component
+ *
  * @param {APIMessageComponent|Component} data The data to create the component from
  * @returns {Component}
+ * @ignore
  */
-function createComponent(data) {
-  if (data instanceof Component) {
-    return data;
-  }
+export function createComponent(data) {
+  return data instanceof Component ? data : new (ComponentTypeToClass[data.type] ?? Component)(data);
+}
 
-  switch (data.type) {
+/**
+ * Extracts all interactive components from the component tree
+ *
+ * @param {Component|APIMessageComponent} component The component to find all interactive components in
+ * @returns {Array<Component|APIMessageComponent>}
+ * @ignore
+ */
+function extractInteractiveComponents(component) {
+  switch (component.type) {
     case ComponentType.ActionRow:
-      return new ActionRow(data);
-    case ComponentType.Button:
-      return new ButtonComponent(data);
-    case ComponentType.StringSelect:
-      return new StringSelectMenuComponent(data);
-    case ComponentType.TextInput:
-      return new TextInputComponent(data);
-    case ComponentType.UserSelect:
-      return new UserSelectMenuComponent(data);
-    case ComponentType.RoleSelect:
-      return new RoleSelectMenuComponent(data);
-    case ComponentType.MentionableSelect:
-      return new MentionableSelectMenuComponent(data);
-    case ComponentType.ChannelSelect:
-      return new ChannelSelectMenuComponent(data);
+      return component.components;
+    case ComponentType.Section:
+      return [...component.components, component.accessory];
+    case ComponentType.Container:
+      return component.components.flatMap(extractInteractiveComponents);
     default:
-      return new Component(data);
+      return [component];
   }
 }
 
 /**
- * Transforms API data into a component builder
- * @param {APIMessageComponent|ComponentBuilder} data The data to create the component from
- * @returns {ComponentBuilder}
+ * Finds a component by customId in nested components
+ *
+ * @param {Array<Component|APIMessageComponent>} components The components to search in
+ * @param {string} customId The customId to search for
+ * @returns {Component|APIMessageComponent}
+ * @ignore
  */
-function createComponentBuilder(data) {
-  if (data instanceof ComponentBuilder) {
-    return data;
-  }
-
-  switch (data.type) {
-    case ComponentType.ActionRow:
-      return new ActionRowBuilder(data);
-    case ComponentType.Button:
-      return new ButtonBuilder(data);
-    case ComponentType.StringSelect:
-      return new StringSelectMenuBuilder(data);
-    case ComponentType.TextInput:
-      return new TextInputBuilder(data);
-    case ComponentType.UserSelect:
-      return new UserSelectMenuBuilder(data);
-    case ComponentType.RoleSelect:
-      return new RoleSelectMenuBuilder(data);
-    case ComponentType.MentionableSelect:
-      return new MentionableSelectMenuBuilder(data);
-    case ComponentType.ChannelSelect:
-      return new ChannelSelectMenuBuilder(data);
-    default:
-      return new ComponentBuilder(data);
-  }
+export function findComponentByCustomId(components, customId) {
+  return (
+    components
+      .flatMap(extractInteractiveComponents)
+      .find(component => (component.customId ?? component.custom_id) === customId) ?? null
+  );
 }
-
-module.exports = { createComponent, createComponentBuilder };
-
-const ActionRow = require('../structures/ActionRow');
-const ActionRowBuilder = require('../structures/ActionRowBuilder');
-const ButtonBuilder = require('../structures/ButtonBuilder');
-const ButtonComponent = require('../structures/ButtonComponent');
-const ChannelSelectMenuBuilder = require('../structures/ChannelSelectMenuBuilder');
-const ChannelSelectMenuComponent = require('../structures/ChannelSelectMenuComponent');
-const Component = require('../structures/Component');
-const MentionableSelectMenuBuilder = require('../structures/MentionableSelectMenuBuilder');
-const MentionableSelectMenuComponent = require('../structures/MentionableSelectMenuComponent');
-const RoleSelectMenuBuilder = require('../structures/RoleSelectMenuBuilder');
-const RoleSelectMenuComponent = require('../structures/RoleSelectMenuComponent');
-const StringSelectMenuBuilder = require('../structures/StringSelectMenuBuilder');
-const StringSelectMenuComponent = require('../structures/StringSelectMenuComponent');
-const TextInputBuilder = require('../structures/TextInputBuilder');
-const TextInputComponent = require('../structures/TextInputComponent');
-const UserSelectMenuBuilder = require('../structures/UserSelectMenuBuilder');
-const UserSelectMenuComponent = require('../structures/UserSelectMenuComponent');

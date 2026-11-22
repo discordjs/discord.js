@@ -17,6 +17,7 @@ pids
 # Dist
 dist
 dist-docs
+packages/discord-api-types
 
 # Miscellaneous
 .tmp
@@ -30,7 +31,6 @@ tsconfig.tsbuildinfo
 coverage
 out
 package.tgz
-tsup.config.bundled*
 vitest.config.ts.timestamp*
 
 # Deno
@@ -49,6 +49,4 @@ bun.lockb
 !.yarn/versions
 
 # Cache
-.prettiercache
-.eslintcache
 .vercel

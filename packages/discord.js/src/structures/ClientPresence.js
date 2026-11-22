@@ -1,40 +1,43 @@
-'use strict';
-
-const { GatewayOpcodes, ActivityType } = require('discord-api-types/v10');
-const { Presence } = require('./Presence');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
+/* eslint-disable id-length */
+import { GatewayOpcodes, ActivityType } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { Presence } from './Presence.js';
 
 /**
  * Represents the client's presence.
+ *
  * @extends {Presence}
  */
-class ClientPresence extends Presence {
+export class ClientPresence extends Presence {
   constructor(client, data = {}) {
     super(client, Object.assign(data, { status: data.status ?? 'online', user: { id: null } }));
   }
 
   /**
    * Sets the client's presence
+   *
    * @param {PresenceData} presence The data to set the presence to
-   * @returns {ClientPresence}
+   * @returns {Promise<ClientPresence>}
    */
-  set(presence) {
+  async set(presence) {
     const packet = this._parse(presence);
     this._patch(packet);
     if (presence.shardId === undefined) {
-      this.client.ws.broadcast({ op: GatewayOpcodes.PresenceUpdate, d: packet });
+      await this.client._broadcast({ op: GatewayOpcodes.PresenceUpdate, d: packet });
     } else if (Array.isArray(presence.shardId)) {
-      for (const shardId of presence.shardId) {
-        this.client.ws.shards.get(shardId).send({ op: GatewayOpcodes.PresenceUpdate, d: packet });
-      }
+      await Promise.all(
+        presence.shardId.map(shardId => this.client.ws.send(shardId, { op: GatewayOpcodes.PresenceUpdate, d: packet })),
+      );
     } else {
-      this.client.ws.shards.get(presence.shardId).send({ op: GatewayOpcodes.PresenceUpdate, d: packet });
+      await this.client.ws.send(presence.shardId, { op: GatewayOpcodes.PresenceUpdate, d: packet });
     }
+
     return this;
   }
 
   /**
    * Parses presence data into a packet ready to be sent to Discord
+   *
    * @param {PresenceData} presence The data to parse
    * @returns {GatewayPresenceUpdateData}
    * @private
@@ -80,5 +83,3 @@ class ClientPresence extends Presence {
     return data;
   }
 }
-
-module.exports = ClientPresence;

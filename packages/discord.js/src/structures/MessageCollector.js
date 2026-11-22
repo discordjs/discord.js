@@ -1,7 +1,5 @@
-'use strict';
-
-const Collector = require('./interfaces/Collector');
-const Events = require('../util/Events');
+import { Events } from '../util/Events.js';
+import { Collector } from './interfaces/Collector.js';
 
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions
@@ -14,9 +12,10 @@ const Events = require('../util/Events');
  * Will automatically stop if the channel ({@link Client#event:channelDelete channelDelete}),
  * thread ({@link Client#event:threadDelete threadDelete}), or
  * guild ({@link Client#event:guildDelete guildDelete}) is deleted.
+ *
  * @extends {Collector}
  */
-class MessageCollector extends Collector {
+export class MessageCollector extends Collector {
   /**
    * @param {TextBasedChannels} channel The channel
    * @param {MessageCollectorOptions} options The options to be applied to this collector
@@ -27,18 +26,20 @@ class MessageCollector extends Collector {
 
     /**
      * The channel
+     *
      * @type {TextBasedChannels}
      */
     this.channel = channel;
 
     /**
      * Total number of messages that were received in the channel during message collection
+     *
      * @type {number}
      */
     this.received = 0;
 
-    const bulkDeleteListener = messages => {
-      for (const message of messages.values()) this.handleDispose(message);
+    const bulkDeleteListener = async messages => {
+      for (const message of messages.values()) await this.handleDispose(message);
     };
 
     this._handleChannelDeletion = this._handleChannelDeletion.bind(this);
@@ -66,6 +67,7 @@ class MessageCollector extends Collector {
 
   /**
    * Handles a message for possible collection.
+   *
    * @param {Message} message The message that could be collected
    * @returns {?Snowflake}
    * @private
@@ -73,6 +75,7 @@ class MessageCollector extends Collector {
   collect(message) {
     /**
      * Emitted whenever a message is collected.
+     *
      * @event MessageCollector#collect
      * @param {Message} message The message that was collected
      */
@@ -83,12 +86,14 @@ class MessageCollector extends Collector {
 
   /**
    * Handles a message for possible disposal.
+   *
    * @param {Message} message The message that could be disposed of
    * @returns {?Snowflake}
    */
   dispose(message) {
     /**
      * Emitted whenever a message is disposed of.
+     *
      * @event MessageCollector#dispose
      * @param {Message} message The message that was disposed of
      */
@@ -97,6 +102,7 @@ class MessageCollector extends Collector {
 
   /**
    * The reason this collector has ended with, or null if it hasn't ended yet
+   *
    * @type {?string}
    * @readonly
    */
@@ -108,6 +114,7 @@ class MessageCollector extends Collector {
 
   /**
    * Handles checking if the channel has been deleted, and if so, stops the collector with the reason 'channelDelete'.
+   *
    * @private
    * @param {GuildChannel} channel The channel that was deleted
    * @returns {void}
@@ -120,6 +127,7 @@ class MessageCollector extends Collector {
 
   /**
    * Handles checking if the thread has been deleted, and if so, stops the collector with the reason 'threadDelete'.
+   *
    * @private
    * @param {ThreadChannel} thread The thread that was deleted
    * @returns {void}
@@ -132,6 +140,7 @@ class MessageCollector extends Collector {
 
   /**
    * Handles checking if the guild has been deleted, and if so, stops the collector with the reason 'guildDelete'.
+   *
    * @private
    * @param {Guild} guild The guild that was deleted
    * @returns {void}
@@ -142,5 +151,3 @@ class MessageCollector extends Collector {
     }
   }
 }
-
-module.exports = MessageCollector;

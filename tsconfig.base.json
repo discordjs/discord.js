@@ -1,0 +1,50 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig.json",
+	// Mapped from https://www.typescriptlang.org/tsconfig
+	"compilerOptions": {
+		// Type Checking
+		"allowUnreachableCode": false,
+		"allowUnusedLabels": false,
+		"exactOptionalPropertyTypes": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		"noPropertyAccessFromIndexSignature": false,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"strict": true,
+
+		// Modules
+		"allowArbitraryExtensions": false,
+		"allowImportingTsExtensions": false,
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"resolveJsonModule": true,
+		"resolvePackageJsonExports": true,
+		"resolvePackageJsonImports": true,
+		"rootDir": "${configDir}/src",
+
+		// Emit
+		"declaration": true,
+		"declarationMap": true,
+		"importHelpers": false,
+		"newLine": "lf",
+		"noEmitHelpers": true,
+		"outDir": "${configDir}/dist",
+		"removeComments": false,
+		"sourceMap": true,
+
+		// Interop Constraints
+		"allowSyntheticDefaultImports": true,
+		"forceConsistentCasingInFileNames": true,
+		"isolatedModules": true,
+
+		// Language and Environment
+		"experimentalDecorators": true,
+		"lib": ["ESNext", "esnext.disposable"],
+		"target": "ES2025",
+		"useDefineForClassFields": true
+	},
+	"exclude": ["node_modules"]
+}

@@ -1,14 +1,13 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const MessageComponentInteraction = require('./MessageComponentInteraction');
-const Events = require('../util/Events');
+import { Collection } from '@discordjs/collection';
+import { Events } from '../util/Events.js';
+import { MessageComponentInteraction } from './MessageComponentInteraction.js';
 
 /**
  * Represents a {@link ComponentType.MentionableSelect} select menu interaction.
+ *
  * @extends {MessageComponentInteraction}
  */
-class MentionableSelectMenuInteraction extends MessageComponentInteraction {
+export class MentionableSelectMenuInteraction extends MessageComponentInteraction {
   constructor(client, data) {
     super(client, data);
     const { resolved, values } = data.data;
@@ -16,24 +15,28 @@ class MentionableSelectMenuInteraction extends MessageComponentInteraction {
 
     /**
      * An array of the selected user and role ids
+     *
      * @type {Snowflake[]}
      */
     this.values = values ?? [];
 
     /**
      * Collection of the selected users
+     *
      * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();
 
     /**
      * Collection of the selected users
+     *
      * @type {Collection<Snowflake, GuildMember|APIGuildMember>}
      */
     this.members = new Collection();
 
     /**
      * Collection of the selected roles
+     *
      * @type {Collection<Snowflake, Role|APIRole>}
      */
     this.roles = new Collection();
@@ -67,5 +70,3 @@ class MentionableSelectMenuInteraction extends MessageComponentInteraction {
     }
   }
 }
-
-module.exports = MentionableSelectMenuInteraction;

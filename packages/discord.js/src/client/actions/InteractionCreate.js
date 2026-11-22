@@ -1,26 +1,27 @@
-'use strict';
+import { InteractionType, ComponentType, ApplicationCommandType } from 'discord-api-types/v10';
+import { AutocompleteInteraction } from '../../structures/AutocompleteInteraction.js';
+import { ButtonInteraction } from '../../structures/ButtonInteraction.js';
+import { ChannelSelectMenuInteraction } from '../../structures/ChannelSelectMenuInteraction.js';
+import { ChatInputCommandInteraction } from '../../structures/ChatInputCommandInteraction.js';
+import { MentionableSelectMenuInteraction } from '../../structures/MentionableSelectMenuInteraction.js';
+import { MessageContextMenuCommandInteraction } from '../../structures/MessageContextMenuCommandInteraction.js';
+import { ModalSubmitInteraction } from '../../structures/ModalSubmitInteraction.js';
+import { PrimaryEntryPointCommandInteraction } from '../../structures/PrimaryEntryPointCommandInteraction.js';
+import { RoleSelectMenuInteraction } from '../../structures/RoleSelectMenuInteraction.js';
+import { StringSelectMenuInteraction } from '../../structures/StringSelectMenuInteraction.js';
+import { UserContextMenuCommandInteraction } from '../../structures/UserContextMenuCommandInteraction.js';
+import { UserSelectMenuInteraction } from '../../structures/UserSelectMenuInteraction.js';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const { InteractionType, ComponentType, ApplicationCommandType } = require('discord-api-types/v10');
-const Action = require('./Action');
-const AutocompleteInteraction = require('../../structures/AutocompleteInteraction');
-const ButtonInteraction = require('../../structures/ButtonInteraction');
-const ChannelSelectMenuInteraction = require('../../structures/ChannelSelectMenuInteraction');
-const ChatInputCommandInteraction = require('../../structures/ChatInputCommandInteraction');
-const MentionableSelectMenuInteraction = require('../../structures/MentionableSelectMenuInteraction');
-const MessageContextMenuCommandInteraction = require('../../structures/MessageContextMenuCommandInteraction');
-const ModalSubmitInteraction = require('../../structures/ModalSubmitInteraction');
-const RoleSelectMenuInteraction = require('../../structures/RoleSelectMenuInteraction');
-const StringSelectMenuInteraction = require('../../structures/StringSelectMenuInteraction');
-const UserContextMenuCommandInteraction = require('../../structures/UserContextMenuCommandInteraction');
-const UserSelectMenuInteraction = require('../../structures/UserSelectMenuInteraction');
-const Events = require('../../util/Events');
-
-class InteractionCreateAction extends Action {
+export class InteractionCreateAction extends Action {
   handle(data) {
     const client = this.client;
 
     // Resolve and cache partial channels for Interaction#channel getter
-    const channel = data.channel && this.getChannel(data.channel);
+    const channel =
+      data.channel &&
+      this.getChannel({ ...data.channel, ...('recipients' in data.channel ? { user: data.user } : undefined) });
 
     // Do not emit this for interactions that cache messages that are non-text-based.
     let InteractionClass;
@@ -38,6 +39,9 @@ class InteractionCreateAction extends Action {
             if (channel && !channel.isTextBased()) return;
             InteractionClass = MessageContextMenuCommandInteraction;
             break;
+          case ApplicationCommandType.PrimaryEntryPoint:
+            InteractionClass = PrimaryEntryPointCommandInteraction;
+            break;
           default:
             client.emit(
               Events.Debug,
@@ -45,6 +49,7 @@ class InteractionCreateAction extends Action {
             );
             return;
         }
+
         break;
       case InteractionType.MessageComponent:
         if (channel && !channel.isTextBased()) return;
@@ -75,6 +80,7 @@ class InteractionCreateAction extends Action {
             );
             return;
         }
+
         break;
       case InteractionType.ApplicationCommandAutocomplete:
         InteractionClass = AutocompleteInteraction;
@@ -91,11 +97,10 @@ class InteractionCreateAction extends Action {
 
     /**
      * Emitted when an interaction is created.
+     *
      * @event Client#interactionCreate
      * @param {BaseInteraction} interaction The interaction which was created
      */
     client.emit(Events.InteractionCreate, interaction);
   }
 }
-
-module.exports = InteractionCreateAction;

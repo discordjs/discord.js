@@ -1,9 +1,6 @@
 import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
-import { clearInterval, clearTimeout, setInterval, setTimeout } from 'node:timers';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { URLSearchParams } from 'node:url';
-import { TextDecoder } from 'node:util';
 import type * as nativeZlib from 'node:zlib';
 import { Collection } from '@discordjs/collection';
 import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
@@ -21,12 +18,11 @@ import {
 } from 'discord-api-types/v10';
 import { WebSocket, type Data } from 'ws';
 import type * as ZlibSync from 'zlib-sync';
-import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
+import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy.js';
 import {
 	CompressionMethod,
 	CompressionParameterMap,
 	ImportantGatewayOpcodes,
-	KnownNetworkErrorCodes,
 	getInitialSendRateLimitState,
 } from '../utils/constants.js';
 import type { SessionInfo } from './WebSocketManager.js';
@@ -45,6 +41,7 @@ export enum WebSocketShardEvents {
 	Hello = 'hello',
 	Ready = 'ready',
 	Resumed = 'resumed',
+	SocketError = 'socketError',
 }
 
 export enum WebSocketShardStatus {
@@ -68,6 +65,7 @@ export interface WebSocketShardEventsMap {
 	[WebSocketShardEvents.Ready]: [payload: GatewayReadyDispatchData];
 	[WebSocketShardEvents.Resumed]: [];
 	[WebSocketShardEvents.HeartbeatComplete]: [stats: { ackAt: number; heartbeatAt: number; latency: number }];
+	[WebSocketShardEvents.SocketError]: [error: Error];
 }
 
 export interface WebSocketShardDestroyOptions {
@@ -97,6 +95,13 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private zLibSyncInflate: ZlibSync.Inflate | null = null;
 
+	/**
+	 * @privateRemarks
+	 *
+	 * Used only for native zlib inflate, zlib-sync buffering is handled by the library itself.
+	 */
+	private inflateBuffer: Buffer[] = [];
+
 	private readonly textDecoder = new TextDecoder();
 
 	private replayedEvents = 0;
@@ -107,7 +112,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private initialHeartbeatTimeoutController: AbortController | null = null;
 
-	private heartbeatInterval: NodeJS.Timer | null = null;
+	private heartbeatInterval: NodeJS.Timeout | null = null;
 
 	private lastHeartbeatAt = -1;
 
@@ -165,8 +170,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		try {
 			await promise;
-		} catch ({ error }: any) {
-			throw error;
 		} finally {
 			// cleanup hanging listeners
 			controller.abort();
@@ -183,7 +186,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		const { version, encoding, compression, useIdentifyCompression } = this.strategy.options;
 		this.identifyCompressionEnabled = useIdentifyCompression;
 
-		// eslint-disable-next-line id-length
 		const params = new URLSearchParams({ v: version, encoding });
 		if (compression !== null) {
 			if (useIdentifyCompression) {
@@ -197,9 +199,15 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				case CompressionMethod.ZlibNative: {
 					const zlib = await getNativeZlib();
 					if (zlib) {
+						this.inflateBuffer = [];
+
 						const inflate = zlib.createInflate({
 							chunkSize: 65_535,
 							flush: zlib.constants.Z_SYNC_FLUSH,
+						});
+
+						inflate.on('data', (chunk) => {
+							this.inflateBuffer.push(chunk);
 						});
 
 						inflate.on('error', (error) => {
@@ -208,7 +216,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 						this.nativeInflate = inflate;
 					} else {
-						console.warn('WebSocketShard: Compression is set to native but node:zlib is not available.');
+						console.warn('WebSocketShard: Compression is set to native zlib but node:zlib is not available.');
 						params.delete('compress');
 					}
 
@@ -224,6 +232,34 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 						});
 					} else {
 						console.warn('WebSocketShard: Compression is set to zlib-sync, but it is not installed.');
+						params.delete('compress');
+					}
+
+					break;
+				}
+
+				case CompressionMethod.ZstdNative: {
+					const zlib = await getNativeZlib();
+					if (zlib && 'createZstdDecompress' in zlib) {
+						this.inflateBuffer = [];
+
+						const inflate = zlib.createZstdDecompress({
+							chunkSize: 65_535,
+						}) as nativeZlib.Inflate;
+
+						inflate.on('data', (chunk) => {
+							this.inflateBuffer.push(chunk);
+						});
+
+						inflate.on('error', (error) => {
+							this.emit(WebSocketShardEvents.Error, error);
+						});
+
+						this.nativeInflate = inflate;
+					} else {
+						console.warn(
+							'WebSocketShard: Compression is set to native zstd but node:zlib is not available or your node version does not support zstd decompression.',
+						);
 						params.delete('compress');
 					}
 
@@ -323,7 +359,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.failedToConnectDueToNetworkError = false;
 
 		// Clear session state if applicable
-		if (options.recover !== WebSocketShardDestroyRecovery.Resume) {
+		if (
+			(options.recover !== WebSocketShardDestroyRecovery.Resume && options.code !== CloseCodes.Resuming) ||
+			options.code === CloseCodes.Normal
+		) {
 			await this.strategy.updateSessionInfo(this.id, null);
 		}
 
@@ -512,6 +551,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			`shard id: ${this.id.toString()}`,
 			`shard count: ${this.strategy.options.shardCount}`,
 			`intents: ${this.strategy.options.intents}`,
+			`capabilities: ${this.strategy.options.capabilities}`,
 			`compression: ${this.transportCompressionEnabled ? CompressionParameterMap[this.strategy.options.compression!] : this.identifyCompressionEnabled ? 'identify' : 'none'}`,
 		]);
 
@@ -519,6 +559,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			token: this.strategy.options.token,
 			properties: this.strategy.options.identifyProperties,
 			intents: this.strategy.options.intents,
+			capabilities: this.strategy.options.capabilities,
 			compress: this.identifyCompressionEnabled,
 			shard: [this.id, this.strategy.options.shardCount],
 		};
@@ -618,31 +659,60 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		// Deal with transport compression
 		if (this.transportCompressionEnabled) {
+			// Each WS message received is a full gateway message for zstd streaming, but for zlib it's chunked
 			const flush =
-				decompressable.length >= 4 &&
-				decompressable.at(-4) === 0x00 &&
-				decompressable.at(-3) === 0x00 &&
-				decompressable.at(-2) === 0xff &&
-				decompressable.at(-1) === 0xff;
+				this.strategy.options.compression === CompressionMethod.ZstdNative ||
+				(decompressable.length >= 4 &&
+					decompressable.at(-4) === 0x00 &&
+					decompressable.at(-3) === 0x00 &&
+					decompressable.at(-2) === 0xff &&
+					decompressable.at(-1) === 0xff);
 
 			if (this.nativeInflate) {
-				this.nativeInflate.write(decompressable, 'binary');
+				const doneWriting = new Promise<void>((resolve) => {
+					// eslint-disable-next-line promise/prefer-await-to-callbacks
+					this.nativeInflate!.write(decompressable, 'binary', (error) => {
+						if (error) {
+							this.emit(WebSocketShardEvents.Error, error);
+						}
+
+						resolve();
+					});
+				});
 
 				if (!flush) {
 					return null;
 				}
 
-				const [result] = await once(this.nativeInflate, 'data');
-				return this.parseInflateResult(result);
+				// This way we're ensuring the latest write has flushed and our buffer is ready
+				await doneWriting;
+
+				const result = this.parseInflateResult(Buffer.concat(this.inflateBuffer));
+				this.inflateBuffer = [];
+
+				return result;
 			} else if (this.zLibSyncInflate) {
 				const zLibSync = (await getZlibSync())!;
 				this.zLibSyncInflate.push(Buffer.from(decompressable), flush ? zLibSync.Z_SYNC_FLUSH : zLibSync.Z_NO_FLUSH);
 
 				if (this.zLibSyncInflate.err) {
-					this.emit(
-						WebSocketShardEvents.Error,
-						new Error(`${this.zLibSyncInflate.err}${this.zLibSyncInflate.msg ? `: ${this.zLibSyncInflate.msg}` : ''}`),
-					);
+					// Must be here because zlib-sync is lazily loaded
+					const ZlibErrorCodes = {
+						[zLibSync.Z_NEED_DICT]: 'Z_NEED_DICT',
+						[zLibSync.Z_STREAM_END]: 'Z_STREAM_END',
+						[zLibSync.Z_ERRNO]: 'Z_ERRNO',
+						[zLibSync.Z_STREAM_ERROR]: 'Z_STREAM_ERROR',
+						[zLibSync.Z_DATA_ERROR]: 'Z_DATA_ERROR',
+						[zLibSync.Z_MEM_ERROR]: 'Z_MEM_ERROR',
+						[zLibSync.Z_BUF_ERROR]: 'Z_BUF_ERROR',
+						[zLibSync.Z_VERSION_ERROR]: 'Z_VERSION_ERROR',
+					} as const satisfies Record<number, string>;
+
+					// Try to match nodejs zlib errors as much as possible
+					const error: NodeJS.ErrnoException = new Error(this.zLibSyncInflate.msg ?? undefined);
+					error.errno = this.zLibSyncInflate.err;
+					error.code = ZlibErrorCodes[this.zLibSyncInflate.err];
+					this.emit(WebSocketShardEvents.Error, error);
 				}
 
 				if (!flush) {
@@ -676,7 +746,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					this.replayedEvents++;
 				}
 
-				// eslint-disable-next-line sonarjs/no-nested-switch
 				switch (payload.t) {
 					case GatewayDispatchEvents.Ready: {
 						this.#status = WebSocketShardStatus.Ready;
@@ -791,13 +860,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private onError(error: Error) {
-		if ('code' in error && KnownNetworkErrorCodes.has(error.code as string)) {
-			this.debug(['Failed to connect to the gateway URL specified due to a network error']);
-			this.failedToConnectDueToNetworkError = true;
-			return;
-		}
-
-		this.emit(WebSocketShardEvents.Error, error);
+		this.emit(WebSocketShardEvents.SocketError, error);
+		this.failedToConnectDueToNetworkError = true;
 	}
 
 	private async onClose(code: number) {

@@ -1,0 +1,52 @@
+---
+title: Context Menus
+---
+
+Context Menus are application commands which appear when right clicking or tapping a user or a message, in the Apps submenu.
+
+<Callout>
+	This page is a follow-up to the [slash commands](../slash-commands/advanced-creation) section. Please carefully read
+	those pages first so that you can understand the methods used in this section.
+</Callout>
+
+## Registering context menu commands
+
+To create a context menu command, use the `ContextMenuCommandBuilder` class. You can then set the type of the context menu (user or message) using the `setType()` method.
+
+```js
+const { ContextMenuCommandBuilder, ApplicationCommandType } = require('discord.js');
+
+const data = new ContextMenuCommandBuilder().setName('User Information').setType(ApplicationCommandType.User);
+```
+
+## Receiving context menu command interactions
+
+Context menus commands, just like slash commands, are received via an interaction. You can check if a given interaction is a context menu by invoking the `isContextMenuCommand()` method, or the `isMessageContextMenuCommand()` and `isUserContextMenuCommand()` methods to check for the specific type of context menu interaction:
+
+```js
+client.on(Events.InteractionCreate, (interaction) => {
+	if (!interaction.isUserContextMenuCommand()) return;
+	console.log(interaction);
+});
+```
+
+## Extracting data from context menus
+
+For user context menus, you can get the targeted user by accessing the `targetUser` or `targetMember` property from the `UserContextMenuCommandInteraction`.
+
+For message context menus, you can get the targeted message by accessing the `targetMessage` property from the `MessageContextMenuCommandInteraction`.
+
+```js
+client.on(Events.InteractionCreate, (interaction) => {
+	if (!interaction.isUserContextMenuCommand()) return;
+	// Get the User's username from context menu
+	const { username } = interaction.targetUser;
+	console.log(username);
+});
+```
+
+## Notes
+
+- Context menu commands cannot have subcommands or any options.
+- Responding to context menu commands functions the same as slash commands. Refer to our [slash command responses](../slash-commands/response-methods) guide for more information.
+- Context menu command permissions also function the same as slash commands. Refer to our [slash command permissions](../slash-commands/permissions) guide for more information.

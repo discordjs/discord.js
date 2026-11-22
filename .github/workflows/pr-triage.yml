@@ -13,13 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Label pull request
-        uses: actions/labeler@v5
+        uses: actions/labeler@v7
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           sync-labels: true
   validate-title:
     name: Validate title
-    if: github.event.action != 'synchronize'
     runs-on: ubuntu-latest
     steps:
       - name: Validate pull request title

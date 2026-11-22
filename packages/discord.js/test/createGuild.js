@@ -1,15 +1,13 @@
-'use strict';
-
-const assert = require('node:assert');
-const { ChannelType, GatewayIntentBits } = require('discord-api-types/v10');
-const { token } = require('./auth');
-const { Client } = require('../src');
+import assert from 'node:assert';
+import { ChannelType, GatewayIntentBits } from 'discord-api-types/v10';
+import { Client, Events } from '../src/index.js';
+import { token } from './auth.js';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 
-client.on('ready', async () => {
+client.on(Events.ClientReady, async readyClient => {
   try {
-    const guild = await client.guilds.create('testing', {
+    const guild = await readyClient.guilds.create('testing', {
       channels: [
         { name: 'afk channel', type: ChannelType.GuildVoice, id: 0 },
         { name: 'system-channel', id: 1 },
@@ -26,7 +24,7 @@ client.on('ready', async () => {
   } catch (error) {
     console.error(error);
   } finally {
-    await client.destroy();
+    await readyClient.destroy();
   }
 });
 

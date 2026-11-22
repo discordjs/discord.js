@@ -23,31 +23,19 @@ export class RateLimitError extends Error implements RateLimitData {
 
 	public scope: RateLimitData['scope'];
 
-	public constructor({
-		timeToReset,
-		limit,
-		method,
-		hash,
-		url,
-		route,
-		majorParameter,
-		global,
-		retryAfter,
-		sublimitTimeout,
-		scope,
-	}: RateLimitData) {
+	public constructor(data: RateLimitData) {
 		super();
-		this.timeToReset = timeToReset;
-		this.limit = limit;
-		this.method = method;
-		this.hash = hash;
-		this.url = url;
-		this.route = route;
-		this.majorParameter = majorParameter;
-		this.global = global;
-		this.retryAfter = retryAfter;
-		this.sublimitTimeout = sublimitTimeout;
-		this.scope = scope;
+		this.timeToReset = data.timeToReset;
+		this.limit = data.limit;
+		this.method = data.method;
+		this.hash = data.hash;
+		this.url = data.url;
+		this.route = data.route;
+		this.majorParameter = data.majorParameter;
+		this.global = data.global;
+		this.retryAfter = data.retryAfter;
+		this.sublimitTimeout = data.sublimitTimeout;
+		this.scope = data.scope;
 	}
 
 	/**

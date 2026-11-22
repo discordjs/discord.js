@@ -1,35 +1,70 @@
 {
-	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-	"eslint.experimental.useFlatConfig": true,
-	"eslint.workingDirectories": [
-		{ "directory": "${workspaceFolder}" },
-		{ "pattern": "./apps/*/" },
-		{ "pattern": "./packages/*/" }
-	],
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"editor.formatOnSave": true,
+	"bun.test.enable": false,
 	"editor.codeActionsOnSave": {
-		"source.organizeImports": "never",
-		"source.fixAll.eslint": "explicit",
-		"source.fixAll": "explicit"
+		"source.fixAll": "explicit",
+		"source.fixAll.oxc": "explicit",
+		"source.organizeImports": "never"
 	},
+	"editor.defaultFormatter": "oxc.oxc-vscode",
+	"editor.formatOnSave": true,
 	"editor.trimAutoWhitespace": false,
+	"editor.unicodeHighlight.invisibleCharacters": true,
 	"files.associations": {
-		"api-extractor.json": "jsonc",
-		"api-extractor-docs.json": "jsonc",
-		"tsconfig.json": "jsonc",
 		"tsconfig.eslint.json": "jsonc",
-		"tsconfig.docs.json": "jsonc"
+		"tsconfig.json": "jsonc"
+	},
+	"files.eol": "\n",
+	"files.exclude": {
+		"**/.next": true,
+		"**/coverage": true,
+		"**/dist": true,
+		"**/node_modules": true,
+		"**/test-results": true
 	},
 	"files.insertFinalNewline": true,
-	"files.eol": "\n",
+	"files.watcherExclude": {
+		"**/.next/*/**": true,
+		"**/.yarn/*/**": true,
+		"**/coverage/*/**": true,
+		"**/dist/*/**": true,
+		"**/test-results/*/**": true
+	},
 	"npm.packageManager": "pnpm",
-	"typescript.tsdk": "node_modules/typescript/lib",
-	"typescript.enablePromptUseWorkspaceTsdk": true,
-	"unocss.disable": true,
+	"oxc.requireConfig": true,
+	"oxc.typeAware": false,
+	"search.exclude": {
+		"**/.next": true,
+		"**/.yarn": true,
+		"**/coverage": true,
+		"**/dist": true,
+		"**/node_modules": true,
+		"**/test-results": true
+	},
+	"search.followSymlinks": true,
+	"search.useParentIgnoreFiles": true,
+	"tailwindCSS.experimental.classRegex": [
+		["cva\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]?([^\"'`]+)[\"'`]?"],
+		["cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+		["class:\\s*?[\"'`]([^\"'`]*).*?,"],
+		["className:\\s*?[\"'`]([^\"'`]*).*?,"]
+	],
+	"js/ts.experimental.useTsgo": false,
+	"js/ts.preferences.importModuleSpecifier": "project-relative",
+	"js/ts.preferences.importModuleSpecifierEnding": "index",
+	"js/ts.preferences.includePackageJsonAutoImports": "on",
+	"js/ts.preferences.preferTypeOnlyAutoImports": true,
+	"js/ts.tsdk.path": "./node_modules/typescript/lib",
+	"workbench.editor.customLabels.patterns": {
+		"**/app/**/error.tsx": "${dirname} (${filename}.${extname}) - Error",
+		"**/app/**/layout.tsx": "${dirname} (${filename}.${extname}) - Layout",
+		"**/app/**/not-found.tsx": "${dirname} (${filename}.${extname}) - Not Found",
+		"**/app/**/page.tsx": "${dirname} (${filename}.${extname}) - Page",
+		"**/app/**/template.tsx": "${dirname} (${filename}.${extname}) - Template",
+		"**/components/**/page.tsx": "${dirname} (${filename}.${extname}) - Component"
+	},
 	"deno.enable": false,
 	"deno.enablePaths": ["./packages/create-discord-bot/template/Deno"],
 	"deno.lint": false,
-	"deno.unstable": false,
+	"deno.unstable": [],
 	"deno.config": "./packages/create-discord-bot/template/Deno/deno.jsonc"
 }

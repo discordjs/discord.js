@@ -148,13 +148,14 @@ export class WorkerBootstrapper {
 		for (const shardId of this.data.shardIds) {
 			const shard = new WebSocketShard(new WorkerContextFetchingStrategy(this.data), shardId);
 			for (const event of options.forwardEvents ?? Object.values(WebSocketShardEvents)) {
-				shard.on(event, (...args) => {
+				shard.on(event, (...args: unknown[]) => {
 					const payload: WorkerReceivePayload = {
 						op: WorkerReceivePayloadOp.Event,
 						event,
 						data: args,
 						shardId,
 					};
+
 					parentPort!.postMessage(payload);
 				});
 			}

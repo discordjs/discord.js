@@ -1,64 +1,88 @@
-'use strict';
+import { Buffer } from 'node:buffer';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fetch } from 'undici';
+import { DiscordjsError, DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { BaseInvite } from '../structures/BaseInvite.js';
+import { GuildTemplate } from '../structures/GuildTemplate.js';
 
-const { Buffer } = require('node:buffer');
-const fs = require('node:fs/promises');
-const path = require('node:path');
-const { fetch } = require('undici');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
-const Invite = require('../structures/Invite');
+/**
+ * Resolves target users file to CSV.
+ *
+ * @param {Client} client The client
+ * @param {UserResolvable[]|BufferResolvable} targetUsersFile The target users file for invite
+ * @returns {Promise<string>}
+ * @ignore
+ */
+export async function resolveInviteTargetUsersFile(client, targetUsersFile) {
+  let usersCsv;
+  if (Array.isArray(targetUsersFile)) {
+    usersCsv = targetUsersFile.map(user => client.users.resolveId(user)).join('\n');
+  } else {
+    const resolved = await resolveFile(targetUsersFile);
+    usersCsv = resolved.data.toString('utf8');
+  }
+
+  return usersCsv;
+}
 
 /**
  * Data that can be resolved to give an invite code. This can be:
- * * An invite code
- * * An invite URL
+ * - An invite code
+ * - An invite URL
+ *
  * @typedef {string} InviteResolvable
  */
 
 /**
  * Data that can be resolved to give a template code. This can be:
- * * A template code
- * * A template URL
+ * - A template code
+ * - A template URL
+ *
  * @typedef {string} GuildTemplateResolvable
  */
 
 /**
  * Resolves the string to a code based on the passed regex.
+ *
  * @param {string} data The string to resolve
  * @param {RegExp} regex The RegExp used to extract the code
  * @returns {string}
  * @private
  */
-function resolveCode(data, regex) {
+export function resolveCode(data, regex) {
   return regex.exec(data)?.[1] ?? data;
 }
 
 /**
  * Resolves InviteResolvable to an invite code.
+ *
  * @param {InviteResolvable} data The invite resolvable to resolve
  * @returns {string}
  * @private
  */
-function resolveInviteCode(data) {
-  return resolveCode(data, Invite.InvitesPattern);
+export function resolveInviteCode(data) {
+  return resolveCode(data, BaseInvite.InvitesPattern);
 }
 
 /**
  * Resolves GuildTemplateResolvable to a template code.
+ *
  * @param {GuildTemplateResolvable} data The template resolvable to resolve
  * @returns {string}
  * @private
  */
-function resolveGuildTemplateCode(data) {
-  const GuildTemplate = require('../structures/GuildTemplate');
+export async function resolveGuildTemplateCode(data) {
   return resolveCode(data, GuildTemplate.GuildTemplatesPattern);
 }
 
 /**
  * Data that can be resolved to give a Buffer. This can be:
- * * A Buffer
- * * The path to a local file
- * * A URL <warn>When provided a URL, discord.js will fetch the URL internally in order to create a Buffer.
- * This can pose a security risk when the URL has not been sanitized</warn>
+ * - A Buffer
+ * - The path to a local file
+ * - A URL <warn>When provided a URL, discord.js will fetch the URL internally in order to create a Buffer.
+ *   This can pose a security risk when the URL has not been sanitized</warn>
+ *
  * @typedef {string|Buffer} BufferResolvable
  */
 
@@ -76,11 +100,12 @@ function resolveGuildTemplateCode(data) {
 
 /**
  * Resolves a BufferResolvable to a Buffer.
+ *
  * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
  * @returns {Promise<ResolvedFile>}
  * @private
  */
-async function resolveFile(resource) {
+export async function resolveFile(resource) {
   if (Buffer.isBuffer(resource)) return { data: resource };
 
   if (typeof resource[Symbol.asyncIterator] === 'function') {
@@ -107,35 +132,38 @@ async function resolveFile(resource) {
 
 /**
  * Data that resolves to give a Base64 string, typically for image uploading. This can be:
- * * A Buffer
- * * A base64 string
+ * - A Buffer
+ * - A base64 string
+ *
  * @typedef {Buffer|string} Base64Resolvable
  */
 
 /**
- * Resolves a Base64Resolvable to a Base 64 image.
+ * Resolves a Base64Resolvable to a Base 64 string.
+ *
  * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
- * @returns {?string}
+ * @param {string} [contentType='image/jpg'] The content type of the data
+ * @returns {string}
  * @private
  */
-function resolveBase64(data) {
-  if (Buffer.isBuffer(data)) return `data:image/jpg;base64,${data.toString('base64')}`;
+export function resolveBase64(data, contentType = 'image/jpg') {
+  if (Buffer.isBuffer(data)) return `data:${contentType};base64,${data.toString('base64')}`;
   return data;
 }
 
 /**
  * Resolves a Base64Resolvable, a string, or a BufferResolvable to a Base 64 image.
+ *
  * @param {BufferResolvable|Base64Resolvable} image The image to be resolved
  * @returns {Promise<?string>}
  * @private
  */
-async function resolveImage(image) {
+export async function resolveImage(image) {
   if (!image) return null;
   if (typeof image === 'string' && image.startsWith('data:')) {
     return image;
   }
+
   const file = await resolveFile(image);
   return resolveBase64(file.data);
 }
-
-module.exports = { resolveCode, resolveInviteCode, resolveGuildTemplateCode, resolveImage, resolveBase64, resolveFile };

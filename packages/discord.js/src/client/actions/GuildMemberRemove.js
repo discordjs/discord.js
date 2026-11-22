@@ -1,11 +1,8 @@
-'use strict';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
-const Status = require('../../util/Status');
-
-class GuildMemberRemoveAction extends Action {
-  handle(data, shard) {
+export class GuildMemberRemoveAction extends Action {
+  handle(data) {
     const client = this.client;
     const guild = client.guilds.cache.get(data.guild_id);
     let member = null;
@@ -16,16 +13,17 @@ class GuildMemberRemoveAction extends Action {
         guild.members.cache.delete(member.id);
         /**
          * Emitted whenever a member leaves a guild, or is kicked.
+         *
          * @event Client#guildMemberRemove
          * @param {GuildMember} member The member that has left/been kicked from the guild
          */
-        if (shard.status === Status.Ready) client.emit(Events.GuildMemberRemove, member);
+        client.emit(Events.GuildMemberRemove, member);
       }
+
       guild.presences.cache.delete(data.user.id);
       guild.voiceStates.cache.delete(data.user.id);
     }
+
     return { guild, member };
   }
 }
-
-module.exports = GuildMemberRemoveAction;

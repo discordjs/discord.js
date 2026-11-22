@@ -1,9 +1,7 @@
-'use strict';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
-
-class GuildScheduledEventDeleteAction extends Action {
+export class GuildScheduledEventDeleteAction extends Action {
   handle(data) {
     const client = this.client;
     const guild = client.guilds.cache.get(data.guild_id);
@@ -15,6 +13,7 @@ class GuildScheduledEventDeleteAction extends Action {
 
         /**
          * Emitted whenever a guild scheduled event is deleted.
+         *
          * @event Client#guildScheduledEventDelete
          * @param {GuildScheduledEvent} guildScheduledEvent The deleted guild scheduled event
          */
@@ -27,5 +26,3 @@ class GuildScheduledEventDeleteAction extends Action {
     return {};
   }
 }
-
-module.exports = GuildScheduledEventDeleteAction;

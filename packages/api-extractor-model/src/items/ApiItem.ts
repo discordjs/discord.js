@@ -1,15 +1,19 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
+import { createRequire } from 'node:module';
 import type { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { InternalError } from '@rushstack/node-core-library';
 import { ApiItemContainerMixin } from '../mixins/ApiItemContainerMixin.js';
 import { ApiParameterListMixin } from '../mixins/ApiParameterListMixin.js';
 import type { Constructor, PropertiesOf } from '../mixins/Mixin.js';
+import type { ApiEntryPoint } from '../model/ApiEntryPoint.js';
 import type { ApiModel } from '../model/ApiModel.js';
 import type { ApiPackage } from '../model/ApiPackage.js';
-import type { DocgenJson } from '../model/Deserializer';
+import type { DocgenJson } from '../model/Deserializer.js';
 import type { DeserializerContext } from '../model/DeserializerContext.js';
+
+const require = createRequire(import.meta.url);
 
 /**
  * The type returned by the {@link ApiItem.kind} property, which can be used to easily distinguish subclasses of
@@ -75,7 +79,6 @@ export enum Meaning {
  *
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IApiItemOptions {}
 
 export interface IApiItemJson {
@@ -108,14 +111,14 @@ export class ApiItem {
 	public static deserialize(jsonObject: IApiItemJson, context: DeserializerContext): ApiItem {
 		// The Deserializer class is coupled with a ton of other classes, so  we delay loading it
 		// to avoid ES5 circular imports.
-		// eslint-disable-next-line @typescript-eslint/consistent-type-imports, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-		const deserializerModule: typeof import('../model/Deserializer') = require('../model/Deserializer');
+		// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+		const deserializerModule: typeof import('../model/Deserializer.js') = require('../model/Deserializer');
 		return deserializerModule.Deserializer.deserialize(context, jsonObject);
 	}
 
 	public static deserializeDocgen(jsonObject: DocgenJson, _package: string): ApiItem {
-		// eslint-disable-next-line @typescript-eslint/consistent-type-imports, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-		const deserializerModule: typeof import('../model/Deserializer') = require('../model/Deserializer');
+		// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+		const deserializerModule: typeof import('../model/Deserializer.js') = require('../model/Deserializer');
 		return deserializerModule.Deserializer.deserializeDocgen(jsonObject, _package);
 	}
 
@@ -300,6 +303,20 @@ export class ApiItem {
 		}
 
 		return reversedParts.reverse().join('');
+	}
+
+	/**
+	 * If this item is an ApiEntryPoint or has an ApiEntryPoint as one of its parents, then that object is returned.
+	 * Otherwise undefined is returned.
+	 */
+	public getAssociatedEntryPoint(): ApiEntryPoint | undefined {
+		for (let current: ApiItem | undefined = this; current !== undefined; current = current.parent) {
+			if (current.kind === ApiItemKind.EntryPoint) {
+				return current as ApiEntryPoint;
+			}
+		}
+
+		return undefined;
 	}
 
 	/**

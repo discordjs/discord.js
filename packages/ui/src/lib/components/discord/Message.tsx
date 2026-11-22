@@ -28,15 +28,15 @@ export function DiscordMessage({
 	return (
 		<div className="relative" id="outer-message-wrapper">
 			<div
-				className={`pl-18 hover:bg-[rgb(4_4_5)]/7 group py-0.5 pr-12 leading-snug ${followUp ? '' : 'mt-4'}`}
+				className={`group py-0.5 pl-18 pr-12 leading-snug hover:bg-[rgb(4_4_5)]/7 ${followUp ? '' : 'mt-4'}`}
 				id="message-wrapper"
 			>
-				{(reply || replyNode) && !followUp ? reply ? <DiscordMessageReply {...reply} /> : replyNode ?? null : null}
+				{(reply || replyNode) && !followUp ? reply ? <DiscordMessageReply {...reply} /> : (replyNode ?? null) : null}
 				{(interaction || interactionNode) && !(reply || replyNode) && !followUp ? (
 					interaction ? (
 						<DiscordMessageInteraction {...interaction} />
 					) : (
-						interactionNode ?? null
+						(interactionNode ?? null)
 					)
 				) : null}
 				<div className="static" id="content-wrapper">

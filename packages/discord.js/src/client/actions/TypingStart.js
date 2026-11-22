@@ -1,12 +1,10 @@
-'use strict';
+import { Typing } from '../../structures/Typing.js';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const Action = require('./Action');
-const Typing = require('../../structures/Typing');
-const Events = require('../../util/Events');
-
-class TypingStart extends Action {
+export class TypingStartAction extends Action {
   handle(data) {
-    const channel = this.getChannel(data);
+    const channel = this.getChannel({ id: data.channel_id, ...('guild_id' in data && { guild_id: data.guild_id }) });
     if (!channel) return;
 
     if (!channel.isTextBased()) {
@@ -18,6 +16,7 @@ class TypingStart extends Action {
     if (user) {
       /**
        * Emitted whenever a user starts typing in a channel.
+       *
        * @event Client#typingStart
        * @param {Typing} typing The typing state
        */
@@ -25,5 +24,3 @@ class TypingStart extends Action {
     }
   }
 }
-
-module.exports = TypingStart;

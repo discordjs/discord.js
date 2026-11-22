@@ -1,15 +1,16 @@
+import { describe, test, expect, vitest } from 'vitest';
 import { abortAfter } from '../src/util/abortAfter';
 
-jest.useFakeTimers();
+vitest.useFakeTimers();
 
-const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+const clearTimeoutSpy = vitest.spyOn(global, 'clearTimeout');
 
 describe('abortAfter', () => {
 	test('Aborts after the given delay', () => {
 		const [ac, signal] = abortAfter(100);
 		expect(ac.signal).toEqual(signal);
 		expect(signal.aborted).toEqual(false);
-		jest.runAllTimers();
+		vitest.runAllTimers();
 		expect(signal.aborted).toEqual(true);
 	});
 

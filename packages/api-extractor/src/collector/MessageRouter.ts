@@ -3,7 +3,7 @@
 
 import type * as tsdoc from '@microsoft/tsdoc';
 import { Sort, InternalError } from '@rushstack/node-core-library';
-import colors from 'colors';
+import { Colorize } from '@rushstack/terminal';
 import * as ts from 'typescript';
 import { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstSymbol } from '../analyzer/AstSymbol.js';
@@ -88,19 +88,29 @@ export class MessageRouter {
 	public readonly showDiagnostics: boolean;
 
 	public constructor(options: IMessageRouterOptions) {
-		this._workingPackageFolder = options.workingPackageFolder;
-		this._messageCallback = options.messageCallback;
+		const {
+			workingPackageFolder,
+			messageCallback,
+			sourceMapper,
+			tsdocConfiguration,
+			showVerboseMessages,
+			showDiagnostics,
+			messagesConfig,
+		} = options;
+
+		this._workingPackageFolder = workingPackageFolder;
+		this._messageCallback = messageCallback;
 
 		this._messages = [];
 		this._associatedMessagesForAstDeclaration = new Map<AstDeclaration, ExtractorMessage[]>();
-		this._sourceMapper = options.sourceMapper;
-		this._tsdocConfiguration = options.tsdocConfiguration;
+		this._sourceMapper = sourceMapper;
+		this._tsdocConfiguration = tsdocConfiguration;
 
 		// showDiagnostics implies showVerboseMessages
-		this.showVerboseMessages = options.showVerboseMessages || options.showDiagnostics;
-		this.showDiagnostics = options.showDiagnostics;
+		this.showVerboseMessages = showVerboseMessages || showDiagnostics;
+		this.showDiagnostics = showDiagnostics;
 
-		this._applyMessagesConfig(options.messagesConfig);
+		this._applyMessagesConfig(messagesConfig);
 	}
 
 	/**
@@ -421,7 +431,7 @@ export class MessageRouter {
 
 	/**
 	 * This returns all remaining messages that were flagged with `addToApiReportFile`, but which were not
-	 * retreieved using `fetchAssociatedMessagesForReviewFile()`.
+	 * retrieved using `fetchAssociatedMessagesForReviewFile()`.
 	 */
 	public fetchUnassociatedMessagesForReviewFile(): ExtractorMessage[] {
 		const messagesForApiReportFile: ExtractorMessage[] = [];
@@ -583,17 +593,17 @@ export class MessageRouter {
 
 		switch (message.logLevel) {
 			case ExtractorLogLevel.Error:
-				console.error(colors.red('Error: ' + messageText));
+				console.error(Colorize.red('Error: ' + messageText));
 				break;
 			case ExtractorLogLevel.Warning:
-				console.warn(colors.yellow('Warning: ' + messageText));
+				console.warn(Colorize.yellow('Warning: ' + messageText));
 				break;
 			case ExtractorLogLevel.Info:
 				console.log(messageText);
 				break;
 			case ExtractorLogLevel.Verbose:
 				if (this.showVerboseMessages) {
-					console.log(colors.cyan(messageText));
+					console.log(Colorize.cyan(messageText));
 				}
 
 				break;

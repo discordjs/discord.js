@@ -1,16 +1,18 @@
 /* eslint-disable no-promise-executor-return */
 import { Buffer } from 'node:buffer';
+import { describe, test, expect } from 'vitest';
 import { SILENCE_FRAME } from '../src/audio/AudioPlayer';
 import { AudioReceiveStream, EndBehaviorType } from '../src/receive/AudioReceiveStream';
 
-const DUMMY_BUFFER = Buffer.allocUnsafe(16);
+const DUMMY_PACKET = { payload: Buffer.allocUnsafe(16), sequence: 0, timestamp: 0, ssrc: 0 };
+const SILENCE_PACKET = { payload: SILENCE_FRAME, sequence: 0, timestamp: 0, ssrc: 0 };
 
 async function wait(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function stepSilence(stream: AudioReceiveStream, increment: number) {
-	stream.push(SILENCE_FRAME);
+	stream.push(SILENCE_PACKET);
 	await wait(increment);
 	expect(stream.readable).toEqual(true);
 }
@@ -18,34 +20,32 @@ async function stepSilence(stream: AudioReceiveStream, increment: number) {
 describe('AudioReceiveStream', () => {
 	test('Manual end behavior', async () => {
 		const stream = new AudioReceiveStream({ end: { behavior: EndBehaviorType.Manual } });
-		stream.push(DUMMY_BUFFER);
+		stream.push(DUMMY_PACKET);
 		expect(stream.readable).toEqual(true);
 		await wait(200);
-		stream.push(DUMMY_BUFFER);
+		stream.push(DUMMY_PACKET);
 		expect(stream.readable).toEqual(true);
+		stream.push(null);
+		await wait(200);
+		expect(stream.readable).toEqual(false);
 	});
 
-	// TODO: Fix this test
-	// test('AfterSilence end behavior', async () => {
-	// 	const duration = 100;
-	// 	const increment = 20;
+	test('AfterSilence end behavior', async () => {
+		const duration = 100;
+		const increment = 20;
 
-	// 	const stream = new AudioReceiveStream({ end: { behavior: EndBehaviorType.AfterSilence, duration: 100 } });
-	// 	stream.resume();
+		const stream = new AudioReceiveStream({ end: { behavior: EndBehaviorType.AfterSilence, duration } });
+		stream.resume();
 
-	// 	for (let i = increment; i < duration / 2; i += increment) {
-	// 		await stepSilence(stream, increment);
-	// 	}
+		for (let step = increment; step < duration / 2; step += increment) {
+			await stepSilence(stream, increment);
+		}
 
-	// 	stream.push(DUMMY_BUFFER);
+		stream.push(DUMMY_PACKET);
 
-	// 	for (let i = increment; i < duration; i += increment) {
-	// 		await stepSilence(stream, increment);
-	// 	}
-
-	// 	await wait(increment);
-	// 	expect(stream.readableEnded).toEqual(true);
-	// });
+		await wait(duration);
+		expect(stream.readableEnded).toEqual(true);
+	});
 
 	test('AfterInactivity end behavior', async () => {
 		const duration = 100;
@@ -58,7 +58,7 @@ describe('AudioReceiveStream', () => {
 			await stepSilence(stream, increment);
 		}
 
-		stream.push(DUMMY_BUFFER);
+		stream.push(DUMMY_PACKET);
 
 		for (let index = increment; index < duration; index += increment) {
 			await stepSilence(stream, increment);
@@ -70,5 +70,23 @@ describe('AudioReceiveStream', () => {
 		await wait(duration - increment);
 
 		expect(stream.readableEnded).toEqual(true);
+	});
+
+	test('Stream ends after pushing null', async () => {
+		const stream = new AudioReceiveStream({ end: { behavior: EndBehaviorType.AfterInactivity, duration: 100 } });
+		stream.resume();
+
+		stream.push(DUMMY_PACKET);
+
+		expect(stream.readable).toEqual(true);
+		expect(stream.readableEnded).toEqual(false);
+		expect(stream.destroyed).toEqual(false);
+
+		stream.push(null);
+		await wait(50);
+
+		expect(stream.readable).toEqual(false);
+		expect(stream.readableEnded).toEqual(true);
+		expect(stream.destroyed).toEqual(true);
 	});
 });

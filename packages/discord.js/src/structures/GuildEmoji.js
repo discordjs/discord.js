@@ -1,26 +1,27 @@
-'use strict';
-
-const { PermissionFlagsBits } = require('discord-api-types/v10');
-const BaseGuildEmoji = require('./BaseGuildEmoji');
-const { DiscordjsError, ErrorCodes } = require('../errors');
-const GuildEmojiRoleManager = require('../managers/GuildEmojiRoleManager');
+import { PermissionFlagsBits } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { GuildEmojiRoleManager } from '../managers/GuildEmojiRoleManager.js';
+import { BaseGuildEmoji } from './BaseGuildEmoji.js';
 
 /**
  * Represents a custom emoji.
+ *
  * @extends {BaseGuildEmoji}
  */
-class GuildEmoji extends BaseGuildEmoji {
+export class GuildEmoji extends BaseGuildEmoji {
   constructor(client, data, guild) {
     super(client, data, guild);
 
     /**
      * The user who created this emoji
+     *
      * @type {?User}
      */
     this.author = null;
 
     /**
      * Array of role ids this emoji is active for
+     *
      * @name GuildEmoji#_roles
      * @type {Snowflake[]}
      * @private
@@ -32,6 +33,7 @@ class GuildEmoji extends BaseGuildEmoji {
 
   /**
    * The guild this emoji is part of
+   *
    * @type {Guild}
    * @name GuildEmoji#guild
    */
@@ -51,16 +53,25 @@ class GuildEmoji extends BaseGuildEmoji {
 
   /**
    * Whether the emoji is deletable by the client user
+   * <info>This may be `false` if the client user has the {@link PermissionFlagsBits.CreateGuildExpressions} permission
+   * but the emoji's author is not cached.</info>
+   *
    * @type {boolean}
    * @readonly
    */
   get deletable() {
+    if (this.managed) return false;
     if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
-    return !this.managed && this.guild.members.me.permissions.has(PermissionFlagsBits.ManageGuildExpressions);
+
+    const { permissions } = this.guild.members.me;
+    if (permissions.has(PermissionFlagsBits.ManageGuildExpressions)) return true;
+
+    return permissions.has(PermissionFlagsBits.CreateGuildExpressions) && this.author?.id === this.client.user.id;
   }
 
   /**
    * A manager for roles this emoji is active for.
+   *
    * @type {GuildEmojiRoleManager}
    * @readonly
    */
@@ -70,14 +81,16 @@ class GuildEmoji extends BaseGuildEmoji {
 
   /**
    * Fetches the author for this emoji
+   *
    * @returns {Promise<User>}
    */
-  fetchAuthor() {
+  async fetchAuthor() {
     return this.guild.emojis.fetchAuthor(this);
   }
 
   /**
    * Data for editing an emoji.
+   *
    * @typedef {Object} GuildEmojiEditOptions
    * @property {string} [name] The name of the emoji
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] Roles to restrict emoji to
@@ -86,6 +99,7 @@ class GuildEmoji extends BaseGuildEmoji {
 
   /**
    * Edits the emoji.
+   *
    * @param {GuildEmojiEditOptions} options The options to provide
    * @returns {Promise<GuildEmoji>}
    * @example
@@ -94,22 +108,24 @@ class GuildEmoji extends BaseGuildEmoji {
    *   .then(emoji => console.log(`Edited emoji ${emoji}`))
    *   .catch(console.error);
    */
-  edit(options) {
+  async edit(options) {
     return this.guild.emojis.edit(this.id, options);
   }
 
   /**
    * Sets the name of the emoji.
+   *
    * @param {string} name The new name for the emoji
    * @param {string} [reason] Reason for changing the emoji's name
    * @returns {Promise<GuildEmoji>}
    */
-  setName(name, reason) {
+  async setName(name, reason) {
     return this.edit({ name, reason });
   }
 
   /**
    * Deletes the emoji.
+   *
    * @param {string} [reason] Reason for deleting the emoji
    * @returns {Promise<GuildEmoji>}
    */
@@ -120,6 +136,7 @@ class GuildEmoji extends BaseGuildEmoji {
 
   /**
    * Whether this emoji is the same as another one.
+   *
    * @param {GuildEmoji|APIEmoji} other The emoji to compare it to
    * @returns {boolean}
    */
@@ -144,5 +161,3 @@ class GuildEmoji extends BaseGuildEmoji {
     }
   }
 }
-
-module.exports = GuildEmoji;

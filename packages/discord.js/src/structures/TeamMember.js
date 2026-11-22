@@ -1,17 +1,17 @@
-'use strict';
-
-const Base = require('./Base');
+import { Base } from './Base.js';
 
 /**
  * Represents a Client OAuth2 Application Team Member.
+ *
  * @extends {Base}
  */
-class TeamMember extends Base {
+export class TeamMember extends Base {
   constructor(team, data) {
     super(team.client);
 
     /**
      * The Team this member is part of
+     *
      * @type {Team}
      */
     this.team = team;
@@ -20,18 +20,10 @@ class TeamMember extends Base {
   }
 
   _patch(data) {
-    if ('permissions' in data) {
-      /**
-       * The permissions this Team Member has with regard to the team
-       * @type {string[]}
-       * @deprecated Use {@link TeamMember#role} instead.
-       */
-      this.permissions = data.permissions;
-    }
-
     if ('membership_state' in data) {
       /**
        * The permissions this Team Member has with regard to the team
+       *
        * @type {TeamMemberMembershipState}
        */
       this.membershipState = data.membership_state;
@@ -40,6 +32,7 @@ class TeamMember extends Base {
     if ('user' in data) {
       /**
        * The user for this Team Member
+       *
        * @type {User}
        */
       this.user = this.client.users._add(data.user);
@@ -48,6 +41,7 @@ class TeamMember extends Base {
     if ('role' in data) {
       /**
        * The role of this Team Member
+       *
        * @type {TeamMemberRole}
        */
       this.role = data.role;
@@ -56,6 +50,7 @@ class TeamMember extends Base {
 
   /**
    * The Team Member's id
+   *
    * @type {Snowflake}
    * @readonly
    */
@@ -66,6 +61,7 @@ class TeamMember extends Base {
   /**
    * When concatenated with a string, this automatically returns the team member's mention instead of the
    * TeamMember object.
+   *
    * @returns {string}
    * @example
    * // Logs: Team Member's mention: <@123456789012345678>
@@ -75,5 +71,3 @@ class TeamMember extends Base {
     return this.user.toString();
   }
 }
-
-module.exports = TeamMember;

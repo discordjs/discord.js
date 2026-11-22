@@ -1,34 +1,34 @@
-'use strict';
-
-const { ChannelType, MessageType, ComponentType, ImageFormat, StickerFormatType } = require('discord-api-types/v10');
+import { ChannelType, MessageType, ComponentType, ImageFormat, StickerFormatType } from 'discord-api-types/v10';
 
 /**
  * Max bulk deletable message age
+ *
  * @typedef {number} MaxBulkDeletableMessageAge
  */
-exports.MaxBulkDeletableMessageAge = 1_209_600_000;
+export const MaxBulkDeletableMessageAge = 1_209_600_000;
 
 /**
  * The name of an item to be swept in Sweepers
- * * `autoModerationRules`
- * * `applicationCommands` - both global and guild commands
- * * `bans`
- * * `emojis`
- * * `entitlements`
- * * `invites` - accepts the `lifetime` property, using it will sweep based on expires timestamp
- * * `guildMembers`
- * * `messages` - accepts the `lifetime` property, using it will sweep based on edited or created timestamp
- * * `presences`
- * * `reactions`
- * * `stageInstances`
- * * `stickers`
- * * `threadMembers`
- * * `threads` - accepts the `lifetime` property, using it will sweep archived threads based on archived timestamp
- * * `users`
- * * `voiceStates`
+ * - `autoModerationRules`
+ * - `applicationCommands` - both global and guild commands
+ * - `bans`
+ * - `emojis`
+ * - `entitlements`
+ * - `invites` - accepts the `lifetime` property, using it will sweep based on expires timestamp
+ * - `guildMembers`
+ * - `messages` - accepts the `lifetime` property, using it will sweep based on edited or created timestamp
+ * - `presences`
+ * - `reactions`
+ * - `stageInstances`
+ * - `stickers`
+ * - `threadMembers`
+ * - `threads` - accepts the `lifetime` property, using it will sweep archived threads based on archived timestamp
+ * - `users`
+ * - `voiceStates`
+ *
  * @typedef {string} SweeperKey
  */
-exports.SweeperKeys = [
+export const SweeperKeys = [
   'autoModerationRules',
   'applicationCommands',
   'bans',
@@ -49,13 +49,14 @@ exports.SweeperKeys = [
 
 /**
  * The types of messages that are not `System`. The available types are:
- * * {@link MessageType.Default}
- * * {@link MessageType.Reply}
- * * {@link MessageType.ChatInputCommand}
- * * {@link MessageType.ContextMenuCommand}
+ * - {@link MessageType.Default}
+ * - {@link MessageType.Reply}
+ * - {@link MessageType.ChatInputCommand}
+ * - {@link MessageType.ContextMenuCommand}
+ *
  * @typedef {MessageType[]} NonSystemMessageTypes
  */
-exports.NonSystemMessageTypes = [
+export const NonSystemMessageTypes = [
   MessageType.Default,
   MessageType.Reply,
   MessageType.ChatInputCommand,
@@ -64,26 +65,28 @@ exports.NonSystemMessageTypes = [
 
 /**
  * The guild channels that are text-based.
- * * TextChannel
- * * NewsChannel
- * * ThreadChannel
- * * VoiceChannel
- * * StageChannel
- * @typedef {TextChannel|NewsChannel|ThreadChannel|VoiceChannel|StageChannel} GuildTextBasedChannel
+ * - TextChannel
+ * - AnnouncementChannel
+ * - ThreadChannel
+ * - VoiceChannel
+ * - StageChannel
+ *
+ * @typedef {TextChannel|AnnouncementChannel|ThreadChannel|VoiceChannel|StageChannel} GuildTextBasedChannel
  */
 
 /**
  * The types of guild channels that are text-based. The available types are:
- * * {@link ChannelType.GuildText}
- * * {@link ChannelType.GuildAnnouncement}
- * * {@link ChannelType.AnnouncementThread}
- * * {@link ChannelType.PublicThread}
- * * {@link ChannelType.PrivateThread}
- * * {@link ChannelType.GuildVoice}
- * * {@link ChannelType.GuildStageVoice}
+ * - {@link ChannelType.GuildText}
+ * - {@link ChannelType.GuildAnnouncement}
+ * - {@link ChannelType.AnnouncementThread}
+ * - {@link ChannelType.PublicThread}
+ * - {@link ChannelType.PrivateThread}
+ * - {@link ChannelType.GuildVoice}
+ * - {@link ChannelType.GuildStageVoice}
+ *
  * @typedef {ChannelType[]} GuildTextBasedChannelTypes
  */
-exports.GuildTextBasedChannelTypes = [
+export const GuildTextBasedChannelTypes = [
   ChannelType.GuildText,
   ChannelType.GuildAnnouncement,
   ChannelType.AnnouncementThread,
@@ -95,59 +98,81 @@ exports.GuildTextBasedChannelTypes = [
 
 /**
  * The channels that are text-based.
- * * {@link DMChannel}
- * * {@link GuildTextBasedChannel}
+ * - {@link DMChannel}
+ * - {@link GuildTextBasedChannel}
+ *
  * @typedef {DMChannel|GuildTextBasedChannel} TextBasedChannels
  */
 
 /**
  * Data that resolves to give a text-based channel. This can be:
- * * A {@link TextBasedChannel}
- * * A {@link Snowflake}
+ * - A {@link TextBasedChannel}
+ * - A {@link Snowflake}
+ *
  * @typedef {TextBasedChannels|Snowflake} TextBasedChannelsResolvable
  */
 
 /**
  * The types of channels that are text-based. The available types are:
- * * {@link ChannelType.DM}
- * * {@link ChannelType.GuildText}
- * * {@link ChannelType.GuildAnnouncement}
- * * {@link ChannelType.AnnouncementThread}
- * * {@link ChannelType.PublicThread}
- * * {@link ChannelType.PrivateThread}
- * * {@link ChannelType.GuildVoice}
- * * {@link ChannelType.GuildStageVoice}
+ * - {@link ChannelType.DM}
+ * - {@link ChannelType.GuildText}
+ * - {@link ChannelType.GuildAnnouncement}
+ * - {@link ChannelType.AnnouncementThread}
+ * - {@link ChannelType.PublicThread}
+ * - {@link ChannelType.PrivateThread}
+ * - {@link ChannelType.GuildVoice}
+ * - {@link ChannelType.GuildStageVoice}
+ * - {@link ChannelType.GroupDM}
+ *
  * @typedef {ChannelType[]} TextBasedChannelTypes
  */
-exports.TextBasedChannelTypes = [...exports.GuildTextBasedChannelTypes, ChannelType.DM];
+export const TextBasedChannelTypes = [...GuildTextBasedChannelTypes, ChannelType.DM, ChannelType.GroupDM];
+
+/**
+ * The types of channels that are text-based and can have messages sent into. The available types are:
+ * - {@link ChannelType.DM}
+ * - {@link ChannelType.GuildText}
+ * - {@link ChannelType.GuildAnnouncement}
+ * - {@link ChannelType.AnnouncementThread}
+ * - {@link ChannelType.PublicThread}
+ * - {@link ChannelType.PrivateThread}
+ * - {@link ChannelType.GuildVoice}
+ * - {@link ChannelType.GuildStageVoice}
+ *
+ * @typedef {ChannelType[]} SendableChannels
+ */
+export const SendableChannels = [...GuildTextBasedChannelTypes, ChannelType.DM];
 
 /**
  * The types of channels that are threads. The available types are:
- * * {@link ChannelType.AnnouncementThread}
- * * {@link ChannelType.PublicThread}
- * * {@link ChannelType.PrivateThread}
+ * - {@link ChannelType.AnnouncementThread}
+ * - {@link ChannelType.PublicThread}
+ * - {@link ChannelType.PrivateThread}
+ *
  * @typedef {ChannelType[]} ThreadChannelTypes
  */
-exports.ThreadChannelTypes = [ChannelType.AnnouncementThread, ChannelType.PublicThread, ChannelType.PrivateThread];
+export const ThreadChannelTypes = [ChannelType.AnnouncementThread, ChannelType.PublicThread, ChannelType.PrivateThread];
 
 /**
  * The types of channels that are voice-based. The available types are:
- * * {@link ChannelType.GuildVoice}
- * * {@link ChannelType.GuildStageVoice}
+ * - {@link ChannelType.GuildVoice}
+ * - {@link ChannelType.GuildStageVoice}
+ *
  * @typedef {ChannelType[]} VoiceBasedChannelTypes
  */
-exports.VoiceBasedChannelTypes = [ChannelType.GuildVoice, ChannelType.GuildStageVoice];
+export const VoiceBasedChannelTypes = [ChannelType.GuildVoice, ChannelType.GuildStageVoice];
 
 /**
  * The types of select menus. The available types are:
- * * {@link ComponentType.StringSelect}
- * * {@link ComponentType.UserSelect}
- * * {@link ComponentType.RoleSelect}
- * * {@link ComponentType.MentionableSelect}
- * * {@link ComponentType.ChannelSelect}
+ * - {@link ComponentType.StringSelect}
+ * - {@link ComponentType.UserSelect}
+ * - {@link ComponentType.RoleSelect}
+ * - {@link ComponentType.MentionableSelect}
+ * - {@link ComponentType.ChannelSelect}
+ *
  * @typedef {ComponentType[]} SelectMenuTypes
  */
-exports.SelectMenuTypes = [
+export const SelectMenuTypes = [
   ComponentType.StringSelect,
   ComponentType.UserSelect,
   ComponentType.RoleSelect,
@@ -157,15 +182,16 @@ exports.SelectMenuTypes = [
 
 /**
  * The types of messages that cannot be deleted. The available types are:
- * * {@link MessageType.RecipientAdd}
- * * {@link MessageType.RecipientRemove}
- * * {@link MessageType.Call}
- * * {@link MessageType.ChannelNameChange}
- * * {@link MessageType.ChannelIconChange}
- * * {@link MessageType.ThreadStarterMessage}
+ * - {@link MessageType.RecipientAdd}
+ * - {@link MessageType.RecipientRemove}
+ * - {@link MessageType.Call}
+ * - {@link MessageType.ChannelNameChange}
+ * - {@link MessageType.ChannelIconChange}
+ * - {@link MessageType.ThreadStarterMessage}
+ *
  * @typedef {MessageType[]} UndeletableMessageTypes
  */
-exports.UndeletableMessageTypes = [
+export const UndeletableMessageTypes = [
   MessageType.RecipientAdd,
   MessageType.RecipientRemove,
   MessageType.Call,
@@ -175,68 +201,38 @@ exports.UndeletableMessageTypes = [
 ];
 
 /**
- * The types of messages that can be deleted. The available types are:
- * * {@link MessageType.AutoModerationAction}
- * * {@link MessageType.ChannelFollowAdd}
- * * {@link MessageType.ChannelPinnedMessage}
- * * {@link MessageType.ChatInputCommand}
- * * {@link MessageType.ContextMenuCommand}
- * * {@link MessageType.Default}
- * * {@link MessageType.GuildBoost}
- * * {@link MessageType.GuildBoostTier1}
- * * {@link MessageType.GuildBoostTier2}
- * * {@link MessageType.GuildBoostTier3}
- * * {@link MessageType.GuildInviteReminder}
- * * {@link MessageType.InteractionPremiumUpsell}
- * * {@link MessageType.Reply}
- * * {@link MessageType.RoleSubscriptionPurchase}
- * * {@link MessageType.StageEnd}
- * * {@link MessageType.StageRaiseHand}
- * * {@link MessageType.StageSpeaker}
- * * {@link MessageType.StageStart}
- * * {@link MessageType.StageTopic}
- * * {@link MessageType.ThreadCreated}
- * * {@link MessageType.UserJoin}
- * @typedef {MessageType[]} DeletableMessageTypes
- * @deprecated This list will no longer be updated. Use {@link UndeletableMessageTypes} instead.
- */
-exports.DeletableMessageTypes = [
-  MessageType.AutoModerationAction,
-  MessageType.ChannelFollowAdd,
-  MessageType.ChannelPinnedMessage,
-  MessageType.ChatInputCommand,
-  MessageType.ContextMenuCommand,
-  MessageType.Default,
-  MessageType.GuildBoost,
-  MessageType.GuildBoostTier1,
-  MessageType.GuildBoostTier2,
-  MessageType.GuildBoostTier3,
-  MessageType.GuildInviteReminder,
-  MessageType.InteractionPremiumUpsell,
-  MessageType.Reply,
-  MessageType.RoleSubscriptionPurchase,
-  MessageType.StageEnd,
-  MessageType.StageRaiseHand,
-  MessageType.StageSpeaker,
-  MessageType.StageStart,
-  MessageType.StageTopic,
-  MessageType.ThreadCreated,
-  MessageType.UserJoin,
-];
-
-/**
  * A mapping between sticker formats and their respective image formats.
- * * {@link StickerFormatType.PNG} -> {@link ImageFormat.PNG}
- * * {@link StickerFormatType.APNG} -> {@link ImageFormat.PNG}
- * * {@link StickerFormatType.Lottie} -> {@link ImageFormat.Lottie}
- * * {@link StickerFormatType.GIF} -> {@link ImageFormat.GIF}
+ * - {@link StickerFormatType.PNG} -> {@link ImageFormat.PNG}
+ * - {@link StickerFormatType.APNG} -> {@link ImageFormat.PNG}
+ * - {@link StickerFormatType.Lottie} -> {@link ImageFormat.Lottie}
+ * - {@link StickerFormatType.GIF} -> {@link ImageFormat.GIF}
+ *
  * @typedef {Object} StickerFormatExtensionMap
+ * @property {"png"} 1 PNG
+ * @property {"png"} 2 APNG
+ * @property {"json"} 3 Lottie
+ * @property {"gif"} 4 GIF
  */
-exports.StickerFormatExtensionMap = {
+export const StickerFormatExtensionMap = {
   [StickerFormatType.PNG]: ImageFormat.PNG,
   [StickerFormatType.APNG]: ImageFormat.PNG,
   [StickerFormatType.Lottie]: ImageFormat.Lottie,
   [StickerFormatType.GIF]: ImageFormat.GIF,
+};
+
+/**
+ * Holographic color values for role styling.
+ * When using `tertiaryColor`, the API enforces these specific values for holographic effect.
+ *
+ * @typedef {Object} HolographicStyle
+ * @property {number} Primary 11127295 (0xA9FFFF)
+ * @property {number} Secondary 16759788 (0xFFCCCC)
+ * @property {number} Tertiary 16761760 (0xFFE0A0)
+ */
+export const HolographicStyle = {
+  Primary: 11_127_295,
+  Secondary: 16_759_788,
+  Tertiary: 16_761_760,
 };
 
 /**
@@ -249,4 +245,5 @@ exports.StickerFormatExtensionMap = {
  * @property {VoiceBasedChannelTypes} VoiceBasedChannelTypes The types of channels that are voice-based
  * @property {SelectMenuTypes} SelectMenuTypes The types of components that are select menus.
  * @property {Object} StickerFormatExtensionMap A mapping between sticker formats and their respective image formats.
+ * @property {HolographicStyle} HolographicStyle Holographic color values for role styling.
  */

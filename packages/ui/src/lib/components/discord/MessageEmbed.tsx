@@ -36,12 +36,12 @@ export function DiscordMessageEmbed({
 			<div className="grid max-w-max border-l-4 border-l-blurple rounded bg-[rgb(47_49_54)]" id="embed-wrapper">
 				<div className="max-w-128 flex">
 					<div className="pb-4 pl-3 pr-4 pt-2">
-						{author ? <DiscordMessageEmbedAuthor {...author} /> : authorNode ?? null}
-						{title ? <DiscordMessageEmbedTitle {...title} /> : titleNode ?? null}
+						{author ? <DiscordMessageEmbedAuthor {...author} /> : (authorNode ?? null)}
+						{title ? <DiscordMessageEmbedTitle {...title} /> : (titleNode ?? null)}
 						{children ? <div className="mt-2 text-sm">{children}</div> : null}
 						{fields ? <DiscordMessageEmbedFields fields={fields} /> : null}
 						{image ? <DiscordMessageEmbedImage {...image} /> : null}
-						{footer ? <DiscordMessageEmbedFooter {...footer} /> : footerNode ?? null}
+						{footer ? <DiscordMessageEmbedFooter {...footer} /> : (footerNode ?? null)}
 					</div>
 
 					{thumbnail ? <DiscordMessageEmbedThumbnail {...thumbnail} /> : null}

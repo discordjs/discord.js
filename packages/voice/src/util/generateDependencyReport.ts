@@ -1,7 +1,9 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/no-require-imports */
+import { getCiphers } from 'node:crypto';
+import { createRequire } from 'node:module';
 import { resolve, dirname } from 'node:path';
 import prism from 'prism-media';
+
+const require = createRequire(import.meta.url);
 
 /**
  * Tries to find the package.json file for a given module.
@@ -65,10 +67,17 @@ export function generateDependencyReport() {
 
 	// encryption
 	report.push('Encryption Libraries');
+	report.push(`- native crypto support for aes-256-gcm: ${getCiphers().includes('aes-256-gcm') ? 'yes' : 'no'}`);
 	addVersion('sodium-native');
 	addVersion('sodium');
 	addVersion('libsodium-wrappers');
-	addVersion('tweetnacl');
+	addVersion('@stablelib/xchacha20poly1305');
+	addVersion('@noble/ciphers');
+	report.push('');
+
+	// dave
+	report.push('DAVE Libraries');
+	addVersion('@snazzah/davey');
 	report.push('');
 
 	// ffmpeg

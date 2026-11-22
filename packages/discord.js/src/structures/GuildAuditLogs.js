@@ -1,21 +1,20 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const ApplicationCommand = require('./ApplicationCommand');
-const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
-const Integration = require('./Integration');
-const Webhook = require('./Webhook');
-const { flatten } = require('../util/Util');
+import { Collection } from '@discordjs/collection';
+import { flatten } from '../util/Flatten.js';
+import { ApplicationCommand } from './ApplicationCommand.js';
+import { GuildAuditLogsEntry } from './GuildAuditLogsEntry.js';
+import { Integration } from './Integration.js';
+import { Webhook } from './Webhook.js';
 
 /**
  * Audit logs entries are held in this class.
  */
-class GuildAuditLogs {
+export class GuildAuditLogs {
   constructor(guild, data) {
     if (data.users) for (const user of data.users) guild.client.users._add(user);
     if (data.threads) for (const thread of data.threads) guild.client.channels._add(thread, guild);
     /**
      * Cached webhooks
+     *
      * @type {Collection<Snowflake, Webhook>}
      * @private
      */
@@ -28,6 +27,7 @@ class GuildAuditLogs {
 
     /**
      * Cached integrations
+     *
      * @type {Collection<Snowflake|string, Integration>}
      * @private
      */
@@ -40,6 +40,7 @@ class GuildAuditLogs {
 
     /**
      * Cached {@link GuildScheduledEvent}s.
+     *
      * @type {Collection<Snowflake, GuildScheduledEvent>}
      * @private
      */
@@ -51,6 +52,7 @@ class GuildAuditLogs {
 
     /**
      * Cached application commands, includes application commands from other applications
+     *
      * @type {Collection<Snowflake, ApplicationCommand>}
      * @private
      */
@@ -63,6 +65,7 @@ class GuildAuditLogs {
 
     /**
      * Cached auto moderation rules.
+     *
      * @type {Collection<Snowflake, AutoModerationRule>}
      * @private
      */
@@ -74,6 +77,7 @@ class GuildAuditLogs {
 
     /**
      * The entries for this guild's audit logs
+     *
      * @type {Collection<Snowflake, GuildAuditLogsEntry>}
      */
     this.entries = new Collection();
@@ -87,5 +91,3 @@ class GuildAuditLogs {
     return flatten(this);
   }
 }
-
-module.exports = GuildAuditLogs;

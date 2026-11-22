@@ -1,11 +1,10 @@
 import type { Buffer } from 'node:buffer';
-import { clearTimeout, setTimeout } from 'node:timers';
-import type Redis from 'ioredis/built/Redis.js';
+import type { Redis } from 'ioredis';
 import type { IRPCBroker } from '../Broker.js';
 import type { RedisBrokerOptions } from './BaseRedis.js';
 import { BaseRedisBroker, DefaultRedisBrokerOptions } from './BaseRedis.js';
 
-interface InternalPromise {
+export interface InternalPromise {
 	reject(error: any): void;
 	resolve(data: any): void;
 	timeout: NodeJS.Timeout;
@@ -24,7 +23,7 @@ export interface RPCRedisBrokerOptions extends RedisBrokerOptions {
 export const DefaultRPCRedisBrokerOptions = {
 	...DefaultRedisBrokerOptions,
 	timeout: 5_000,
-} as const satisfies Required<Omit<RPCRedisBrokerOptions, 'group'>>;
+} as const satisfies Required<Omit<RPCRedisBrokerOptions, 'group' | 'name'>>;
 
 /**
  * RPC broker powered by Redis
@@ -54,8 +53,8 @@ export const DefaultRPCRedisBrokerOptions = {
  * await broker.subscribe('responders', ['testcall']);
  * ```
  */
-export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses extends Record<keyof TEvents, any>>
-	extends BaseRedisBroker<TEvents>
+export class RPCRedisBroker<TEvents extends Record<string, any[]>, TResponses extends Record<keyof TEvents, any>>
+	extends BaseRedisBroker<TEvents, TResponses>
 	implements IRPCBroker<TEvents, TResponses>
 {
 	/**
@@ -63,6 +62,9 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 	 */
 	protected override readonly options: Required<RPCRedisBrokerOptions>;
 
+	/**
+	 * @internal
+	 */
 	protected readonly promises = new Map<string, InternalPromise>();
 
 	public constructor(redisClient: Redis, options: RPCRedisBrokerOptions) {
@@ -72,7 +74,6 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 		this.streamReadClient.on('messageBuffer', (channel: Buffer, message: Buffer) => {
 			const [, id] = channel.toString().split(':');
 			if (id && this.promises.has(id)) {
-				// eslint-disable-next-line @typescript-eslint/unbound-method
 				const { resolve, timeout } = this.promises.get(id)!;
 				resolve(this.options.decode(message));
 				clearTimeout(timeout);
@@ -107,7 +108,6 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 			const timeout = setTimeout(() => reject(timedOut), timeoutDuration).unref();
 
 			this.promises.set(id!, { resolve, reject, timeout });
-			// eslint-disable-next-line promise/prefer-await-to-then
 		}).finally(() => {
 			void this.streamReadClient.unsubscribe(rpcChannel);
 			this.promises.delete(id!);
@@ -118,13 +118,14 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 		const payload: { ack(): Promise<void>; data: unknown; reply(data: unknown): Promise<void> } = {
 			data,
 			ack: async () => {
-				await this.redisClient.xack(event, this.options.group, id);
+				await this.redisClient.xack(event, this.group, id);
 			},
 			reply: async (data) => {
 				await this.redisClient.publish(`${event}:${id.toString()}`, this.options.encode(data));
 			},
 		};
 
+		// @ts-expect-error: Intended
 		this.emit(event, payload);
 	}
 }

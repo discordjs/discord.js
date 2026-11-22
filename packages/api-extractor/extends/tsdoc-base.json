@@ -32,6 +32,10 @@
 		{
 			"tagName": "@preapproved",
 			"syntaxKind": "modifier"
+		},
+		{
+			"tagName": "@mixes",
+			"syntaxKind": "block"
 		}
 	],
 
@@ -67,6 +71,7 @@
 
 		"@betaDocumentation": true,
 		"@internalRemarks": true,
+		"@mixes": true,
 		"@preapproved": true
 	}
 }

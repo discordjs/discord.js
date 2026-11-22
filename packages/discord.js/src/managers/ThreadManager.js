@@ -1,18 +1,17 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const ThreadChannel = require('../structures/ThreadChannel');
-const { MakeCacheOverrideSymbol } = require('../util/Symbols');
+import { Collection } from '@discordjs/collection';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { ThreadChannel } from '../structures/ThreadChannel.js';
+import { MakeCacheOverrideSymbol } from '../util/Symbols.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for thread-based channels and stores their cache.
+ *
  * @extends {CachedManager}
  */
-class ThreadManager extends CachedManager {
+export class ThreadManager extends CachedManager {
   static [MakeCacheOverrideSymbol] = ThreadManager;
 
   constructor(channel, iterable) {
@@ -20,20 +19,23 @@ class ThreadManager extends CachedManager {
 
     /**
      * The channel this Manager belongs to
-     * @type {TextChannel|NewsChannel|ForumChannel|MediaChannel}
+     *
+     * @type {TextChannel|AnnouncementChannel|ForumChannel|MediaChannel}
      */
     this.channel = channel;
   }
 
   /**
    * Data that can be resolved to a Thread Channel object. This can be:
-   * * A ThreadChannel object
-   * * A Snowflake
+   * - A ThreadChannel object
+   * - A Snowflake
+   *
    * @typedef {ThreadChannel|Snowflake} ThreadChannelResolvable
    */
 
   /**
    * The cache of this Manager
+   *
    * @type {Collection<Snowflake, ThreadChannel>}
    * @name ThreadManager#cache
    */
@@ -47,6 +49,7 @@ class ThreadManager extends CachedManager {
 
   /**
    * Resolves a {@link ThreadChannelResolvable} to a {@link ThreadChannel} object.
+   *
    * @method resolve
    * @memberof ThreadManager
    * @instance
@@ -56,6 +59,7 @@ class ThreadManager extends CachedManager {
 
   /**
    * Resolves a {@link ThreadChannelResolvable} to a {@link ThreadChannel} id.
+   *
    * @method resolveId
    * @memberof ThreadManager
    * @instance
@@ -65,12 +69,14 @@ class ThreadManager extends CachedManager {
 
   /**
    * Options for fetching multiple threads.
+   *
    * @typedef {Object} FetchThreadsOptions
    * @property {FetchArchivedThreadOptions} [archived] Options used to fetch archived threads
    */
 
   /**
    * Obtains a thread from Discord, or the channel cache if it's already available.
+   *
    * @param {ThreadChannelResolvable|FetchThreadsOptions} [options] The options to fetch threads. If it is a
    * ThreadChannelResolvable then the specified thread will be fetched. Fetches all active threads if `undefined`
    * @param {BaseFetchOptions} [cacheOptions] Additional options for this fetch. <warn>The `force` field gets ignored
@@ -83,26 +89,34 @@ class ThreadManager extends CachedManager {
    *   .then(channel => console.log(channel.name))
    *   .catch(console.error);
    */
-  fetch(options, { cache, force } = {}) {
+  async fetch(options, { cache, force } = {}) {
     if (!options) return this.fetchActive(cache);
     const channel = this.client.channels.resolveId(options);
-    if (channel) return this.client.channels.fetch(channel, { cache, force });
+    if (channel) {
+      const threadChannel = await this.client.channels.fetch(channel, { cache, force });
+      if (threadChannel.parentId !== this.channel.id) throw new DiscordjsTypeError(ErrorCodes.NotAThreadOfParent);
+      return threadChannel;
+    }
+
     if (options.archived) {
       return this.fetchArchived(options.archived, cache);
     }
+
     return this.fetchActive(cache);
   }
 
   /**
    * Data that can be resolved to a Date object. This can be:
-   * * A Date object
-   * * A number representing a timestamp
-   * * An [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) string
+   * - A Date object
+   * - A number representing a timestamp
+   * - An {@link https://en.wikipedia.org/wiki/ISO_8601 ISO 8601} string
+   *
    * @typedef {Date|number|string} DateResolvable
    */
 
   /**
    * The options used to fetch archived threads.
+   *
    * @typedef {Object} FetchArchivedThreadOptions
    * @property {string} [type='public'] The type of threads to fetch (`public` or `private`)
    * @property {boolean} [fetchAll=false] Whether to fetch **all** archived threads when `type` is `private`
@@ -115,6 +129,7 @@ class ThreadManager extends CachedManager {
 
   /**
    * Data returned from fetching multiple threads.
+   *
    * @typedef {FetchedThreads} FetchedThreadsMore
    * @property {?boolean} hasMore Whether there are potentially additional threads that require a subsequent call
    */
@@ -123,6 +138,7 @@ class ThreadManager extends CachedManager {
    * Obtains a set of archived threads from Discord.
    * <info>This method requires the {@link PermissionFlagsBits.ReadMessageHistory} permission
    * in the parent channel.</info>
+   *
    * @param {FetchArchivedThreadOptions} [options] The options to fetch archived threads
    * @param {boolean} [cache=true] Whether to cache the new thread objects if they aren't already
    * @returns {Promise<FetchedThreadsMore>}
@@ -132,6 +148,7 @@ class ThreadManager extends CachedManager {
     if (type === 'private' && !fetchAll) {
       path = Routes.channelJoinedArchivedThreads(this.channel.id);
     }
+
     let timestamp;
     let id;
     const query = makeURLSearchParams({ limit });
@@ -161,6 +178,7 @@ class ThreadManager extends CachedManager {
 
   /**
    * Obtains all active threads in the channel.
+   *
    * @param {boolean} [cache=true] Whether to cache the fetched data
    * @returns {Promise<FetchedThreads>}
    */
@@ -189,5 +207,3 @@ class ThreadManager extends CachedManager {
     return response;
   }
 }
-
-module.exports = ThreadManager;

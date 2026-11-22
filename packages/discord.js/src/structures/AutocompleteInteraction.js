@@ -1,56 +1,62 @@
-'use strict';
-
-const { InteractionResponseType, Routes } = require('discord-api-types/v10');
-const BaseInteraction = require('./BaseInteraction');
-const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
-const { DiscordjsError, ErrorCodes } = require('../errors');
+import { InteractionResponseType, Routes } from 'discord-api-types/v10';
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { BaseInteraction } from './BaseInteraction.js';
+import { CommandInteractionOptionResolver } from './CommandInteractionOptionResolver.js';
 
 /**
  * Represents an autocomplete interaction.
+ *
  * @extends {BaseInteraction}
  */
-class AutocompleteInteraction extends BaseInteraction {
+export class AutocompleteInteraction extends BaseInteraction {
   constructor(client, data) {
     super(client, data);
 
     /**
      * The id of the channel this interaction was sent in
+     *
      * @type {Snowflake}
      * @name AutocompleteInteraction#channelId
      */
 
     /**
      * The invoked application command's id
+     *
      * @type {Snowflake}
      */
     this.commandId = data.data.id;
 
     /**
      * The invoked application command's name
+     *
      * @type {string}
      */
     this.commandName = data.data.name;
 
     /**
      * The invoked application command's type
+     *
      * @type {ApplicationCommandType}
      */
     this.commandType = data.data.type;
 
     /**
      * The id of the guild the invoked application command is registered to
+     *
      * @type {?Snowflake}
      */
     this.commandGuildId = data.data.guild_id ?? null;
 
     /**
      * Whether this interaction has already received a response
+     *
      * @type {boolean}
      */
     this.responded = false;
 
     /**
      * The options passed to the command
+     *
      * @type {CommandInteractionOptionResolver}
      */
     this.options = new CommandInteractionOptionResolver(this.client, data.data.options ?? []);
@@ -58,6 +64,7 @@ class AutocompleteInteraction extends BaseInteraction {
 
   /**
    * The invoked application command, if it was fetched before
+   *
    * @type {?ApplicationCommand}
    */
   get command() {
@@ -67,6 +74,7 @@ class AutocompleteInteraction extends BaseInteraction {
 
   /**
    * Sends results for the autocomplete of this interaction.
+   *
    * @param {ApplicationCommandOptionChoiceData[]} options The options for the autocomplete
    * @returns {Promise<void>}
    * @example
@@ -98,5 +106,3 @@ class AutocompleteInteraction extends BaseInteraction {
     this.responded = true;
   }
 }
-
-module.exports = AutocompleteInteraction;

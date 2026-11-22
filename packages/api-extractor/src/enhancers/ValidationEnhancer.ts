@@ -6,7 +6,7 @@ import { ReleaseTag, releaseTagCompare, releaseTagGetTagName } from '@discordjs/
 import * as ts from 'typescript';
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstEntity } from '../analyzer/AstEntity.js';
-import type { AstModuleExportInfo } from '../analyzer/AstModule.js';
+import type { IAstModuleExportInfo } from '../analyzer/AstModule.js';
 import { AstNamespaceImport } from '../analyzer/AstNamespaceImport.js';
 import { AstSymbol } from '../analyzer/AstSymbol.js';
 import { ExtractorMessageId } from '../api/ExtractorMessageId.js';
@@ -14,53 +14,56 @@ import type { ApiItemMetadata } from '../collector/ApiItemMetadata.js';
 import type { Collector } from '../collector/Collector.js';
 import type { CollectorEntity } from '../collector/CollectorEntity.js';
 import type { SymbolMetadata } from '../collector/SymbolMetadata.js';
+import type { IWorkingPackageEntryPoint } from '../collector/WorkingPackage.js';
 
 export class ValidationEnhancer {
 	public static analyze(collector: Collector): void {
 		const alreadyWarnedEntities: Set<AstEntity> = new Set<AstEntity>();
 
-		for (const entity of collector.entities) {
-			if (
-				!(
-					entity.consumable ||
-					collector.extractorConfig.apiReportIncludeForgottenExports ||
-					collector.extractorConfig.docModelIncludeForgottenExports
-				)
-			) {
-				continue;
-			}
+		for (const [entryPoint, entities] of collector.entities) {
+			for (const entity of entities) {
+				if (
+					!(
+						entity.consumable ||
+						collector.extractorConfig.apiReportIncludeForgottenExports ||
+						collector.extractorConfig.docModelIncludeForgottenExports
+					)
+				) {
+					continue;
+				}
 
-			if (entity.astEntity instanceof AstSymbol) {
-				// A regular exported AstSymbol
+				if (entity.astEntity instanceof AstSymbol) {
+					// A regular exported AstSymbol
 
-				const astSymbol: AstSymbol = entity.astEntity;
+					const astSymbol: AstSymbol = entity.astEntity;
 
-				astSymbol.forEachDeclarationRecursive((astDeclaration: AstDeclaration) => {
-					ValidationEnhancer._checkReferences(collector, astDeclaration, alreadyWarnedEntities);
-				});
+					astSymbol.forEachDeclarationRecursive((astDeclaration: AstDeclaration) => {
+						ValidationEnhancer._checkReferences(collector, astDeclaration, alreadyWarnedEntities, entryPoint);
+					});
 
-				const symbolMetadata: SymbolMetadata = collector.fetchSymbolMetadata(astSymbol);
-				ValidationEnhancer._checkForInternalUnderscore(collector, entity, astSymbol, symbolMetadata);
-				ValidationEnhancer._checkForInconsistentReleaseTags(collector, astSymbol, symbolMetadata);
-			} else if (entity.astEntity instanceof AstNamespaceImport) {
-				// A namespace created using "import * as ___ from ___"
-				const astNamespaceImport: AstNamespaceImport = entity.astEntity;
+					const symbolMetadata: SymbolMetadata = collector.fetchSymbolMetadata(astSymbol);
+					ValidationEnhancer._checkForInternalUnderscore(collector, entity, astSymbol, symbolMetadata);
+					ValidationEnhancer._checkForInconsistentReleaseTags(collector, astSymbol, symbolMetadata);
+				} else if (entity.astEntity instanceof AstNamespaceImport) {
+					// A namespace created using "import * as ___ from ___"
+					const astNamespaceImport: AstNamespaceImport = entity.astEntity;
 
-				const astModuleExportInfo: AstModuleExportInfo = astNamespaceImport.fetchAstModuleExportInfo(collector);
+					const astModuleExportInfo: IAstModuleExportInfo = astNamespaceImport.fetchAstModuleExportInfo(collector);
 
-				for (const namespaceMemberAstEntity of astModuleExportInfo.exportedLocalEntities.values()) {
-					if (namespaceMemberAstEntity instanceof AstSymbol) {
-						const astSymbol: AstSymbol = namespaceMemberAstEntity;
+					for (const namespaceMemberAstEntity of astModuleExportInfo.exportedLocalEntities.values()) {
+						if (namespaceMemberAstEntity instanceof AstSymbol) {
+							const astSymbol: AstSymbol = namespaceMemberAstEntity;
 
-						astSymbol.forEachDeclarationRecursive((astDeclaration: AstDeclaration) => {
-							ValidationEnhancer._checkReferences(collector, astDeclaration, alreadyWarnedEntities);
-						});
+							astSymbol.forEachDeclarationRecursive((astDeclaration: AstDeclaration) => {
+								ValidationEnhancer._checkReferences(collector, astDeclaration, alreadyWarnedEntities, entryPoint);
+							});
 
-						const symbolMetadata: SymbolMetadata = collector.fetchSymbolMetadata(astSymbol);
+							const symbolMetadata: SymbolMetadata = collector.fetchSymbolMetadata(astSymbol);
 
-						// (Don't apply ValidationEnhancer._checkForInternalUnderscore() for AstNamespaceImport members)
+							// (Don't apply ValidationEnhancer._checkForInternalUnderscore() for AstNamespaceImport members)
 
-						ValidationEnhancer._checkForInconsistentReleaseTags(collector, astSymbol, symbolMetadata);
+							ValidationEnhancer._checkForInconsistentReleaseTags(collector, astSymbol, symbolMetadata);
+						}
 					}
 				}
 			}
@@ -194,6 +197,7 @@ export class ValidationEnhancer {
 		collector: Collector,
 		astDeclaration: AstDeclaration,
 		alreadyWarnedEntities: Set<AstEntity>,
+		entryPoint: IWorkingPackageEntryPoint,
 	): void {
 		const apiItemMetadata: ApiItemMetadata = collector.fetchApiItemMetadata(astDeclaration);
 		const declarationReleaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
@@ -241,7 +245,7 @@ export class ValidationEnhancer {
 					);
 				}
 			} else {
-				const entryPointFilename: string = path.basename(collector.workingPackage.entryPointSourceFile.fileName);
+				const entryPointFilename: string = path.basename(entryPoint!.sourceFile.fileName);
 
 				if (!alreadyWarnedEntities.has(referencedEntity)) {
 					alreadyWarnedEntities.add(referencedEntity);

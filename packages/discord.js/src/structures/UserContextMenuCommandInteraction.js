@@ -1,14 +1,14 @@
-'use strict';
-
-const ContextMenuCommandInteraction = require('./ContextMenuCommandInteraction');
+import { ContextMenuCommandInteraction } from './ContextMenuCommandInteraction.js';
 
 /**
  * Represents a user context menu interaction.
+ *
  * @extends {ContextMenuCommandInteraction}
  */
-class UserContextMenuCommandInteraction extends ContextMenuCommandInteraction {
+export class UserContextMenuCommandInteraction extends ContextMenuCommandInteraction {
   /**
    * The target user from this interaction
+   *
    * @type {User}
    * @readonly
    */
@@ -18,6 +18,7 @@ class UserContextMenuCommandInteraction extends ContextMenuCommandInteraction {
 
   /**
    * The target member from this interaction
+   *
    * @type {?(GuildMember|APIGuildMember)}
    * @readonly
    */
@@ -25,5 +26,3 @@ class UserContextMenuCommandInteraction extends ContextMenuCommandInteraction {
     return this.options.getMember('user');
   }
 }
-
-module.exports = UserContextMenuCommandInteraction;

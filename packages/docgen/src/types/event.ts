@@ -1,4 +1,4 @@
-import type { DeclarationReflection, SignatureReflection } from 'typedoc';
+import type { DeclarationReflection, SignatureReflection } from '../index.js';
 import type { Event } from '../interfaces/index.js';
 import { parseType } from '../util/parseType.js';
 import { DocumentedItemMeta } from './item-meta.js';
@@ -34,7 +34,7 @@ export class DocumentedEvent extends DocumentedItem<DeclarationReflection | Even
 			return {
 				// @ts-expect-error: No type for params
 				name: signature.parameters?.[0]?.type?.value,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+				// eslint-disable-next-line no-param-reassign
 				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				see,
 				access:
@@ -44,11 +44,11 @@ export class DocumentedEvent extends DocumentedItem<DeclarationReflection | Even
 						: undefined,
 				examples,
 				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
-					? signature.comment.blockTags
+					? (signature.comment.blockTags
 							.find((block) => block.tag === '@deprecated')
 							// eslint-disable-next-line no-param-reassign
 							?.content.reduce((prev, curr) => (prev += curr.text), '')
-							.trim() ?? true
+							.trim() ?? true)
 					: undefined,
 				// @ts-expect-error: Parameters type is not available
 				params: signature.parameters
@@ -66,7 +66,6 @@ export class DocumentedEvent extends DocumentedItem<DeclarationReflection | Even
 											?.find((block) => block.tag === '@returns')
 											// eslint-disable-next-line no-param-reassign
 											?.content.reduce((prev, curr) => (prev += curr.text), '')
-											// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 											.trim() || undefined,
 								},
 								this.config,
@@ -78,7 +77,6 @@ export class DocumentedEvent extends DocumentedItem<DeclarationReflection | Even
 						?.find((block) => block.tag === '@returns')
 						// eslint-disable-next-line no-param-reassign
 						?.content.reduce((prev, curr) => (prev += curr.text), '')
-						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 						.trim() || undefined,
 				meta,
 			};

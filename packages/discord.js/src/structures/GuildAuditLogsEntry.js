@@ -1,20 +1,17 @@
-'use strict';
-
-const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { AuditLogOptionsType, AuditLogEvent } = require('discord-api-types/v10');
-const AutoModerationRule = require('./AutoModerationRule');
-const { GuildOnboardingPrompt } = require('./GuildOnboardingPrompt');
-const { GuildScheduledEvent } = require('./GuildScheduledEvent');
-const Integration = require('./Integration');
-const Invite = require('./Invite');
-const { StageInstance } = require('./StageInstance');
-const { Sticker } = require('./Sticker');
-const Webhook = require('./Webhook');
-const Partials = require('../util/Partials');
-const { flatten } = require('../util/Util');
+import { DiscordSnowflake } from '@sapphire/snowflake';
+import { AuditLogOptionsType, AuditLogEvent } from 'discord-api-types/v10';
+import { flatten } from '../util/Flatten.js';
+import { Partials } from '../util/Partials.js';
+import { AutoModerationRule } from './AutoModerationRule.js';
+import { GuildInvite } from './GuildInvite.js';
+import { GuildOnboardingPrompt } from './GuildOnboardingPrompt.js';
+import { GuildScheduledEvent } from './GuildScheduledEvent.js';
+import { Integration } from './Integration.js';
+import { StageInstance } from './StageInstance.js';
+import { Sticker } from './Sticker.js';
+import { Webhook } from './Webhook.js';
 
 const Targets = {
-  All: 'All',
   Guild: 'Guild',
   GuildScheduledEvent: 'GuildScheduledEvent',
   Channel: 'Channel',
@@ -30,68 +27,73 @@ const Targets = {
   Thread: 'Thread',
   ApplicationCommand: 'ApplicationCommand',
   AutoModeration: 'AutoModeration',
-  GuildOnboarding: 'GuildOnboarding',
   GuildOnboardingPrompt: 'GuildOnboardingPrompt',
+  SoundboardSound: 'SoundboardSound',
   Unknown: 'Unknown',
 };
 
 /**
  * The target of a guild audit log entry. It can be one of:
- * * A guild
- * * A channel
- * * A user
- * * A role
- * * An invite
- * * A webhook
- * * An emoji
- * * A message
- * * An integration
- * * A stage instance
- * * A sticker
- * * A guild scheduled event
- * * A thread
- * * An application command
- * * An auto moderation rule
- * * A guild onboarding prompt
- * * An object with an id key if target was deleted or fake entity
- * * An object where the keys represent either the new value or the old value
- * @typedef {?(Object|Guild|BaseChannel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance|Sticker|
- * GuildScheduledEvent|ApplicationCommand|AutoModerationRule|GuildOnboardingPrompt)} AuditLogEntryTarget
+ * - A guild
+ * - A channel
+ * - A user
+ * - A role
+ * - An invite
+ * - A webhook
+ * - A guild emoji
+ * - An integration
+ * - A stage instance
+ * - A sticker
+ * - A guild scheduled event
+ * - A thread
+ * - An application command
+ * - An auto moderation rule
+ * - A guild onboarding prompt
+ * - A soundboard sound
+ * - An object with an id key if target was deleted or fake entity
+ * - An object where the keys represent either the new value or the old value
+ *
+ * @typedef {?(Object|Guild|BaseChannel|User|Role|Invite|Webhook|GuildEmoji|Integration|StageInstance|Sticker|
+ * GuildScheduledEvent|ApplicationCommand|AutoModerationRule|GuildOnboardingPrompt|SoundboardSound)} AuditLogEntryTarget
  */
 
 /**
- * The action type of an entry, e.g. `Create`. Here are the available types:
- * * Create
- * * Delete
- * * Update
- * * All
+ * The action type of an entry. Here are the available types:
+ * - Create
+ * - Delete
+ * - Update
+ * - All
+ *
  * @typedef {string} AuditLogActionType
  */
 
 /**
  * The target type of an entry. Here are the available types:
- * * Guild
- * * Channel
- * * User
- * * Role
- * * Invite
- * * Webhook
- * * Emoji
- * * Message
- * * Integration
- * * StageInstance
- * * Sticker
- * * Thread
- * * GuildScheduledEvent
- * * ApplicationCommandPermission
- * * GuildOnboarding
- * * GuildOnboardingPrompt
- * * Unknown
+ * - Guild
+ * - Channel
+ * - User
+ * - Role
+ * - Invite
+ * - Webhook
+ * - Emoji
+ * - Message
+ * - Integration
+ * - StageInstance
+ * - Sticker
+ * - Thread
+ * - GuildScheduledEvent
+ * - ApplicationCommand
+ * - GuildOnboardingPrompt
+ * - SoundboardSound
+ * - AutoModeration
+ * - Unknown
+ *
  * @typedef {string} AuditLogTargetType
  */
 
 /**
  * Constructs an object of known properties for a structure from an array of changes.
+ *
  * @param {AuditLogChange[]} changes The array of changes
  * @param {Object} [initialData={}] The initial data passed to the function
  * @returns {Object}
@@ -107,9 +109,10 @@ function changesReduce(changes, initialData = {}) {
 /**
  * Audit logs entry.
  */
-class GuildAuditLogsEntry {
+export class GuildAuditLogsEntry {
   /**
    * Key mirror of all available audit log targets.
+   *
    * @type {Object<string, string>}
    * @memberof GuildAuditLogsEntry
    */
@@ -118,6 +121,7 @@ class GuildAuditLogsEntry {
   constructor(guild, data, logs) {
     /**
      * The target type of this entry
+     *
      * @type {AuditLogTargetType}
      */
     this.targetType = GuildAuditLogsEntry.targetType(data.action_type);
@@ -125,40 +129,46 @@ class GuildAuditLogsEntry {
 
     /**
      * The action type of this entry
+     *
      * @type {AuditLogActionType}
      */
     this.actionType = GuildAuditLogsEntry.actionType(data.action_type);
 
     /**
      * The type of action that occurred.
+     *
      * @type {AuditLogEvent}
      */
     this.action = data.action_type;
 
     /**
      * The reason of this entry
+     *
      * @type {?string}
      */
     this.reason = data.reason ?? null;
 
     /**
      * The id of the user that executed this entry
+     *
      * @type {?Snowflake}
      */
     this.executorId = data.user_id;
 
     /**
      * The user that executed this entry
+     *
      * @type {?User}
      */
     this.executor = data.user_id
       ? guild.client.options.partials.includes(Partials.User)
         ? guild.client.users._add({ id: data.user_id })
-        : guild.client.users.cache.get(data.user_id) ?? null
+        : (guild.client.users.cache.get(data.user_id) ?? null)
       : null;
 
     /**
      * An entry in the audit log representing a specific change.
+     *
      * @typedef {Object} AuditLogChange
      * @property {string} key The property that was changed, e.g. `nick` for nickname changes
      * <warn>For application command permissions updates the key is the id of the user, channel,
@@ -169,19 +179,26 @@ class GuildAuditLogsEntry {
 
     /**
      * Specific property changes
+     *
      * @type {AuditLogChange[]}
      */
     this.changes =
-      data.changes?.map(change => ({ key: change.key, old: change.old_value, new: change.new_value })) ?? [];
+      data.changes?.map(change => ({
+        key: change.key,
+        ...('old_value' in change ? { old: change.old_value } : {}),
+        ...('new_value' in change ? { new: change.new_value } : {}),
+      })) ?? [];
 
     /**
      * The entry's id
+     *
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
      * Any extra data from the entry
+     *
      * @type {?(Object|Role|GuildMember)}
      */
     this.extra = null;
@@ -195,7 +212,6 @@ class GuildAuditLogsEntry {
 
       case AuditLogEvent.MemberMove:
       case AuditLogEvent.MessageDelete:
-      case AuditLogEvent.MessageBulkDelete:
         this.extra = {
           channel: guild.channels.cache.get(data.options.channel_id) ?? { id: data.options.channel_id },
           count: Number(data.options.count),
@@ -210,6 +226,7 @@ class GuildAuditLogsEntry {
         };
         break;
 
+      case AuditLogEvent.MessageBulkDelete:
       case AuditLogEvent.MemberDisconnect:
         this.extra = {
           count: Number(data.options.count),
@@ -238,6 +255,7 @@ class GuildAuditLogsEntry {
           default:
             break;
         }
+
         break;
 
       case AuditLogEvent.StageInstanceCreate:
@@ -271,6 +289,7 @@ class GuildAuditLogsEntry {
             integrationType: data.integration_type,
           };
         }
+
         break;
       }
 
@@ -280,12 +299,14 @@ class GuildAuditLogsEntry {
 
     /**
      * The id of the target of this entry
+     *
      * @type {?Snowflake}
      */
     this.targetId = data.target_id;
 
     /**
      * The target of this entry
+     *
      * @type {?AuditLogEntryTarget}
      */
     this.target = null;
@@ -296,7 +317,7 @@ class GuildAuditLogsEntry {
     } else if (targetType === Targets.User && data.target_id) {
       this.target = guild.client.options.partials.includes(Partials.User)
         ? guild.client.users._add({ id: data.target_id })
-        : guild.client.users.cache.get(data.target_id) ?? null;
+        : (guild.client.users.cache.get(data.target_id) ?? null);
     } else if (targetType === Targets.Guild) {
       this.target = guild.client.guilds.cache.get(data.target_id);
     } else if (targetType === Targets.Webhook) {
@@ -314,13 +335,13 @@ class GuildAuditLogsEntry {
 
       this.target =
         guild.invites.cache.get(inviteChange.new ?? inviteChange.old) ??
-        new Invite(guild.client, changesReduce(this.changes, { guild }));
+        new GuildInvite(guild.client, changesReduce(this.changes, { guild }));
     } else if (targetType === Targets.Message) {
       // Discord sends a channel id for the MessageBulkDelete action type.
       this.target =
         data.action_type === AuditLogEvent.MessageBulkDelete
-          ? guild.channels.cache.get(data.target_id) ?? { id: data.target_id }
-          : guild.client.users.cache.get(data.target_id) ?? null;
+          ? (guild.channels.cache.get(data.target_id) ?? { id: data.target_id })
+          : (guild.client.users.cache.get(data.target_id) ?? null);
     } else if (targetType === Targets.Integration) {
       this.target =
         logs?.integrations.get(data.target_id) ??
@@ -361,15 +382,20 @@ class GuildAuditLogsEntry {
         data.action_type === AuditLogEvent.OnboardingPromptCreate
           ? new GuildOnboardingPrompt(guild.client, changesReduce(this.changes, { id: data.target_id }), guild.id)
           : changesReduce(this.changes, { id: data.target_id });
-    } else if (targetType === Targets.GuildOnboarding) {
-      this.target = changesReduce(this.changes, { id: data.target_id });
+    } else if (targetType === Targets.Role) {
+      this.target = guild.roles.cache.get(data.target_id) ?? { id: data.target_id };
+    } else if (targetType === Targets.Emoji) {
+      this.target = guild.emojis.cache.get(data.target_id) ?? { id: data.target_id };
+    } else if (targetType === Targets.SoundboardSound) {
+      this.target = guild.soundboardSounds.cache.get(data.target_id) ?? { id: data.target_id };
     } else if (data.target_id) {
-      this.target = guild[`${targetType.toLowerCase()}s`]?.cache.get(data.target_id) ?? { id: data.target_id };
+      this.target = { id: data.target_id };
     }
   }
 
   /**
    * Finds the target type of a guild audit log entry.
+   *
    * @param {AuditLogEvent} target The action target
    * @returns {AuditLogTargetType}
    */
@@ -388,14 +414,16 @@ class GuildAuditLogsEntry {
     if (target < 110) return Targets.GuildScheduledEvent;
     if (target < 120) return Targets.Thread;
     if (target < 130) return Targets.ApplicationCommand;
-    if (target >= 140 && target < 150) return Targets.AutoModeration;
+    if (target < 140) return Targets.SoundboardSound;
+    if (target < 143) return Targets.AutoModeration;
+    if (target < 146) return Targets.User;
     if (target >= 163 && target <= 165) return Targets.GuildOnboardingPrompt;
-    if (target >= 160 && target < 170) return Targets.GuildOnboarding;
     return Targets.Unknown;
   }
 
   /**
    * Finds the action type from the guild audit log entry action.
+   *
    * @param {AuditLogEvent} action The action target
    * @returns {AuditLogActionType}
    */
@@ -416,10 +444,9 @@ class GuildAuditLogsEntry {
         AuditLogEvent.StickerCreate,
         AuditLogEvent.GuildScheduledEventCreate,
         AuditLogEvent.ThreadCreate,
+        AuditLogEvent.SoundboardSoundCreate,
         AuditLogEvent.AutoModerationRuleCreate,
-        AuditLogEvent.AutoModerationBlockMessage,
         AuditLogEvent.OnboardingPromptCreate,
-        AuditLogEvent.OnboardingCreate,
       ].includes(action)
     ) {
       return 'Create';
@@ -445,6 +472,7 @@ class GuildAuditLogsEntry {
         AuditLogEvent.StickerDelete,
         AuditLogEvent.GuildScheduledEventDelete,
         AuditLogEvent.ThreadDelete,
+        AuditLogEvent.SoundboardSoundDelete,
         AuditLogEvent.AutoModerationRuleDelete,
         AuditLogEvent.OnboardingPromptDelete,
       ].includes(action)
@@ -470,9 +498,12 @@ class GuildAuditLogsEntry {
         AuditLogEvent.GuildScheduledEventUpdate,
         AuditLogEvent.ThreadUpdate,
         AuditLogEvent.ApplicationCommandPermissionUpdate,
+        AuditLogEvent.SoundboardSoundUpdate,
         AuditLogEvent.AutoModerationRuleUpdate,
+        AuditLogEvent.AutoModerationBlockMessage,
+        AuditLogEvent.AutoModerationFlagToChannel,
+        AuditLogEvent.AutoModerationUserCommunicationDisabled,
         AuditLogEvent.OnboardingPromptUpdate,
-        AuditLogEvent.OnboardingUpdate,
       ].includes(action)
     ) {
       return 'Update';
@@ -483,6 +514,7 @@ class GuildAuditLogsEntry {
 
   /**
    * The timestamp this entry was created at
+   *
    * @type {number}
    * @readonly
    */
@@ -492,6 +524,7 @@ class GuildAuditLogsEntry {
 
   /**
    * The time this entry was created at
+   *
    * @type {Date}
    * @readonly
    */
@@ -499,9 +532,17 @@ class GuildAuditLogsEntry {
     return new Date(this.createdTimestamp);
   }
 
+  /**
+   * Checks whether this GuildAuditLogsEntry is of the specified {@link AuditLogEvent} type.
+   *
+   * @param {AuditLogEvent} action The type to check for
+   * @returns {boolean}
+   */
+  isAction(action) {
+    return this.action === action;
+  }
+
   toJSON() {
     return flatten(this, { createdTimestamp: true });
   }
 }
-
-module.exports = GuildAuditLogsEntry;

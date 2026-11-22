@@ -1,19 +1,19 @@
-'use strict';
-
-const CommandInteraction = require('./CommandInteraction');
-const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
-const { transformResolved } = require('../util/Util');
+import { transformResolved } from '../util/Util.js';
+import { CommandInteraction } from './CommandInteraction.js';
+import { CommandInteractionOptionResolver } from './CommandInteractionOptionResolver.js';
 
 /**
  * Represents a command interaction.
+ *
  * @extends {CommandInteraction}
  */
-class ChatInputCommandInteraction extends CommandInteraction {
+export class ChatInputCommandInteraction extends CommandInteraction {
   constructor(client, data) {
     super(client, data);
 
     /**
      * The options passed to the command.
+     *
      * @type {CommandInteractionOptionResolver}
      */
     this.options = new CommandInteractionOptionResolver(
@@ -26,6 +26,7 @@ class ChatInputCommandInteraction extends CommandInteraction {
   /**
    * Returns a string representation of the command interaction.
    * This can then be copied by a user and executed again in a new command while keeping the option order.
+   *
    * @returns {string}
    */
   toString() {
@@ -38,5 +39,3 @@ class ChatInputCommandInteraction extends CommandInteraction {
     return `/${properties.filter(Boolean).join(' ')}`;
   }
 }
-
-module.exports = ChatInputCommandInteraction;

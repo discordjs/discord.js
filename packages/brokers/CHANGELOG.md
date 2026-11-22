@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/brokers@1.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/brokers@0.3.0...@discordjs/brokers@1.0.0) - (2024-09-01)
+
+## Refactor
+
+- **brokers:** Re-design API to make groups a constructor option (#10297) ([38a37b5](https://github.com/discordjs/discord.js/commit/38a37b5caf06913131c6dc2dc5cc258aecfe2266))
+- **brokers:** Make option props more correct (#10242) ([393ded4](https://github.com/discordjs/discord.js/commit/393ded4ea14e73b2bb42226f57896130329f88ca))
+  - **BREAKING CHANGE:** Classes now take redis client as standalone parameter, various props from the base option interface moved to redis options
+
 # [@discordjs/brokers@0.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/brokers@0.2.3...@discordjs/brokers@0.3.0) - (2024-05-04)
 
 ## Bug Fixes

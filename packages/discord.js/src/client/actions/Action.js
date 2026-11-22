@@ -1,6 +1,7 @@
-'use strict';
-
-const Partials = require('../../util/Partials');
+import { ChannelType } from 'discord-api-types/v10';
+import { Poll } from '../../structures/Poll.js';
+import { PollAnswer } from '../../structures/PollAnswer.js';
+import { Partials } from '../../util/Partials.js';
 
 /*
 
@@ -14,7 +15,7 @@ that WebSocket events don't clash with REST methods.
 
 */
 
-class GenericAction {
+export class Action {
   constructor(client) {
     this.client = client;
   }
@@ -31,10 +32,16 @@ class GenericAction {
     const payloadData = {};
     const id = data.channel_id ?? data.id;
 
-    if (!('recipients' in data)) {
-      // Try to resolve the recipient, but do not add the client user.
+    if ('recipients' in data) {
+      // Try to resolve the recipient, but do not add if already existing in recipients.
       const recipient = data.author ?? data.user ?? { id: data.user_id };
-      if (recipient.id !== this.client.user.id) payloadData.recipients = [recipient];
+      if (!data.recipients.some(existingRecipient => recipient.id === existingRecipient.id)) {
+        payloadData.recipients = [...data.recipients, recipient];
+      }
+    } else if (data.type === ChannelType.DM || data.type === ChannelType.GroupDM) {
+      // Try to resolve the recipient.
+      const recipient = data.author ?? data.user ?? { id: data.user_id };
+      payloadData.recipients = [recipient];
     }
 
     if (id !== undefined) payloadData.id = id;
@@ -61,6 +68,23 @@ class GenericAction {
         cache,
       )
     );
+  }
+
+  getPoll(data, message, channel) {
+    const includePollPartial = this.client.options.partials.includes(Partials.Poll);
+    const includePollAnswerPartial = this.client.options.partials.includes(Partials.PollAnswer);
+    if (message.partial && (!includePollPartial || !includePollAnswerPartial)) return null;
+
+    if (!message.poll && includePollPartial) {
+      message.poll = new Poll(this.client, data, message, channel);
+    }
+
+    if (message.poll && !message.poll.answers.has(data.answer_id) && includePollAnswerPartial) {
+      const pollAnswer = new PollAnswer(this.client, data, message.poll);
+      message.poll.answers.set(data.answer_id, pollAnswer);
+    }
+
+    return message.poll;
   }
 
   getReaction(data, message, user) {
@@ -95,6 +119,7 @@ class GenericAction {
         return this.client.users._add(data.member.user);
       }
     }
+
     return this.getUser(data);
   }
 
@@ -111,6 +136,12 @@ class GenericAction {
   getThreadMember(id, manager) {
     return this.getPayload({ user_id: id }, manager, id, Partials.ThreadMember, false);
   }
-}
 
-module.exports = GenericAction;
+  getSoundboardSound(data, guild) {
+    return this.getPayload(data, guild.soundboardSounds, data.sound_id, Partials.SoundboardSound);
+  }
+
+  spreadInjectedData(data) {
+    return Object.fromEntries(Object.getOwnPropertySymbols(data).map(symbol => [symbol, data[symbol]]));
+  }
+}

@@ -1,0 +1,83 @@
+{
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "@discordjs/structures",
+	"version": "0.1.0",
+	"description": "Wrapper around Discord's structures",
+	"keywords": [
+		"api",
+		"discord",
+		"discordapp",
+		"discordjs"
+	],
+	"homepage": "https://discord.js.org",
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"license": "Apache-2.0",
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <me@vladfrangu.dev>",
+		"Aura Román <kyradiscord@gmail.com>",
+		"Chai Kohen <chaikohen@gmail.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/structures"
+	},
+	"directories": {
+		"lib": "src",
+		"test": "__tests__"
+	},
+	"files": [
+		"dist"
+	],
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"scripts": {
+		"build": "tsc && inject-version",
+		"build:docs": "tsc -p tsconfig.docs.json",
+		"test": "vitest run --config ../../vitest.config.ts",
+		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
+		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions",
+		"fmt": "pnpm run format",
+		"docs": "pnpm run build:docs && api-extractor run --local --minify && generate-split-documentation",
+		"prepack": "pnpm run build && pnpm run lint",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/structures/*'",
+		"release": "cliff-jumper"
+	},
+	"dependencies": {
+		"@discordjs/formatters": "workspace:^",
+		"@sapphire/snowflake": "^4.0.0",
+		"discord-api-types": "^0.38.59"
+	},
+	"devDependencies": {
+		"@discordjs/api-extractor": "workspace:^",
+		"@discordjs/scripts": "workspace:^",
+		"@favware/cliff-jumper": "^6.1.0",
+		"@types/node": "^24.13.3",
+		"@vitest/coverage-v8": "^4.1.11",
+		"cpy-cli": "^7.0.0",
+		"eslint-config-neon": "^0.5.4",
+		"oxfmt": "^0.78.0",
+		"oxlint": "^1.93.0",
+		"turbo": "^2.11.11",
+		"typescript": "~7.0.2",
+		"vitest": "^4.1.11"
+	},
+	"engines": {
+		"node": ">=24.17.0"
+	}
+}

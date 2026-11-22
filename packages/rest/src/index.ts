@@ -1,13 +1,9 @@
-import { Blob } from 'node:buffer';
 import { shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
-import { FormData } from 'undici';
 import { setDefaultStrategy } from './environment.js';
 import { makeRequest } from './strategies/undiciRequest.js';
 
-// TODO(ckohen): remove once node engine req is bumped to > v18
-(globalThis as any).FormData ??= FormData;
-globalThis.Blob ??= Blob;
-
-setDefaultStrategy(shouldUseGlobalFetchAndWebSocket() ? fetch : makeRequest);
+// This cast is needed because of a mismatch between the version of undici-types provided by @types/node and undici
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+setDefaultStrategy(shouldUseGlobalFetchAndWebSocket() ? (fetch as typeof import('undici').fetch) : makeRequest);
 
 export * from './shared.js';

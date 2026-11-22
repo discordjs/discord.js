@@ -1,23 +1,34 @@
 import { ComponentType } from 'discord-api-types/v10';
 import type { APIStringSelectComponent, APISelectMenuOption } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
-import { jsonOptionValidator, optionsLengthValidator, validateRequiredSelectMenuParameters } from '../Assertions.js';
+import { resolveBuilder } from '../../util/resolveBuilder.js';
+import { validate } from '../../util/validation.js';
+import { selectMenuStringPredicate } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 import { StringSelectMenuOptionBuilder } from './StringSelectMenuOption.js';
+
+export interface StringSelectMenuData extends Partial<Omit<APIStringSelectComponent, 'options'>> {
+	options: StringSelectMenuOptionBuilder[];
+	required?: boolean;
+}
 
 /**
  * A builder that creates API-compatible JSON data for string select menus.
  */
 export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSelectComponent> {
-	/**
-	 * The options within this select menu.
-	 */
-	public readonly options: StringSelectMenuOptionBuilder[];
+	protected override readonly data: StringSelectMenuData;
 
 	/**
-	 * Creates a new select menu from API data.
+	 * The options for this select menu.
+	 */
+	public get options(): readonly StringSelectMenuOptionBuilder[] {
+		return this.data.options;
+	}
+
+	/**
+	 * Creates a new string select menu.
 	 *
-	 * @param data - The API data to create this select menu with
+	 * @param data - The API data to create this string select menu with
 	 * @example
 	 * Creating a select menu from an API data object:
 	 * ```ts
@@ -45,10 +56,16 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 	 * 	});
 	 * ```
 	 */
-	public constructor(data?: Partial<APIStringSelectComponent>) {
-		const { options, ...initData } = data ?? {};
-		super({ ...initData, type: ComponentType.StringSelect });
-		this.options = options?.map((option: APISelectMenuOption) => new StringSelectMenuOptionBuilder(option)) ?? [];
+	public constructor(data: Partial<APIStringSelectComponent> = {}) {
+		super();
+
+		const { options = [], ...rest } = data;
+
+		this.data = {
+			...structuredClone(rest),
+			options: options.map((option) => new StringSelectMenuOptionBuilder(option)),
+			type: ComponentType.StringSelect,
+		};
 	}
 
 	/**
@@ -56,16 +73,18 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 	 *
 	 * @param options - The options to add
 	 */
-	public addOptions(...options: RestOrArray<APISelectMenuOption | StringSelectMenuOptionBuilder>) {
+	public addOptions(
+		...options: RestOrArray<
+			| APISelectMenuOption
+			| StringSelectMenuOptionBuilder
+			| ((builder: StringSelectMenuOptionBuilder) => StringSelectMenuOptionBuilder)
+		>
+	) {
 		const normalizedOptions = normalizeArray(options);
-		optionsLengthValidator.parse(this.options.length + normalizedOptions.length);
-		this.options.push(
-			...normalizedOptions.map((normalizedOption) =>
-				normalizedOption instanceof StringSelectMenuOptionBuilder
-					? normalizedOption
-					: new StringSelectMenuOptionBuilder(jsonOptionValidator.parse(normalizedOption)),
-			),
-		);
+		const resolved = normalizedOptions.map((option) => resolveBuilder(option, StringSelectMenuOptionBuilder));
+
+		this.data.options.push(...resolved);
+
 		return this;
 	}
 
@@ -74,8 +93,14 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 	 *
 	 * @param options - The options to set
 	 */
-	public setOptions(...options: RestOrArray<APISelectMenuOption | StringSelectMenuOptionBuilder>) {
-		return this.spliceOptions(0, this.options.length, ...options);
+	public setOptions(
+		...options: RestOrArray<
+			| APISelectMenuOption
+			| StringSelectMenuOptionBuilder
+			| ((builder: StringSelectMenuOptionBuilder) => StringSelectMenuOptionBuilder)
+		>
+	) {
+		return this.spliceOptions(0, this.options.length, ...normalizeArray(options));
 	}
 
 	/**
@@ -83,7 +108,7 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 	 *
 	 * @remarks
 	 * This method behaves similarly
-	 * to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice | Array.prototype.splice()}.
+	 * to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
 	 * It's useful for modifying and adjusting the order of existing options.
 	 * @example
 	 * Remove the first option:
@@ -108,36 +133,33 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 	public spliceOptions(
 		index: number,
 		deleteCount: number,
-		...options: RestOrArray<APISelectMenuOption | StringSelectMenuOptionBuilder>
+		...options: (
+			| APISelectMenuOption
+			| StringSelectMenuOptionBuilder
+			| ((builder: StringSelectMenuOptionBuilder) => StringSelectMenuOptionBuilder)
+		)[]
 	) {
-		const normalizedOptions = normalizeArray(options);
+		const resolved = options.map((option) => resolveBuilder(option, StringSelectMenuOptionBuilder));
 
-		const clone = [...this.options];
+		this.data.options ??= [];
+		this.data.options.splice(index, deleteCount, ...resolved);
 
-		clone.splice(
-			index,
-			deleteCount,
-			...normalizedOptions.map((normalizedOption) =>
-				normalizedOption instanceof StringSelectMenuOptionBuilder
-					? normalizedOption
-					: new StringSelectMenuOptionBuilder(jsonOptionValidator.parse(normalizedOption)),
-			),
-		);
-
-		optionsLengthValidator.parse(clone.length);
-		this.options.splice(0, this.options.length, ...clone);
 		return this;
 	}
 
 	/**
-	 * {@inheritDoc BaseSelectMenuBuilder.toJSON}
+	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
-	public override toJSON(): APIStringSelectComponent {
-		validateRequiredSelectMenuParameters(this.options, this.data.custom_id);
+	public override toJSON(validationOverride?: boolean): APIStringSelectComponent {
+		const { options, ...rest } = this.data;
+		const data = {
+			...(structuredClone(rest) as APIStringSelectComponent),
+			// selectMenuStringPredicate covers the validation of options
+			options: options.map((option) => option.toJSON(false)),
+		};
 
-		return {
-			...this.data,
-			options: this.options.map((option) => option.toJSON()),
-		} as APIStringSelectComponent;
+		validate(selectMenuStringPredicate, data, validationOverride);
+
+		return data as APIStringSelectComponent;
 	}
 }

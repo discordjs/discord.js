@@ -1,31 +1,35 @@
-'use strict';
-
 // Heavily inspired by node's `internal/errors` module
-const ErrorCodes = require('./ErrorCodes');
-const Messages = require('./Messages');
+import { ErrorCodes } from './ErrorCodes.js';
+import { Messages } from './Messages.js';
 
 /**
  * Extend an error of some sort into a DiscordjsError.
+ *
  * @param {Error} Base Base error to extend
  * @returns {DiscordjsError}
  * @ignore
  */
 function makeDiscordjsError(Base) {
-  return class DiscordjsError extends Base {
+  return class extends Base {
+    static {
+      Object.defineProperty(this, 'name', { value: `Discordjs${Base.name}` });
+    }
+
     constructor(code, ...args) {
       super(message(code, args));
       this.code = code;
-      Error.captureStackTrace?.(this, DiscordjsError);
+      Error.captureStackTrace(this, this.constructor);
     }
 
     get name() {
-      return `${super.name} [${this.code}]`;
+      return `${this.constructor.name} [${this.code}]`;
     }
   };
 }
 
 /**
  * Format the message for an error.
+ *
  * @param {string} code The error code
  * @param {Array<*>} args Arguments to pass for util format or as function args
  * @returns {string} Formatted string
@@ -41,8 +45,6 @@ function message(code, args) {
   return String(...args);
 }
 
-module.exports = {
-  DiscordjsError: makeDiscordjsError(Error),
-  DiscordjsTypeError: makeDiscordjsError(TypeError),
-  DiscordjsRangeError: makeDiscordjsError(RangeError),
-};
+export const DiscordjsError = makeDiscordjsError(Error);
+export const DiscordjsTypeError = makeDiscordjsError(TypeError);
+export const DiscordjsRangeError = makeDiscordjsError(RangeError);

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/method-signature-style */
 import { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
-import { addAudioPlayer, deleteAudioPlayer } from '../DataStore';
-import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
-import { noop } from '../util/util';
-import { AudioPlayerError } from './AudioPlayerError';
-import type { AudioResource } from './AudioResource';
-import { PlayerSubscription } from './PlayerSubscription';
+import { addAudioPlayer, deleteAudioPlayer } from '../DataStore.js';
+import { noop } from '../util/util.js';
+import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection.js';
+import { AudioPlayerError } from './AudioPlayerError.js';
+import type { AudioResource } from './AudioResource.js';
+import { PlayerSubscription } from './PlayerSubscription.js';
 
 // The Opus "silent" frame
 export const SILENCE_FRAME = Buffer.from([0xf8, 0xff, 0xfe]);
@@ -304,14 +304,14 @@ export class AudioPlayer extends EventEmitter {
 
 	/**
 	 * The state that the player is in.
+	 *
+	 * @remarks
+	 * The setter will perform clean-up operations where necessary.
 	 */
 	public get state() {
 		return this._state;
 	}
 
-	/**
-	 * Sets a new state for the player, performing clean-up operations where necessary.
-	 */
 	public set state(newState: AudioPlayerState) {
 		const oldState = this._state;
 		const newResource = Reflect.get(newState, 'resource') as AudioResource | undefined;
@@ -491,7 +491,8 @@ export class AudioPlayer extends EventEmitter {
 	 */
 	public stop(force = false) {
 		if (this.state.status === AudioPlayerStatus.Idle) return false;
-		if (force || this.state.resource.silencePaddingFrames === 0) {
+
+		if (this.state.status === AudioPlayerStatus.Buffering || force || this.state.resource.silencePaddingFrames === 0) {
 			this.state = {
 				status: AudioPlayerStatus.Idle,
 			};

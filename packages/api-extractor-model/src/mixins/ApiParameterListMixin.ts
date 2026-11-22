@@ -14,6 +14,7 @@ import type { IExcerptTokenRange } from './Excerpt.js';
  * @public
  */
 export interface IApiParameterOptions {
+	defaultValue: string | undefined;
 	isOptional: boolean;
 	isRest: boolean;
 	parameterName: string;
@@ -124,6 +125,7 @@ export function ApiParameterListMixin<TBaseClass extends IApiItemConstructor>(
 							isOptional: Boolean(parameterOptions.isOptional),
 							isRest: Boolean(parameterOptions.isRest),
 							parent: this,
+							defaultValue: parameterOptions.defaultValue,
 						});
 
 						this[_parameters].push(parameter);
@@ -171,6 +173,7 @@ export function ApiParameterListMixin<TBaseClass extends IApiItemConstructor>(
 					parameterTypeTokenRange: parameter.parameterTypeExcerpt.tokenRange,
 					isOptional: parameter.isOptional,
 					isRest: parameter.isRest,
+					defaultValue: parameter.defaultValue,
 				});
 			}
 

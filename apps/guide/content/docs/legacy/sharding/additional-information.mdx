@@ -1,0 +1,111 @@
+---
+title: Additional Information
+---
+
+<Callout>This page is a follow-up and bases its code on [the previous page](./).</Callout>
+
+Here we will topic some extra topics about sharding that might have raised concerns.
+
+## Legend
+
+- `manager` is an instance of `ShardingManager`, e.g. `const manager = new ShardingManager(file, options);`
+- `client.shard` refers to the current shard.
+
+## Shard messages
+
+For shards to communicate, they have to send messages to one another, as they each have another process. You must wait for each shard to finish spawning before you can listen to their events, otherwise `ShardingManager#shards` will be an empty `Collection`. You can listen for these messages on the individual shards by adding the following lines in your `index.js` file:
+
+```js title="index.js"
+manager
+	.spawn()
+	.then((shards) => {
+		shards.forEach((shard) => {
+			shard.on('message', (message) => {
+				console.log(`Shard[${shard.id}] : ${message._eval} : ${message._result}`);
+			});
+		});
+	})
+	.catch(console.error);
+```
+
+As the property names imply, the `_eval` property is what the shard is attempting to evaluate, and the `_result` property is the output of said evaluation. However, these properties are only guaranteed if a _shard_ is sending a message. There will also be an `_error` property, should the evaluation have thrown an error.
+
+You can also send messages via `process.send('hello')`, which would not contain the same information. This is why the `.message` property's type is declared as `*` in the `Shard#message` documentation.
+
+## Specific shards
+
+There might be times where you want to target a specific shard. An example would be to kill a specific shard that isn't working as intended. You can achieve this by taking the following snippet (in a command, preferably):
+
+<Callout>
+	`ShardClientUtil#ids` can hold multiple ids. If you use the default sharding manager, the `.ids` array will only have
+	one entry.
+</Callout>
+
+```js
+client.shard.broadcastEval((c) => {
+	if (c.shard.ids.includes(0)) process.exit();
+});
+```
+
+If you're using something like [PM2](http://pm2.keymetrics.io/) or [Forever](https://github.com/foreverjs/forever), this is an easy way to restart a specific shard. Remember, `ShardClientUtil#broadcastEval` sends a message to **all** shards, so you have to check if it's on the shard you want.
+
+## `ShardingManager#shardArgs` and `ShardingManager#execArgv`
+
+Consider the following example of creating a new `ShardingManager` instance:
+
+```js
+const manager = new ShardingManager('./bot.js', {
+	execArgv: ['--trace-warnings'],
+	shardArgs: ['--ansi', '--color'],
+	token: 'your-token-goes-here',
+});
+```
+
+The `execArgv` property is what you would usually pass to Node without sharding, e.g.:
+
+```sh
+node --trace-warnings bot.js
+```
+
+You can find a list of command-line options for Node [here](https://nodejs.org/api/cli.html).
+
+The `shardArgs` property is what you would usually pass to your bot without sharding, e.g.:
+
+```sh
+node bot.js --ansi --color
+```
+
+You can access them later as usual via `process.argv`, which contains an array of executables, your main file, and the command-line arguments used to execute the script.
+
+## Eval arguments
+
+There may come the point where you will want to pass arguments from the outer scope into a `.broadcastEval()` call. The `context` parameter is useful for this purpose.
+
+```js
+// [!code word:context]
+function funcName(client, context) {
+	// ...
+}
+
+// Evaluate on all shards
+client.shard.broadcastEval(funcName, {
+	context: { arg: 'arg' },
+});
+
+// Evaluate on a specific shard
+client.shard.broadcastEval(funcName, {
+	shard: 0,
+	context: { arg: 'arg' },
+});
+```
+
+The `BroadcastEvalOptions` typedef was introduced in discord.js v13 as the second parameter in `.broadcastEval()`. It accepts two properties: `shard` and `context`. The `context` property will be sent as the second argument to your function.
+
+In this small snippet, an argument is passed to the `funcName` function through this parameter.
+The function will receive the arguments as an object as the second parameter.
+
+<Callout>
+	The `context` option only accepts properties which are JSON-serializable. This means you cannot pass complex data
+	types in the context directly. For example, if you sent a `User` instance, the function would receive the raw data
+	object.
+</Callout>

@@ -21,8 +21,8 @@ import type { IApiStaticMixinJson } from '../mixins/ApiStaticMixin.js';
 import type { IApiTypeParameterListMixinJson } from '../mixins/ApiTypeParameterListMixin.js';
 import { ApiCallSignature, type IApiCallSignatureOptions } from './ApiCallSignature.js';
 import { ApiClass, type IApiClassOptions, type IApiClassJson } from './ApiClass.js';
-import { ApiConstructSignature, type IApiConstructSignatureOptions } from './ApiConstructSignature.js';
 import { ApiConstructor, type IApiConstructorOptions } from './ApiConstructor.js';
+import { ApiConstructSignature, type IApiConstructSignatureOptions } from './ApiConstructSignature.js';
 import { ApiEntryPoint, type IApiEntryPointOptions } from './ApiEntryPoint.js';
 import { ApiEnum, type IApiEnumOptions } from './ApiEnum.js';
 import { ApiEnumMember, type IApiEnumMemberOptions } from './ApiEnumMember.js';
@@ -182,7 +182,9 @@ export interface DocgenJson {
 }
 
 function formatVarType(type: DocgenVarTypeJson): string {
-	return (Array.isArray(type) ? type : type.types ?? []).map((t1) => t1.map((t2) => t2.join('')).join('')).join(' | ');
+	return (Array.isArray(type) ? type : (type.types ?? []))
+		.map((t1) => t1.map((t2) => t2.join('')).join(''))
+		.join(' | ');
 }
 
 function getFirstType(type: DocgenVarTypeJson): string {
@@ -192,7 +194,7 @@ function getFirstType(type: DocgenVarTypeJson): string {
 // function mapEvent(_event: DocgenEventJson, _package: string, _parent: DocgenClassJson): void {}
 
 function mapVarType(type: DocgenVarTypeJson, _package: string): IExcerptToken[] {
-	const mapper = Array.isArray(type) ? type : type.types ?? [];
+	const mapper = Array.isArray(type) ? type : (type.types ?? []);
 	return mapper.flatMap((typ) =>
 		typ.reduce<IExcerptToken[]>(
 			(arr, [_class, symbol]) => [
@@ -260,11 +262,13 @@ function mapParam(
 			startIndex: 1 + index + paramTokens.slice(0, index).reduce((akk, num) => akk + num, 0),
 			endIndex: 1 + index + paramTokens.slice(0, index + 1).reduce((akk, num) => akk + num, 0),
 		},
+		defaultValue: param.default,
 	};
 }
 
 interface IApiMethodJson
-	extends IApiAbstractMixinJson,
+	extends
+		IApiAbstractMixinJson,
 		IApiDeclaredItemJson,
 		IApiNameMixinJson,
 		IApiOptionalMixinJson,
@@ -276,10 +280,7 @@ interface IApiMethodJson
 		IApiTypeParameterListMixinJson {}
 
 interface IApiConstructorJson
-	extends IApiParameterListJson,
-		IApiProtectedMixinJson,
-		IApiReleaseTagMixinJson,
-		IApiDeclaredItemJson {}
+	extends IApiParameterListJson, IApiProtectedMixinJson, IApiReleaseTagMixinJson, IApiDeclaredItemJson {}
 
 function mapMethod(method: DocgenMethodJson, _package: string, parent?: DocgenClassJson): IApiMethodJson {
 	const excerptTokens: IExcerptToken[] = [];

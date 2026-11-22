@@ -1,0 +1,230 @@
+---
+title: Message Embeds
+---
+
+If you have been around on Discord for a bit, chances are you have seen these special messages, often sent by bots.
+They can have a colored border, embedded images, text fields, and other fancy properties.
+
+In the following section, we will explain how to compose an embed, send it, and what you need to be aware of while doing so.
+
+## Embed preview
+
+Here is an example of how an embed may look. We will go over embed construction in the next part of this guide.
+
+## Using the embed constructor
+
+discord.js features the `EmbedBuilder` utility class for easy construction and manipulation of embeds.
+
+```js
+// at the top of your file
+const { EmbedBuilder } = require('discord.js');
+
+// inside a command, event listener, etc.
+const exampleEmbed = new EmbedBuilder()
+	.setColor(0x0099ff)
+	.setTitle('Some title')
+	.setURL('https://discord.js.org/')
+	.setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
+	.setDescription('Some description here')
+	.setThumbnail('https://i.imgur.com/AfFp7pu.png')
+	.addFields(
+		{ name: 'Regular field title', value: 'Some value here' },
+		{ name: '\u200B', value: '\u200B' },
+		{ name: 'Inline field title', value: 'Some value here', inline: true },
+		{ name: 'Inline field title', value: 'Some value here', inline: true },
+	)
+	.addFields({ name: 'Inline field title', value: 'Some value here', inline: true })
+	.setImage('https://i.imgur.com/AfFp7pu.png')
+	.setTimestamp()
+	.setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/AfFp7pu.png' });
+
+channel.send({ embeds: [exampleEmbed] });
+```
+
+<Callout>
+	You don't need to include all the elements showcased above. If you want a simpler embed, leave some out.
+</Callout>
+
+The `.setColor()` method accepts a `ColorResolvable`, e.g. an integer, HEX color string, an array of RGB values or specific color strings.
+
+To add a blank field to the embed, you can use `.addFields({ name: '\u200b', value: '\u200b' })`.
+
+The above example chains the manipulating methods to the newly created EmbedBuilder object.
+If you want to modify the embed based on conditions, you will need to reference it as the constant `exampleEmbed` (for our example).
+
+```js
+const exampleEmbed = new EmbedBuilder().setTitle('Some title');
+
+if (message.author.bot) {
+	exampleEmbed.setColor(0x7289da);
+}
+```
+
+## Using an embed object
+
+```js
+const exampleEmbed = {
+	color: 0x0099ff,
+	title: 'Some title',
+	url: 'https://discord.js.org',
+	author: {
+		name: 'Some name',
+		icon_url: 'https://i.imgur.com/AfFp7pu.png',
+		url: 'https://discord.js.org',
+	},
+	description: 'Some description here',
+	thumbnail: {
+		url: 'https://i.imgur.com/AfFp7pu.png',
+	},
+	fields: [
+		{
+			name: 'Regular field title',
+			value: 'Some value here',
+		},
+		{
+			name: '\u200b',
+			value: '\u200b',
+			inline: false,
+		},
+		{
+			name: 'Inline field title',
+			value: 'Some value here',
+			inline: true,
+		},
+		{
+			name: 'Inline field title',
+			value: 'Some value here',
+			inline: true,
+		},
+		{
+			name: 'Inline field title',
+			value: 'Some value here',
+			inline: true,
+		},
+	],
+	image: {
+		url: 'https://i.imgur.com/AfFp7pu.png',
+	},
+	timestamp: new Date().toISOString(),
+	footer: {
+		text: 'Some footer text here',
+		icon_url: 'https://i.imgur.com/AfFp7pu.png',
+	},
+};
+
+channel.send({ embeds: [exampleEmbed] });
+```
+
+<Callout>
+	You don't need to include all the elements showcased above. If you want a simpler embed, leave some out.
+</Callout>
+
+If you want to modify the embed object based on conditions, you will need to reference it directly (as `exampleEmbed` for our example). You can then (re)assign the property values as you would with any other object.
+
+```js
+const exampleEmbed = { title: 'Some title' };
+
+if (message.author.bot) {
+	exampleEmbed.color = 0x7289da;
+}
+```
+
+## Attaching images
+
+You can upload images with your embedded message and use them as source for embed fields that support image URLs by constructing a `AttachmentBuilder` from them to send as message option alongside the embed. The attachment parameter takes a BufferResolvable or Stream including the URL to an external image.
+
+You can then reference and use the images inside the embed itself with `attachment://fileName.extension`.
+
+<Callout>
+	If you plan to attach the same image repeatedly, **consider hosting it online and providing the URL** in the
+	respective embed field instead. This also makes your bot respond faster since it doesn't need to upload the image with
+	every response depending on it.
+</Callout>
+
+### Using the EmbedBuilder
+
+```js
+const { AttachmentBuilder, EmbedBuilder } = require('discord.js');
+// ...
+const file = new AttachmentBuilder('../assets/discordjs.png');
+const exampleEmbed = new EmbedBuilder().setTitle('Some title').setImage('attachment://discordjs.png');
+
+channel.send({ embeds: [exampleEmbed], files: [file] });
+```
+
+### Using an embed object
+
+```js
+const { AttachmentBuilder } = require('discord.js');
+// ...
+const file = new AttachmentBuilder('../assets/discordjs.png');
+
+const exampleEmbed = {
+	title: 'Some title',
+	image: {
+		url: 'attachment://discordjs.png',
+	},
+};
+
+channel.send({ embeds: [exampleEmbed], files: [file] });
+```
+
+<Callout type="warn">
+	If the images don't display inside the embed but outside of it, double-check your syntax to make sure it's as shown
+	above.
+</Callout>
+
+## Resending and editing
+
+We will now explain how to edit embedded message content and resend a received embed.
+
+### Resending a received embed
+
+To forward a received embed you retrieve it from the messages embed array (`message.embeds`) and pass it to the EmbedBuilder, then it can be edited before sending it again.
+
+<Callout>
+	We create a new Embed from `EmbedBuilder` here since embeds are immutable (their values cannot be changed directly).
+</Callout>
+
+```js
+const receivedEmbed = message.embeds[0];
+const exampleEmbed = EmbedBuilder.from(receivedEmbed).setTitle('New title');
+
+channel.send({ embeds: [exampleEmbed] });
+```
+
+### Editing the embedded message content
+
+To edit the content of an embed you need to pass a new EmbedBuilder structure or embed object to the messages `.edit()` method.
+
+```js
+const exampleEmbed = new EmbedBuilder().setTitle('Some title').setDescription('Description after the edit');
+
+message.edit({ embeds: [exampleEmbed] });
+```
+
+If you want to build the new embed data on a previously sent embed template, make sure to read the caveats in the previous section.
+
+## Notes
+
+- To display fields side-by-side, you need at least two consecutive fields set to `inline`
+- The timestamp will automatically adjust the timezone depending on the user's device
+- Mentions of any kind in embeds will only render correctly within embed descriptions and field values
+- Mentions in embeds will not trigger a notification
+- Embeds allow masked links (e.g. `[Guide](https://discordjs.guide/ 'optional hovertext')`), but only in description and field values
+- Discord may strip characters from message content. See [the documentation](https://discord.com/developers/docs/resources/message#create-message) for more information
+
+## Embed limits
+
+There are a few limits to be aware of while planning your embeds due to the API's limitations. Here is a quick reference you can come back to:
+
+- Embed titles are limited to **256** characters
+- Embed descriptions are limited to **4096** characters
+- There can be up to **25** fields
+- A field's name is limited to **256** characters and its value to 1024 characters
+- The footer text is limited to **2048** characters
+- The author name is limited to **256** characters
+- The sum of all characters from all embed structures in a message must not exceed **6000** characters
+- **10** embeds can be sent per message
+
+Source: [Discord API documentation](https://discord.com/developers/docs/resources/message#embed-object-embed-limits)

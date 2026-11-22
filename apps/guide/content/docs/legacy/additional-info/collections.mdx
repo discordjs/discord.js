@@ -1,0 +1,106 @@
+---
+title: Collections
+---
+
+discord.js comes with a utility class known as `Collection`.
+It extends JavaScript's native `Map` class, so it has all the `Map` features and more!
+
+<Callout type="warn">
+	If you're not familiar with `Map`, read [MDN's page on
+	it](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map) before continuing. You should be
+	familiar with `Array` [methods](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) as
+	well. We will also use some ES6 features, so read up [here](./es6-syntax) if you do not know what they are.
+</Callout>
+
+A `Map` allows for an association between unique keys and their values.
+For example, how can you transform every value or filter the entries in a `Map` easily?
+This is the point of the `Collection` class!
+
+## Array-like Methods
+
+Many of the methods on `Collection` correspond to their namesake in `Array`. One of them is `find`:
+
+```js
+// Assume we have an array of users and a collection of the same users.
+array.find((u) => u.discriminator === '1000'); // [!code word:find]
+collection.find((u) => u.discriminator === '1000');
+```
+
+The interface of the callback function is very similar between the two.
+For arrays, callbacks usually pass the parameters `(value, index, array)`, where `value` is the value iterated to,
+`index` is the current index, and `array` is the array. For collections, you would have `(value, key, collection)`.
+Here, `value` is the same, but `key` is the key of the value, and `collection` is the collection itself instead.
+
+Methods that follow this philosophy of staying close to the `Array` interface are as follows:
+
+- `find`
+- `filter` - Note that this returns a `Collection` rather than an `Array`.
+- `map` - Yet this returns an `Array` of values instead of a `Collection`!
+- `every`
+- `some`
+- `reduce`
+- `concat`
+- `sort`
+
+## Converting to Array
+
+Since `Collection` extends `Map`, it is an [iterable](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Iteration_protocols), and can be converted to an `Array` through either `Array.from()` or spread syntax (`...collection`).
+
+```js
+// For values.
+Array.from(collection.values());
+[...collection.values()];
+
+// For keys.
+Array.from(collection.keys());
+[...collection.keys()];
+
+// For [key, value] pairs.
+Array.from(collection);
+[...collection];
+```
+
+<Callout>
+	Many people convert Collections to Arrays way too much!
+
+    This can lead to unnecessary and confusing code. Before you use `Array.from()` or similar, ask yourself if whatever you are trying to do can't be done with the given `Map` or `Collection` methods or with a for-of loop. Not being familiar with a new data structure should not mean you default to transforming it into the other.
+
+    There is usually a reason, why a `Map` or `Collection` is used. Most structures in Discord can be identified with an `id`, which lends itself well to `key -> value` associations like in `Map`s.
+
+</Callout>
+
+## Extra Utilities
+
+Some methods are not from `Array` and are instead entirely new to standard JavaScript.
+
+```js
+// A random value.
+collection.random();
+
+// The first value.
+collection.first();
+
+// The first 5 values.
+collection.first(5);
+
+// Similar to `first`, but from the end.
+collection.last();
+collection.last(2);
+
+// Removes anything that meets the condition from the collection.
+// Sort of like `filter`, but in-place.
+collection.sweep((user) => user.username === 'Bob');
+```
+
+A more complicated method is `partition`, which splits a single Collection into two new Collections based on the provided function.
+You can think of it as two `filter`s, but done at the same time (and because of that much more performant):
+
+```js
+// `bots` is a Collection of users where their `bot` property was true.
+// `humans` is a Collection where the property was false instead!
+const [bots, humans] = collection.partition((u) => u.bot); // [!code word:partition]
+
+// Both return true.
+bots.every((b) => b.bot);
+humans.every((h) => !h.bot); // note the "not" ! operator
+```

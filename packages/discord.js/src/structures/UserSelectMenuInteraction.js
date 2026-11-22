@@ -1,32 +1,34 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const MessageComponentInteraction = require('./MessageComponentInteraction');
-const Events = require('../util/Events');
+import { Collection } from '@discordjs/collection';
+import { Events } from '../util/Events.js';
+import { MessageComponentInteraction } from './MessageComponentInteraction.js';
 
 /**
  * Represents a {@link ComponentType.UserSelect} select menu interaction.
+ *
  * @extends {MessageComponentInteraction}
  */
-class UserSelectMenuInteraction extends MessageComponentInteraction {
+export class UserSelectMenuInteraction extends MessageComponentInteraction {
   constructor(client, data) {
     super(client, data);
     const { resolved, values } = data.data;
 
     /**
      * An array of the selected user ids
+     *
      * @type {Snowflake[]}
      */
     this.values = values ?? [];
 
     /**
      * Collection of the selected users
+     *
      * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();
 
     /**
      * Collection of the selected members
+     *
      * @type {Collection<Snowflake, GuildMember|APIGuildMember>}
      */
     this.members = new Collection();
@@ -47,5 +49,3 @@ class UserSelectMenuInteraction extends MessageComponentInteraction {
     }
   }
 }
-
-module.exports = UserSelectMenuInteraction;

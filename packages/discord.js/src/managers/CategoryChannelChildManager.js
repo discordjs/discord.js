@@ -1,17 +1,17 @@
-'use strict';
-
-const DataManager = require('./DataManager');
-const GuildChannel = require('../structures/GuildChannel');
+import { GuildChannel } from '../structures/GuildChannel.js';
+import { DataManager } from './DataManager.js';
 
 /**
  * Manages API methods for CategoryChannels' children.
+ *
  * @extends {DataManager}
  */
-class CategoryChannelChildManager extends DataManager {
+export class CategoryChannelChildManager extends DataManager {
   constructor(channel) {
     super(channel.client, GuildChannel);
     /**
      * The category channel this manager belongs to
+     *
      * @type {CategoryChannel}
      */
     this.channel = channel;
@@ -19,6 +19,7 @@ class CategoryChannelChildManager extends DataManager {
 
   /**
    * The channels that are a part of this category
+   *
    * @type {Collection<Snowflake, GuildChannel>}
    * @readonly
    */
@@ -28,6 +29,7 @@ class CategoryChannelChildManager extends DataManager {
 
   /**
    * The guild this manager belongs to
+   *
    * @type {Guild}
    * @readonly
    */
@@ -37,6 +39,7 @@ class CategoryChannelChildManager extends DataManager {
 
   /**
    * Options for creating a channel using {@link CategoryChannelChildManager#create}.
+   *
    * @typedef {Object} CategoryCreateChannelOptions
    * @property {string} name The name for the new channel
    * @property {ChannelType} [type=ChannelType.GuildText] The type of the new channel.
@@ -65,15 +68,14 @@ class CategoryChannelChildManager extends DataManager {
   /**
    * Creates a new channel within this category.
    * <info>You cannot create a channel of type {@link ChannelType.GuildCategory} inside a CategoryChannel.</info>
+   *
    * @param {CategoryCreateChannelOptions} options Options for creating the new channel
    * @returns {Promise<GuildChannel>}
    */
-  create(options) {
+  async create(options) {
     return this.guild.channels.create({
       ...options,
       parent: this.channel.id,
     });
   }
 }
-
-module.exports = CategoryChannelChildManager;

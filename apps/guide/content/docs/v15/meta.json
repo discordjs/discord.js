@@ -1,0 +1,7 @@
+{
+	"title": "discord.js v15",
+	"description": "Work in progress...",
+	"pages": ["external:[LibraryBig][Documentation](https://discord.js.org/docs/packages/discord.js/main)", "index"],
+	"icon": "FlaskConical",
+	"root": true
+}

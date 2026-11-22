@@ -1,5 +1,3 @@
-/* eslint-disable n/prefer-global/process */
-
 /**
  * Resolves the user agent appendix string for the current environment.
  */
@@ -24,9 +22,7 @@ export function getUserAgentAppendix(): string {
 
 	// Most (if not all) edge environments will have `process` defined. Within a web browser we'll extract it using `navigator.userAgent`.
 	if (typeof globalThis.process !== 'object') {
-		// @ts-expect-error web env
 		if (typeof globalThis.navigator === 'object') {
-			// @ts-expect-error web env
 			return globalThis.navigator.userAgent;
 		}
 

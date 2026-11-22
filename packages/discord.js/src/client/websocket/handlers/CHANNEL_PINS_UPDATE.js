@@ -1,8 +1,6 @@
-'use strict';
+import { Events } from '../../../util/Events.js';
 
-const Events = require('../../../util/Events');
-
-module.exports = (client, { d: data }) => {
+export default (client, { d: data }) => {
   const channel = client.channels.cache.get(data.channel_id);
   const time = data.last_pin_timestamp ? Date.parse(data.last_pin_timestamp) : null;
 
@@ -13,6 +11,7 @@ module.exports = (client, { d: data }) => {
     /**
      * Emitted whenever the pins of a channel are updated. Due to the nature of the WebSocket event,
      * not much information can be provided easily here - you need to manually check the pins yourself.
+     *
      * @event Client#channelPinsUpdate
      * @param {TextBasedChannels} channel The channel that the pins update occurred in
      * @param {Date} time The time of the pins update

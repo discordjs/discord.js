@@ -1,13 +1,15 @@
-'use strict';
-
-const { BaseChannel } = require('./BaseChannel');
-const { DiscordjsError, ErrorCodes } = require('../errors');
+import { DiscordjsError, ErrorCodes } from '../errors/index.js';
+import { PartialGroupDMMessageManager } from '../managers/PartialGroupDMMessageManager.js';
+import { BaseChannel } from './BaseChannel.js';
+import { TextBasedChannel } from './interfaces/TextBasedChannel.js';
 
 /**
  * Represents a Partial Group DM Channel on Discord.
+ *
  * @extends {BaseChannel}
+ * @implements {TextBasedChannel}
  */
-class PartialGroupDMChannel extends BaseChannel {
+export class PartialGroupDMChannel extends BaseChannel {
   constructor(client, data) {
     super(client, data);
 
@@ -16,31 +18,76 @@ class PartialGroupDMChannel extends BaseChannel {
 
     /**
      * The name of this Group DM Channel
+     *
      * @type {?string}
      */
     this.name = data.name;
 
     /**
      * The hash of the channel icon
+     *
      * @type {?string}
      */
-    this.icon = data.icon;
+    this.icon = data.icon ?? null;
 
     /**
      * Recipient data received in a {@link PartialGroupDMChannel}.
+     *
      * @typedef {Object} PartialRecipient
      * @property {string} username The username of the recipient
      */
 
     /**
      * The recipients of this Group DM Channel.
+     *
      * @type {PartialRecipient[]}
      */
-    this.recipients = data.recipients;
+    this.recipients = data.recipients ?? [];
+
+    /**
+     * A manager of the messages belonging to this channel
+     *
+     * @type {PartialGroupDMMessageManager}
+     */
+    this.messages = new PartialGroupDMMessageManager(this);
+
+    if ('owner_id' in data) {
+      /**
+       * The user id of the owner of this Group DM Channel
+       *
+       * @type {?Snowflake}
+       */
+      this.ownerId = data.owner_id;
+    } else {
+      this.ownerId ??= null;
+    }
+
+    if ('last_message_id' in data) {
+      /**
+       * The channel's last message id, if one was sent
+       *
+       * @type {?Snowflake}
+       */
+      this.lastMessageId = data.last_message_id;
+    } else {
+      this.lastMessageId ??= null;
+    }
+
+    if ('last_pin_timestamp' in data) {
+      /**
+       * The timestamp when the last pinned message was pinned, if there was one
+       *
+       * @type {?number}
+       */
+      this.lastPinTimestamp = data.last_pin_timestamp ? Date.parse(data.last_pin_timestamp) : null;
+    } else {
+      this.lastPinTimestamp ??= null;
+    }
   }
 
   /**
    * The URL to this channel's icon.
+   *
    * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
@@ -48,13 +95,48 @@ class PartialGroupDMChannel extends BaseChannel {
     return this.icon && this.client.rest.cdn.channelIcon(this.id, this.icon, options);
   }
 
-  delete() {
-    return Promise.reject(new DiscordjsError(ErrorCodes.DeleteGroupDMChannel));
+  /**
+   * Fetches the owner of this Group DM Channel.
+   *
+   * @param {BaseFetchOptions} [options] The options for fetching the user
+   * @returns {Promise<User>}
+   */
+  async fetchOwner(options) {
+    if (!this.ownerId) {
+      throw new DiscordjsError(ErrorCodes.FetchOwnerId, 'group DM');
+    }
+
+    return this.client.users.fetch(this.ownerId, options);
   }
 
-  fetch() {
-    return Promise.reject(new DiscordjsError(ErrorCodes.FetchGroupDMChannel));
+  async delete() {
+    throw new DiscordjsError(ErrorCodes.DeleteGroupDMChannel);
   }
+
+  async fetch() {
+    throw new DiscordjsError(ErrorCodes.FetchGroupDMChannel);
+  }
+
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+
+  /* eslint-disable getter-return */
+  get lastMessage() {}
+
+  get lastPinAt() {}
+
+  createMessageComponentCollector() {}
+
+  awaitMessageComponent() {}
 }
 
-module.exports = PartialGroupDMChannel;
+TextBasedChannel.applyToClass(PartialGroupDMChannel, [
+  'bulkDelete',
+  'send',
+  'sendTyping',
+  'createMessageCollector',
+  'awaitMessages',
+  'fetchWebhooks',
+  'createWebhook',
+  'setRateLimitPerUser',
+  'setNSFW',
+]);

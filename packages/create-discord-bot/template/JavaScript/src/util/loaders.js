@@ -1,23 +1,24 @@
-import { readdir, stat } from 'node:fs/promises';
-import { URL } from 'node:url';
+import { glob, stat } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { predicate as commandPredicate } from '../commands/index.js';
 import { predicate as eventPredicate } from '../events/index.js';
 
 /**
  * A predicate to check if the structure is valid.
  *
- * @template T
- * @typedef {(structure: unknown) => structure is T} StructurePredicate
+ * @template Structure
+ * @typedef {(structure: unknown) => structure is Structure} StructurePredicate
  */
 
 /**
  * Loads all the structures in the provided directory.
  *
- * @template T
+ * @template Structure
  * @param {import('node:fs').PathLike} dir - The directory to load the structures from
- * @param {StructurePredicate<T>} predicate - The predicate to check if the structure is valid
+ * @param {StructurePredicate<Structure>} predicate - The predicate to check if the structure is valid
  * @param {boolean} recursive - Whether to recursively load the structures in the directory
- * @returns {Promise<T[]>}
+ * @returns {Promise<Structure[]>}
  */
 export async function loadStructures(dir, predicate, recursive = true) {
 	// Get the stats of the directory
@@ -28,33 +29,27 @@ export async function loadStructures(dir, predicate, recursive = true) {
 		throw new Error(`The directory '${dir}' is not a directory.`);
 	}
 
-	// Get all the files in the directory
-	const files = await readdir(dir);
-
 	// Create an empty array to store the structures
-	/** @type {T[]} */
+	/** @type {Structure[]} */
 	const structures = [];
 
-	// Loop through all the files in the directory
-	for (const file of files) {
-		// If the file is index.js or the file does not end with .js, skip the file
-		if (file === 'index.js' || !file.endsWith('.js')) {
-			continue;
-		}
+	// Create a glob pattern to match the .js files
+	const basePath = dir instanceof URL ? fileURLToPath(dir) : dir.toString();
+	const pattern = resolve(basePath, recursive ? '**/*.js' : '*.js');
 
-		// Get the stats of the file
-		const statFile = await stat(new URL(`${dir}/${file}`));
+	// Loop through all the matching files in the directory
+	for await (const file of glob(pattern)) {
+		const url = pathToFileURL(file);
 
-		// If the file is a directory and recursive is true, recursively load the structures in the directory
-		if (statFile.isDirectory() && recursive) {
-			structures.push(...(await loadStructures(`${dir}/${file}`, predicate, recursive)));
+		// If the file is index.js, skip the file
+		if (url.pathname.endsWith('/index.js')) {
 			continue;
 		}
 
 		// Import the structure dynamically from the file
-		const structure = (await import(`${dir}/${file}`)).default;
+		const { default: structure } = await import(url.href);
 
-		// If the structure is a valid structure, add it
+		// If the default export is a valid structure, add it
 		if (predicate(structure)) {
 			structures.push(structure);
 		}
@@ -66,7 +61,7 @@ export async function loadStructures(dir, predicate, recursive = true) {
 /**
  * @param {import('node:fs').PathLike} dir
  * @param {boolean} [recursive]
- * @returns {Promise<Map<string,import('../commands/index.js').Command>>}
+ * @returns {Promise<Map<string, import('../commands/index.js').Command>>}
  */
 export async function loadCommands(dir, recursive = true) {
 	return (await loadStructures(dir, commandPredicate, recursive)).reduce(

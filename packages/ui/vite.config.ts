@@ -1,11 +1,11 @@
 import react from '@vitejs/plugin-react';
 import Unocss from 'unocss/vite';
+import dts from 'unplugin-dts/vite';
 import { defineConfig } from 'vite';
-import dts from 'vite-plugin-dts';
 
 export default defineConfig({
 	plugins: [
-		dts(),
+		dts({ entryRoot: './src/lib' }),
 		react(),
 		Unocss({
 			content: { pipeline: { include: ['.storybook/preview.ts'] } },
@@ -37,11 +37,11 @@ export default defineConfig({
 			formats: ['es'],
 			name: 'ui',
 		},
-		rollupOptions: {
+		rolldownOptions: {
 			external: [
 				'react',
 				'react-dom',
-				'ariakit/disclosure',
+				'@ariakit/react/disclosure',
 				'@react-icons/all-files/vsc/VscFlame',
 				'@react-icons/all-files/vsc/VscInfo',
 				'@react-icons/all-files/vsc/VscWarning',

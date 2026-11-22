@@ -1,9 +1,7 @@
-'use strict';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
-
-class GuildUpdateAction extends Action {
+export class GuildUpdateAction extends Action {
   handle(data) {
     const client = this.client;
 
@@ -12,6 +10,7 @@ class GuildUpdateAction extends Action {
       const old = guild._update(data);
       /**
        * Emitted whenever a guild is updated - e.g. name change.
+       *
        * @event Client#guildUpdate
        * @param {Guild} oldGuild The guild before the update
        * @param {Guild} newGuild The guild after the update
@@ -29,5 +28,3 @@ class GuildUpdateAction extends Action {
     };
   }
 }
-
-module.exports = GuildUpdateAction;

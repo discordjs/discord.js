@@ -1,49 +1,59 @@
-'use strict';
+import { lazy } from '@discordjs/util';
+import { ChannelFlags, ChannelType, PermissionFlagsBits, Routes } from 'discord-api-types/v10';
+import { DiscordjsRangeError, ErrorCodes } from '../errors/index.js';
+import { GuildMessageManager } from '../managers/GuildMessageManager.js';
+import { ThreadMemberManager } from '../managers/ThreadMemberManager.js';
+import { ChannelFlagsBitField } from '../util/ChannelFlagsBitField.js';
+import { BaseChannel } from './BaseChannel.js';
+import { TextBasedChannel } from './interfaces/TextBasedChannel.js';
 
-const { DiscordAPIError } = require('@discordjs/rest');
-const { lazy } = require('@discordjs/util');
-const { RESTJSONErrorCodes, ChannelFlags, ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
-const { BaseChannel } = require('./BaseChannel');
-const getThreadOnlyChannel = lazy(() => require('./ThreadOnlyChannel'));
-const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors');
-const GuildMessageManager = require('../managers/GuildMessageManager');
-const ThreadMemberManager = require('../managers/ThreadMemberManager');
-const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
+const getThreadOnlyChannel = lazy(async () => (await import('./ThreadOnlyChannel.js')).ThreadOnlyChannel);
 
 /**
  * Represents a thread channel on Discord.
+ *
  * @extends {BaseChannel}
  * @implements {TextBasedChannel}
  */
-class ThreadChannel extends BaseChannel {
+export class ThreadChannel extends BaseChannel {
   constructor(guild, data, client) {
     super(guild?.client ?? client, data, false);
 
     /**
      * The guild the thread is in
+     *
      * @type {Guild}
      */
     this.guild = guild;
 
     /**
      * The id of the guild the channel is in
+     *
      * @type {Snowflake}
      */
     this.guildId = guild?.id ?? data.guild_id;
 
     /**
+     * The id of the member who created this thread
+     *
+     * @type {Snowflake}
+     */
+    this.ownerId = data.owner_id;
+
+    /**
      * A manager of the messages sent to this thread
+     *
      * @type {GuildMessageManager}
      */
     this.messages = new GuildMessageManager(this);
 
     /**
      * A manager of the members that are part of this thread
+     *
      * @type {ThreadMemberManager}
      */
     this.members = new ThreadMemberManager(this);
-    if (data) this._patch(data);
+    this._patch(data);
   }
 
   _patch(data) {
@@ -54,6 +64,7 @@ class ThreadChannel extends BaseChannel {
     if ('name' in data) {
       /**
        * The name of the thread
+       *
        * @type {string}
        */
       this.name = data.name;
@@ -66,6 +77,7 @@ class ThreadChannel extends BaseChannel {
     if ('parent_id' in data) {
       /**
        * The id of the parent channel of this thread
+       *
        * @type {?Snowflake}
        */
       this.parentId = data.parent_id;
@@ -76,6 +88,7 @@ class ThreadChannel extends BaseChannel {
     if ('thread_metadata' in data) {
       /**
        * Whether the thread is locked
+       *
        * @type {?boolean}
        */
       this.locked = data.thread_metadata.locked ?? false;
@@ -84,18 +97,21 @@ class ThreadChannel extends BaseChannel {
        * Whether members without the {@link PermissionFlagsBits.ManageThreads} permission
        * can invite other members to this thread.
        * <info>This property is always `null` in public threads.</info>
+       *
        * @type {?boolean}
        */
-      this.invitable = this.type === ChannelType.PrivateThread ? data.thread_metadata.invitable ?? false : null;
+      this.invitable = this.type === ChannelType.PrivateThread ? (data.thread_metadata.invitable ?? false) : null;
 
       /**
        * Whether the thread is archived
+       *
        * @type {?boolean}
        */
       this.archived = data.thread_metadata.archived;
 
       /**
        * The amount of time (in minutes) after which the thread will automatically archive in case of no recent activity
+       *
        * @type {?ThreadAutoArchiveDuration}
        */
       this.autoArchiveDuration = data.thread_metadata.auto_archive_duration;
@@ -104,6 +120,7 @@ class ThreadChannel extends BaseChannel {
        * The timestamp when the thread's archive status was last changed
        * <info>If the thread was never archived or unarchived, this is the timestamp at which the thread was
        * created</info>
+       *
        * @type {?number}
        */
       this.archiveTimestamp = Date.parse(data.thread_metadata.archive_timestamp);
@@ -122,19 +139,10 @@ class ThreadChannel extends BaseChannel {
 
     this._createdTimestamp ??= this.type === ChannelType.PrivateThread ? super.createdTimestamp : null;
 
-    if ('owner_id' in data) {
-      /**
-       * The id of the member who created this thread
-       * @type {?Snowflake}
-       */
-      this.ownerId = data.owner_id;
-    } else {
-      this.ownerId ??= null;
-    }
-
     if ('last_message_id' in data) {
       /**
        * The last message id sent in this thread, if one was sent
+       *
        * @type {?Snowflake}
        */
       this.lastMessageId = data.last_message_id;
@@ -145,6 +153,7 @@ class ThreadChannel extends BaseChannel {
     if ('last_pin_timestamp' in data) {
       /**
        * The timestamp when the last pinned message was pinned, if there was one
+       *
        * @type {?number}
        */
       this.lastPinTimestamp = data.last_pin_timestamp ? Date.parse(data.last_pin_timestamp) : null;
@@ -155,6 +164,7 @@ class ThreadChannel extends BaseChannel {
     if ('rate_limit_per_user' in data) {
       /**
        * The rate limit per user (slowmode) for this thread in seconds
+       *
        * @type {?number}
        */
       this.rateLimitPerUser = data.rate_limit_per_user ?? 0;
@@ -167,6 +177,7 @@ class ThreadChannel extends BaseChannel {
        * The approximate count of messages in this thread
        * <info>Threads created before July 1, 2022 may have an inaccurate count.
        * If you need an approximate value higher than that, use `ThreadChannel#messages.cache.size`</info>
+       *
        * @type {?number}
        */
       this.messageCount = data.message_count;
@@ -179,6 +190,7 @@ class ThreadChannel extends BaseChannel {
        * The approximate count of users in this thread
        * <info>This stops counting at 50. If you need an approximate value higher than that, use
        * `ThreadChannel#members.cache.size`</info>
+       *
        * @type {?number}
        */
       this.memberCount = data.member_count;
@@ -190,6 +202,7 @@ class ThreadChannel extends BaseChannel {
       /**
        * The number of messages ever sent in a thread, similar to {@link ThreadChannel#messageCount} except it
        * will not decrement whenever a message is deleted
+       *
        * @type {?number}
        */
       this.totalMessageSent = data.total_message_sent;
@@ -203,6 +216,7 @@ class ThreadChannel extends BaseChannel {
     if ('applied_tags' in data) {
       /**
        * The tags applied to this thread
+       *
        * @type {Snowflake[]}
        */
       this.appliedTags = data.applied_tags;
@@ -214,6 +228,7 @@ class ThreadChannel extends BaseChannel {
   /**
    * The timestamp when this thread was created. This isn't available for threads
    * created before 2022-01-09
+   *
    * @type {?number}
    * @readonly
    */
@@ -223,6 +238,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * A collection of associated guild member objects of this thread's members
+   *
    * @type {Collection<Snowflake, GuildMember>}
    * @readonly
    */
@@ -233,6 +249,7 @@ class ThreadChannel extends BaseChannel {
   /**
    * The time at which this thread's archive status was last changed
    * <info>If the thread was never archived or unarchived, this is the time at which the thread was created</info>
+   *
    * @type {?Date}
    * @readonly
    */
@@ -242,6 +259,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * The time the thread was created at
+   *
    * @type {?Date}
    * @readonly
    */
@@ -251,7 +269,8 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * The parent channel of this thread
-   * @type {?(NewsChannel|TextChannel|ForumChannel|MediaChannel)}
+   *
+   * @type {?(AnnouncementChannel|TextChannel|ForumChannel|MediaChannel)}
    * @readonly
    */
   get parent() {
@@ -260,6 +279,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * Makes the client user join the thread.
+   *
    * @returns {Promise<ThreadChannel>}
    */
   async join() {
@@ -269,6 +289,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * Makes the client user leave the thread.
+   *
    * @returns {Promise<ThreadChannel>}
    */
   async leave() {
@@ -279,7 +300,8 @@ class ThreadChannel extends BaseChannel {
   /**
    * Gets the overall set of permissions for a member or role in this thread's parent channel, taking overwrites into
    * account.
-   * @param {GuildMemberResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
+   *
+   * @param {UserResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
    * @param {boolean} [checkAdmin=true] Whether having the {@link PermissionFlagsBits.Administrator} permission
    * will return all permissions
    * @returns {?Readonly<PermissionsBitField>}
@@ -289,26 +311,21 @@ class ThreadChannel extends BaseChannel {
   }
 
   /**
+   * Options used to fetch a thread owner.
+   *
+   * @typedef {BaseFetchOptions} FetchThreadOwnerOptions
+   * @property {boolean} [withMember] Whether to also return the guild member associated with this thread member
+   */
+
+  /**
    * Fetches the owner of this thread. If the thread member object isn't needed,
    * use {@link ThreadChannel#ownerId} instead.
-   * @param {BaseFetchOptions} [options] The options for fetching the member
-   * @returns {Promise<?ThreadMember>}
+   *
+   * @param {FetchThreadOwnerOptions} [options] Options for fetching the owner
+   * @returns {Promise<ThreadMember>}
    */
   async fetchOwner(options) {
-    if (!this.ownerId) {
-      throw new DiscordjsError(ErrorCodes.FetchOwnerId, 'thread');
-    }
-
-    // TODO: Remove that catch in the next major version
-    const member = await this.members._fetchSingle({ ...options, member: this.ownerId }).catch(error => {
-      if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownMember) {
-        return null;
-      }
-
-      throw error;
-    });
-
-    return member;
+    return this.members._fetchSingle({ ...options, member: this.ownerId });
   }
 
   /**
@@ -316,17 +333,18 @@ class ThreadChannel extends BaseChannel {
    * <info>The `Promise` will reject if the original message in a forum post is deleted
    * or when the original message in the parent channel is deleted.
    * If you just need the id of that message, use {@link BaseChannel#id} instead.</info>
+   *
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<?Message<true>>}
    */
-  // eslint-disable-next-line require-await
   async fetchStarterMessage(options) {
-    const channel = this.parent instanceof getThreadOnlyChannel() ? this : this.parent;
+    const channel = this.parent instanceof (await getThreadOnlyChannel()) ? this : this.parent;
     return channel?.messages.fetch({ message: this.id, ...options }) ?? null;
   }
 
   /**
    * The options used to edit a thread channel
+   *
    * @typedef {Object} ThreadEditOptions
    * @property {string} [name] The new name for the thread
    * @property {boolean} [archived] Whether the thread is archived
@@ -343,6 +361,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * Edits this thread.
+   *
    * @param {ThreadEditOptions} options The options to provide
    * @returns {Promise<ThreadChannel>}
    * @example
@@ -354,7 +373,7 @@ class ThreadChannel extends BaseChannel {
   async edit(options) {
     const newData = await this.client.rest.patch(Routes.channel(this.id), {
       body: {
-        name: (options.name ?? this.name).trim(),
+        name: options.name,
         archived: options.archived,
         auto_archive_duration: options.autoArchiveDuration,
         rate_limit_per_user: options.rateLimitPerUser,
@@ -371,6 +390,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * Sets whether the thread is archived.
+   *
    * @param {boolean} [archived=true] Whether the thread is archived
    * @param {string} [reason] Reason for archiving or unarchiving
    * @returns {Promise<ThreadChannel>}
@@ -380,12 +400,13 @@ class ThreadChannel extends BaseChannel {
    *   .then(newThread => console.log(`Thread is now ${newThread.archived ? 'archived' : 'active'}`))
    *   .catch(console.error);
    */
-  setArchived(archived = true, reason) {
+  async setArchived(archived = true, reason = undefined) {
     return this.edit({ archived, reason });
   }
 
   /**
    * Sets the duration after which the thread will automatically archive in case of no recent activity.
+   *
    * @param {ThreadAutoArchiveDuration} autoArchiveDuration The amount of time after which the thread
    * should automatically archive in case of no recent activity
    * @param {string} [reason] Reason for changing the auto archive duration
@@ -398,21 +419,23 @@ class ThreadChannel extends BaseChannel {
    *    });
    *   .catch(console.error);
    */
-  setAutoArchiveDuration(autoArchiveDuration, reason) {
+  async setAutoArchiveDuration(autoArchiveDuration, reason) {
     return this.edit({ autoArchiveDuration, reason });
   }
 
   /**
    * Sets whether members without the {@link PermissionFlagsBits.ManageThreads} permission
    * can invite other members to this thread.
+   *
    * @param {boolean} [invitable=true] Whether non-moderators can invite non-moderators to this thread
    * @param {string} [reason] Reason for changing invite
    * @returns {Promise<ThreadChannel>}
    */
-  setInvitable(invitable = true, reason) {
+  async setInvitable(invitable = true, reason = undefined) {
     if (this.type !== ChannelType.PrivateThread) {
-      return Promise.reject(new DiscordjsRangeError(ErrorCodes.ThreadInvitableType, this.type));
+      throw new DiscordjsRangeError(ErrorCodes.ThreadInvitableType, this.type);
     }
+
     return this.edit({ invitable, reason });
   }
 
@@ -420,6 +443,7 @@ class ThreadChannel extends BaseChannel {
    * Sets whether the thread can be **unarchived** by anyone with the
    * {@link PermissionFlagsBits.SendMessages} permission. When a thread is locked, only members with the
    * {@link PermissionFlagsBits.ManageThreads} permission can unarchive it.
+   *
    * @param {boolean} [locked=true] Whether the thread is locked
    * @param {string} [reason] Reason for locking or unlocking the thread
    * @returns {Promise<ThreadChannel>}
@@ -429,12 +453,13 @@ class ThreadChannel extends BaseChannel {
    *   .then(newThread => console.log(`Thread is now ${newThread.locked ? 'locked' : 'unlocked'}`))
    *   .catch(console.error);
    */
-  setLocked(locked = true, reason) {
+  async setLocked(locked = true, reason = undefined) {
     return this.edit({ locked, reason });
   }
 
   /**
    * Sets a new name for this thread.
+   *
    * @param {string} name The new name for the thread
    * @param {string} [reason] Reason for changing the thread's name
    * @returns {Promise<ThreadChannel>}
@@ -444,50 +469,55 @@ class ThreadChannel extends BaseChannel {
    *   .then(newThread => console.log(`Thread's new name is ${newThread.name}`))
    *   .catch(console.error);
    */
-  setName(name, reason) {
+  async setName(name, reason) {
     return this.edit({ name, reason });
   }
 
   /**
    * Sets the rate limit per user (slowmode) for this thread.
+   *
    * @param {number} rateLimitPerUser The new rate limit in seconds
    * @param {string} [reason] Reason for changing the thread's rate limit
    * @returns {Promise<ThreadChannel>}
    */
-  setRateLimitPerUser(rateLimitPerUser, reason) {
+  async setRateLimitPerUser(rateLimitPerUser, reason) {
     return this.edit({ rateLimitPerUser, reason });
   }
 
   /**
    * Set the applied tags for this channel (only applicable to forum threads)
+   *
    * @param {Snowflake[]} appliedTags The tags to set for this channel
    * @param {string} [reason] Reason for changing the thread's applied tags
    * @returns {Promise<ThreadChannel>}
    */
-  setAppliedTags(appliedTags, reason) {
+  async setAppliedTags(appliedTags, reason) {
     return this.edit({ appliedTags, reason });
   }
 
   /**
    * Pins this thread from the forum channel (only applicable to forum threads).
+   *
    * @param {string} [reason] Reason for pinning
    * @returns {Promise<ThreadChannel>}
    */
-  pin(reason) {
+  async pin(reason) {
     return this.edit({ flags: this.flags.add(ChannelFlags.Pinned), reason });
   }
 
   /**
    * Unpins this thread from the forum channel (only applicable to forum threads).
+   *
    * @param {string} [reason] Reason for unpinning
    * @returns {Promise<ThreadChannel>}
    */
-  unpin(reason) {
+  async unpin(reason) {
     return this.edit({ flags: this.flags.remove(ChannelFlags.Pinned), reason });
   }
 
   /**
    * Whether the client user is a member of the thread.
+   *
    * @type {boolean}
    * @readonly
    */
@@ -497,6 +527,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * Whether the thread is editable by the client user (name, archived, autoArchiveDuration)
+   *
    * @type {boolean}
    * @readonly
    */
@@ -509,6 +540,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * Whether the thread is joinable by the client user
+   *
    * @type {boolean}
    * @readonly
    */
@@ -525,6 +557,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * Whether the thread is manageable by the client user, for deleting or editing rateLimitPerUser or locked.
+   *
    * @type {boolean}
    * @readonly
    */
@@ -542,11 +575,11 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * Whether the thread is viewable by the client user
+   *
    * @type {boolean}
    * @readonly
    */
   get viewable() {
-    if (this.client.user.id === this.guild.ownerId) return true;
     const permissions = this.permissionsFor(this.client.user);
     if (!permissions) return false;
     return permissions.has(PermissionFlagsBits.ViewChannel, false);
@@ -554,6 +587,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * Whether the client user can send messages in this thread
+   *
    * @type {boolean}
    * @readonly
    */
@@ -573,6 +607,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * Whether the thread is unarchivable by the client user
+   *
    * @type {boolean}
    * @readonly
    */
@@ -582,6 +617,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * Deletes this thread.
+   *
    * @param {string} [reason] Reason for deleting this thread
    * @returns {Promise<ThreadChannel>}
    * @example
@@ -596,20 +632,27 @@ class ThreadChannel extends BaseChannel {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  /* eslint-disable no-empty-function */
+
+  /* eslint-disable getter-return */
   get lastMessage() {}
+
   get lastPinAt() {}
+
   send() {}
+
   sendTyping() {}
+
   createMessageCollector() {}
+
   awaitMessages() {}
+
   createMessageComponentCollector() {}
+
   awaitMessageComponent() {}
+
   bulkDelete() {}
   // Doesn't work on Thread channels; setRateLimitPerUser() {}
   // Doesn't work on Thread channels; setNSFW() {}
 }
 
-TextBasedChannel.applyToClass(ThreadChannel, true, ['fetchWebhooks', 'setRateLimitPerUser', 'setNSFW']);
-
-module.exports = ThreadChannel;
+TextBasedChannel.applyToClass(ThreadChannel, ['fetchWebhooks', 'setRateLimitPerUser', 'setNSFW']);

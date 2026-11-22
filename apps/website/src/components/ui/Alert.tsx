@@ -48,18 +48,18 @@ export async function Alert({ title, type, children }: PropsWithChildren<IAlert>
 	const { text, border, icon } = resolveType(type);
 
 	return (
-		<div className="mb-4 mt-6" role="alert">
+		<div className="mt-6 mb-4" role="alert">
 			<div className="relative flex">
 				<div className="p-4">{children}</div>
 				<div className="pointer-events-none absolute flex h-full w-full">
-					<div className={`w-4 shrink-0 rounded-bl-md rounded-tl-md border-b-2 border-l-2 border-t-2 ${border}`} />
+					<div className={`w-4 shrink-0 rounded-tl-md rounded-bl-md border-t-2 border-b-2 border-l-2 ${border}`} />
 					<div className={`relative border-b-2 ${border}`}>
 						<div className={`pointer-events-auto flex -translate-y-1/2 place-items-center gap-2 px-2 ${text}`}>
 							{icon}
 							{title ? <span className={`font-semibold ${text}`}>{title}</span> : null}
 						</div>
 					</div>
-					<div className={`flex-1 rounded-br-md rounded-tr-md border-b-2 border-r-2 border-t-2 ${border}`} />
+					<div className={`flex-1 rounded-tr-md rounded-br-md border-t-2 border-r-2 border-b-2 ${border}`} />
 				</div>
 			</div>
 		</div>

@@ -1,10 +1,8 @@
-'use strict';
+import { Collection } from '@discordjs/collection';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const { Collection } = require('@discordjs/collection');
-const Action = require('./Action');
-const Events = require('../../util/Events');
-
-class ThreadMembersUpdateAction extends Action {
+export class ThreadMembersUpdateAction extends Action {
   handle(data) {
     const client = this.client;
     const thread = client.channels.cache.get(data.id);
@@ -33,6 +31,7 @@ class ThreadMembersUpdateAction extends Action {
       /**
        * Emitted whenever members are added or removed from a thread.
        * <info>This event requires the {@link GatewayIntentBits.GuildMembers} privileged gateway intent.</info>
+       *
        * @event Client#threadMembersUpdate
        * @param {Collection<Snowflake, ThreadMember>} addedMembers The members that were added
        * @param {Collection<Snowflake, ThreadMember>} removedMembers The members that were removed
@@ -40,8 +39,7 @@ class ThreadMembersUpdateAction extends Action {
        */
       client.emit(Events.ThreadMembersUpdate, addedMembers, removedMembers, thread);
     }
+
     return {};
   }
 }
-
-module.exports = ThreadMembersUpdateAction;

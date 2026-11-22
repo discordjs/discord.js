@@ -8,7 +8,7 @@ const hash = 'abcdef';
 const animatedHash = 'a_bcdef';
 const defaultAvatar = 1_234 % 5;
 
-const cdn = new CDN(baseCDN, baseMedia);
+const cdn = new CDN({ cdn: baseCDN, mediaProxy: baseMedia });
 
 test('appAsset default', () => {
 	expect(cdn.appAsset(id, hash)).toEqual(`${baseCDN}/app-assets/${id}/${hash}.webp`);
@@ -23,15 +23,11 @@ test('avatar default', () => {
 });
 
 test('avatar dynamic-animated', () => {
-	expect(cdn.avatar(id, animatedHash)).toEqual(`${baseCDN}/avatars/${id}/${animatedHash}.gif`);
+	expect(cdn.avatar(id, animatedHash)).toEqual(`${baseCDN}/avatars/${id}/${animatedHash}.webp?animated=true`);
 });
 
 test('avatar dynamic-not-animated', () => {
 	expect(cdn.avatar(id, hash)).toEqual(`${baseCDN}/avatars/${id}/${hash}.webp`);
-});
-
-test('avatar decoration default', () => {
-	expect(cdn.avatarDecoration(id, hash)).toEqual(`${baseCDN}/avatar-decorations/${id}/${hash}.webp`);
 });
 
 test('avatar decoration preset', () => {
@@ -54,12 +50,16 @@ test('discoverySplash default', () => {
 	expect(cdn.discoverySplash(id, hash)).toEqual(`${baseCDN}/discovery-splashes/${id}/${hash}.webp`);
 });
 
-test('emoji default', () => {
+test('emoji', () => {
 	expect(cdn.emoji(id)).toEqual(`${baseCDN}/emojis/${id}.webp`);
 });
 
-test('emoji gif', () => {
-	expect(cdn.emoji(id, 'gif')).toEqual(`${baseCDN}/emojis/${id}.gif`);
+test('emoji animated', () => {
+	expect(cdn.emoji(id, { animated: true })).toEqual(`${baseCDN}/emojis/${id}.webp?animated=true`);
+});
+
+test('emoji with GIF format', () => {
+	expect(cdn.emoji(id, { extension: 'gif' })).toEqual(`${baseCDN}/emojis/${id}.gif`);
 });
 
 test('guildMemberAvatar default', () => {
@@ -68,12 +68,26 @@ test('guildMemberAvatar default', () => {
 
 test('guildMemberAvatar dynamic-animated', () => {
 	expect(cdn.guildMemberAvatar(id, id, animatedHash)).toEqual(
-		`${baseCDN}/guilds/${id}/users/${id}/avatars/${animatedHash}.gif`,
+		`${baseCDN}/guilds/${id}/users/${id}/avatars/${animatedHash}.webp?animated=true`,
 	);
 });
 
 test('guildMemberAvatar dynamic-not-animated', () => {
 	expect(cdn.guildMemberAvatar(id, id, hash)).toEqual(`${baseCDN}/guilds/${id}/users/${id}/avatars/${hash}.webp`);
+});
+
+test('guildMemberBanner default', () => {
+	expect(cdn.guildMemberBanner(id, id, hash)).toEqual(`${baseCDN}/guilds/${id}/users/${id}/banners/${hash}.webp`);
+});
+
+test('guildMemberBanner dynamic-animated', () => {
+	expect(cdn.guildMemberBanner(id, id, animatedHash)).toEqual(
+		`${baseCDN}/guilds/${id}/users/${id}/banners/${animatedHash}.webp?animated=true`,
+	);
+});
+
+test('guildMemberBanner dynamic-not-animated', () => {
+	expect(cdn.guildMemberBanner(id, id, hash)).toEqual(`${baseCDN}/guilds/${id}/users/${id}/banners/${hash}.webp`);
 });
 
 test('guildScheduledEventCover default', () => {
@@ -85,7 +99,7 @@ test('icon default', () => {
 });
 
 test('icon dynamic-animated', () => {
-	expect(cdn.icon(id, animatedHash)).toEqual(`${baseCDN}/icons/${id}/${animatedHash}.gif`);
+	expect(cdn.icon(id, animatedHash)).toEqual(`${baseCDN}/icons/${id}/${animatedHash}.webp?animated=true`);
 });
 
 test('icon dynamic-not-animated', () => {
@@ -116,8 +130,15 @@ test('teamIcon default', () => {
 	expect(cdn.teamIcon(id, hash)).toEqual(`${baseCDN}/team-icons/${id}/${hash}.webp`);
 });
 
+test('soundboardSound', () => {
+	expect(cdn.soundboardSound(id)).toEqual(`${baseCDN}/soundboard-sounds/${id}`);
+});
+
+test('guildTagBadge', () => {
+	expect(cdn.guildTagBadge(id, hash)).toEqual(`${baseCDN}/guild-tag-badges/${id}/${hash}.webp`);
+});
+
 test('makeURL throws on invalid size', () => {
-	// @ts-expect-error: Invalid size
 	expect(() => cdn.avatar(id, animatedHash, { size: 5 })).toThrow(RangeError);
 });
 
@@ -127,5 +148,7 @@ test('makeURL throws on invalid extension', () => {
 });
 
 test('makeURL valid size', () => {
-	expect(cdn.avatar(id, animatedHash, { size: 512 })).toEqual(`${baseCDN}/avatars/${id}/${animatedHash}.gif?size=512`);
+	expect(cdn.avatar(id, animatedHash, { size: 512 })).toEqual(
+		`${baseCDN}/avatars/${id}/${animatedHash}.webp?animated=true&size=512`,
+	);
 });

@@ -1,15 +1,13 @@
-'use strict';
-
-const { GatewayIntentBits } = require('discord-api-types/v10');
-const { token, guildId, channelId, messageId } = require('./auth.js');
-const { Client, ReactionCollector } = require('../src');
+import { GatewayIntentBits } from 'discord-api-types/v10';
+import { Client, Events, ReactionCollector } from '../src/index.js';
+import { token, guildId, channelId, messageId } from './auth.js';
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
 });
 
-client.on('ready', async () => {
-  const guild = client.guilds.cache.get(guildId);
+client.on(Events.ClientReady, async readyClient => {
+  const guild = readyClient.guilds.cache.get(guildId);
 
   const channel = guild.channels.cache.get(channelId);
 

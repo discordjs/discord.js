@@ -1,31 +1,34 @@
 /* eslint-disable no-param-reassign */
-/**
- * @internal
- */
-export interface CollectionConstructor {
-	new (): Collection<unknown, unknown>;
-	new <Key, Value>(entries?: readonly (readonly [Key, Value])[] | null): Collection<Key, Value>;
-	new <Key, Value>(iterable: Iterable<readonly [Key, Value]>): Collection<Key, Value>;
-	readonly prototype: Collection<unknown, unknown>;
-	readonly [Symbol.species]: CollectionConstructor;
-}
 
 /**
  * Represents an immutable version of a collection
  */
 export type ReadonlyCollection<Key, Value> = Omit<
 	Collection<Key, Value>,
-	'clear' | 'delete' | 'ensure' | 'forEach' | 'get' | 'reverse' | 'set' | 'sort' | 'sweep'
+	keyof Map<Key, Value> | 'each' | 'ensure' | 'reverse' | 'sort' | 'sweep' | 'tap'
 > &
-	ReadonlyMap<Key, Value>;
+	ReadonlyMap<Key, Value> & {
+		each(
+			fn: (value: Value, key: Key, collection: ReadonlyCollection<Key, Value>) => void,
+		): ReadonlyCollection<Key, Value>;
+		each<This>(
+			fn: (this: This, value: Value, key: Key, collection: ReadonlyCollection<Key, Value>) => void,
+			thisArg: This,
+		): ReadonlyCollection<Key, Value>;
+		tap(fn: (collection: ReadonlyCollection<Key, Value>) => void): ReadonlyCollection<Key, Value>;
+		tap<This>(
+			fn: (this: This, collection: ReadonlyCollection<Key, Value>) => void,
+			thisArg: This,
+		): ReadonlyCollection<Key, Value>;
+	};
 
-/**
- * Separate interface for the constructor so that emitted js does not have a constructor that overwrites itself
- *
- * @internal
- */
-export interface Collection<Key, Value> extends Map<Key, Value> {
-	constructor: CollectionConstructor;
+export interface Collection<Key, Value> {
+	/**
+	 * Ambient declaration to allow references to `this.constructor` in class methods.
+	 *
+	 * @internal
+	 */
+	constructor: typeof Collection;
 }
 
 /**
@@ -85,9 +88,16 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public first(amount?: number): Value | Value[] | undefined {
 		if (amount === undefined) return this.values().next().value;
 		if (amount < 0) return this.last(amount * -1);
-		amount = Math.min(this.size, amount);
+		if (amount >= this.size) return [...this.values()];
+
 		const iter = this.values();
-		return Array.from({ length: amount }, (): Value => iter.next().value);
+		// eslint-disable-next-line unicorn/no-new-array
+		const results: Value[] = new Array(amount);
+		for (let index = 0; index < amount; index++) {
+			results[index] = iter.next().value!;
+		}
+
+		return results;
 	}
 
 	/**
@@ -102,9 +112,16 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public firstKey(amount?: number): Key | Key[] | undefined {
 		if (amount === undefined) return this.keys().next().value;
 		if (amount < 0) return this.lastKey(amount * -1);
-		amount = Math.min(this.size, amount);
+		if (amount >= this.size) return [...this.keys()];
+
 		const iter = this.keys();
-		return Array.from({ length: amount }, (): Key => iter.next().value);
+		// eslint-disable-next-line unicorn/no-new-array
+		const results: Key[] = new Array(amount);
+		for (let index = 0; index < amount; index++) {
+			results[index] = iter.next().value!;
+		}
+
+		return results;
 	}
 
 	/**
@@ -117,11 +134,12 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public last(): Value | undefined;
 	public last(amount: number): Value[];
 	public last(amount?: number): Value | Value[] | undefined {
-		const arr = [...this.values()];
-		if (amount === undefined) return arr[arr.length - 1];
-		if (amount < 0) return this.first(amount * -1);
+		if (amount === undefined) return this.at(-1);
 		if (!amount) return [];
-		return arr.slice(-amount);
+		if (amount < 0) return this.first(amount * -1);
+
+		const arr = [...this.values()];
+		return arr.slice(amount * -1);
 	}
 
 	/**
@@ -134,37 +152,60 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public lastKey(): Key | undefined;
 	public lastKey(amount: number): Key[];
 	public lastKey(amount?: number): Key | Key[] | undefined {
-		const arr = [...this.keys()];
-		if (amount === undefined) return arr[arr.length - 1];
-		if (amount < 0) return this.firstKey(amount * -1);
+		if (amount === undefined) return this.keyAt(-1);
 		if (!amount) return [];
-		return arr.slice(-amount);
+		if (amount < 0) return this.firstKey(amount * -1);
+
+		const arr = [...this.keys()];
+		return arr.slice(amount * -1);
 	}
 
 	/**
-	 * Identical to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/at | Array.at()}.
+	 * Identical to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/at | Array.at()}.
 	 * Returns the item at a given index, allowing for positive and negative integers.
 	 * Negative integers count back from the last item in the collection.
 	 *
 	 * @param index - The index of the element to obtain
 	 */
-	public at(index: number) {
-		index = Math.floor(index);
-		const arr = [...this.values()];
-		return arr.at(index);
+	public at(index: number): Value | undefined {
+		index = Math.trunc(index);
+		if (index >= 0) {
+			if (index >= this.size) return undefined;
+		} else {
+			index += this.size;
+			if (index < 0) return undefined;
+		}
+
+		const iter = this.values();
+		for (let skip = 0; skip < index; skip++) {
+			iter.next();
+		}
+
+		return iter.next().value!;
 	}
 
 	/**
-	 * Identical to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/at | Array.at()}.
+	 * Identical to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/at | Array.at()}.
 	 * Returns the key at a given index, allowing for positive and negative integers.
 	 * Negative integers count back from the last item in the collection.
 	 *
 	 * @param index - The index of the key to obtain
 	 */
-	public keyAt(index: number) {
-		index = Math.floor(index);
-		const arr = [...this.keys()];
-		return arr.at(index);
+	public keyAt(index: number): Key | undefined {
+		index = Math.trunc(index);
+		if (index >= 0) {
+			if (index >= this.size) return undefined;
+		} else {
+			index += this.size;
+			if (index < 0) return undefined;
+		}
+
+		const iter = this.keys();
+		for (let skip = 0; skip < index; skip++) {
+			iter.next();
+		}
+
+		return iter.next().value!;
 	}
 
 	/**
@@ -176,13 +217,17 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public random(): Value | undefined;
 	public random(amount: number): Value[];
 	public random(amount?: number): Value | Value[] | undefined {
-		const arr = [...this.values()];
-		if (amount === undefined) return arr[Math.floor(Math.random() * arr.length)];
-		if (!arr.length || !amount) return [];
-		return Array.from(
-			{ length: Math.min(amount, arr.length) },
-			(): Value => arr.splice(Math.floor(Math.random() * arr.length), 1)[0]!,
-		);
+		if (amount === undefined) return this.at(Math.floor(Math.random() * this.size));
+		amount = Math.min(this.size, amount);
+		if (!amount) return [];
+
+		const values = [...this.values()];
+		for (let sourceIndex = 0; sourceIndex < amount; sourceIndex++) {
+			const targetIndex = sourceIndex + Math.floor(Math.random() * (values.length - sourceIndex));
+			[values[sourceIndex], values[targetIndex]] = [values[targetIndex]!, values[sourceIndex]!];
+		}
+
+		return values.slice(0, amount);
 	}
 
 	/**
@@ -194,32 +239,36 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public randomKey(): Key | undefined;
 	public randomKey(amount: number): Key[];
 	public randomKey(amount?: number): Key | Key[] | undefined {
-		const arr = [...this.keys()];
-		if (amount === undefined) return arr[Math.floor(Math.random() * arr.length)];
-		if (!arr.length || !amount) return [];
-		return Array.from(
-			{ length: Math.min(amount, arr.length) },
-			(): Key => arr.splice(Math.floor(Math.random() * arr.length), 1)[0]!,
-		);
+		if (amount === undefined) return this.keyAt(Math.floor(Math.random() * this.size));
+		amount = Math.min(this.size, amount);
+		if (!amount) return [];
+
+		const keys = [...this.keys()];
+		for (let sourceIndex = 0; sourceIndex < amount; sourceIndex++) {
+			const targetIndex = sourceIndex + Math.floor(Math.random() * (keys.length - sourceIndex));
+			[keys[sourceIndex], keys[targetIndex]] = [keys[targetIndex]!, keys[sourceIndex]!];
+		}
+
+		return keys.slice(0, amount);
 	}
 
 	/**
-	 * Identical to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse | Array.reverse()}
+	 * Identical to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse | Array.reverse()}
 	 * but returns a Collection instead of an Array.
 	 */
 	public reverse() {
 		const entries = [...this.entries()].reverse();
 		this.clear();
-		for (const [key, value] of entries) this.set(key, value);
+		for (const { 0: key, 1: value } of entries) this.set(key, value);
 		return this;
 	}
 
 	/**
 	 * Searches for a single item where the given function returns a truthy value. This behaves like
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find | Array.find()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/find | Array.find()}.
 	 * All collections used in Discord.js are mapped using their `id` property, and if you want to find by id you
 	 * should use the `get` method. See
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get | MDN} for details.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/get | MDN} for details.
 	 *
 	 * @param fn - The function to test with (should return a boolean)
 	 * @param thisArg - Value to use as `this` when executing the function
@@ -243,8 +292,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public find(fn: (value: Value, key: Key, collection: this) => unknown, thisArg?: unknown): Value | undefined {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
-		for (const [key, val] of this) {
-			if (fn(val, key, this)) return val;
+		for (const { 0: key, 1: value } of this) {
+			if (fn(value, key, this)) return value;
 		}
 
 		return undefined;
@@ -252,7 +301,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Searches for the key of a single item where the given function returns a truthy value. This behaves like
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex | Array.findIndex()},
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex | Array.findIndex()},
 	 * but returns the key rather than the positional index.
 	 *
 	 * @param fn - The function to test with (should return a boolean)
@@ -277,8 +326,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public findKey(fn: (value: Value, key: Key, collection: this) => unknown, thisArg?: unknown): Key | undefined {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
-		for (const [key, val] of this) {
-			if (fn(val, key, this)) return key;
+		for (const { 0: key, 1: value } of this) {
+			if (fn(value, key, this)) return key;
 		}
 
 		return undefined;
@@ -286,7 +335,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Searches for a last item where the given function returns a truthy value. This behaves like
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast | Array.findLast()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast | Array.findLast()}.
 	 *
 	 * @param fn - The function to test with (should return a boolean)
 	 * @param thisArg - Value to use as `this` when executing the function
@@ -308,9 +357,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
 		const entries = [...this.entries()];
 		for (let index = entries.length - 1; index >= 0; index--) {
-			const val = entries[index]![1];
-			const key = entries[index]![0];
-			if (fn(val, key, this)) return val;
+			const { 0: key, 1: value } = entries[index]!;
+			if (fn(value, key, this)) return value;
 		}
 
 		return undefined;
@@ -318,7 +366,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Searches for the key of a last item where the given function returns a truthy value. This behaves like
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex | Array.findLastIndex()},
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex | Array.findLastIndex()},
 	 * but returns the key rather than the positional index.
 	 *
 	 * @param fn - The function to test with (should return a boolean)
@@ -341,9 +389,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
 		const entries = [...this.entries()];
 		for (let index = entries.length - 1; index >= 0; index--) {
-			const key = entries[index]![0];
-			const val = entries[index]![1];
-			if (fn(val, key, this)) return key;
+			const { 0: key, 1: value } = entries[index]!;
+			if (fn(value, key, this)) return key;
 		}
 
 		return undefined;
@@ -362,8 +409,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
 		const previousSize = this.size;
-		for (const [key, val] of this) {
-			if (fn(val, key, this)) this.delete(key);
+		for (const { 0: key, 1: value } of this) {
+			if (fn(value, key, this)) this.delete(key);
 		}
 
 		return previousSize - this.size;
@@ -371,7 +418,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Identical to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter | Array.filter()},
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/filter | Array.filter()},
 	 * but returns a Collection instead of an Array.
 	 *
 	 * @param fn - The function to test with (should return a boolean)
@@ -404,8 +451,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
 		const results = new this.constructor[Symbol.species]<Key, Value>();
-		for (const [key, val] of this) {
-			if (fn(val, key, this)) results.set(key, val);
+		for (const { 0: key, 1: value } of this) {
+			if (fn(value, key, this)) results.set(key, value);
 		}
 
 		return results;
@@ -453,11 +500,11 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 			new this.constructor[Symbol.species]<Key, Value>(),
 			new this.constructor[Symbol.species]<Key, Value>(),
 		];
-		for (const [key, val] of this) {
-			if (fn(val, key, this)) {
-				results[0].set(key, val);
+		for (const { 0: key, 1: value } of this) {
+			if (fn(value, key, this)) {
+				results[0].set(key, value);
 			} else {
-				results[1].set(key, val);
+				results[1].set(key, value);
 			}
 		}
 
@@ -466,7 +513,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Maps each item into a Collection, then joins the results into a single Collection. Identical in behavior to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap | Array.flatMap()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap | Array.flatMap()}.
 	 *
 	 * @param fn - Function that produces a new Collection
 	 * @param thisArg - Value to use as `this` when executing the function
@@ -493,7 +540,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Maps each item to another value into an array. Identical in behavior to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map | Array.map()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/map | Array.map()}.
 	 *
 	 * @param fn - Function that produces an element of the new array, taking three arguments
 	 * @param thisArg - Value to use as `this` when executing the function
@@ -511,15 +558,19 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
 		const iter = this.entries();
-		return Array.from({ length: this.size }, (): NewValue => {
-			const [key, value] = iter.next().value;
-			return fn(value, key, this);
-		});
+		// eslint-disable-next-line unicorn/no-new-array
+		const results: NewValue[] = new Array(this.size);
+		for (let index = 0; index < this.size; index++) {
+			const { 0: key, 1: value } = iter.next().value!;
+			results[index] = fn(value, key, this);
+		}
+
+		return results;
 	}
 
 	/**
 	 * Maps each item to another value into a collection. Identical in behavior to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map | Array.map()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/map | Array.map()}.
 	 *
 	 * @param fn - Function that produces an element of the new collection, taking three arguments
 	 * @param thisArg - Value to use as `this` when executing the function
@@ -540,13 +591,13 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
 		const coll = new this.constructor[Symbol.species]<Key, NewValue>();
-		for (const [key, val] of this) coll.set(key, fn(val, key, this));
+		for (const { 0: key, 1: value } of this) coll.set(key, fn(value, key, this));
 		return coll;
 	}
 
 	/**
 	 * Checks if there exists an item that passes a test. Identical in behavior to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some | Array.some()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/some | Array.some()}.
 	 *
 	 * @param fn - Function used to test (should return a boolean)
 	 * @param thisArg - Value to use as `this` when executing the function
@@ -560,8 +611,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public some(fn: (value: Value, key: Key, collection: this) => unknown, thisArg?: unknown): boolean {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
-		for (const [key, val] of this) {
-			if (fn(val, key, this)) return true;
+		for (const { 0: key, 1: value } of this) {
+			if (fn(value, key, this)) return true;
 		}
 
 		return false;
@@ -569,7 +620,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Checks if all items passes a test. Identical in behavior to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every | Array.every()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/every | Array.every()}.
 	 *
 	 * @param fn - Function used to test (should return a boolean)
 	 * @param thisArg - Value to use as `this` when executing the function
@@ -597,8 +648,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public every(fn: (value: Value, key: Key, collection: this) => unknown, thisArg?: unknown): boolean {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
-		for (const [key, val] of this) {
-			if (!fn(val, key, this)) return false;
+		for (const { 0: key, 1: value } of this) {
+			if (!fn(value, key, this)) return false;
 		}
 
 		return true;
@@ -606,7 +657,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Applies a function to produce a single value. Identical in behavior to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce | Array.reduce()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce | Array.reduce()}.
 	 *
 	 * @param fn - Function used to reduce, taking four arguments; `accumulator`, `currentValue`, `currentKey`,
 	 * and `collection`
@@ -634,12 +685,12 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		const iterator = this.entries();
 		if (initialValue === undefined) {
 			if (this.size === 0) throw new TypeError('Reduce of empty collection with no initial value');
-			accumulator = iterator.next().value[1];
+			accumulator = iterator.next().value![1] as unknown as InitialValue;
 		} else {
 			accumulator = initialValue;
 		}
 
-		for (const [key, value] of iterator) {
+		for (const { 0: key, 1: value } of iterator) {
 			accumulator = fn(accumulator, value, key, this);
 		}
 
@@ -648,7 +699,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Applies a function to produce a single value. Identical in behavior to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight | Array.reduceRight()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight | Array.reduceRight()}.
 	 *
 	 * @param fn - Function used to reduce, taking four arguments; `accumulator`, `value`, `key`, and `collection`
 	 * @param initialValue - Starting value for the accumulator
@@ -680,9 +731,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		}
 
 		while (--index >= 0) {
-			const key = entries[index]![0];
-			const val = entries[index]![1];
-			accumulator = fn(accumulator, val, key, this);
+			const { 0: key, 1: value } = entries[index]!;
+			accumulator = fn(accumulator, value, key, this);
 		}
 
 		return accumulator;
@@ -690,7 +740,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Identical to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach | Map.forEach()},
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach | Map.forEach()},
 	 * but returns the collection instead of undefined.
 	 *
 	 * @param fn - Function to execute for each element
@@ -709,7 +759,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
 
-		for (const [key, value] of this) {
+		for (const { 0: key, 1: value } of this) {
 			fn(value, key, this);
 		}
 
@@ -762,7 +812,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public concat(...collections: ReadonlyCollection<Key, Value>[]) {
 		const newColl = this.clone();
 		for (const coll of collections) {
-			for (const [key, val] of coll) newColl.set(key, val);
+			for (const { 0: key, 1: value } of coll) newColl.set(key, value);
 		}
 
 		return newColl;
@@ -780,8 +830,12 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (!collection) return false; // runtime check
 		if (this === collection) return true;
 		if (this.size !== collection.size) return false;
-		for (const [key, value] of this) {
-			if (!collection.has(key) || value !== collection.get(key)) {
+		for (const { 0: key, 1: value } of this) {
+			const otherValue = collection.get(key);
+			// If values differ, collections aren't equal.
+			// For undefined values, we must also verify the key exists in the other collection,
+			// since get() returns undefined for both missing keys and keys with undefined values.
+			if (otherValue !== value || (otherValue === undefined && !collection.has(key))) {
 				return false;
 			}
 		}
@@ -791,11 +845,11 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * The sort method sorts the items of a collection in place and returns it.
-	 * The sort is not necessarily stable in Node 10 or older.
-	 * The default sort order is according to string Unicode code points.
+	 * If a comparison function is not provided, the function sorts by element values, using the same stringwise comparison algorithm as
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort | Array.sort()}.
 	 *
-	 * @param compareFunction - Specifies a function that defines the sort order.
-	 * If omitted, the collection is sorted according to each character's Unicode code point value, according to the string conversion of each element.
+	 * @param compareFunction - Specifies a function that defines the sort order. The return value of this function should be negative if
+	 * `a` comes before `b`, positive if `b` comes before `a`, or zero if `a` and `b` are considered equal.
 	 * @example
 	 * ```ts
 	 * collection.sort((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
@@ -809,7 +863,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		super.clear();
 
 		// Set the new entries
-		for (const [key, value] of entries) {
+		for (const { 0: key, 1: value } of entries) {
 			super.set(key, value);
 		}
 
@@ -832,7 +886,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public intersection(other: ReadonlyCollection<Key, any>): Collection<Key, Value> {
 		const coll = new this.constructor[Symbol.species]<Key, Value>();
 
-		for (const [key, value] of this) {
+		for (const { 0: key, 1: value } of this) {
 			if (other.has(key)) coll.set(key, value);
 		}
 
@@ -858,7 +912,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public union<OtherValue>(other: ReadonlyCollection<Key, OtherValue>): Collection<Key, OtherValue | Value> {
 		const coll = new this.constructor[Symbol.species]<Key, OtherValue | Value>(this);
 
-		for (const [key, value] of other) {
+		for (const { 0: key, 1: value } of other) {
 			if (!coll.has(key)) coll.set(key, value);
 		}
 
@@ -882,7 +936,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public difference(other: ReadonlyCollection<Key, any>): Collection<Key, Value> {
 		const coll = new this.constructor[Symbol.species]<Key, Value>();
 
-		for (const [key, value] of this) {
+		for (const { 0: key, 1: value } of this) {
 			if (!other.has(key)) coll.set(key, value);
 		}
 
@@ -907,11 +961,11 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	): Collection<Key, OtherValue | Value> {
 		const coll = new this.constructor[Symbol.species]<Key, OtherValue | Value>();
 
-		for (const [key, value] of this) {
+		for (const { 0: key, 1: value } of this) {
 			if (!other.has(key)) coll.set(key, value);
 		}
 
-		for (const [key, value] of other) {
+		for (const { 0: key, 1: value } of other) {
 			if (!this.has(key)) coll.set(key, value);
 		}
 
@@ -959,12 +1013,14 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 			const hasInSelf = this.has(key);
 			const hasInOther = other.has(key);
 
-			if (hasInSelf && hasInOther) {
-				const result = whenInBoth(this.get(key)!, other.get(key)!, key);
-				if (result.keep) coll.set(key, result.value);
-			} else if (hasInSelf) {
-				const result = whenInSelf(this.get(key)!, key);
-				if (result.keep) coll.set(key, result.value);
+			if (hasInSelf) {
+				if (hasInOther) {
+					const result = whenInBoth(this.get(key)!, other.get(key)!, key);
+					if (result.keep) coll.set(key, result.value);
+				} else {
+					const result = whenInSelf(this.get(key)!, key);
+					if (result.keep) coll.set(key, result.value);
+				}
 			} else if (hasInOther) {
 				const result = whenInOther(other.get(key)!, key);
 				if (result.keep) coll.set(key, result.value);
@@ -975,28 +1031,33 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	}
 
 	/**
-	 * Identical to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toReversed | Array.toReversed()}
+	 * Identical to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toReversed | Array.toReversed()}
 	 * but returns a Collection instead of an Array.
 	 */
 	public toReversed() {
-		return new this.constructor[Symbol.species](this).reverse();
+		const entries = [...this.entries()];
+		entries.reverse();
+
+		return new this.constructor[Symbol.species](entries);
 	}
 
 	/**
-	 * The sorted method sorts the items of a collection and returns it.
-	 * The sort is not necessarily stable in Node 10 or older.
-	 * The default sort order is according to string Unicode code points.
+	 * The toSorted method returns a shallow copy of the collection with the items sorted.
+	 * If a comparison function is not provided, the function sorts by element values, using the same stringwise comparison algorithm as
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort | Array.sort()}.
 	 *
-	 * @param compareFunction - Specifies a function that defines the sort order.
-	 * If omitted, the collection is sorted according to each character's Unicode code point value,
-	 * according to the string conversion of each element.
+	 * @param compareFunction - Specifies a function that defines the sort order. The return value of this function should be negative if
+	 * `a` comes before `b`, positive if `b` comes before `a`, or zero if `a` and `b` are considered equal.
 	 * @example
 	 * ```ts
-	 * collection.sorted((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
+	 * const sortedCollection = collection.toSorted((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
 	 * ```
 	 */
-	public toSorted(compareFunction: Comparator<Key, Value> = Collection.defaultSort) {
-		return new this.constructor[Symbol.species](this).sort((av, bv, ak, bk) => compareFunction(av, bv, ak, bk));
+	public toSorted(compareFunction: Comparator<Key, Value> = Collection.defaultSort): Collection<Key, Value> {
+		const entries = [...this.entries()];
+		entries.sort((a, b): number => compareFunction(a[1], b[1], a[0], b[0]));
+
+		return new this.constructor[Symbol.species](entries);
 	}
 
 	public toJSON() {
@@ -1004,8 +1065,20 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		return [...this.entries()];
 	}
 
+	/**
+	 * Emulates the default sort comparison algorithm used in ECMAScript. Equivalent to calling the
+	 * {@link https://tc39.es/ecma262/multipage/indexed-collections.html#sec-comparearrayelements | CompareArrayElements}
+	 * operation with arguments `firstValue`, `secondValue` and `undefined`.
+	 */
 	private static defaultSort<Value>(firstValue: Value, secondValue: Value): number {
-		return Number(firstValue > secondValue) || Number(firstValue === secondValue) - 1;
+		if (firstValue === undefined) return secondValue === undefined ? 0 : 1;
+		if (secondValue === undefined) return -1;
+
+		const x = String(firstValue);
+		const y = String(secondValue);
+		if (x < y) return -1;
+		if (y < x) return 1;
+		return 0;
 	}
 
 	/**
@@ -1023,8 +1096,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		entries: Iterable<[Key, Value]>,
 		combine: (firstValue: Value, secondValue: Value, key: Key) => Value,
 	): Collection<Key, Value> {
-		const coll = new Collection<Key, Value>();
-		for (const [key, value] of entries) {
+		const coll = new this[Symbol.species]<Key, Value>();
+		for (const { 0: key, 1: value } of entries) {
 			if (coll.has(key)) {
 				coll.set(key, combine(coll.get(key)!, value, key));
 			} else {
@@ -1034,14 +1107,24 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 		return coll;
 	}
+
+	/**
+	 * Identical to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/groupBy | Map.groupBy()}
+	 * but returns a Collection instead of a Map.
+	 */
+	public static override groupBy<Key, Item>(
+		items: Iterable<Item>,
+		keySelector: (item: Item, index: number) => Key,
+	): Collection<Key, Item[]> {
+		return new this[Symbol.species]<Key, Item[]>(Map.groupBy(items, keySelector));
+	}
+
+	/**
+	 * @internal
+	 */
+	declare public static readonly [Symbol.species]: typeof Collection;
 }
 
-/**
- * @internal
- */
 export type Keep<Value> = { keep: false } | { keep: true; value: Value };
 
-/**
- * @internal
- */
 export type Comparator<Key, Value> = (firstValue: Value, secondValue: Value, firstKey: Key, secondKey: Key) => number;

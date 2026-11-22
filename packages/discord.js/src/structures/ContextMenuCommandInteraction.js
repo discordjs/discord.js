@@ -1,22 +1,20 @@
-'use strict';
-
-const { lazy } = require('@discordjs/util');
-const { ApplicationCommandOptionType } = require('discord-api-types/v10');
-const CommandInteraction = require('./CommandInteraction');
-const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
-const { transformResolved } = require('../util/Util');
-
-const getMessage = lazy(() => require('./Message').Message);
+import { ApplicationCommandOptionType } from 'discord-api-types/v10';
+import { transformResolved } from '../util/Util.js';
+import { CommandInteraction } from './CommandInteraction.js';
+import { CommandInteractionOptionResolver } from './CommandInteractionOptionResolver.js';
+import { Message } from './Message.js';
 
 /**
  * Represents a context menu interaction.
+ *
  * @extends {CommandInteraction}
  */
-class ContextMenuCommandInteraction extends CommandInteraction {
+export class ContextMenuCommandInteraction extends CommandInteraction {
   constructor(client, data) {
     super(client, data);
     /**
      * The target of the interaction, parsed into options
+     *
      * @type {CommandInteractionOptionResolver}
      */
     this.options = new CommandInteractionOptionResolver(
@@ -27,6 +25,7 @@ class ContextMenuCommandInteraction extends CommandInteraction {
 
     /**
      * The id of the target of this interaction
+     *
      * @type {Snowflake}
      */
     this.targetId = data.data.target_id;
@@ -34,6 +33,7 @@ class ContextMenuCommandInteraction extends CommandInteraction {
 
   /**
    * Resolves and transforms options received from the API for a context menu interaction.
+   *
    * @param {APIApplicationCommandInteractionData} data The interaction data
    * @returns {CommandInteractionOption[]}
    * @private
@@ -54,12 +54,10 @@ class ContextMenuCommandInteraction extends CommandInteraction {
         value: target_id,
         message:
           this.channel?.messages._add(resolved.messages[target_id]) ??
-          new (getMessage())(this.client, resolved.messages[target_id]),
+          new Message(this.client, resolved.messages[target_id]),
       });
     }
 
     return result;
   }
 }
-
-module.exports = ContextMenuCommandInteraction;

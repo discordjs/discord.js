@@ -1,15 +1,14 @@
-'use strict';
-
-const { ApplicationCommandOptionType } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
+import { ApplicationCommandOptionType } from 'discord-api-types/v10';
+import { DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
 
 /**
  * A resolver for command interaction options.
  */
-class CommandInteractionOptionResolver {
+export class CommandInteractionOptionResolver {
   constructor(client, options, resolved) {
     /**
      * The client that instantiated this.
+     *
      * @name CommandInteractionOptionResolver#client
      * @type {Client}
      * @readonly
@@ -18,6 +17,7 @@ class CommandInteractionOptionResolver {
 
     /**
      * The name of the subcommand group.
+     *
      * @type {?string}
      * @private
      */
@@ -25,6 +25,7 @@ class CommandInteractionOptionResolver {
 
     /**
      * The name of the subcommand.
+     *
      * @type {?string}
      * @private
      */
@@ -33,6 +34,7 @@ class CommandInteractionOptionResolver {
     /**
      * The bottom-level options for the interaction.
      * If there is a subcommand (or subcommand and group), this is the options for the subcommand.
+     *
      * @type {CommandInteractionOption[]}
      * @private
      */
@@ -43,6 +45,7 @@ class CommandInteractionOptionResolver {
       this._group = this._hoistedOptions[0].name;
       this._hoistedOptions = this._hoistedOptions[0].options ?? [];
     }
+
     // Hoist subcommand if present
     if (this._hoistedOptions[0]?.type === ApplicationCommandOptionType.Subcommand) {
       this._subcommand = this._hoistedOptions[0].name;
@@ -51,6 +54,7 @@ class CommandInteractionOptionResolver {
 
     /**
      * The interaction options array.
+     *
      * @name CommandInteractionOptionResolver#data
      * @type {ReadonlyArray<CommandInteractionOption>}
      * @readonly
@@ -59,6 +63,7 @@ class CommandInteractionOptionResolver {
 
     /**
      * The interaction resolved data
+     *
      * @name CommandInteractionOptionResolver#resolved
      * @type {?Readonly<CommandInteractionResolvedData>}
      */
@@ -67,6 +72,7 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets an option by its name.
+   *
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?CommandInteractionOption} The option, if found.
@@ -77,16 +83,19 @@ class CommandInteractionOptionResolver {
       if (required) {
         throw new DiscordjsTypeError(ErrorCodes.CommandInteractionOptionNotFound, name);
       }
+
       return null;
     }
+
     return option;
   }
 
   /**
    * Gets an option by name and property and checks its type.
+   *
    * @param {string} name The name of the option.
    * @param {ApplicationCommandOptionType[]} allowedTypes The allowed types of the option.
-   * @param {string[]} properties The properties to check for for `required`.
+   * @param {string[]} properties The properties to check for `required`.
    * @param {boolean} required Whether to throw an error if the option is not found.
    * @returns {?CommandInteractionOption} The option, if found.
    * @private
@@ -100,11 +109,13 @@ class CommandInteractionOptionResolver {
     } else if (required && properties.every(prop => option[prop] === null || option[prop] === undefined)) {
       throw new DiscordjsTypeError(ErrorCodes.CommandInteractionOptionEmpty, name, option.type);
     }
+
     return option;
   }
 
   /**
    * Gets the selected subcommand.
+   *
    * @param {boolean} [required=true] Whether to throw an error if there is no subcommand.
    * @returns {?string} The name of the selected subcommand, or null if not set and not required.
    */
@@ -112,11 +123,13 @@ class CommandInteractionOptionResolver {
     if (required && !this._subcommand) {
       throw new DiscordjsTypeError(ErrorCodes.CommandInteractionOptionNoSubcommand);
     }
+
     return this._subcommand;
   }
 
   /**
    * Gets the selected subcommand group.
+   *
    * @param {boolean} [required=false] Whether to throw an error if there is no subcommand group.
    * @returns {?string} The name of the selected subcommand group, or null if not set and not required.
    */
@@ -124,11 +137,13 @@ class CommandInteractionOptionResolver {
     if (required && !this._group) {
       throw new DiscordjsTypeError(ErrorCodes.CommandInteractionOptionNoSubcommandGroup);
     }
+
     return this._group;
   }
 
   /**
    * Gets a boolean option.
+   *
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?boolean} The value of the option, or null if not set and not required.
@@ -140,6 +155,7 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets a channel option.
+   *
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @param {ChannelType[]} [channelTypes=[]] The allowed types of channels. If empty, all channel types are allowed.
@@ -164,6 +180,7 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets a string option.
+   *
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?string} The value of the option, or null if not set and not required.
@@ -175,6 +192,7 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets an integer option.
+   *
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?number} The value of the option, or null if not set and not required.
@@ -186,6 +204,7 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets a number option.
+   *
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?number} The value of the option, or null if not set and not required.
@@ -197,6 +216,7 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets a user option.
+   *
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?User} The value of the option, or null if not set and not required.
@@ -213,6 +233,7 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets a member option.
+   *
    * @param {string} name The name of the option.
    * @returns {?(GuildMember|APIGuildMember)}
    * The value of the option, or null if the user is not present in the guild or the option is not set.
@@ -229,6 +250,7 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets a role option.
+   *
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?(Role|APIRole)} The value of the option, or null if not set and not required.
@@ -245,6 +267,7 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets an attachment option.
+   *
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?Attachment} The value of the option, or null if not set and not required.
@@ -256,6 +279,7 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets a mentionable option.
+   *
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?(User|GuildMember|APIGuildMember|Role|APIRole)}
@@ -273,6 +297,7 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets a message option.
+   *
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?Message}
@@ -285,6 +310,7 @@ class CommandInteractionOptionResolver {
 
   /**
    * The full autocomplete option object.
+   *
    * @typedef {Object} AutocompleteFocusedOption
    * @property {string} name The name of the option
    * @property {ApplicationCommandOptionType} type The type of the application command option
@@ -294,15 +320,13 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets the focused option.
-   * @param {boolean} [getFull=false] Whether to get the full option object
-   * @returns {string|AutocompleteFocusedOption}
-   * The value of the option, or the whole option if getFull is true
+   *
+   * @returns {AutocompleteFocusedOption}
+   * The whole object of the option that is focused
    */
-  getFocused(getFull = false) {
+  getFocused() {
     const focusedOption = this._hoistedOptions.find(option => option.focused);
     if (!focusedOption) throw new DiscordjsTypeError(ErrorCodes.AutocompleteInteractionOptionNoFocusedOption);
-    return getFull ? focusedOption : focusedOption.value;
+    return focusedOption;
   }
 }
-
-module.exports = CommandInteractionOptionResolver;

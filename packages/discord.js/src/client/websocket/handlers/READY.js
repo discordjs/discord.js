@@ -1,19 +1,18 @@
-'use strict';
+import { ClientApplication } from '../../../structures/ClientApplication.js';
+import { ClientUser } from '../../../structures/ClientUser.js';
+import { Status } from '../../../util/Status.js';
 
-const ClientApplication = require('../../../structures/ClientApplication');
-let ClientUser;
-
-module.exports = (client, { d: data }, shard) => {
+export default (client, { d: data }, shardId) => {
   if (client.user) {
     client.user._patch(data.user);
   } else {
-    ClientUser ??= require('../../../structures/ClientUser');
     client.user = new ClientUser(client, data.user);
     client.users.cache.set(client.user.id, client.user);
   }
 
   for (const guild of data.guilds) {
-    guild.shardId = shard.id;
+    client.expectedGuilds.add(guild.id);
+    guild.shardId = shardId;
     client.guilds._add(guild);
   }
 
@@ -23,5 +22,5 @@ module.exports = (client, { d: data }, shard) => {
     client.application = new ClientApplication(client, data.application);
   }
 
-  shard.checkReady();
+  client.status = Status.WaitingForGuilds;
 };

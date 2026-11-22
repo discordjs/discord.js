@@ -1,4 +1,4 @@
-import type { DeclarationReflection, SignatureReflection } from 'typedoc';
+import type { DeclarationReflection, SignatureReflection } from '../index.js';
 import type { Method } from '../interfaces/index.js';
 import { parseType } from '../util/parseType.js';
 import { DocumentedItemMeta } from './item-meta.js';
@@ -33,7 +33,7 @@ export class DocumentedMethod extends DocumentedItem<DeclarationReflection | Met
 
 			return {
 				name: signature.name,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+				// eslint-disable-next-line no-param-reassign
 				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				see,
 				scope: data.flags.isStatic ? 'static' : undefined,
@@ -43,14 +43,13 @@ export class DocumentedMethod extends DocumentedItem<DeclarationReflection | Met
 						? 'private'
 						: undefined,
 				examples,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				abstract: signature.comment?.blockTags?.some((block) => block.tag === '@abstract') || undefined,
 				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
-					? signature.comment.blockTags
+					? (signature.comment.blockTags
 							.find((block) => block.tag === '@deprecated')
 							// eslint-disable-next-line no-param-reassign
 							?.content.reduce((prev, curr) => (prev += curr.text), '')
-							.trim() ?? true
+							.trim() ?? true)
 					: undefined,
 				// emits: signature.comment?.blockTags?.filter((t) => t.tag === '@emits').map((t) => t.content),
 				// @ts-expect-error: Typescript doesn't know that this is a SignatureReflection
@@ -69,7 +68,6 @@ export class DocumentedMethod extends DocumentedItem<DeclarationReflection | Met
 											?.find((block) => block.tag === '@returns')
 											// eslint-disable-next-line no-param-reassign
 											?.content.reduce((prev, curr) => (prev += curr.text), '')
-											// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 											.trim() || undefined,
 								},
 								this.config,
@@ -81,7 +79,6 @@ export class DocumentedMethod extends DocumentedItem<DeclarationReflection | Met
 						?.find((block) => block.tag === '@returns')
 						// eslint-disable-next-line no-param-reassign
 						?.content.reduce((prev, curr) => (prev += curr.text), '')
-						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 						.trim() || undefined,
 				meta,
 			};

@@ -1,10 +1,8 @@
-'use strict';
+import process from 'node:process';
+import { ShardingManager } from '../src/index.js';
+import { token } from './auth.js';
 
-const process = require('node:process');
-const { token } = require('./auth');
-const Discord = require('../src');
-
-const sharder = new Discord.ShardingManager(`${process.cwd()}/test/shard.js`, { token, respawn: false });
+const sharder = new ShardingManager(`${process.cwd()}/test/shard.js`, { token, respawn: false });
 
 sharder.on('launch', shard => console.log(`launched ${shard.id}`));
 

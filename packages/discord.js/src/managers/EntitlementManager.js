@@ -1,50 +1,61 @@
-'use strict';
-
-const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { Routes, EntitlementOwnerType } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
-const { ErrorCodes, DiscordjsTypeError } = require('../errors/index');
-const { Entitlement } = require('../structures/Entitlement');
-const { resolveSKUId } = require('../util/Util');
+import { Collection } from '@discordjs/collection';
+import { makeURLSearchParams } from '@discordjs/rest';
+import { Routes, EntitlementOwnerType } from 'discord-api-types/v10';
+import { ErrorCodes, DiscordjsTypeError } from '../errors/index.js';
+import { Entitlement } from '../structures/Entitlement.js';
+import { resolveSKUId } from '../util/Util.js';
+import { CachedManager } from './CachedManager.js';
 
 /**
  * Manages API methods for entitlements and stores their cache.
+ *
  * @extends {CachedManager}
  */
-class EntitlementManager extends CachedManager {
+export class EntitlementManager extends CachedManager {
   constructor(client, iterable) {
     super(client, Entitlement, iterable);
   }
 
   /**
    * The cache of this manager
+   *
    * @type {Collection<Snowflake, Entitlement>}
    * @name EntitlementManager#cache
    */
 
   /**
    * Data that resolves to give an Entitlement object. This can be:
-   * * An Entitlement object
-   * * A Snowflake
+   * - An Entitlement object
+   * - A Snowflake
+   *
    * @typedef {Entitlement|Snowflake} EntitlementResolvable
    */
 
   /**
    * Data that resolves to give a SKU object. This can be:
-   * * A SKU object
-   * * A Snowflake
+   * - A SKU object
+   * - A Snowflake
+   *
    * @typedef {SKU|Snowflake} SKUResolvable
    */
 
   /**
+   * Options used to fetch an entitlement
+   *
+   * @typedef {BaseFetchOptions} FetchEntitlementOptions
+   * @property {EntitlementResolvable} entitlement The entitlement to fetch
+   */
+
+  /**
    * Options used to fetch entitlements
+   *
    * @typedef {Object} FetchEntitlementsOptions
    * @property {number} [limit] The maximum number of entitlements to fetch
    * @property {GuildResolvable} [guild] The guild to fetch entitlements for
    * @property {UserResolvable} [user] The user to fetch entitlements for
    * @property {SKUResolvable[]} [skus] The SKUs to fetch entitlements for
    * @property {boolean} [excludeEnded] Whether to exclude ended entitlements
+   * @property {boolean} [excludeDeleted] Whether to exclude deleted entitlements
    * @property {boolean} [cache=true] Whether to cache the fetched entitlements
    * @property {Snowflake} [before] Consider only entitlements before this entitlement id
    * @property {Snowflake} [after] Consider only entitlements after this entitlement id
@@ -53,21 +64,50 @@ class EntitlementManager extends CachedManager {
 
   /**
    * Fetches entitlements for this application
-   * @param {FetchEntitlementsOptions} [options={}] Options for fetching the entitlements
-   * @returns {Promise<Collection<Snowflake, Entitlement>>}
+   *
+   * @param {EntitlementResolvable|FetchEntitlementOptions|FetchEntitlementsOptions} [options]
+   * Options for fetching the entitlements
+   * @returns {Promise<Entitlement|Collection<Snowflake, Entitlement>>}
    */
-  async fetch({ limit, guild, user, skus, excludeEnded, cache = true, before, after } = {}) {
+  async fetch(options) {
+    if (!options) return this._fetchMany(options);
+    const { entitlement, cache, force } = options;
+    const resolvedEntitlement = this.resolveId(entitlement ?? options);
+
+    if (resolvedEntitlement) {
+      return this._fetchSingle({ entitlement: resolvedEntitlement, cache, force });
+    }
+
+    return this._fetchMany(options);
+  }
+
+  async _fetchSingle({ entitlement, cache, force = false }) {
+    if (!force) {
+      const existing = this.cache.get(entitlement);
+
+      if (existing) {
+        return existing;
+      }
+    }
+
+    const data = await this.client.rest.get(Routes.entitlement(this.client.application.id, entitlement));
+    return this._add(data, cache);
+  }
+
+  async _fetchMany({ limit, guild, user, skus, excludeEnded, excludeDeleted, cache, before, after } = {}) {
     const query = makeURLSearchParams({
       limit,
       guild_id: guild && this.client.guilds.resolveId(guild),
       user_id: user && this.client.users.resolveId(user),
       sku_ids: skus?.map(sku => resolveSKUId(sku)).join(','),
       exclude_ended: excludeEnded,
+      exclude_deleted: excludeDeleted,
       before,
       after,
     });
 
     const entitlements = await this.client.rest.get(Routes.entitlements(this.client.application.id), { query });
+
     return entitlements.reduce(
       (coll, entitlement) => coll.set(entitlement.id, this._add(entitlement, cache)),
       new Collection(),
@@ -77,6 +117,7 @@ class EntitlementManager extends CachedManager {
   /**
    * Options used to create a test entitlement
    * <info>Either `guild` or `user` must be provided, but not both</info>
+   *
    * @typedef {Object} EntitlementCreateOptions
    * @property {SKUResolvable} sku The id of the SKU to create the entitlement for
    * @property {GuildResolvable} [guild] The guild to create the entitlement for
@@ -85,6 +126,7 @@ class EntitlementManager extends CachedManager {
 
   /**
    * Creates a test entitlement
+   *
    * @param {EntitlementCreateOptions} options Options for creating the test entitlement
    * @returns {Promise<Entitlement>}
    */
@@ -115,6 +157,7 @@ class EntitlementManager extends CachedManager {
 
   /**
    * Deletes a test entitlement
+   *
    * @param {EntitlementResolvable} entitlement The entitlement to delete
    * @returns {Promise<void>}
    */
@@ -128,6 +171,7 @@ class EntitlementManager extends CachedManager {
   /**
    * Marks an entitlement as consumed
    * <info>Only available for One-Time Purchase consumable SKUs.</info>
+   *
    * @param {Snowflake} entitlementId The id of the entitlement to consume
    * @returns {Promise<void>}
    */
@@ -135,5 +179,3 @@ class EntitlementManager extends CachedManager {
     await this.client.rest.post(Routes.consumeEntitlement(this.client.application.id, entitlementId));
   }
 }
-
-exports.EntitlementManager = EntitlementManager;

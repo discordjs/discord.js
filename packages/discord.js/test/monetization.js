@@ -1,7 +1,7 @@
-'use strict';
-
-const { token, owner } = require('./auth.js');
-const { Client, Events, codeBlock, GatewayIntentBits } = require('../src');
+import { inspect } from 'node:util';
+import { ButtonStyle } from 'discord-api-types/v10';
+import { Client, Events, codeBlock, GatewayIntentBits, ActionRowBuilder, ButtonBuilder } from '../src/index.js';
+import { token, owner, skuId } from './auth.js';
 
 const client = new Client({ intents: GatewayIntentBits.Guilds | GatewayIntentBits.GuildMessages });
 
@@ -35,7 +35,14 @@ client.on(Events.InteractionCreate, async interaction => {
   console.log('interaction.entitlements', interaction.entitlements);
 
   if (interaction.commandName === 'test') {
-    await interaction.sendPremiumRequired();
+    await interaction.reply({
+      content: ':3:3:3',
+      components: [
+        new ActionRowBuilder().setComponents(
+          new ButtonBuilder().setCustomId('test').setLabel('test').setStyle(ButtonStyle.Premium).setSKUId(skuId),
+        ),
+      ],
+    });
   }
 });
 
@@ -45,12 +52,12 @@ client.on(Events.MessageCreate, async message => {
   if (message.author.id !== owner || !message.content.startsWith(prefix)) return;
   let res;
   try {
+    // eslint-disable-next-line no-eval
     res = await eval(message.content.slice(prefix.length));
-    if (typeof res !== 'string') res = require('node:util').inspect(res);
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error(err.stack);
-    res = err.message;
+    if (typeof res !== 'string') res = inspect(res);
+  } catch (error) {
+    console.error(error.stack);
+    res = error.message;
   }
 
   await message.channel.send(codeBlock('js', res));

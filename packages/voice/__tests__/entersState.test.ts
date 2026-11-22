@@ -1,7 +1,8 @@
 import { EventEmitter } from 'node:events';
 import process from 'node:process';
-import { VoiceConnectionStatus, type VoiceConnection } from '../src/VoiceConnection';
+import { describe, test, expect, vitest, beforeEach } from 'vitest';
 import { entersState } from '../src/util/entersState';
+import { VoiceConnectionStatus, type VoiceConnection } from '../src/VoiceConnection';
 
 function createFakeVoiceConnection(status = VoiceConnectionStatus.Signalling) {
 	const vc = new EventEmitter() as any;
@@ -10,12 +11,12 @@ function createFakeVoiceConnection(status = VoiceConnectionStatus.Signalling) {
 }
 
 beforeEach(() => {
-	jest.useFakeTimers();
+	vitest.useFakeTimers();
 });
 
 describe('entersState', () => {
 	test('Returns the target once the state has been entered before timeout', async () => {
-		jest.useRealTimers();
+		vitest.useRealTimers();
 		const vc = createFakeVoiceConnection();
 		process.nextTick(() => vc.emit(VoiceConnectionStatus.Ready, null as any, null as any));
 		const result = await entersState(vc, VoiceConnectionStatus.Ready, 1_000);
@@ -25,12 +26,12 @@ describe('entersState', () => {
 	test('Rejects once the timeout is exceeded', async () => {
 		const vc = createFakeVoiceConnection();
 		const promise = entersState(vc, VoiceConnectionStatus.Ready, 1_000);
-		jest.runAllTimers();
+		vitest.runAllTimers();
 		await expect(promise).rejects.toThrowError();
 	});
 
 	test('Returns the target once the state has been entered before signal is aborted', async () => {
-		jest.useRealTimers();
+		vitest.useRealTimers();
 		const vc = createFakeVoiceConnection();
 		const ac = new AbortController();
 		process.nextTick(() => vc.emit(VoiceConnectionStatus.Ready, null as any, null as any));

@@ -70,12 +70,20 @@ describe('at() tests', () => {
 		expect(coll.at(0)).toStrictEqual(1);
 	});
 
+	test('positive non-integer index', () => {
+		expect(coll.at(1.5)).toStrictEqual(2);
+	});
+
 	test('negative index', () => {
 		expect(coll.at(-1)).toStrictEqual(3);
 	});
 
+	test('negative non-integer index', () => {
+		expect(coll.at(-2.5)).toStrictEqual(2);
+	});
+
 	test('invalid positive index', () => {
-		expect(coll.at(4)).toBeUndefined();
+		expect(coll.at(3)).toBeUndefined();
 	});
 
 	test('invalid negative index', () => {
@@ -198,6 +206,23 @@ describe('equals() tests', () => {
 	test('collections with the same size but differing items should not be equal', () => {
 		const coll3 = createCollectionFrom(['a', 2], ['b', 3], ['c', 3]);
 		expect(coll2.equals(coll3)).toBeFalsy();
+	});
+
+	test('collections with undefined values should be compared correctly', () => {
+		const collWithUndefined1 = new Collection<string, number | undefined>([
+			['a', 1],
+			['b', undefined],
+		]);
+		const collWithUndefined2 = new Collection<string, number | undefined>([
+			['a', 1],
+			['b', undefined],
+		]);
+		const collWithDifferentKeys = new Collection<string, number | undefined>([
+			['a', 1],
+			['c', undefined],
+		]);
+		expect(collWithUndefined1.equals(collWithUndefined2)).toBeTruthy();
+		expect(collWithUndefined1.equals(collWithDifferentKeys)).toBeFalsy();
 	});
 });
 
@@ -432,12 +457,20 @@ describe('keyAt() tests', () => {
 		expect(coll.keyAt(0)).toStrictEqual('a');
 	});
 
+	test('positive non-integer index', () => {
+		expect(coll.keyAt(1.5)).toStrictEqual('b');
+	});
+
 	test('negative index', () => {
 		expect(coll.keyAt(-1)).toStrictEqual('c');
 	});
 
+	test('negative non-integer index', () => {
+		expect(coll.keyAt(-2.5)).toStrictEqual('b');
+	});
+
 	test('invalid positive index', () => {
-		expect(coll.keyAt(4)).toBeUndefined();
+		expect(coll.keyAt(3)).toBeUndefined();
 	});
 
 	test('invalid negative index', () => {
@@ -813,6 +846,33 @@ describe('sort() tests', () => {
 			const coll = createCollectionFrom(['a', 5], ['b', 3], ['c', 1]);
 			expect(coll.sort()).toStrictEqual(createCollectionFrom(['c', 1], ['b', 3], ['a', 5]));
 		});
+
+		describe('returns correct sort order for test values', () => {
+			const defaultSort = Collection['defaultSort'];
+			const testDefaultSortOrder = (firstValue: any, secondValue: any, result: number) => {
+				expect(defaultSort(firstValue, secondValue)).toStrictEqual(result);
+				expect(defaultSort(secondValue, firstValue)).toStrictEqual(result ? result * -1 : 0);
+			};
+
+			test('correctly evaluates sort order of undefined', () => {
+				testDefaultSortOrder(undefined, undefined, 0);
+				testDefaultSortOrder(0, undefined, -1);
+			});
+
+			test('correctly evaluates numeric values stringwise', () => {
+				testDefaultSortOrder(-1, -2, -1); // "-1" before "-2"
+				testDefaultSortOrder(1, '1', 0); // "1" equal to "1"
+				testDefaultSortOrder(1, '1.0', -1); // "1" before "1.0"
+				testDefaultSortOrder(1.1, '1.1', 0); // "1.1" equal to "1.1"
+				testDefaultSortOrder('01', 1, -1); // "01" before "1"
+				testDefaultSortOrder(1, 1n, 0); // "1" equal to "1"
+				testDefaultSortOrder(Number.NaN, 'NaN', 0); // "NaN" equal to "NaN"
+			});
+
+			test('evaluates object literals as equal', () => {
+				testDefaultSortOrder({ a: 1 }, { b: 2 }, 0);
+			});
+		});
 	});
 });
 
@@ -898,6 +958,29 @@ describe('union() tests', () => {
 		expect(c.size).toStrictEqual(3);
 
 		expect(c).toStrictEqual(createCollectionFrom(['a', 1], ['b', 2], ['c', 3]));
+	});
+});
+
+describe('groupBy() tests', () => {
+	test('returns a collection of grouped items', () => {
+		const items = [
+			{ name: 'Alice', age: 20 },
+			{ name: 'Bob', age: 20 },
+			{ name: 'Charlie', age: 30 },
+		];
+
+		expect<Collection<number, typeof items>>(Collection.groupBy(items, (item) => item.age)).toStrictEqual(
+			new Collection<number, typeof items>([
+				[
+					20,
+					[
+						{ name: 'Alice', age: 20 },
+						{ name: 'Bob', age: 20 },
+					],
+				],
+				[30, [{ name: 'Charlie', age: 30 }]],
+			]),
+		);
 	});
 });
 
@@ -1054,5 +1137,63 @@ describe('findLastKey() tests', () => {
 			expect(this).toBeNull();
 			return true;
 		}, null);
+	});
+});
+
+describe('subclassing tests', () => {
+	class DerivedCollection<Key, Value> extends Collection<Key, Value> {}
+
+	test('constructor[Symbol.species]', () => {
+		expect(DerivedCollection[Symbol.species]).toStrictEqual(DerivedCollection);
+	});
+
+	describe('methods that construct new collections return subclassed objects', () => {
+		const coll = new DerivedCollection();
+
+		test('filter()', () => {
+			expect(coll.filter(Boolean)).toBeInstanceOf(DerivedCollection);
+		});
+		test('partition()', () => {
+			for (const partition of coll.partition(Boolean)) {
+				expect(partition).toBeInstanceOf(DerivedCollection);
+			}
+		});
+		test('flatMap()', () => {
+			expect(coll.flatMap(() => new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('mapValues()', () => {
+			expect(coll.mapValues(Object)).toBeInstanceOf(DerivedCollection);
+		});
+		test('clone()', () => {
+			expect(coll.clone()).toBeInstanceOf(DerivedCollection);
+		});
+		test('intersection()', () => {
+			expect(coll.intersection(new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('union()', () => {
+			expect(coll.union(new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('difference()', () => {
+			expect(coll.difference(new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('symmetricDifference()', () => {
+			expect(coll.symmetricDifference(new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('merge()', () => {
+			const fn = () => ({ keep: false }) as const; // eslint-disable-line unicorn/consistent-function-scoping
+			expect(coll.merge(new Collection(), fn, fn, fn)).toBeInstanceOf(DerivedCollection);
+		});
+		test('toReversed()', () => {
+			expect(coll.toReversed()).toBeInstanceOf(DerivedCollection);
+		});
+		test('toSorted()', () => {
+			expect(coll.toSorted()).toBeInstanceOf(DerivedCollection);
+		});
+		test('Collection.combineEntries()', () => {
+			expect(DerivedCollection.combineEntries([], Object)).toBeInstanceOf(DerivedCollection);
+		});
+		test('Collection.groupBy()', () => {
+			expect(DerivedCollection.groupBy([], Object)).toBeInstanceOf(DerivedCollection);
+		});
 	});
 });

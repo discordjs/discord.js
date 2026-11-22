@@ -1,5 +1,3 @@
-'use strict';
-
-module.exports = (client, packet, shard) => {
-  client.actions.GuildMemberRemove.handle(packet.d, shard);
+export default (client, packet) => {
+  client.actions.GuildMemberRemove.handle(packet.d);
 };

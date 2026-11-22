@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-/* eslint-disable n/shebang */
+
 import process from 'node:process';
 import { createCommand } from 'commander';
-import packageFile from '../package.json';
+import packageFile from '../package.json' with { type: 'json' };
 import { build } from '../src/index.js';
 
 export interface CLIOptions {

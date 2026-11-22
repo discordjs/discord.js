@@ -5,10 +5,10 @@
 
 import { type PackageJsonLookup, InternalError } from '@rushstack/node-core-library';
 import * as ts from 'typescript';
-import type { MessageRouter } from '../collector/MessageRouter';
+import type { MessageRouter } from '../collector/MessageRouter.js';
 import { AstDeclaration } from './AstDeclaration.js';
 import type { AstEntity } from './AstEntity.js';
-import type { AstModule, AstModuleExportInfo } from './AstModule.js';
+import type { AstModule, IAstModuleExportInfo } from './AstModule.js';
 import { AstNamespaceImport } from './AstNamespaceImport.js';
 import { AstSymbol } from './AstSymbol.js';
 import { ExportAnalyzer } from './ExportAnalyzer.js';
@@ -126,7 +126,7 @@ export class AstSymbolTable {
 	/**
 	 * This crawls the specified entry point and collects the full set of exported AstSymbols.
 	 */
-	public fetchAstModuleExportInfo(astModule: AstModule): AstModuleExportInfo {
+	public fetchAstModuleExportInfo(astModule: AstModule): IAstModuleExportInfo {
 		return this._exportAnalyzer.fetchAstModuleExportInfo(astModule);
 	}
 

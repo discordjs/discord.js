@@ -29,4 +29,28 @@ describe('lazy', () => {
 		expect(callback).toHaveBeenCalledOnce();
 		expect(cachedValue).toEqual('Lorem Ipsum');
 	});
+
+	test('GIVEN undefined callback with cached value THEN returns the same', () => {
+		const callback = vi.fn<() => string | undefined>(() => undefined);
+
+		const lazyStoredValue = lazy(callback);
+
+		lazyStoredValue();
+		const cachedValue = lazyStoredValue();
+
+		expect(callback).toHaveBeenCalledOnce();
+		expect(cachedValue).toBeUndefined();
+	});
+
+	test('GIVEN null callback with cached value THEN returns the same', () => {
+		const callback = vi.fn(() => null);
+
+		const lazyStoredValue = lazy(callback);
+
+		lazyStoredValue();
+		const cachedValue = lazyStoredValue();
+
+		expect(callback).toHaveBeenCalledOnce();
+		expect(cachedValue).toBeNull();
+	});
 });
