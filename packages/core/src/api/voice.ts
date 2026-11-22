@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import type { REST } from '@discordjs/rest';
 import {
 	Routes,
@@ -8,9 +6,7 @@ import {
 	type RESTGetAPIGuildVoiceStateUserResult,
 	type RESTGetAPIGuildVoiceStateCurrentMemberResult,
 	type RESTPatchAPIGuildVoiceStateUserJSONBody,
-	type RESTPatchAPIGuildVoiceStateCurrentMemberResult,
 	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
-	type RESTPatchAPIGuildVoiceStateUserResult,
 } from 'discord-api-types/v10';
 import type { RequestOptions, RequestOptionsWithReason } from '../util/types.js';
 
@@ -68,10 +64,10 @@ export class VoiceAPI {
 		body: RESTPatchAPIGuildVoiceStateUserJSONBody,
 		options: RequestOptionsWithReason = {},
 	) {
-		return this.rest.patch(Routes.guildVoiceState(guildId, userId), {
+		await this.rest.patch(Routes.guildVoiceState(guildId, userId), {
 			...options,
 			body,
-		}) as Promise<RESTPatchAPIGuildVoiceStateUserResult>;
+		});
 	}
 
 	/**
@@ -87,9 +83,9 @@ export class VoiceAPI {
 		body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {},
 		options: RequestOptions = {},
 	) {
-		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
+		await this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
 			...options,
 			body,
-		}) as Promise<RESTPatchAPIGuildVoiceStateCurrentMemberResult>;
+		});
 	}
 }

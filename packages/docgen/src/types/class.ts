@@ -1,5 +1,5 @@
 import { parse } from 'node:path';
-import type { DeclarationReflection } from 'typedoc';
+import type { DeclarationReflection } from '../index.js';
 import type { Class, Config } from '../interfaces/index.js';
 import { parseType } from '../util/parseType.js';
 import { DocumentedConstructor } from './constructor.js';
@@ -99,7 +99,7 @@ export class DocumentedClass extends DocumentedItem<Class | DeclarationReflectio
 			return {
 				// @ts-expect-error: Type cannot be inferred
 				name: signature.name === 'default' ? parse(meta?.file ?? 'default').name : signature.name,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+				// eslint-disable-next-line no-param-reassign
 				description: signature.comment?.summary.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				see,
 				extends: this.extends?.serialize(),

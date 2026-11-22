@@ -5,7 +5,6 @@ import {
 	type RESTDeleteAPIInviteResult,
 	type RESTGetAPIInviteQuery,
 	type RESTGetAPIInviteResult,
-	type RESTPutAPIInviteTargetUsersResult,
 	type RESTGetAPIInviteTargetUsersJobStatusResult,
 } from 'discord-api-types/v10';
 import type { RequestOptions, RequestOptionsWithReason } from '../util/types.js';
@@ -62,10 +61,10 @@ export class InvitesAPI {
 	 * @returns
 	 */
 	public async updateTargetUsers(code: string, targetUsersFile: RawFile, options: RequestOptions = {}) {
-		return this.rest.put(Routes.inviteTargetUsers(code), {
+		await this.rest.put(Routes.inviteTargetUsers(code), {
 			...options,
 			files: [{ key: 'target_users_file', contentType: 'text/csv', ...targetUsersFile }],
-		}) as Promise<RESTPutAPIInviteTargetUsersResult>;
+		});
 	}
 
 	/**

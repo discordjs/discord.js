@@ -1,9 +1,7 @@
-'use strict';
+import { Events } from '../../util/Events.js';
+import { Action } from './Action.js';
 
-const { Events } = require('../../util/Events.js');
-const { Action } = require('./Action.js');
-
-class GuildMemberUpdateAction extends Action {
+export class GuildMemberUpdateAction extends Action {
   handle(data) {
     const { client } = this;
     if (data.user.username) {
@@ -41,5 +39,3 @@ class GuildMemberUpdateAction extends Action {
     }
   }
 }
-
-exports.GuildMemberUpdateAction = GuildMemberUpdateAction;

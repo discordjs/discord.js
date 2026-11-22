@@ -1,9 +1,7 @@
-'use strict';
-
-const { Attachment } = require('./Attachment.js');
-const { BaseInteraction } = require('./BaseInteraction.js');
-const { InteractionWebhook } = require('./InteractionWebhook.js');
-const { InteractionResponses } = require('./interfaces/InteractionResponses.js');
+import { Attachment } from './Attachment.js';
+import { BaseInteraction } from './BaseInteraction.js';
+import { InteractionWebhook } from './InteractionWebhook.js';
+import { InteractionResponses } from './interfaces/InteractionResponses.js';
 
 /**
  * Represents a command interaction.
@@ -12,7 +10,7 @@ const { InteractionResponses } = require('./interfaces/InteractionResponses.js')
  * @implements {InteractionResponses}
  * @abstract
  */
-class CommandInteraction extends BaseInteraction {
+export class CommandInteraction extends BaseInteraction {
   constructor(client, data) {
     super(client, data);
 
@@ -184,5 +182,3 @@ class CommandInteraction extends BaseInteraction {
 }
 
 InteractionResponses.applyToClass(CommandInteraction, ['deferUpdate', 'update']);
-
-exports.CommandInteraction = CommandInteraction;

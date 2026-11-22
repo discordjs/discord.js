@@ -44,8 +44,8 @@ bun add @discordjs/ws
 The example uses [ES modules](https://nodejs.org/api/esm.html#enabling).
 
 ```ts
-import { WebSocketManager, WebSocketShardEvents, CompressionMethod } from '@discordjs/ws';
 import { REST } from '@discordjs/rest';
+import { WebSocketManager, WebSocketShardEvents, CompressionMethod } from '@discordjs/ws';
 import { Routes, type RESTGetAPIGatewayBotResult } from 'discord-api-types/v10';
 
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
@@ -145,8 +145,8 @@ const manager = new WebSocketManager({
 And your `worker.ts` file:
 
 ```ts
-import { WorkerBootstrapper, WebSocketShardEvents } from '@discordjs/ws';
 import { parentPort } from 'node:worker_threads';
+import { WorkerBootstrapper, WebSocketShardEvents } from '@discordjs/ws';
 
 const bootstrapper = new WorkerBootstrapper();
 void bootstrapper.bootstrap({

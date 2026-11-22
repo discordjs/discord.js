@@ -1,15 +1,10 @@
-'use strict';
-
-const { Buffer } = require('node:buffer');
-const fs = require('node:fs/promises');
-const path = require('node:path');
-const { lazy } = require('@discordjs/util');
-const { fetch } = require('undici');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { BaseInvite } = require('../structures/BaseInvite.js');
-
-// Fixes circular dependencies.
-const getGuildTemplate = lazy(() => require('../structures/GuildTemplate.js').GuildTemplate);
+import { Buffer } from 'node:buffer';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fetch } from 'undici';
+import { DiscordjsError, DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
+import { BaseInvite } from '../structures/BaseInvite.js';
+import { GuildTemplate } from '../structures/GuildTemplate.js';
 
 /**
  * Resolves target users file to CSV.
@@ -19,7 +14,7 @@ const getGuildTemplate = lazy(() => require('../structures/GuildTemplate.js').Gu
  * @returns {Promise<string>}
  * @ignore
  */
-async function resolveInviteTargetUsersFile(client, targetUsersFile) {
+export async function resolveInviteTargetUsersFile(client, targetUsersFile) {
   let usersCsv;
   if (Array.isArray(targetUsersFile)) {
     usersCsv = targetUsersFile.map(user => client.users.resolveId(user)).join('\n');
@@ -55,7 +50,7 @@ async function resolveInviteTargetUsersFile(client, targetUsersFile) {
  * @returns {string}
  * @private
  */
-function resolveCode(data, regex) {
+export function resolveCode(data, regex) {
   return regex.exec(data)?.[1] ?? data;
 }
 
@@ -66,7 +61,7 @@ function resolveCode(data, regex) {
  * @returns {string}
  * @private
  */
-function resolveInviteCode(data) {
+export function resolveInviteCode(data) {
   return resolveCode(data, BaseInvite.InvitesPattern);
 }
 
@@ -77,8 +72,8 @@ function resolveInviteCode(data) {
  * @returns {string}
  * @private
  */
-function resolveGuildTemplateCode(data) {
-  return resolveCode(data, getGuildTemplate().GuildTemplatesPattern);
+export async function resolveGuildTemplateCode(data) {
+  return resolveCode(data, GuildTemplate.GuildTemplatesPattern);
 }
 
 /**
@@ -110,7 +105,7 @@ function resolveGuildTemplateCode(data) {
  * @returns {Promise<ResolvedFile>}
  * @private
  */
-async function resolveFile(resource) {
+export async function resolveFile(resource) {
   if (Buffer.isBuffer(resource)) return { data: resource };
 
   if (typeof resource[Symbol.asyncIterator] === 'function') {
@@ -151,7 +146,7 @@ async function resolveFile(resource) {
  * @returns {string}
  * @private
  */
-function resolveBase64(data, contentType = 'image/jpg') {
+export function resolveBase64(data, contentType = 'image/jpg') {
   if (Buffer.isBuffer(data)) return `data:${contentType};base64,${data.toString('base64')}`;
   return data;
 }
@@ -163,7 +158,7 @@ function resolveBase64(data, contentType = 'image/jpg') {
  * @returns {Promise<?string>}
  * @private
  */
-async function resolveImage(image) {
+export async function resolveImage(image) {
   if (!image) return null;
   if (typeof image === 'string' && image.startsWith('data:')) {
     return image;
@@ -172,11 +167,3 @@ async function resolveImage(image) {
   const file = await resolveFile(image);
   return resolveBase64(file.data);
 }
-
-exports.resolveCode = resolveCode;
-exports.resolveInviteCode = resolveInviteCode;
-exports.resolveGuildTemplateCode = resolveGuildTemplateCode;
-exports.resolveImage = resolveImage;
-exports.resolveBase64 = resolveBase64;
-exports.resolveFile = resolveFile;
-exports.resolveInviteTargetUsersFile = resolveInviteTargetUsersFile;

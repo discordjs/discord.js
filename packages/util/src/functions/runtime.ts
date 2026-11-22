@@ -1,5 +1,3 @@
-/* eslint-disable n/prefer-global/process */
-
 export function shouldUseGlobalFetchAndWebSocket() {
 	// Browser env and deno when ran directly
 	if (typeof globalThis.process === 'undefined') {

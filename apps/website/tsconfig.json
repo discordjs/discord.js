@@ -1,15 +1,15 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig.json",
-	"extends": "../../tsconfig.json",
+	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		// Modules
-		"baseUrl": ".",
-
 		// Emit
 		"declaration": false,
 		"declarationMap": false,
 		"noEmit": true,
 		"outDir": "dist",
+
+		"module": "esnext",
+		"moduleResolution": "bundler",
 
 		// Interop Constraints
 		"esModuleInterop": true,
@@ -29,7 +29,9 @@
 
 		"paths": {
 			"@/*": ["./src/*"]
-		}
+		},
+		"rootDirs": ["./src", "./.next/types"],
+		"rootDir": null
 	},
 	"include": [
 		"src/**/*.ts",
