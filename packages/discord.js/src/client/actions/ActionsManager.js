@@ -2,6 +2,7 @@ import { ChannelCreateAction } from './ChannelCreate.js';
 import { ChannelDeleteAction } from './ChannelDelete.js';
 import { ChannelUpdateAction } from './ChannelUpdate.js';
 import { GuildChannelsPositionUpdateAction } from './GuildChannelsPositionUpdate.js';
+import { GuildDeleteAction } from './GuildDelete.js';
 import { GuildEmojiCreateAction } from './GuildEmojiCreate.js';
 import { GuildEmojiDeleteAction } from './GuildEmojiDelete.js';
 import { GuildEmojisUpdateAction } from './GuildEmojisUpdate.js';
@@ -56,6 +57,7 @@ export class ActionsManager {
     this.ChannelDelete = this.load(ChannelDeleteAction);
     this.ChannelUpdate = this.load(ChannelUpdateAction);
     this.GuildChannelsPositionUpdate = this.load(GuildChannelsPositionUpdateAction);
+    this.GuildDelete = this.load(GuildDeleteAction);
     this.GuildEmojiCreate = this.load(GuildEmojiCreateAction);
     this.GuildEmojiDelete = this.load(GuildEmojiDeleteAction);
     this.GuildEmojiUpdate = this.load(GuildEmojiUpdateAction);
