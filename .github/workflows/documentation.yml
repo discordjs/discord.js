@@ -30,10 +30,10 @@ jobs:
         with:
           ref: ${{ inputs.ref || '' }}
 
-      - name: Install Node.js v20
+      - name: Install Node.js v24
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Install dependencies
         uses: ./packages/actions/src/pnpmCache
@@ -74,20 +74,11 @@ jobs:
             cd ../..
           done
 
-      - name: Checkout docs repository
-        uses: actions/checkout@v4
-        with:
-          repository: 'discordjs/docs'
-          token: ${{ secrets.DJS_DOCS }}
-          path: 'out'
-
       - name: Upload documentation to database
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CF_D1_DOCS_API_KEY: ${{ secrets.CF_D1_DOCS_API_KEY }}
           CF_D1_DOCS_ID: ${{ secrets.CF_D1_DOCS_ID }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
           CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
           CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
           CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
@@ -100,7 +91,6 @@ jobs:
 
       - name: Upload split documentation to blob storage
         env:
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
           CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
           CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
           CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
@@ -109,28 +99,6 @@ jobs:
         with:
           package: ${{ steps.extract-tag.outputs.package }}
           version: ${{ steps.extract-tag.outputs.semver }}
-
-      - name: Move docs to correct directory
-        env:
-          PACKAGE: ${{ steps.extract-tag.outputs.package }}
-          SEMVER: ${{ steps.extract-tag.outputs.semver }}
-        run: |
-          mkdir -p "out/${PACKAGE}"
-          if [[ "${PACKAGE}" == "discord.js" ]]; then
-            mv "packages/${PACKAGE}/docs/docs.json" "out/${PACKAGE}/${SEMVER}.json"
-            mv "packages/${PACKAGE}/docs/docs.api.json" "out/${PACKAGE}/${SEMVER}.api.json"
-          else
-            mv "packages/${PACKAGE}/docs/docs.api.json" "out/${PACKAGE}/${SEMVER}.api.json"
-          fi
-
-      - name: Commit and push
-        run: |
-          cd out
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add .
-          git commit -m "Docs build for ${GITHUB_REF_TYPE} ${GITHUB_REF_NAME}: ${GITHUB_SHA}" || true
-          git push
 
   build-indices:
     needs: build-docs
@@ -157,7 +125,9 @@ jobs:
 
       - name: Upload search indices to meilisearch
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CF_D1_DOCS_API_KEY: ${{ secrets.CF_D1_DOCS_API_KEY }}
+          CF_D1_DOCS_ID: ${{ secrets.CF_D1_DOCS_ID }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           SEARCH_API_URL: ${{ secrets.SEARCH_API_URL }}
           SEARCH_API_KEY: ${{ secrets.SEARCH_API_KEY }}
         uses: ./packages/actions/src/uploadSearchIndices
