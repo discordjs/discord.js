@@ -1,7 +1,8 @@
+import { setTimeout as sleep } from 'node:timers/promises';
 import { Collection } from '@discordjs/collection';
 import { makeURLSearchParams } from '@discordjs/rest';
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import { ChannelType, GuildPremiumTier, Routes, GuildFeature } from 'discord-api-types/v10';
+import { ChannelType, GuildPremiumTier, Routes, GuildFeature, RESTJSONErrorCodes } from 'discord-api-types/v10';
 import { DiscordjsError, DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
 import { AutoModerationRuleManager } from '../managers/AutoModerationRuleManager.js';
 import { GuildApplicationCommandManager } from '../managers/GuildApplicationCommandManager.js';
@@ -27,6 +28,7 @@ import { GuildOnboarding } from './GuildOnboarding.js';
 import { GuildPreview } from './GuildPreview.js';
 import { GuildTemplate } from './GuildTemplate.js';
 import { Integration } from './Integration.js';
+import { Message } from './Message.js';
 import { Webhook } from './Webhook.js';
 import { WelcomeScreen } from './WelcomeScreen.js';
 
