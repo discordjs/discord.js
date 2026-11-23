@@ -22,11 +22,11 @@ export class TypeScriptInternals {
 	 * declaration is an extra semicolon somewhere), then "undefined" is returned.
 	 */
 	public static tryGetSymbolForDeclaration(
-		declaration: ts.Declaration,
+		declaration: ts.Declaration | ts.SourceFile,
 		checker: tsAPI.Checker,
 	): tsAPI.Symbol | undefined {
-		let symbol: tsAPI.Symbol | undefined = tsAPI.getSymbol(declaration);
-		if (symbol?.escapedName === ts.InternalSymbolName.Computed) {
+		let symbol: tsAPI.Symbol | undefined = checker.getSymbolAtLocation(declaration);
+		if (symbol?.escapedName === ts.InternalSymbolName.Computed && !ts.isSourceFile(declaration)) {
 			const name: ts.DeclarationName | undefined = ts.getNameOfDeclaration(declaration);
 			symbol = (name && checker.getSymbolAtLocation(name)) || symbol;
 		}
@@ -45,12 +45,32 @@ export class TypeScriptInternals {
 	/**
 	 * Retrieves the comment ranges associated with the specified node.
 	 */
-	// public static getJSDocCommentRanges(node: ts.Node, text: string): ts.CommentRange[] | undefined {
-	// 	// Compiler internal:
-	// 	// https://github.com/microsoft/TypeScript/blob/v2.4.2/src/compiler/utilities.ts#L616
+	public static getJSDocCommentRanges(node: ts.Node, text: string): ts.CommentRange[] | undefined {
+		// Compiler internal:
+		// https://github.com/microsoft/TypeScript/blob/v2.4.2/src/compiler/utilities.ts#L616
 
-	// 	return Reflect.apply((tsAPI as any).getJSDocCommentRanges, this, [node, text]);
-	// }
+		const commentRanges =
+			node.kind === ts.SyntaxKind.Parameter ||
+			node.kind === ts.SyntaxKind.TypeParameter ||
+			node.kind === ts.SyntaxKind.FunctionExpression ||
+			node.kind === ts.SyntaxKind.ArrowFunction ||
+			node.kind === ts.SyntaxKind.ParenthesizedExpression ||
+			node.kind === ts.SyntaxKind.VariableDeclaration ||
+			node.kind === ts.SyntaxKind.ExportSpecifier
+				? [
+						...(ts.getTrailingCommentRanges(text, node.pos) ?? []),
+						...(ts.getLeadingCommentRanges(text, node.pos) ?? []),
+					]
+				: (ts.getLeadingCommentRanges(text, node.pos) ?? []);
+		// True if the comment starts with '/**' but not if it is '/**/'
+		return commentRanges.filter(
+			(comment) =>
+				comment.end <= node.end && // Due to parse errors sometime empty parameter may get comments assigned to it that end up not in parameter range
+				text.codePointAt(comment.pos + 1) === 0x2a &&
+				text.codePointAt(comment.pos + 2) === 0x2a &&
+				text.codePointAt(comment.pos + 3) !== 0x2f,
+		);
+	}
 
 	/**
 	 * Retrieves the (unescaped) value of an string literal, numeric literal, or identifier.

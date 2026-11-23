@@ -30,6 +30,12 @@ import type {
 	IExtractorMessagesConfig,
 } from './IConfigFile.js';
 
+const _defaultConfig: Partial<IConfigFile> = JsonFile.load(
+	path.join(import.meta.dirname, '../schemas/api-extractor-defaults.json'),
+);
+
+const _declarationFileExtensionRegExp = /\.d\.[cm]?ts$/i;
+
 /**
  * Tokens used during variable expansion of path fields from api-extractor.json.
  */
@@ -267,12 +273,6 @@ export class ExtractorConfig {
 	 * @internal
 	 */
 	public static readonly _tsdocBaseFilePath: string = path.resolve(import.meta.dirname, '../extends/tsdoc-base.json');
-
-	static readonly #defaultConfig: Partial<IConfigFile> = JsonFile.load(
-		path.join(import.meta.dirname, '../schemas/api-extractor-defaults.json'),
-	);
-
-	static readonly #declarationFileExtensionRegExp: RegExp = /\.d\.[cm]?ts$/i;
 
 	/**
 	 * {@inheritDoc IConfigFile.projectFolder}
@@ -736,7 +736,7 @@ export class ExtractorConfig {
 
 		// Lastly, apply the defaults
 		configObject = Objects.mergeWith(
-			structuredClone(ExtractorConfig.#defaultConfig),
+			structuredClone(_defaultConfig),
 			configObject,
 			mergeCustomizer,
 		) as Partial<IConfigFile>;
@@ -1246,7 +1246,7 @@ export class ExtractorConfig {
 	 * Returns true if the specified file path has the ".d.ts" file extension.
 	 */
 	public static hasDtsFileExtension(filePath: string): boolean {
-		return ExtractorConfig.#declarationFileExtensionRegExp.test(filePath);
+		return _declarationFileExtensionRegExp.test(filePath);
 	}
 }
 

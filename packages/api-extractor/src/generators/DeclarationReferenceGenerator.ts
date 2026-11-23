@@ -73,7 +73,7 @@ export class DeclarationReferenceGenerator {
 
 		// If it's global or from an external library, then use either Members or Exports. It's not possible for
 		// global symbols or external library symbols to be Locals.
-		const isGlobal: boolean = Boolean(sourceFile) && !sourceFile!.externalModuleIndicator;
+		const isGlobal: boolean = Boolean(sourceFile) && !ts.isExternalModule(sourceFile!);
 		const isFromExternalLibrary: boolean =
 			Boolean(sourceFile) && this.#collector.program.isSourceFileFromExternalLibrary(sourceFile!);
 		if (isGlobal || isFromExternalLibrary) {

@@ -16,6 +16,7 @@ import { AstReferenceResolver } from '../analyzer/AstReferenceResolver.js';
 import { AstSymbol } from '../analyzer/AstSymbol.js';
 import { AstSymbolTable } from '../analyzer/AstSymbolTable.js';
 import { TypeScriptHelpers } from '../analyzer/TypeScriptHelpers.js';
+import { TypeScriptInternals } from '../analyzer/TypeScriptInternals.js';
 // import { /* TypeScriptInternals, */ type IGlobalVariableAnalyzer } from '../analyzer/TypeScriptInternals.js';
 import { ExtractorConfig } from '../api/ExtractorConfig.js';
 import { ExtractorMessageId } from '../api/ExtractorMessageId.js';
@@ -964,10 +965,7 @@ export class Collector {
 		}
 
 		const sourceFileText: string = declaration.getSourceFile().text;
-		const ranges: ts.CommentRange[] = [
-			...(ts.getLeadingCommentRanges(sourceFileText, nodeForComment.pos) ?? []),
-			...(ts.getTrailingCommentRanges(sourceFileText, nodeForComment.pos) ?? []),
-		]; // TypeScriptInternals.getJSDocCommentRanges(nodeForComment, sourceFileText) ?? [];
+		const ranges: ts.CommentRange[] = TypeScriptInternals.getJSDocCommentRanges(nodeForComment, sourceFileText) ?? [];
 
 		if (ranges.length === 0) {
 			return undefined;
