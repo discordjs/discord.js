@@ -19,7 +19,7 @@ const longStr =
 describe('Button Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid fields THEN builder does not throw', () => {
-			expect(() => new PrimaryButtonBuilder().setCustomId('custom').setLabel('test').toJSON()).not.toThrowError();
+			expect(() => new PrimaryButtonBuilder().setCustomId('custom').setLabel('test').toJSON()).not.toThrow();
 
 			expect(() => {
 				const button = new PrimaryButtonBuilder()
@@ -29,34 +29,34 @@ describe('Button Components', () => {
 					.setEmoji({ name: 'test' });
 
 				button.toJSON();
-			}).not.toThrowError();
+			}).not.toThrow();
 
 			expect(() => {
 				const button = new SecondaryButtonBuilder().setCustomId('custom').setLabel('a'.repeat(80));
 				button.toJSON();
-			}).not.toThrowError();
+			}).not.toThrow();
 
 			expect(() => {
 				const button = new DangerButtonBuilder().setCustomId('custom').setEmoji({ name: 'ok' });
 				button.toJSON();
-			}).not.toThrowError();
+			}).not.toThrow();
 
 			expect(() => {
 				const button = new LinkButtonBuilder().setURL('https://discord.js.org').setLabel('a'.repeat(80));
 				button.toJSON();
-			}).not.toThrowError();
+			}).not.toThrow();
 
 			expect(() => {
 				const button = new LinkButtonBuilder().setURL('https://discord.js.org').setEmoji({ name: 'ok' });
 				button.toJSON();
-			}).not.toThrowError();
+			}).not.toThrow();
 
 			expect(() => {
 				const button = new PremiumButtonBuilder().setSKUId('123456789012345678');
 				button.toJSON();
-			}).not.toThrowError();
+			}).not.toThrow();
 
-			expect(() => new LinkButtonBuilder().setLabel('label').setURL('https://google.com').toJSON()).not.toThrowError();
+			expect(() => new LinkButtonBuilder().setLabel('label').setURL('https://google.com').toJSON()).not.toThrow();
 		});
 
 		test('GIVEN an id THEN every button style serializes it', () => {
@@ -68,38 +68,38 @@ describe('Button Components', () => {
 		test('GIVEN invalid fields THEN build does throw', () => {
 			expect(() => {
 				new PrimaryButtonBuilder().setCustomId(longStr).toJSON();
-			}).toThrowError();
+			}).toThrow();
 
 			expect(() => {
 				// @ts-expect-error: Invalid emoji
 				const button = new PrimaryButtonBuilder().setEmoji('test');
 				button.toJSON();
-			}).toThrowError();
+			}).toThrow();
 
 			expect(() => {
 				const button = new PrimaryButtonBuilder();
 				button.toJSON();
-			}).toThrowError();
+			}).toThrow();
 
 			expect(() => {
 				const button = new PrimaryButtonBuilder().setCustomId('test');
 				button.toJSON();
-			}).toThrowError();
+			}).toThrow();
 
 			// @ts-expect-error: Invalid style
-			expect(() => new PrimaryButtonBuilder().setCustomId('hi').setStyle(24).toJSON()).toThrowError();
-			expect(() => new PrimaryButtonBuilder().setCustomId('hi').setLabel(longStr).toJSON()).toThrowError();
+			expect(() => new PrimaryButtonBuilder().setCustomId('hi').setStyle(24).toJSON()).toThrow();
+			expect(() => new PrimaryButtonBuilder().setCustomId('hi').setLabel(longStr).toJSON()).toThrow();
 			// @ts-expect-error: Invalid parameter for disabled
-			expect(() => new PrimaryButtonBuilder().setCustomId('hi').setDisabled(0).toJSON()).toThrowError();
+			expect(() => new PrimaryButtonBuilder().setCustomId('hi').setDisabled(0).toJSON()).toThrow();
 			// @ts-expect-error: Invalid emoji
-			expect(() => new PrimaryButtonBuilder().setCustomId('hi').setEmoji('foo').toJSON()).toThrowError();
+			expect(() => new PrimaryButtonBuilder().setCustomId('hi').setEmoji('foo').toJSON()).toThrow();
 
 			expect(() =>
 				new LinkButtonBuilder()
 					.setLabel('label')
 					.setURL(`https://google.com/${'a'.repeat(512)}`)
 					.toJSON(),
-			).toThrowError();
+			).toThrow();
 		});
 
 		test('GiVEN valid input THEN valid JSON outputs are given', () => {

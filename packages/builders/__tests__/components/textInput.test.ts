@@ -9,11 +9,11 @@ describe('Text Input Components', () => {
 		test('GIVEN valid fields THEN builder does not throw', () => {
 			expect(() => {
 				textInputComponent().setCustomId('foobar').setStyle(TextInputStyle.Paragraph).toJSON();
-			}).not.toThrowError();
+			}).not.toThrow();
 
 			expect(() => {
 				textInputComponent().setCustomId('foobar').setValue('').setStyle(TextInputStyle.Paragraph).toJSON();
-			}).not.toThrowError();
+			}).not.toThrow();
 
 			expect(() => {
 				textInputComponent()
@@ -24,16 +24,16 @@ describe('Text Input Components', () => {
 					.setRequired(true)
 					.setStyle(TextInputStyle.Paragraph)
 					.toJSON();
-			}).not.toThrowError();
+			}).not.toThrow();
 
 			expect(() => {
 				textInputComponent().setCustomId('Custom').setStyle(TextInputStyle.Short).toJSON();
-			}).not.toThrowError();
+			}).not.toThrow();
 		});
 	});
 
 	test('GIVEN invalid fields THEN builder throws', () => {
-		expect(() => textInputComponent().toJSON()).toThrowError();
+		expect(() => textInputComponent().toJSON()).toThrow();
 		expect(() => {
 			textInputComponent()
 				.setCustomId('a'.repeat(500))
@@ -41,7 +41,7 @@ describe('Text Input Components', () => {
 				.setPlaceholder('a'.repeat(500))
 				.setStyle(3 as TextInputStyle)
 				.toJSON();
-		}).toThrowError();
+		}).toThrow();
 	});
 
 	test('GIVEN valid input THEN valid JSON outputs are given', () => {

@@ -79,8 +79,8 @@ describe('State transitions', () => {
 	test('Starts in Idle state', () => {
 		player = createAudioPlayer();
 		expect(player.state.status).toEqual(AudioPlayerStatus.Idle);
-		expect(addAudioPlayer).toBeCalledTimes(0);
-		expect(deleteAudioPlayer).toBeCalledTimes(0);
+		expect(addAudioPlayer).toHaveBeenCalledTimes(0);
+		expect(deleteAudioPlayer).toHaveBeenCalledTimes(0);
 	});
 
 	test('Playing resource with pausing and resuming', async () => {
@@ -94,11 +94,11 @@ describe('State transitions', () => {
 		expect(player.state.status).toEqual(AudioPlayerStatus.Idle);
 		expect(player.unpause()).toEqual(false);
 		expect(player.state.status).toEqual(AudioPlayerStatus.Idle);
-		expect(addAudioPlayer).toBeCalledTimes(0);
+		expect(addAudioPlayer).toHaveBeenCalledTimes(0);
 
 		player.play(resource);
 		expect(player.state.status).toEqual(AudioPlayerStatus.Playing);
-		expect(addAudioPlayer).toBeCalledTimes(1);
+		expect(addAudioPlayer).toHaveBeenCalledTimes(1);
 
 		// Expect pause() to return true and transition to paused state
 		expect(player.pause()).toEqual(true);
@@ -117,7 +117,7 @@ describe('State transitions', () => {
 		expect(player.state.status).toEqual(AudioPlayerStatus.Playing);
 
 		// The audio player should not have been deleted throughout these changes
-		expect(deleteAudioPlayer).toBeCalledTimes(0);
+		expect(deleteAudioPlayer).toHaveBeenCalledTimes(0);
 	});
 
 	test('Playing to Stopping', async () => {
@@ -130,13 +130,13 @@ describe('State transitions', () => {
 
 		player.play(resource);
 		expect(player.state.status).toEqual(AudioPlayerStatus.Playing);
-		expect(addAudioPlayer).toBeCalledTimes(1);
-		expect(deleteAudioPlayer).toBeCalledTimes(0);
+		expect(addAudioPlayer).toHaveBeenCalledTimes(1);
+		expect(deleteAudioPlayer).toHaveBeenCalledTimes(0);
 
 		expect(player.stop()).toEqual(true);
 		expect(player.state.status).toEqual(AudioPlayerStatus.Playing);
-		expect(addAudioPlayer).toBeCalledTimes(1);
-		expect(deleteAudioPlayer).toBeCalledTimes(0);
+		expect(addAudioPlayer).toHaveBeenCalledTimes(1);
+		expect(deleteAudioPlayer).toHaveBeenCalledTimes(0);
 		expect(resource.silenceRemaining).toEqual(5);
 	});
 
@@ -202,11 +202,11 @@ describe('State transitions', () => {
 			});
 
 			player.play(resource);
-			expect(addAudioPlayer).toBeCalledTimes(1);
+			expect(addAudioPlayer).toHaveBeenCalledTimes(1);
 			expect(player.checkPlayable()).toEqual(true);
 			player['_stepPrepare']();
 			expect(player.state.status).toEqual(AudioPlayerStatus.Idle);
-			expect(deleteAudioPlayer).toBeCalledTimes(1);
+			expect(deleteAudioPlayer).toHaveBeenCalledTimes(1);
 		});
 	});
 
@@ -231,7 +231,7 @@ describe('State transitions', () => {
 
 		player.play(resource);
 		expect(player.state.status).toEqual(AudioPlayerStatus.Playing);
-		expect(addAudioPlayer).toBeCalledTimes(1);
+		expect(addAudioPlayer).toHaveBeenCalledTimes(1);
 		expect(player.checkPlayable()).toEqual(true);
 
 		// Run through a few packet cycles
@@ -263,7 +263,7 @@ describe('State transitions', () => {
 
 		player.stop(true);
 		expect(player.state.status).toEqual(AudioPlayerStatus.Idle);
-		expect(connection.setSpeaking).toBeCalledTimes(1);
+		expect(connection.setSpeaking).toHaveBeenCalledTimes(1);
 		expect(connection.setSpeaking).toHaveBeenLastCalledWith(false);
 		expect(deleteAudioPlayer).toHaveBeenCalledTimes(1);
 	});
@@ -289,7 +289,7 @@ describe('State transitions', () => {
 
 		player.play(resource);
 		expect(player.state.status).toEqual(AudioPlayerStatus.Playing);
-		expect(addAudioPlayer).toBeCalledTimes(1);
+		expect(addAudioPlayer).toHaveBeenCalledTimes(1);
 		expect(player.checkPlayable()).toEqual(true);
 
 		player.stop();
@@ -318,7 +318,7 @@ describe('State transitions', () => {
 		expect(prepareAudioPacket).toHaveBeenCalledTimes(5);
 
 		expect(player.state.status).toEqual(AudioPlayerStatus.Idle);
-		expect(connection.setSpeaking).toBeCalledTimes(1);
+		expect(connection.setSpeaking).toHaveBeenCalledTimes(1);
 		expect(connection.setSpeaking).toHaveBeenLastCalledWith(false);
 		expect(deleteAudioPlayer).toHaveBeenCalledTimes(1);
 	});
@@ -342,7 +342,7 @@ describe('State transitions', () => {
 
 		player.play(resource);
 		expect(player.state.status).toEqual(AudioPlayerStatus.Playing);
-		expect(addAudioPlayer).toBeCalledTimes(1);
+		expect(addAudioPlayer).toHaveBeenCalledTimes(1);
 		expect(player.checkPlayable()).toEqual(true);
 
 		const prepareAudioPacket = connection.prepareAudioPacket as unknown as MockedFunction<
@@ -363,7 +363,7 @@ describe('State transitions', () => {
 		}
 
 		expect(player.state.status).toEqual(AudioPlayerStatus.Idle);
-		expect(connection.setSpeaking).toBeCalledTimes(1);
+		expect(connection.setSpeaking).toHaveBeenCalledTimes(1);
 		expect(connection.setSpeaking).toHaveBeenLastCalledWith(false);
 		expect(deleteAudioPlayer).toHaveBeenCalledTimes(1);
 	});

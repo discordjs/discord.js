@@ -31,7 +31,7 @@ test('no token', async () => {
 		.reply(200, 'Well this is awkward...');
 
 	const promise = api.get('/simpleGet');
-	await expect(promise).rejects.toThrowError('Expected token to be set for this request, but none was present');
+	await expect(promise).rejects.toThrow('Expected token to be set for this request, but none was present');
 	await expect(promise).rejects.toBeInstanceOf(Error);
 });
 

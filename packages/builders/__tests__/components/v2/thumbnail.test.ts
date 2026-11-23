@@ -23,7 +23,7 @@ describe('Thumbnail', () => {
 			const thumbnail = new ThumbnailBuilder();
 
 			thumbnail.setURL(input);
-			expect(() => thumbnail.toJSON()).toThrowError();
+			expect(() => thumbnail.toJSON()).toThrow();
 		});
 	});
 
@@ -51,7 +51,7 @@ describe('Thumbnail', () => {
 			const thumbnail = new ThumbnailBuilder();
 
 			thumbnail.setDescription('a'.repeat(1_025));
-			expect(() => thumbnail.toJSON()).toThrowError();
+			expect(() => thumbnail.toJSON()).toThrow();
 		});
 	});
 

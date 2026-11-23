@@ -60,7 +60,7 @@ describe('Embed', () => {
 
 			embed.setTitle('a'.repeat(257));
 
-			expect(() => embed.toJSON()).toThrowError();
+			expect(() => embed.toJSON()).toThrow();
 		});
 	});
 
@@ -88,7 +88,7 @@ describe('Embed', () => {
 			const embed = new EmbedBuilder();
 
 			embed.setDescription('a'.repeat(4_097));
-			expect(() => embed.toJSON()).toThrowError();
+			expect(() => embed.toJSON()).toThrow();
 		});
 	});
 
@@ -124,7 +124,7 @@ describe('Embed', () => {
 			const embed = new EmbedBuilder();
 
 			embed.setURL(input);
-			expect(() => embed.toJSON()).toThrowError();
+			expect(() => embed.toJSON()).toThrow();
 		});
 	});
 
@@ -150,11 +150,11 @@ describe('Embed', () => {
 
 			// @ts-expect-error: Invalid color
 			embed.setColor('RED');
-			expect(() => embed.toJSON()).toThrowError();
+			expect(() => embed.toJSON()).toThrow();
 
 			// @ts-expect-error: Invalid color
 			embed.setColor([42, 36]);
-			expect(() => embed.toJSON()).toThrowError();
+			expect(() => embed.toJSON()).toThrow();
 		});
 	});
 
@@ -225,7 +225,7 @@ describe('Embed', () => {
 			const embed = new EmbedBuilder();
 
 			embed.setThumbnail('owo');
-			expect(() => embed.toJSON()).toThrowError();
+			expect(() => embed.toJSON()).toThrow();
 		});
 	});
 
@@ -259,7 +259,7 @@ describe('Embed', () => {
 			const embed = new EmbedBuilder();
 
 			embed.setImage('owo');
-			expect(() => embed.toJSON()).toThrowError();
+			expect(() => embed.toJSON()).toThrow();
 		});
 	});
 
@@ -300,7 +300,7 @@ describe('Embed', () => {
 			const embed = new EmbedBuilder();
 
 			embed.setAuthor({ name: 'a'.repeat(257) });
-			expect(() => embed.toJSON()).toThrowError();
+			expect(() => embed.toJSON()).toThrow();
 		});
 	});
 
@@ -339,7 +339,7 @@ describe('Embed', () => {
 			const embed = new EmbedBuilder();
 
 			embed.setFooter({ text: 'a'.repeat(2_049) });
-			expect(() => embed.toJSON()).toThrowError();
+			expect(() => embed.toJSON()).toThrow();
 		});
 	});
 
@@ -381,7 +381,7 @@ describe('Embed', () => {
 			embed.addFields(...Array.from({ length: 23 }, () => ({ name: 'foo', value: 'bar' })));
 
 			embed.spliceFields(0, 3, ...Array.from({ length: 5 }, () => ({ name: 'foo', value: 'bar' })));
-			expect(() => embed.toJSON()).not.toThrowError();
+			expect(() => embed.toJSON()).not.toThrow();
 		});
 
 		test('GIVEN an embed using Embed#spliceFields that adds additional fields resulting in fields > 25 THEN throws error', () => {
@@ -389,48 +389,48 @@ describe('Embed', () => {
 			embed.addFields(...Array.from({ length: 23 }, () => ({ name: 'foo', value: 'bar' })));
 
 			embed.spliceFields(0, 3, ...Array.from({ length: 8 }, () => ({ name: 'foo', value: 'bar' })));
-			expect(() => embed.toJSON()).toThrowError();
+			expect(() => embed.toJSON()).toThrow();
 		});
 
 		test('GIVEN an embed using Embed#setFields THEN returns valid toJSON data', () => {
 			const embed = new EmbedBuilder();
 
 			embed.setFields(...Array.from({ length: 25 }, () => ({ name: 'foo', value: 'bar' })));
-			expect(() => embed.toJSON()).not.toThrowError();
+			expect(() => embed.toJSON()).not.toThrow();
 
 			embed.setFields(Array.from({ length: 25 }, () => ({ name: 'foo', value: 'bar' })));
-			expect(() => embed.toJSON()).not.toThrowError();
+			expect(() => embed.toJSON()).not.toThrow();
 		});
 
 		test('GIVEN an embed using Embed#setFields that sets more than 25 fields THEN throws error', () => {
 			const embed = new EmbedBuilder();
 
 			embed.setFields(...Array.from({ length: 26 }, () => ({ name: 'foo', value: 'bar' })));
-			expect(() => embed.toJSON()).toThrowError();
+			expect(() => embed.toJSON()).toThrow();
 
 			embed.setFields(Array.from({ length: 26 }, () => ({ name: 'foo', value: 'bar' })));
-			expect(() => embed.toJSON()).toThrowError();
+			expect(() => embed.toJSON()).toThrow();
 		});
 
 		test('GIVEN invalid field amount THEN throws error', () => {
 			const embed = new EmbedBuilder();
 
 			embed.addFields(...Array.from({ length: 26 }, () => ({ name: 'foo', value: 'bar' })));
-			expect(() => embed.toJSON()).toThrowError();
+			expect(() => embed.toJSON()).toThrow();
 		});
 
 		test('GIVEN invalid field name length THEN throws error', () => {
 			const embed = new EmbedBuilder();
 
 			embed.addFields({ name: 'a'.repeat(257), value: 'bar' });
-			expect(() => embed.toJSON()).toThrowError();
+			expect(() => embed.toJSON()).toThrow();
 		});
 
 		test('GIVEN invalid field value length THEN throws error', () => {
 			const embed = new EmbedBuilder();
 
 			embed.addFields({ name: '', value: 'a'.repeat(1_025) });
-			expect(() => embed.toJSON()).toThrowError();
+			expect(() => embed.toJSON()).toThrow();
 		});
 	});
 });

@@ -25,7 +25,7 @@ describe('File', () => {
 			const file = new FileBuilder();
 			file.setURL('https://google.com');
 
-			expect(() => file.toJSON()).toThrowError();
+			expect(() => file.toJSON()).toThrow();
 		});
 	});
 

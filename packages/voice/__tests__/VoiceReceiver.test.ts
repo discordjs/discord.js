@@ -3,7 +3,7 @@ import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import process from 'node:process';
 import { VoiceOpcodes } from 'discord-api-types/voice/v8';
-import { describe, test, expect, vitest, beforeEach } from 'vitest';
+import { describe, test, expect, vitest, beforeAll, beforeEach } from 'vitest';
 import {
 	RTP_PACKET_DESKTOP,
 	RTP_PACKET_CHROME,
@@ -12,6 +12,7 @@ import {
 	AES256GCM_SAMPLE,
 } from '../__mocks__/rtp';
 import { VoiceReceiver } from '../src/receive/VoiceReceiver';
+import { secretboxLoadPromise } from '../src/util/Secretbox';
 import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
 
 vitest.mock('../src/VoiceConnection', async (importOriginal) => {
@@ -33,6 +34,10 @@ async function nextTick() {
 describe('VoiceReceiver', () => {
 	let voiceConnection: VoiceConnection;
 	let receiver: VoiceReceiver;
+
+	beforeAll(async () => {
+		await secretboxLoadPromise;
+	});
 
 	beforeEach(() => {
 		voiceConnection = new VoiceConnection({} as any, {} as any);

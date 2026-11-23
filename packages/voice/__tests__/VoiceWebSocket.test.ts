@@ -43,7 +43,7 @@ describe.skip('VoiceWebSocket: packet parsing', () => {
 
 		let rcv = once(ws, 'packet');
 		server.send('asdf');
-		await expect(rcv).rejects.toThrowError();
+		await expect(rcv).rejects.toThrow();
 
 		const dummy = { op: 1_234 };
 		rcv = once(ws, 'packet');
@@ -107,7 +107,7 @@ describe.skip('VoiceWebSocket: heartbeating', () => {
 		}
 
 		ws.setHeartbeatInterval(-1);
-		await expect(rcv).rejects.toThrowError();
+		await expect(rcv).rejects.toThrow();
 	});
 
 	test('Closes when no ack is received', async () => {

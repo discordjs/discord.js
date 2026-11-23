@@ -64,12 +64,12 @@ const containerWithSeparatorDataNoColor: APIContainerComponent = {
 describe('Container Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid components THEN do not throw', () => {
-			expect(() => new ContainerBuilder().addSeparatorComponents(new SeparatorBuilder()).toJSON()).not.toThrowError();
-			expect(() => new ContainerBuilder().spliceComponents(0, 0, new SeparatorBuilder()).toJSON()).not.toThrowError();
-			expect(() => new ContainerBuilder().addSeparatorComponents([new SeparatorBuilder()]).toJSON()).not.toThrowError();
+			expect(() => new ContainerBuilder().addSeparatorComponents(new SeparatorBuilder()).toJSON()).not.toThrow();
+			expect(() => new ContainerBuilder().spliceComponents(0, 0, new SeparatorBuilder()).toJSON()).not.toThrow();
+			expect(() => new ContainerBuilder().addSeparatorComponents([new SeparatorBuilder()]).toJSON()).not.toThrow();
 			expect(() =>
 				new ContainerBuilder().spliceComponents(0, 0, [{ type: ComponentType.Separator }]).toJSON(),
-			).not.toThrowError();
+			).not.toThrow();
 		});
 
 		test('GIVEN valid JSON input THEN valid JSON output is given', () => {
@@ -100,7 +100,7 @@ describe('Container Components', () => {
 			};
 
 			expect(new ContainerBuilder(containerData).toJSON()).toEqual(containerData);
-			expect(() => createComponentBuilder({ type: ComponentType.Container, components: [] })).not.toThrowError();
+			expect(() => createComponentBuilder({ type: ComponentType.Container, components: [] })).not.toThrow();
 		});
 
 		test('GIVEN valid builder options THEN valid JSON output is given', () => {
@@ -130,7 +130,7 @@ describe('Container Components', () => {
 
 			expect(new ContainerBuilder(containerWithTextDisplay).toJSON()).toEqual(containerWithTextDisplay);
 			expect(new ContainerBuilder(containerWithSeparatorData).toJSON()).toEqual(containerWithSeparatorData);
-			expect(() => createComponentBuilder({ type: ComponentType.Container, components: [] })).not.toThrowError();
+			expect(() => createComponentBuilder({ type: ComponentType.Container, components: [] })).not.toThrow();
 		});
 
 		test('GIVEN valid builder options THEN valid JSON output is given 2', () => {
