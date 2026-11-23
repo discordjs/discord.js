@@ -13,6 +13,7 @@ export const emojiPredicate = z
 	});
 
 const buttonPredicateBase = z.strictObject({
+	id: idPredicate,
 	type: z.literal(ComponentType.Button),
 	disabled: z.boolean().optional(),
 });
