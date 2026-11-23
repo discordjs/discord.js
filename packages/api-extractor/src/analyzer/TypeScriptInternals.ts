@@ -25,7 +25,8 @@ export class TypeScriptInternals {
 		declaration: ts.Declaration | ts.SourceFile,
 		checker: tsAPI.Checker,
 	): tsAPI.Symbol | undefined {
-		let symbol: tsAPI.Symbol | undefined = checker.getSymbolAtLocation(declaration);
+		let symbol: tsAPI.Symbol | undefined =
+			checker.getSymbolAtLocation(declaration) ?? tsAPI.getSymbol(declaration as unknown as ts.Declaration);
 		if (symbol?.escapedName === ts.InternalSymbolName.Computed && !ts.isSourceFile(declaration)) {
 			const name: ts.DeclarationName | undefined = ts.getNameOfDeclaration(declaration);
 			symbol = (name && checker.getSymbolAtLocation(name)) || symbol;

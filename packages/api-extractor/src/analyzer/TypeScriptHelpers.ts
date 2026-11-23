@@ -277,21 +277,27 @@ export class TypeScriptHelpers {
 	public static tryGetLateBoundName(declarationName: ts.ComputedPropertyName): string | undefined {
 		// Create a node printer that ignores comments and indentation that we can use to convert
 		// declarationName to a string.
-		// const printer: ts.Printer = ts.createPrinter(
+		const api = new tsAPI.API();
+		const printer: tsAPI.Printer = api.printer; // (
 		// 	{ removeComments: true },
 		// 	{
 		// 		onEmitNode(hint: ts.EmitHint, node: ts.Node, emitCallback: (hint: ts.EmitHint, node: ts.Node) => void): void {
-		// 			ts.setEmitFlags(declarationName, ts.EmitFlags.NoIndentation | ts.EmitFlags.SingleLine);
+		// ts.setEmitFlags(declarationName, ts.EmitFlags.NoIndentation | ts.EmitFlags.SingleLine);
 		// 			emitCallback(hint, node);
 		// 		},
 		// 	},
 		// );
 		// const sourceFile: ts.SourceFile = declarationName.getSourceFile();
-		// const text: string = printer.printNode(ts.EmitHint.Unspecified, declarationName, sourceFile);
-		// // clean up any emit flags we've set on any nodes in the tree.
+		const text: string = printer.printNode(declarationName, {
+			preserveSourceNewlines: false,
+			terminateUnterminatedLiterals: false,
+			neverAsciiEscape: true,
+		}); //ts.EmitHint.Unspecified, sourceFile);
+		// clean up any emit flags we've set on any nodes in the tree.
 		// ts.disposeEmitNodes(sourceFile);
-		// return text;
+		api.close();
+		return text;
 
-		return declarationName.getText();
+		// return declarationName.getText();
 	}
 }
