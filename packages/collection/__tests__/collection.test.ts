@@ -1197,3 +1197,30 @@ describe('subclassing tests', () => {
 		});
 	});
 });
+
+describe('explicit undefined reduction accumulator', () => {
+	test.each(['reduce', 'reduceRight'] as const)(
+		'%s returns undefined for an empty collection with an explicit initial value',
+		(method) => {
+			const collection = new Collection<string, number>();
+			expect(collection[method]<undefined>(() => undefined, undefined)).toBeUndefined();
+		},
+	);
+	test.each(['reduce', 'reduceRight'] as const)(
+		'%s visits every entry when the initial value is undefined',
+		(method) => {
+			const collection = new Collection([
+				['a', 1],
+				['b', 2],
+			]);
+			const visited: number[] = [];
+			const result = collection[method]<undefined>((accumulator, value) => {
+				expect(accumulator).toBeUndefined();
+				visited.push(value);
+				return undefined;
+			}, undefined);
+			expect(result).toBeUndefined();
+			expect(visited).toEqual(method === 'reduce' ? [1, 2] : [2, 1]);
+		},
+	);
+});
