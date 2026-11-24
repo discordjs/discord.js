@@ -3539,16 +3539,16 @@ export class Sweepers {
 
   public static archivedThreadSweepFilter(
     lifetime?: number,
-  ): GlobalSweepFilter<SweeperDefinitions['threads'][0], SweeperDefinitions['threads'][1]>;
+  ): SynchronousGlobalSweepFilter<SweeperDefinitions['threads'][0], SweeperDefinitions['threads'][1]>;
   public static expiredInviteSweepFilter(
     lifetime?: number,
-  ): GlobalSweepFilter<SweeperDefinitions['invites'][0], SweeperDefinitions['invites'][1]>;
+  ): SynchronousGlobalSweepFilter<SweeperDefinitions['invites'][0], SweeperDefinitions['invites'][1]>;
   public static filterByLifetime<Key, Value>(
     options?: LifetimeFilterOptions<Key, Value>,
-  ): GlobalSweepFilter<Key, Value>;
+  ): SynchronousGlobalSweepFilter<Key, Value>;
   public static outdatedMessageSweepFilter(
     lifetime?: number,
-  ): GlobalSweepFilter<SweeperDefinitions['messages'][0], SweeperDefinitions['messages'][1]>;
+  ): SynchronousGlobalSweepFilter<SweeperDefinitions['messages'][0], SweeperDefinitions['messages'][1]>;
 }
 
 export type SystemChannelFlagsString = keyof typeof GuildSystemChannelFlags;
@@ -6159,9 +6159,11 @@ export interface AttachmentPayload {
   waveform?: string;
 }
 
-export type GlobalSweepFilter<Key, Value> = () =>
+export type SynchronousGlobalSweepFilter<Key, Value> = () =>
   | ((value: Value, key: Key, collection: Collection<Key, Value>) => boolean)
   | null;
+
+export type GlobalSweepFilter<Key, Value> = () => Awaitable<ReturnType<SynchronousGlobalSweepFilter<Key, Value>>>;
 
 export interface GuildAuditLogsTypes {
   [AuditLogEvent.GuildUpdate]: ['Guild', 'Update'];
