@@ -23,7 +23,7 @@ describe('MediaGalleryItem', () => {
 				const item = new MediaGalleryItemBuilder();
 
 				item.setURL(input);
-				expect(() => item.toJSON()).toThrowError();
+				expect(() => item.toJSON()).toThrow();
 			},
 		);
 	});
@@ -52,7 +52,7 @@ describe('MediaGalleryItem', () => {
 			const item = new MediaGalleryItemBuilder();
 
 			item.setDescription('a'.repeat(1_025));
-			expect(() => item.toJSON()).toThrowError();
+			expect(() => item.toJSON()).toThrow();
 		});
 	});
 

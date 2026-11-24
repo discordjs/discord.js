@@ -37,7 +37,7 @@ describe('Poll', () => {
 		});
 
 		test('GIVEN a poll with invalid question THEN throws error', () => {
-			expect(() => new PollQuestionBuilder().setText('.'.repeat(301)).toJSON()).toThrowError();
+			expect(() => new PollQuestionBuilder().setText('.'.repeat(301)).toJSON()).toThrow();
 		});
 	});
 
@@ -59,7 +59,7 @@ describe('Poll', () => {
 		test('GIVEN a poll with invalid duration THEN throws error', () => {
 			const poll = new PollBuilder(dummyDataWithAnswer);
 
-			expect(() => poll.setDuration(999).toJSON()).toThrowError();
+			expect(() => poll.setDuration(999).toJSON()).toThrow();
 		});
 	});
 
@@ -82,7 +82,7 @@ describe('Poll', () => {
 			const poll = new PollBuilder(dummyDataWithAnswer);
 
 			// @ts-expect-error Invalid layout type
-			expect(() => poll.setLayoutType(-1).toJSON()).toThrowError();
+			expect(() => poll.setLayoutType(-1).toJSON()).toThrow();
 		});
 	});
 
@@ -105,7 +105,7 @@ describe('Poll', () => {
 			const poll = new PollBuilder(dummyDataWithAnswer);
 
 			// @ts-expect-error Invalid multi-select value
-			expect(() => poll.setMultiSelect('string').toJSON()).toThrowError();
+			expect(() => poll.setMultiSelect('string').toJSON()).toThrow();
 		});
 	});
 
@@ -113,7 +113,7 @@ describe('Poll', () => {
 		test('GIVEN a poll without answers THEN throws error', () => {
 			const poll = new PollBuilder(dummyData);
 
-			expect(() => poll.toJSON()).toThrowError();
+			expect(() => poll.toJSON()).toThrow();
 		});
 
 		test('GIVEN a poll with pre-defined answer THEN returns valid toJSON data', () => {
@@ -157,7 +157,7 @@ describe('Poll', () => {
 
 			expect(() =>
 				poll.spliceAnswers(0, 3, ...Array.from({ length: 2 }, () => ({ poll_media: { text: 'foo' } }))).toJSON(),
-			).not.toThrowError();
+			).not.toThrow();
 		});
 
 		test('GIVEN a poll using PollBuilder#spliceAnswers that adds additional answers resulting in answers > 10 THEN throws error', () => {
@@ -167,7 +167,7 @@ describe('Poll', () => {
 
 			expect(() =>
 				poll.spliceAnswers(0, 3, ...Array.from({ length: 8 }, () => ({ poll_media: { text: 'foo' } }))).toJSON(),
-			).toThrowError();
+			).toThrow();
 		});
 
 		test('GIVEN a poll using PollBuilder#setAnswers THEN returns valid toJSON data', () => {
@@ -175,10 +175,10 @@ describe('Poll', () => {
 
 			expect(() =>
 				poll.setAnswers(...Array.from({ length: 10 }, () => ({ poll_media: { text: 'foo' } }))).toJSON(),
-			).not.toThrowError();
+			).not.toThrow();
 			expect(() =>
 				poll.setAnswers(Array.from({ length: 10 }, () => ({ poll_media: { text: 'foo' } }))).toJSON(),
-			).not.toThrowError();
+			).not.toThrow();
 		});
 
 		test('GIVEN a poll using PollBuilder#setAnswers that sets more than 10 answers THEN throws error', () => {
@@ -186,10 +186,10 @@ describe('Poll', () => {
 
 			expect(() =>
 				poll.setAnswers(...Array.from({ length: 11 }, () => ({ poll_media: { text: 'foo' } }))).toJSON(),
-			).toThrowError();
+			).toThrow();
 			expect(() =>
 				poll.setAnswers(Array.from({ length: 11 }, () => ({ poll_media: { text: 'foo' } }))).toJSON(),
-			).toThrowError();
+			).toThrow();
 		});
 
 		describe('GIVEN invalid answer amount THEN throws error', () => {
@@ -198,7 +198,7 @@ describe('Poll', () => {
 
 				expect(() =>
 					poll.addAnswers(...Array.from({ length: 11 }, () => ({ poll_media: { text: 'foo' } }))).toJSON(),
-				).toThrowError();
+				).toThrow();
 			});
 		});
 
@@ -207,26 +207,26 @@ describe('Poll', () => {
 				const poll = new PollBuilder().setQuestion({ text: '.' });
 
 				// @ts-expect-error Invalid answer
-				expect(() => poll.addAnswers({}).toJSON()).toThrowError();
+				expect(() => poll.addAnswers({}).toJSON()).toThrow();
 			});
 		});
 
 		describe('GIVEN invalid answer text length THEN throws error', () => {
 			test('3', () => {
-				expect(() => new PollAnswerMediaBuilder().setText('.'.repeat(56)).toJSON()).toThrowError();
+				expect(() => new PollAnswerMediaBuilder().setText('.'.repeat(56)).toJSON()).toThrow();
 			});
 		});
 
 		describe('GIVEN invalid answer text THEN throws error', () => {
 			test('4', () => {
-				expect(() => new PollAnswerMediaBuilder().setText('').toJSON()).toThrowError();
+				expect(() => new PollAnswerMediaBuilder().setText('').toJSON()).toThrow();
 			});
 		});
 
 		describe('GIVEN invalid answer emoji THEN throws error', () => {
 			test('5', () => {
 				// @ts-expect-error Invalid emoji
-				expect(() => new PollAnswerMediaBuilder().setEmoji('').toJSON()).toThrowError();
+				expect(() => new PollAnswerMediaBuilder().setEmoji('').toJSON()).toThrow();
 			});
 		});
 	});

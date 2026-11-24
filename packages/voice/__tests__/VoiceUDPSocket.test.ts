@@ -100,7 +100,7 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 		socket = new VoiceUDPSocket({ ip: '1.2.3.4', port: 25_565 });
 
 		expect(createSocket).toHaveBeenCalledWith('udp4');
-		await expect(socket.performIPDiscovery(1_234)).rejects.toThrowError();
+		await expect(socket.performIPDiscovery(1_234)).rejects.toThrow();
 	});
 
 	test('Stays alive when messages are echoed back', async () => {

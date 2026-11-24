@@ -389,7 +389,7 @@ describe('Message formatters', () => {
 					// @ts-expect-error - Invalid input
 					'1234567890',
 				),
-			).toThrowError();
+			).toThrow();
 		});
 	});
 

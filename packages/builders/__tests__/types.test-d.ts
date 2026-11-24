@@ -1,5 +1,5 @@
 import type { ApplicationCommandOptionAllowedChannelType } from 'discord-api-types/v10';
-import { expectTypeOf } from 'vitest';
+import { expectTypeOf, test } from 'vitest';
 import {
 	type ApplicationCommandOptionAllowedChannelTypes,
 	ChatInputCommandBuilder,
@@ -20,9 +20,11 @@ type BuilderPropsOnly<Type = ChatInputCommandBuilder> = Pick<
 	}
 >;
 
-expectTypeOf(getBuilder().addStringOptions(getStringOption())).toMatchTypeOf<BuilderPropsOnly>();
+test('ChatInputCommandBuilder option adders return the builder', () => {
+	expectTypeOf(getBuilder().addStringOptions(getStringOption())).toExtend<BuilderPropsOnly>();
 
-expectTypeOf(getBuilder().addSubcommands(getSubcommand())).toMatchTypeOf<BuilderPropsOnly>();
+	expectTypeOf(getBuilder().addSubcommands(getSubcommand())).toExtend<BuilderPropsOnly>();
+});
 
 export type CheckExhaustiveAllowedChannelTypes = AssertNever<
 	Exclude<ApplicationCommandOptionAllowedChannelType, (typeof ApplicationCommandOptionAllowedChannelTypes)[number]>

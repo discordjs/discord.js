@@ -102,11 +102,11 @@ test('Significant Invalid Requests', async () => {
 		api.get('/badRequest'),
 		api.get('/badRequest'),
 	];
-	await expect(a).rejects.toThrowError('Missing Permissions');
-	await expect(b).rejects.toThrowError('Missing Permissions');
-	await expect(c).rejects.toThrowError('Missing Permissions');
-	await expect(d).rejects.toThrowError('Missing Permissions');
-	await expect(e).rejects.toThrowError('Missing Permissions');
+	await expect(a).rejects.toThrow('Missing Permissions');
+	await expect(b).rejects.toThrow('Missing Permissions');
+	await expect(c).rejects.toThrow('Missing Permissions');
+	await expect(d).rejects.toThrow('Missing Permissions');
+	await expect(e).rejects.toThrow('Missing Permissions');
 	expect(invalidListener).toHaveBeenCalledTimes(0);
 	api.options.invalidRequestWarningInterval = 2;
 
@@ -117,11 +117,11 @@ test('Significant Invalid Requests', async () => {
 		api.get('/badRequest'),
 		api.get('/badRequest'),
 	];
-	await expect(f).rejects.toThrowError('Missing Permissions');
-	await expect(g).rejects.toThrowError('Missing Permissions');
-	await expect(h).rejects.toThrowError('Missing Permissions');
-	await expect(i).rejects.toThrowError('Missing Permissions');
-	await expect(j).rejects.toThrowError('Missing Permissions');
+	await expect(f).rejects.toThrow('Missing Permissions');
+	await expect(g).rejects.toThrow('Missing Permissions');
+	await expect(h).rejects.toThrow('Missing Permissions');
+	await expect(i).rejects.toThrow('Missing Permissions');
+	await expect(j).rejects.toThrow('Missing Permissions');
 	expect(invalidListener).toHaveBeenCalledTimes(3);
 	api.off(RESTEvents.InvalidRequestWarning, invalidListener);
 });
@@ -323,9 +323,9 @@ test('Handle sublimits', async () => {
 		rateLimitErrorApi.patch('/channels/:id', sublimit),
 	];
 	await expect(aP2).resolves;
-	await expect(bP2).rejects.toThrowError();
+	await expect(bP2).rejects.toThrow();
 	await expect(bP2).rejects.toBeInstanceOf(RateLimitError);
-	await expect(cP2).rejects.toThrowError();
+	await expect(cP2).rejects.toThrow();
 	await expect(cP2).rejects.toBeInstanceOf(RateLimitError);
 });
 
@@ -614,7 +614,7 @@ test('perm server outage', async () => {
 		.times(4);
 
 	const promise = api.get('/outage');
-	await expect(promise).rejects.toThrowError();
+	await expect(promise).rejects.toThrow();
 	await expect(promise).rejects.toBeInstanceOf(HTTPError);
 });
 
@@ -634,7 +634,7 @@ test('server responding too slow', async () => {
 
 	const promise = api2.get('/slow');
 
-	await expect(promise).rejects.toThrowError('aborted');
+	await expect(promise).rejects.toThrow('aborted');
 }, 1_000);
 
 test('Unauthorized', async () => {
@@ -650,13 +650,13 @@ test('Unauthorized', async () => {
 
 	// Ensure authless requests don't reset the token
 	const promiseWithoutTokenClear = invalidAuthApi.get('/unauthorized', { auth: false });
-	await expect(promiseWithoutTokenClear).rejects.toThrowError('401: Unauthorized');
+	await expect(promiseWithoutTokenClear).rejects.toThrow('401: Unauthorized');
 	await expect(promiseWithoutTokenClear).rejects.toBeInstanceOf(DiscordAPIError);
 	expect(setTokenSpy).not.toHaveBeenCalled();
 
 	// Ensure authed requests do reset the token
 	const promise = invalidAuthApi.get('/unauthorized');
-	await expect(promise).rejects.toThrowError('401: Unauthorized');
+	await expect(promise).rejects.toThrow('401: Unauthorized');
 	await expect(promise).rejects.toBeInstanceOf(DiscordAPIError);
 	expect(setTokenSpy).toHaveBeenCalledTimes(1);
 });
@@ -670,7 +670,7 @@ test('Bad Request', async () => {
 		.reply(403, { message: 'Missing Permissions', code: 50_013 }, responseOptions);
 
 	const promise = api.get('/badRequest');
-	await expect(promise).rejects.toThrowError('Missing Permissions');
+	await expect(promise).rejects.toThrow('Missing Permissions');
 	await expect(promise).rejects.toBeInstanceOf(DiscordAPIError);
 });
 

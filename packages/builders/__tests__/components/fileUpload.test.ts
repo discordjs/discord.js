@@ -10,11 +10,11 @@ describe('File Upload Components', () => {
 		test('GIVEN valid fields THEN builder does not throw', () => {
 			expect(() => {
 				fileUploadComponent().setCustomId('foobar').toJSON();
-			}).not.toThrowError();
+			}).not.toThrow();
 
 			expect(() => {
 				fileUploadComponent().setCustomId('foobar').setMinValues(2).setMaxValues(9).toJSON();
-			}).not.toThrowError();
+			}).not.toThrow();
 
 			expect(() => {
 				fileUploadComponent().setCustomId('foobar').setFileTypes('audio', 'image', 'video', '.pdf').toJSON();
@@ -29,21 +29,21 @@ describe('File Upload Components', () => {
 	});
 
 	test('GIVEN invalid fields THEN builder throws', () => {
-		expect(() => fileUploadComponent().toJSON()).toThrowError();
+		expect(() => fileUploadComponent().toJSON()).toThrow();
 
-		expect(() => fileUploadComponent().setCustomId('test').setId(4.4).toJSON()).toThrowError();
+		expect(() => fileUploadComponent().setCustomId('test').setId(4.4).toJSON()).toThrow();
 
 		expect(() => {
 			fileUploadComponent().setCustomId('a'.repeat(500)).toJSON();
-		}).toThrowError();
+		}).toThrow();
 
 		expect(() => {
 			fileUploadComponent().setCustomId('a').setMaxValues(55).toJSON();
-		}).toThrowError();
+		}).toThrow();
 
 		expect(() => {
 			fileUploadComponent().setCustomId('a').setMinValues(-1).toJSON();
-		}).toThrowError();
+		}).toThrow();
 
 		expect(() => {
 			fileUploadComponent()

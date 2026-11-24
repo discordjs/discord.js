@@ -16,5 +16,5 @@ test.skip('Does not throw error with a package installed', async () => {
 			Buffer.from(''),
 			Buffer.from(''),
 		),
-	).not.toThrowError();
+	).not.toThrow();
 });

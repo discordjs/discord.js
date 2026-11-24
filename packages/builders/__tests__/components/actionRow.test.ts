@@ -69,7 +69,7 @@ describe('Action Row Components', () => {
 			};
 
 			expect(new ActionRowBuilder(actionRowData).toJSON()).toEqual(actionRowData);
-			expect(() => createComponentBuilder({ type: ComponentType.ActionRow, components: [] })).not.toThrowError();
+			expect(() => createComponentBuilder({ type: ComponentType.ActionRow, components: [] })).not.toThrow();
 		});
 
 		test('GIVEN valid builder options THEN valid JSON output is given', () => {
@@ -109,7 +109,7 @@ describe('Action Row Components', () => {
 
 			expect(new ActionRowBuilder(rowWithButtonData).toJSON()).toEqual(rowWithButtonData);
 			expect(new ActionRowBuilder(rowWithSelectMenuData).toJSON()).toEqual(rowWithSelectMenuData);
-			expect(() => createComponentBuilder({ type: ComponentType.ActionRow, components: [] })).not.toThrowError();
+			expect(() => createComponentBuilder({ type: ComponentType.ActionRow, components: [] })).not.toThrow();
 		});
 
 		test('GIVEN valid builder options THEN valid JSON output is given 2', () => {
@@ -145,7 +145,7 @@ describe('Action Row Components', () => {
 					.addStringSelectMenuComponent(selectMenu)
 					.addStringSelectMenuComponent(selectMenu)
 					.toJSON(),
-			).toThrowError();
+			).toThrow();
 		});
 
 		test('GIVEN a button and a select menu THEN it throws', () => {
@@ -159,7 +159,7 @@ describe('Action Row Components', () => {
 
 			expect(() =>
 				new ActionRowBuilder().addStringSelectMenuComponent(selectMenu).addPrimaryButtonComponents(button).toJSON(),
-			).toThrowError();
+			).toThrow();
 		});
 	});
 });

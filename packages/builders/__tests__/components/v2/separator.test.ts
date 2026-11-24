@@ -36,7 +36,7 @@ describe('Separator', () => {
 	describe('Invalid id', () => {
 		test('GIVEN a separator with a set spacing and an invalid set id THEN throws error', () => {
 			const separator = new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large).setId(-1);
-			expect(() => separator.toJSON()).toThrowError();
+			expect(() => separator.toJSON()).toThrow();
 		});
 	});
 });

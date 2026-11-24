@@ -8,28 +8,28 @@ describe('Context Menu Commands', () => {
 	describe('ContextMenuCommandBuilder', () => {
 		describe('Builder tests', () => {
 			test('GIVEN empty builder THEN throw error when calling toJSON', () => {
-				expect(() => getBuilder().toJSON()).toThrowError();
+				expect(() => getBuilder().toJSON()).toThrow();
 			});
 
 			test('GIVEN invalid name THEN throw error', () => {
-				expect(() => getBuilder().setName(' ').toJSON()).toThrowError();
+				expect(() => getBuilder().setName(' ').toJSON()).toThrow();
 			});
 
 			test('GIVEN valid names THEN does not throw error', () => {
-				expect(() => getBuilder().setName('hi_there').toJSON()).not.toThrowError();
+				expect(() => getBuilder().setName('hi_there').toJSON()).not.toThrow();
 
-				expect(() => getBuilder().setName('A COMMAND').toJSON()).not.toThrowError();
+				expect(() => getBuilder().setName('A COMMAND').toJSON()).not.toThrow();
 
 				// Translation: a_command
-				expect(() => getBuilder().setName('o_comandă').toJSON()).not.toThrowError();
+				expect(() => getBuilder().setName('o_comandă').toJSON()).not.toThrow();
 
 				// Translation: thx (according to GTranslate)
-				expect(() => getBuilder().setName('どうも').toJSON()).not.toThrowError();
+				expect(() => getBuilder().setName('どうも').toJSON()).not.toThrow();
 
-				expect(() => getBuilder().setName('🎉').toJSON()).not.toThrowError();
-				expect(() => getBuilder().setName('🫆').toJSON()).not.toThrowError();
-				expect(() => getBuilder().setName('🎉 abc').toJSON()).not.toThrowError();
-				expect(() => getBuilder().setName('🫆 abc').toJSON()).not.toThrowError();
+				expect(() => getBuilder().setName('🎉').toJSON()).not.toThrow();
+				expect(() => getBuilder().setName('🫆').toJSON()).not.toThrow();
+				expect(() => getBuilder().setName('🎉 abc').toJSON()).not.toThrow();
+				expect(() => getBuilder().setName('🫆 abc').toJSON()).not.toThrow();
 			});
 		});
 
@@ -43,20 +43,20 @@ describe('Context Menu Commands', () => {
 			test('GIVEN valid name localizations THEN does not throw error', () => {
 				expect(() =>
 					getBuilder().setName('test').setNameLocalization(Locale.EnglishUS, 'foobar').toJSON(),
-				).not.toThrowError();
+				).not.toThrow();
 				expect(() =>
 					getBuilder()
 						.setName('test')
 						.setNameLocalizations({ [Locale.EnglishUS]: 'foobar' })
 						.toJSON(),
-				).not.toThrowError();
+				).not.toThrow();
 			});
 
 			test('GIVEN invalid name localizations THEN does throw error', () => {
 				// @ts-expect-error: Invalid localization
-				expect(() => getBuilder().setNameLocalization('en-U', 'foobar').toJSON()).toThrowError();
+				expect(() => getBuilder().setNameLocalization('en-U', 'foobar').toJSON()).toThrow();
 				// @ts-expect-error: Invalid localization
-				expect(() => getBuilder().setNameLocalizations({ 'en-U': 'foobar' }).toJSON()).toThrowError();
+				expect(() => getBuilder().setNameLocalizations({ 'en-U': 'foobar' }).toJSON()).toThrow();
 			});
 
 			test('GIVEN valid name localizations THEN valid data is stored', () => {
@@ -78,7 +78,7 @@ describe('Context Menu Commands', () => {
 
 		describe('permissions', () => {
 			test('GIVEN valid permission string THEN does not throw error', () => {
-				expect(() => getBuilder().setName('test').setDefaultMemberPermissions('1').toJSON()).not.toThrowError();
+				expect(() => getBuilder().setName('test').setDefaultMemberPermissions('1').toJSON()).not.toThrow();
 			});
 
 			test('GIVEN valid permission bitfield THEN does not throw error', () => {
@@ -87,13 +87,13 @@ describe('Context Menu Commands', () => {
 						.setName('test')
 						.setDefaultMemberPermissions(PermissionFlagsBits.AddReactions | PermissionFlagsBits.AttachFiles)
 						.toJSON(),
-				).not.toThrowError();
+				).not.toThrow();
 			});
 
 			test('GIVEN invalid inputs THEN does throw error', () => {
-				expect(() => getBuilder().setName('hi').setDefaultMemberPermissions('1.1').toJSON()).toThrowError();
+				expect(() => getBuilder().setName('hi').setDefaultMemberPermissions('1.1').toJSON()).toThrow();
 
-				expect(() => getBuilder().setName('hi').setDefaultMemberPermissions(1.1).toJSON()).toThrowError();
+				expect(() => getBuilder().setName('hi').setDefaultMemberPermissions(1.1).toJSON()).toThrow();
 			});
 		});
 
@@ -104,19 +104,19 @@ describe('Context Menu Commands', () => {
 						.setName('test')
 						.setContexts([InteractionContextType.Guild, InteractionContextType.BotDM])
 						.toJSON(),
-				).not.toThrowError();
+				).not.toThrow();
 
 				expect(() =>
 					getBuilder().setName('test').setContexts(InteractionContextType.Guild, InteractionContextType.BotDM).toJSON(),
-				).not.toThrowError();
+				).not.toThrow();
 			});
 
 			test('GIVEN a builder with invalid contexts THEN does throw an error', () => {
 				// @ts-expect-error: Invalid contexts
-				expect(() => getBuilder().setName('hi').setContexts(999).toJSON()).toThrowError();
+				expect(() => getBuilder().setName('hi').setContexts(999).toJSON()).toThrow();
 
 				// @ts-expect-error: Invalid contexts
-				expect(() => getBuilder().setName('hi').setContexts([999, 998]).toJSON()).toThrowError();
+				expect(() => getBuilder().setName('hi').setContexts([999, 998]).toJSON()).toThrow();
 			});
 		});
 
@@ -127,22 +127,22 @@ describe('Context Menu Commands', () => {
 						.setName('test')
 						.setIntegrationTypes([ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall])
 						.toJSON(),
-				).not.toThrowError();
+				).not.toThrow();
 
 				expect(() =>
 					getBuilder()
 						.setName('test')
 						.setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)
 						.toJSON(),
-				).not.toThrowError();
+				).not.toThrow();
 			});
 
 			test('GIVEN a builder with invalid integration types THEN does throw an error', () => {
 				// @ts-expect-error: Invalid integration types
-				expect(() => getBuilder().setName('hi').setIntegrationTypes(999).toJSON()).toThrowError();
+				expect(() => getBuilder().setName('hi').setIntegrationTypes(999).toJSON()).toThrow();
 
 				// @ts-expect-error: Invalid integration types
-				expect(() => getBuilder().setName('hi').setIntegrationTypes([999, 998]).toJSON()).toThrowError();
+				expect(() => getBuilder().setName('hi').setIntegrationTypes([999, 998]).toJSON()).toThrow();
 			});
 		});
 	});

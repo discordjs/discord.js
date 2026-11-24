@@ -90,7 +90,7 @@ test('Handle 404', async () => {
 		auth: false,
 		body: { type: 4, data: { content: 'Malicious' } },
 	});
-	await expect(promise).rejects.toThrowError('Unknown interaction');
+	await expect(promise).rejects.toThrow('Unknown interaction');
 	await expect(promise).rejects.toBeInstanceOf(DiscordAPIError);
 });
 
@@ -186,7 +186,7 @@ test('server responding too slow', async () => {
 		body: { type: 4, data: { content: 'Reply' } },
 	});
 
-	await expect(promise).rejects.toThrowError('aborted');
+	await expect(promise).rejects.toThrow('aborted');
 }, 1_000);
 
 test('Handle temp server outage', async () => {

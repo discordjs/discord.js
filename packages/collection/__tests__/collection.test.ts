@@ -21,7 +21,7 @@ function expectInvalidFunctionError(cb: () => unknown, val?: unknown): void {
 	expect(() => {
 		// eslint-disable-next-line promise/prefer-await-to-callbacks
 		cb();
-	}).toThrowError(new TypeError(`${val} is not a function`));
+	}).toThrow(new TypeError(`${val} is not a function`));
 }
 
 test('do basic map operations', () => {
@@ -758,7 +758,7 @@ describe('reduce() tests', () => {
 
 	test('reduce empty collection without initial value', () => {
 		const coll = createCollection();
-		expect(() => coll.reduce((a, x) => a + x)).toThrowError(
+		expect(() => coll.reduce((a, x) => a + x)).toThrow(
 			new TypeError('Reduce of empty collection with no initial value'),
 		);
 	});
@@ -796,7 +796,7 @@ describe('reduceRight() tests', () => {
 
 	test('reduce empty collection without initial value', () => {
 		const coll = createCollection();
-		expect(() => coll.reduceRight((a, x) => a + x)).toThrowError(
+		expect(() => coll.reduceRight((a, x) => a + x)).toThrow(
 			new TypeError('Reduce of empty collection with no initial value'),
 		);
 	});

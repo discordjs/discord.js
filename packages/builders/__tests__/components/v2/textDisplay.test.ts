@@ -16,7 +16,7 @@ describe('TextDisplay', () => {
 
 		test('GIVEN a text display with a set content with an invalid id THEN throws error', () => {
 			const textDisplay = new TextDisplayBuilder().setContent('foo').setId(5.5);
-			expect(() => textDisplay.toJSON()).toThrowError();
+			expect(() => textDisplay.toJSON()).toThrow();
 		});
 
 		test('GIVEN a text display with a pre-defined content THEN overwritten content THEN return valid toJSON data', () => {

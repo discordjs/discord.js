@@ -68,6 +68,6 @@ describe('createComponentBuilder', () => {
 
 	test('GIVEN an unknown component type THEN throws error', () => {
 		// @ts-expect-error: Unknown component type
-		expect(() => createComponentBuilder({ type: 'invalid' })).toThrowError();
+		expect(() => createComponentBuilder({ type: 'invalid' })).toThrow();
 	});
 });

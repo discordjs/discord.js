@@ -13,24 +13,20 @@ const textDisplay = () => new TextDisplayBuilder().setContent('text');
 
 describe('Modals', () => {
 	test('GIVEN valid fields THEN builder does not throw', () => {
-		expect(() =>
-			modal().setTitle('test').setCustomId('foobar').addLabelComponents(label()).toJSON(),
-		).not.toThrowError();
+		expect(() => modal().setTitle('test').setCustomId('foobar').addLabelComponents(label()).toJSON()).not.toThrow();
 
-		expect(() =>
-			modal().setTitle('test').setCustomId('foobar').addLabelComponents(label()).toJSON(),
-		).not.toThrowError();
+		expect(() => modal().setTitle('test').setCustomId('foobar').addLabelComponents(label()).toJSON()).not.toThrow();
 
 		expect(() =>
 			modal().setTitle('test').setCustomId('foobar').addTextDisplayComponents(textDisplay()).toJSON(),
-		).not.toThrowError();
+		).not.toThrow();
 	});
 
 	test('GIVEN invalid fields THEN builder does throw', () => {
-		expect(() => modal().setTitle('test').setCustomId('foobar').toJSON()).toThrowError();
+		expect(() => modal().setTitle('test').setCustomId('foobar').toJSON()).toThrow();
 
 		// @ts-expect-error: Custom id is invalid
-		expect(() => modal().setTitle('test').setCustomId(42).toJSON()).toThrowError();
+		expect(() => modal().setTitle('test').setCustomId(42).toJSON()).toThrow();
 	});
 
 	test('GIVEN valid input THEN valid JSON outputs are given', () => {
