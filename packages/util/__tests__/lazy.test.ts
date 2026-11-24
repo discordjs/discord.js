@@ -54,3 +54,18 @@ describe('lazy', () => {
 		expect(cachedValue).toBeNull();
 	});
 });
+
+test('retries initialization after a synchronous failure', () => {
+	const error = new Error('transient initialization failure');
+	const callback = vi
+		.fn<() => string>()
+		.mockImplementationOnce(() => {
+			throw error;
+		})
+		.mockReturnValue('ready');
+	const value = lazy(callback);
+	expect(value).toThrow(error);
+	expect(value()).toBe('ready');
+	expect(value()).toBe('ready');
+	expect(callback).toHaveBeenCalledTimes(2);
+});

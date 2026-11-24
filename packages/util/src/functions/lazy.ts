@@ -17,7 +17,12 @@ export function lazy<Value>(cb: () => Value): () => Value {
 	return () => {
 		if (called) return defaultValue;
 		called = true;
-		// eslint-disable-next-line promise/prefer-await-to-callbacks
-		return (defaultValue = cb());
+		try {
+			// eslint-disable-next-line promise/prefer-await-to-callbacks
+			return (defaultValue = cb());
+		} catch (error) {
+			called = false;
+			throw error;
+		}
 	};
 }
