@@ -25,7 +25,7 @@ export function EntryPointSelect({
 	return (
 		<Select
 			aria-label={isLoading ? 'Loading entrypoints...' : 'Select an entrypoint'}
-			defaultSelectedKey={parsedEntrypoints.join('/')}
+			defaultValue={parsedEntrypoints.join('/')}
 			key={parsedEntrypoints.join('/')}
 			placeholder={isLoading ? 'Loading entrypoints...' : 'Select an entrypoint'}
 		>
