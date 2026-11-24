@@ -1,3 +1,4 @@
+import { resolveInteractionChannel } from '../util/Util.js';
 import { Attachment } from './Attachment.js';
 import { BaseInteraction } from './BaseInteraction.js';
 import { InteractionWebhook } from './InteractionWebhook.js';
@@ -148,7 +149,7 @@ export class CommandInteraction extends BaseInteraction {
       if (member) result.member = this.guild?.members._add({ user, ...member }) ?? member;
 
       const channel = resolved.channels?.[option.value];
-      if (channel) result.channel = this.client.channels._add(channel, this.guild) ?? channel;
+      if (channel) result.channel = resolveInteractionChannel(this.client, this.guild, channel);
 
       const role = resolved.roles?.[option.value];
       if (role) result.role = this.guild?.roles._add(role) ?? role;
