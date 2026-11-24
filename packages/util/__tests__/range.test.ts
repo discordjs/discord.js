@@ -13,4 +13,16 @@ describe('range', () => {
 	test('GIVEN valid range with start, end and step THEN valid numbers are returned', () => {
 		expect([...range({ start: 0, end: 11, step: 2 })]).toEqual([0, 2, 4, 6, 8, 10]);
 	});
+
+	test('GIVEN a step of 0 THEN an error is thrown instead of looping forever', () => {
+		expect(() => range({ start: 0, end: 5, step: 0 })).toThrowError(RangeError);
+	});
+
+	test('GIVEN a negative step with start below end THEN an error is thrown instead of looping forever', () => {
+		expect(() => range({ start: 0, end: 5, step: -1 })).toThrowError(RangeError);
+	});
+
+	test('GIVEN a negative step with start at or above end THEN an empty range is returned', () => {
+		expect([...range({ start: 5, end: 0, step: -1 })]).toEqual([]);
+	});
 });
