@@ -62,14 +62,14 @@ export class Parameter {
 	 */
 	public defaultValue: string | undefined;
 
-	private readonly _parent: ApiParameterListMixin;
+	readonly #parent: ApiParameterListMixin;
 
 	public constructor(options: IParameterOptions) {
 		this.name = options.name;
 		this.parameterTypeExcerpt = options.parameterTypeExcerpt;
 		this.isOptional = options.isOptional;
 		this.isRest = options.isRest;
-		this._parent = options.parent;
+		this.#parent = options.parent;
 		this.defaultValue = options.defaultValue;
 	}
 
@@ -77,8 +77,8 @@ export class Parameter {
 	 * Returns the `@param` documentation for this parameter, if present.
 	 */
 	public get tsdocParamBlock(): tsdoc.DocParamBlock | undefined {
-		if (this._parent instanceof ApiDocumentedItem && this._parent.tsdocComment) {
-			return this._parent.tsdocComment.params.tryGetBlockByName(this.name);
+		if (this.#parent instanceof ApiDocumentedItem && this.#parent.tsdocComment) {
+			return this.#parent.tsdocComment.params.tryGetBlockByName(this.name);
 		}
 
 		return undefined;

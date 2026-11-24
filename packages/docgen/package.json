@@ -1,7 +1,7 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/docgen",
-	"version": "0.12.1",
+	"version": "0.13.0",
 	"private": true,
 	"description": "The docs.json generator for discord.js and its related projects",
 	"keywords": [
@@ -60,9 +60,7 @@
 	},
 	"dependencies": {
 		"commander": "^15.1.0",
-		"jsdoc-to-markdown": "^8.0.3",
-		"tslib": "^2.8.1",
-		"typedoc": "^0.25.13"
+		"jsdoc-to-markdown": "^8.0.3"
 	},
 	"devDependencies": {
 		"@types/jsdoc-to-markdown": "^7.0.6",
@@ -70,10 +68,8 @@
 		"eslint-config-neon": "^0.5.4",
 		"oxfmt": "^0.78.0",
 		"oxlint": "^1.93.0",
-		"terser": "^5.51.2",
 		"turbo": "^2.11.11",
-		"typescript": "npm:@typescript/typescript6@~6.0.2",
-		"typescript-native": "npm:typescript@~7.0.2"
+		"typescript": "~7.1.0-beta"
 	},
 	"engines": {
 		"node": ">=24.17.0"

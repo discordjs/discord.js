@@ -3,7 +3,7 @@
 // See LICENSE in the project root for license information.
 
 import { InternalError, Sort, Text } from '@rushstack/node-core-library';
-import * as ts from 'typescript';
+import * as ts from 'typescript/ast';
 import { IndentedWriter } from '../generators/IndentedWriter.js';
 
 interface IWriteModifiedTextOptions {
@@ -95,14 +95,14 @@ export class SpanModification {
 	 */
 	public indentDocComment: IndentDocCommentScope = IndentDocCommentScope.None;
 
-	private readonly _span: Span;
+	readonly #span: Span;
 
-	private _prefix: string | undefined;
+	#prefix: string | undefined;
 
-	private _suffix: string | undefined;
+	#suffix: string | undefined;
 
 	public constructor(span: Span) {
-		this._span = span;
+		this.#span = span;
 		this.reset();
 	}
 
@@ -110,22 +110,22 @@ export class SpanModification {
 	 * Allows the Span.prefix text to be changed.
 	 */
 	public get prefix(): string {
-		return this._prefix ?? this._span.prefix;
+		return this.#prefix ?? this.#span.prefix;
 	}
 
 	public set prefix(value: string) {
-		this._prefix = value;
+		this.#prefix = value;
 	}
 
 	/**
 	 * Allows the Span.suffix text to be changed.
 	 */
 	public get suffix(): string {
-		return this._suffix ?? this._span.suffix;
+		return this.#suffix ?? this.#span.suffix;
 	}
 
 	public set suffix(value: string) {
-		this._suffix = value;
+		this.#suffix = value;
 	}
 
 	/**
@@ -136,9 +136,9 @@ export class SpanModification {
 		this.omitSeparatorAfter = false;
 		this.sortChildren = false;
 		this.sortKey = undefined;
-		this._prefix = undefined;
-		this._suffix = undefined;
-		if (this._span.kind === ts.SyntaxKind.JSDocComment) {
+		this.#prefix = undefined;
+		this.#suffix = undefined;
+		if (this.#span.kind === ts.SyntaxKind.JSDoc) {
 			this.indentDocComment = IndentDocCommentScope.SpanAndChildren;
 		}
 	}
@@ -192,22 +192,22 @@ export class Span {
 
 	public readonly modification: SpanModification;
 
-	private readonly _parent: Span | undefined;
+	readonly #parent: Span | undefined;
 
-	private readonly _previousSibling: Span | undefined;
+	readonly #previousSibling: Span | undefined;
 
-	private readonly _nextSibling: Span | undefined;
+	readonly #nextSibling: Span | undefined;
 
-	private readonly _separatorStartIndex: number;
+	readonly #separatorStartIndex: number;
 
-	private readonly _separatorEndIndex: number;
+	readonly #separatorEndIndex: number;
 
 	public constructor(node: ts.Node) {
 		this.node = node;
 		this.startIndex = node.kind === ts.SyntaxKind.SourceFile ? node.getFullStart() : node.getStart();
 		this.endIndex = node.end;
-		this._separatorStartIndex = 0;
-		this._separatorEndIndex = 0;
+		this.#separatorStartIndex = 0;
+		this.#separatorEndIndex = 0;
 		this.children = [];
 		this.modification = new SpanModification(this);
 
@@ -216,13 +216,13 @@ export class Span {
 		for (const childNode of this.node.getChildren() || []) {
 			const childSpan: Span = new Span(childNode);
 			// @ts-expect-error assigning private readonly properties on creation only
-			childSpan._parent = this;
+			childSpan.#parent = this;
 			// @ts-expect-error assigning private readonly properties on creation only
-			childSpan._previousSibling = previousChildSpan;
+			childSpan.#previousSibling = previousChildSpan;
 
 			if (previousChildSpan) {
 				// @ts-expect-error assigning private readonly properties on creation only
-				previousChildSpan._nextSibling = childSpan;
+				previousChildSpan.#nextSibling = childSpan;
 			}
 
 			this.children.push(childSpan);
@@ -256,9 +256,9 @@ export class Span {
 				}
 
 				// @ts-expect-error assigning private readonly properties on creation only
-				separatorRecipient._separatorStartIndex = previousChildSpan.endIndex;
+				separatorRecipient.#separatorStartIndex = previousChildSpan.endIndex;
 				// @ts-expect-error assigning private readonly properties on creation only
-				separatorRecipient._separatorEndIndex = childSpan.startIndex;
+				separatorRecipient.#separatorEndIndex = childSpan.startIndex;
 			}
 
 			previousChildSpan = childSpan;
@@ -275,7 +275,7 @@ export class Span {
 	 * may have a parent in the AST.
 	 */
 	public get parent(): Span | undefined {
-		return this._parent;
+		return this.#parent;
 	}
 
 	/**
@@ -285,7 +285,7 @@ export class Span {
 	 * may have a previous sibling in the AST.
 	 */
 	public get previousSibling(): Span | undefined {
-		return this._previousSibling;
+		return this.#previousSibling;
 	}
 
 	/**
@@ -295,7 +295,7 @@ export class Span {
 	 * may have a previous sibling in the AST.
 	 */
 	public get nextSibling(): Span | undefined {
-		return this._nextSibling;
+		return this.#nextSibling;
 	}
 
 	/**
@@ -304,9 +304,9 @@ export class Span {
 	public get prefix(): string {
 		if (this.children.length) {
 			// Everything up to the first child
-			return this._getSubstring(this.startIndex, this.children[0]!.startIndex);
+			return this.#getSubstring(this.startIndex, this.children[0]!.startIndex);
 		} else {
-			return this._getSubstring(this.startIndex, this.endIndex);
+			return this.#getSubstring(this.startIndex, this.endIndex);
 		}
 	}
 
@@ -317,7 +317,7 @@ export class Span {
 	public get suffix(): string {
 		if (this.children.length) {
 			// Everything after the last child
-			return this._getSubstring(this.children[this.children.length - 1]!.endIndex, this.endIndex);
+			return this.#getSubstring(this.children[this.children.length - 1]!.endIndex, this.endIndex);
 		} else {
 			return '';
 		}
@@ -328,7 +328,7 @@ export class Span {
 	 * Here we mean "next" according to an inorder traversal, not necessarily a sibling.
 	 */
 	public get separator(): string {
-		return this._getSubstring(this._separatorStartIndex, this._separatorEndIndex);
+		return this.#getSubstring(this.#separatorStartIndex, this.#separatorEndIndex);
 	}
 
 	/**
@@ -401,7 +401,7 @@ export class Span {
 		const writer: IndentedWriter = new IndentedWriter();
 		writer.trimLeadingSpaces = true;
 
-		this._writeModifiedText({
+		this.#writeModifiedText({
 			writer,
 			separatorOverride: undefined,
 			indentDocCommentState: IndentDocCommentState.Inactive,
@@ -411,7 +411,7 @@ export class Span {
 	}
 
 	public writeModifiedText(output: IndentedWriter): void {
-		this._writeModifiedText({
+		this.#writeModifiedText({
 			writer: output,
 			separatorOverride: undefined,
 			indentDocCommentState: IndentDocCommentState.Inactive,
@@ -426,15 +426,15 @@ export class Span {
 		let result: string = indent + ts.SyntaxKind[this.node.kind] + ': ';
 
 		if (this.prefix) {
-			result += ' pre=[' + this._getTrimmed(this.prefix) + ']';
+			result += ' pre=[' + this.#getTrimmed(this.prefix) + ']';
 		}
 
 		if (this.suffix) {
-			result += ' suf=[' + this._getTrimmed(this.suffix) + ']';
+			result += ' suf=[' + this.#getTrimmed(this.suffix) + ']';
 		}
 
 		if (this.separator) {
-			result += ' sep=[' + this._getTrimmed(this.separator) + ']';
+			result += ' sep=[' + this.#getTrimmed(this.separator) + ']';
 		}
 
 		result += '\n';
@@ -453,15 +453,15 @@ export class Span {
 		let result: string = indent + ts.SyntaxKind[this.node.kind] + ': ';
 
 		if (this.prefix) {
-			result += ' pre=[' + this._getTrimmed(this.modification.prefix) + ']';
+			result += ' pre=[' + this.#getTrimmed(this.modification.prefix) + ']';
 		}
 
 		if (this.suffix) {
-			result += ' suf=[' + this._getTrimmed(this.modification.suffix) + ']';
+			result += ' suf=[' + this.#getTrimmed(this.modification.suffix) + ']';
 		}
 
 		if (this.separator) {
-			result += ' sep=[' + this._getTrimmed(this.separator) + ']';
+			result += ' sep=[' + this.#getTrimmed(this.separator) + ']';
 		}
 
 		if (this.modification.indentDocComment !== IndentDocCommentScope.None) {
@@ -500,7 +500,7 @@ export class Span {
 	/**
 	 * Recursive implementation of `getModifiedText()` and `writeModifiedText()`.
 	 */
-	private _writeModifiedText(options: IWriteModifiedTextOptions): void {
+	#writeModifiedText(options: IWriteModifiedTextOptions): void {
 		// Apply indentation based on "{" and "}"
 		if (this.prefix === '{') {
 			options.writer.increaseIndent();
@@ -509,13 +509,13 @@ export class Span {
 		}
 
 		if (this.modification.indentDocComment !== IndentDocCommentScope.None) {
-			this._beginIndentDocComment(options);
+			this.#beginIndentDocComment(options);
 		}
 
-		this._write(this.modification.prefix, options);
+		this.#write(this.modification.prefix, options);
 
 		if (this.modification.indentDocComment === IndentDocCommentScope.PrefixOnly) {
-			this._endIndentDocComment(options);
+			this.#endIndentDocComment(options);
 		}
 
 		let sortedSubset: Span[] | undefined;
@@ -564,7 +564,7 @@ export class Span {
 					}
 				}
 
-				current._writeModifiedText(childOptions);
+				current.#writeModifiedText(childOptions);
 			}
 		} else {
 			// This is the normal case that does not need to sort children
@@ -574,7 +574,7 @@ export class Span {
 				if (options.separatorOverride === undefined) {
 					// The normal simple case
 					for (const child of this.children) {
-						child._writeModifiedText(options);
+						child.#writeModifiedText(options);
 					}
 				} else {
 					// Special case where the separatorOverride is passed down to the "last inner separator" span
@@ -590,31 +590,31 @@ export class Span {
 						) {
 							const childOptions: IWriteModifiedTextOptions = { ...options };
 							childOptions.separatorOverride = undefined;
-							child._writeModifiedText(childOptions);
+							child.#writeModifiedText(childOptions);
 						} else {
-							child._writeModifiedText(options);
+							child.#writeModifiedText(options);
 						}
 					}
 				}
 			}
 
-			this._write(this.modification.suffix, options);
+			this.#write(this.modification.suffix, options);
 
 			if (options.separatorOverride !== undefined) {
 				if (this.separator || childrenLength === 0) {
-					this._write(options.separatorOverride, options);
+					this.#write(options.separatorOverride, options);
 				}
 			} else if (!this.modification.omitSeparatorAfter) {
-				this._write(this.separator, options);
+				this.#write(this.separator, options);
 			}
 		}
 
 		if (this.modification.indentDocComment === IndentDocCommentScope.SpanAndChildren) {
-			this._endIndentDocComment(options);
+			this.#endIndentDocComment(options);
 		}
 	}
 
-	private _beginIndentDocComment(options: IWriteModifiedTextOptions): void {
+	#beginIndentDocComment(options: IWriteModifiedTextOptions): void {
 		if (options.indentDocCommentState !== IndentDocCommentState.Inactive) {
 			throw new InternalError('indentDocComment cannot be nested');
 		}
@@ -622,7 +622,7 @@ export class Span {
 		options.indentDocCommentState = IndentDocCommentState.AwaitingOpenDelimiter;
 	}
 
-	private _endIndentDocComment(options: IWriteModifiedTextOptions): void {
+	#endIndentDocComment(options: IWriteModifiedTextOptions): void {
 		if (options.indentDocCommentState === IndentDocCommentState.AwaitingCloseDelimiter) {
 			throw new InternalError('missing "*/" delimiter for comment block');
 		}
@@ -633,7 +633,7 @@ export class Span {
 	/**
 	 * Writes one chunk of `text` to the `options.writer`, applying the `indentDocComment` rewriting.
 	 */
-	private _write(text: string, options: IWriteModifiedTextOptions): void {
+	#write(text: string, options: IWriteModifiedTextOptions): void {
 		let parsedText: string = text;
 
 		if (options.indentDocCommentState === IndentDocCommentState.AwaitingOpenDelimiter) {
@@ -663,11 +663,11 @@ export class Span {
 		options.writer.write(parsedText);
 	}
 
-	private _getTrimmed(text: string): string {
+	#getTrimmed(text: string): string {
 		return Text.truncateWithEllipsis(Text.convertToLf(text), 100);
 	}
 
-	private _getSubstring(startIndex: number, endIndex: number): string {
+	#getSubstring(startIndex: number, endIndex: number): string {
 		if (startIndex === endIndex) {
 			return '';
 		}

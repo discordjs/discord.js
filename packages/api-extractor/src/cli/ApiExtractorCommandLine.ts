@@ -10,7 +10,7 @@ import { InitAction } from './InitAction.js';
 import { RunAction } from './RunAction.js';
 
 export class ApiExtractorCommandLine extends CommandLineParser {
-	private readonly _debugParameter: CommandLineFlagParameter;
+	readonly #debugParameter: CommandLineFlagParameter;
 
 	public constructor() {
 		super({
@@ -22,9 +22,9 @@ export class ApiExtractorCommandLine extends CommandLineParser {
 				' published with your NPM package, and a doc model file (.api.json) to be used with a documentation' +
 				' tool such as api-documenter.  For details, please visit the web site.',
 		});
-		this._populateActions();
+		this.#populateActions();
 
-		this._debugParameter = this.defineFlagParameter({
+		this.#debugParameter = this.defineFlagParameter({
 			parameterLongName: '--debug',
 			parameterShortName: '-d',
 			description: 'Show the full call stack if an error occurs while executing the tool',
@@ -33,7 +33,7 @@ export class ApiExtractorCommandLine extends CommandLineParser {
 
 	protected override async onExecuteAsync(): Promise<void> {
 		// override
-		if (this._debugParameter.value) {
+		if (this.#debugParameter.value) {
 			InternalError.breakInDebugger = true;
 		}
 
@@ -43,7 +43,7 @@ export class ApiExtractorCommandLine extends CommandLineParser {
 			process.exitCode = 0;
 		} catch (error: any) {
 			if (!(error instanceof AlreadyReportedError)) {
-				if (this._debugParameter.value) {
+				if (this.#debugParameter.value) {
 					console.error(os.EOL + error.stack);
 				} else {
 					console.error(os.EOL + Colorize.red('ERROR: ' + error.message.trim()));
@@ -52,7 +52,7 @@ export class ApiExtractorCommandLine extends CommandLineParser {
 		}
 	}
 
-	private _populateActions(): void {
+	#populateActions(): void {
 		this.addAction(new InitAction(this));
 		this.addAction(new RunAction(this));
 	}

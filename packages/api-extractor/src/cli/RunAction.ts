@@ -22,19 +22,19 @@ import { ExtractorConfig, type IExtractorConfigPrepareOptions } from '../api/Ext
 import type { ApiExtractorCommandLine } from './ApiExtractorCommandLine.js';
 
 export class RunAction extends CommandLineAction {
-	private readonly _configFileParameter: CommandLineStringParameter;
+	readonly #configFileParameter: CommandLineStringParameter;
 
-	private readonly _localFlag: CommandLineFlagParameter;
+	readonly #localFlag: CommandLineFlagParameter;
 
-	private readonly _verboseFlag: CommandLineFlagParameter;
+	readonly #verboseFlag: CommandLineFlagParameter;
 
-	private readonly _diagnosticsParameter: CommandLineFlagParameter;
+	readonly #diagnosticsParameter: CommandLineFlagParameter;
 
-	private readonly _typescriptCompilerFolderParameter: CommandLineStringParameter;
+	readonly #typescriptCompilerFolderParameter: CommandLineStringParameter;
 
-	private readonly _minify: CommandLineFlagParameter;
+	readonly #minify: CommandLineFlagParameter;
 
-	private readonly _printApiReportDiffFlag: CommandLineFlagParameter;
+	readonly #printApiReportDiffFlag: CommandLineFlagParameter;
 
 	public constructor(_parser: ApiExtractorCommandLine) {
 		super({
@@ -43,14 +43,14 @@ export class RunAction extends CommandLineAction {
 			documentation: 'Invoke API Extractor on a project',
 		});
 
-		this._configFileParameter = this.defineStringParameter({
+		this.#configFileParameter = this.defineStringParameter({
 			parameterLongName: '--config',
 			parameterShortName: '-c',
 			argumentName: 'FILE',
 			description: `Use the specified ${ExtractorConfig.FILENAME} file path, rather than guessing its location`,
 		});
 
-		this._localFlag = this.defineFlagParameter({
+		this.#localFlag = this.defineFlagParameter({
 			parameterLongName: '--local',
 			parameterShortName: '-l',
 			description:
@@ -60,26 +60,26 @@ export class RunAction extends CommandLineAction {
 				' report file is automatically copied in a local build.',
 		});
 
-		this._verboseFlag = this.defineFlagParameter({
+		this.#verboseFlag = this.defineFlagParameter({
 			parameterLongName: '--verbose',
 			parameterShortName: '-v',
 			description: 'Show additional informational messages in the output.',
 		});
 
-		this._minify = this.defineFlagParameter({
+		this.#minify = this.defineFlagParameter({
 			parameterLongName: '--minify',
 			parameterShortName: '-m',
 			description: 'Minify the resulting doc model JSON, i.e. without any indentation or newlines.',
 		});
 
-		this._diagnosticsParameter = this.defineFlagParameter({
+		this.#diagnosticsParameter = this.defineFlagParameter({
 			parameterLongName: '--diagnostics',
 			description:
 				'Show diagnostic messages used for troubleshooting problems with API Extractor.' +
 				'  This flag also enables the "--verbose" flag.',
 		});
 
-		this._typescriptCompilerFolderParameter = this.defineStringParameter({
+		this.#typescriptCompilerFolderParameter = this.defineStringParameter({
 			parameterLongName: '--typescript-compiler-folder',
 			argumentName: 'PATH',
 			description:
@@ -90,7 +90,7 @@ export class RunAction extends CommandLineAction {
 				" and API Extractor's compiler will use those system typings instead.",
 		});
 
-		this._printApiReportDiffFlag = this.defineFlagParameter({
+		this.#printApiReportDiffFlag = this.defineFlagParameter({
 			parameterLongName: '--print-api-report-diff',
 			description:
 				'If provided, then any differences between the actual and expected API reports will be ' +
@@ -103,7 +103,7 @@ export class RunAction extends CommandLineAction {
 		const lookup: PackageJsonLookup = new PackageJsonLookup();
 		let configFilename: string;
 
-		let typescriptCompilerFolder: string | undefined = this._typescriptCompilerFolderParameter.value;
+		let typescriptCompilerFolder: string | undefined = this.#typescriptCompilerFolderParameter.value;
 		if (typescriptCompilerFolder) {
 			typescriptCompilerFolder = path.normalize(typescriptCompilerFolder);
 
@@ -114,27 +114,27 @@ export class RunAction extends CommandLineAction {
 					: undefined;
 				if (!typescriptCompilerPackageJson) {
 					throw new Error(
-						`The path specified in the ${this._typescriptCompilerFolderParameter.longName} parameter is not a package.`,
+						`The path specified in the ${this.#typescriptCompilerFolderParameter.longName} parameter is not a package.`,
 					);
 				} else if (typescriptCompilerPackageJson.name !== 'typescript') {
 					throw new Error(
-						`The path specified in the ${this._typescriptCompilerFolderParameter.longName} parameter is not a TypeScript` +
+						`The path specified in the ${this.#typescriptCompilerFolderParameter.longName} parameter is not a TypeScript` +
 							' compiler package.',
 					);
 				}
 			} else {
 				throw new Error(
-					`The path specified in the ${this._typescriptCompilerFolderParameter.longName} parameter does not exist.`,
+					`The path specified in the ${this.#typescriptCompilerFolderParameter.longName} parameter does not exist.`,
 				);
 			}
 		}
 
 		let extractorConfig: ExtractorConfig;
 
-		if (this._configFileParameter.value) {
-			configFilename = path.normalize(this._configFileParameter.value);
+		if (this.#configFileParameter.value) {
+			configFilename = path.normalize(this.#configFileParameter.value);
 			if (!FileSystem.exists(configFilename)) {
-				throw new Error('Config file not found: ' + this._configFileParameter.value);
+				throw new Error('Config file not found: ' + this.#configFileParameter.value);
 			}
 
 			extractorConfig = ExtractorConfig.loadFileAndPrepare(configFilename);
@@ -157,12 +157,12 @@ export class RunAction extends CommandLineAction {
 		}
 
 		const extractorResult: ExtractorResult = Extractor.invoke(extractorConfig, {
-			localBuild: this._localFlag.value,
-			docModelMinify: this._minify.value,
-			showVerboseMessages: this._verboseFlag.value,
-			showDiagnostics: this._diagnosticsParameter.value,
+			localBuild: this.#localFlag.value,
+			docModelMinify: this.#minify.value,
+			showVerboseMessages: this.#verboseFlag.value,
+			showDiagnostics: this.#diagnosticsParameter.value,
 			typescriptCompilerFolder,
-			printApiReportDiff: this._printApiReportDiffFlag.value,
+			printApiReportDiff: this.#printApiReportDiffFlag.value,
 		});
 
 		if (extractorResult.succeeded) {

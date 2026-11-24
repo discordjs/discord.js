@@ -67,8 +67,7 @@
 		"eslint-config-neon": "^0.5.4",
 		"oxfmt": "^0.78.0",
 		"oxlint": "^1.93.0",
-		"terser": "^5.51.2",
-		"typescript": "~7.0.2"
+		"typescript": "~7.1.0-beta"
 	},
 	"engines": {
 		"node": ">=24.17.0"

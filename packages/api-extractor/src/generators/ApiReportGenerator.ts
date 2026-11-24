@@ -4,7 +4,7 @@
 
 import { ReleaseTag, releaseTagGetTagName } from '@discordjs/api-extractor-model';
 import { Text, InternalError } from '@rushstack/node-core-library';
-import * as ts from 'typescript';
+import * as ts from 'typescript/ast';
 import { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstEntity } from '../analyzer/AstEntity.js';
 import { AstImport } from '../analyzer/AstImport.js';
@@ -28,6 +28,8 @@ function capitalizeFirstLetter(input: string): string {
 	return input === '' ? '' : `${input[0]!.toLocaleUpperCase()}${input.slice(1)}`;
 }
 
+const _trimSpacesRegExp = / +$/gm;
+
 interface IContext {
 	alreadyProcessedSignatures: Set<Span>;
 	collector: Collector;
@@ -35,8 +37,6 @@ interface IContext {
 }
 
 export class ApiReportGenerator {
-	private static _trimSpacesRegExp: RegExp = / +$/gm;
-
 	/**
 	 * Compares the contents of two API files that were created using ApiFileGenerator,
 	 * and returns true if they are equivalent.  Note that these files are not normally edited
@@ -115,7 +115,7 @@ export class ApiReportGenerator {
 				const symbolMetadata: SymbolMetadata | undefined = collector.tryFetchMetadataForAstEntity(astEntity);
 				const maxEffectiveReleaseTag: ReleaseTag = symbolMetadata?.maxEffectiveReleaseTag ?? ReleaseTag.None;
 
-				if (!this._shouldIncludeReleaseTag(maxEffectiveReleaseTag, reportVariant)) {
+				if (!_shouldIncludeReleaseTag(maxEffectiveReleaseTag, reportVariant)) {
 					continue;
 				}
 
@@ -158,17 +158,17 @@ export class ApiReportGenerator {
 								messagesToReport.push(message);
 							}
 
-							if (this._shouldIncludeDeclaration(collector, astDeclaration, reportVariant)) {
+							if (_shouldIncludeDeclaration(collector, astDeclaration, reportVariant)) {
 								writer.ensureSkippedLine();
-								writer.write(ApiReportGenerator._getAedocSynopsis(collector, astDeclaration, messagesToReport));
+								writer.write(_getAedocSynopsis(collector, astDeclaration, messagesToReport));
 
 								const span: Span = new Span(astDeclaration.declaration);
 
 								const apiItemMetadata: ApiItemMetadata = collector.fetchApiItemMetadata(astDeclaration);
 								if (apiItemMetadata.isPreapproved) {
-									ApiReportGenerator._modifySpanForPreapproved(span);
+									_modifySpanForPreapproved(span);
 								} else {
-									ApiReportGenerator._modifySpan(span, entity, astDeclaration, false, context);
+									_modifySpan(span, entity, astDeclaration, false, context);
 								}
 
 								span.writeModifiedText(writer);
@@ -245,7 +245,7 @@ export class ApiReportGenerator {
 						if (exportToEmit.associatedMessages.length > 0) {
 							writer.ensureSkippedLine();
 							for (const message of exportToEmit.associatedMessages) {
-								ApiReportGenerator._writeLineAsComments(writer, 'Warning: ' + message.formatMessageWithoutLocation());
+								_writeLineAsComments(writer, 'Warning: ' + message.formatMessageWithoutLocation());
 							}
 						}
 
@@ -262,10 +262,10 @@ export class ApiReportGenerator {
 			const unassociatedMessages: ExtractorMessage[] = collector.messageRouter.fetchUnassociatedMessagesForReviewFile();
 			if (unassociatedMessages.length > 0) {
 				writer.ensureSkippedLine();
-				ApiReportGenerator._writeLineAsComments(writer, 'Warnings were encountered during analysis:');
-				ApiReportGenerator._writeLineAsComments(writer, '');
+				_writeLineAsComments(writer, 'Warnings were encountered during analysis:');
+				_writeLineAsComments(writer, '');
 				for (const unassociatedMessage of unassociatedMessages) {
-					ApiReportGenerator._writeLineAsComments(
+					_writeLineAsComments(
 						writer,
 						unassociatedMessage.formatMessageWithLocation(collector.workingPackage.packageFolder),
 					);
@@ -274,7 +274,7 @@ export class ApiReportGenerator {
 
 			if (collector.workingPackage.tsdocComment === undefined) {
 				writer.ensureSkippedLine();
-				ApiReportGenerator._writeLineAsComments(writer, '(No @packageDocumentation comment for this package)');
+				_writeLineAsComments(writer, '(No @packageDocumentation comment for this package)');
 			}
 
 			// Write the closing delimiter for the Markdown code fence
@@ -282,399 +282,393 @@ export class ApiReportGenerator {
 			writer.writeLine('```');
 
 			// Remove any trailing spaces
-			fileContentMap.set(entryPoint.modulePath, writer.toString().replace(ApiReportGenerator._trimSpacesRegExp, ''));
+			fileContentMap.set(entryPoint.modulePath, writer.toString().replaceAll(_trimSpacesRegExp, ''));
 		}
 
 		return fileContentMap;
 	}
+}
 
-	/**
-	 * Before writing out a declaration, _modifySpan() applies various fixups to make it nice.
-	 */
-	private static _modifySpan(
-		span: Span,
-		entity: CollectorEntity,
-		astDeclaration: AstDeclaration,
-		insideTypeLiteral: boolean,
-		context: IContext,
-	): void {
-		const { collector, reportVariant } = context;
+/**
+ * Before writing out a declaration, _modifySpan() applies various fixups to make it nice.
+ */
+function _modifySpan(
+	span: Span,
+	entity: CollectorEntity,
+	astDeclaration: AstDeclaration,
+	insideTypeLiteral: boolean,
+	context: IContext,
+): void {
+	const { collector, reportVariant } = context;
 
-		// Should we process this declaration at all?
+	// Should we process this declaration at all?
 
-		if (!ApiReportGenerator._shouldIncludeDeclaration(collector, astDeclaration, reportVariant)) {
+	if (!_shouldIncludeDeclaration(collector, astDeclaration, reportVariant)) {
+		span.modification.skipAll();
+		return;
+	}
+
+	const previousSpan: Span | undefined = span.previousSibling;
+
+	let recurseChildren = true;
+	let sortChildren = false;
+
+	switch (span.kind) {
+		case ts.SyntaxKind.JSDoc:
 			span.modification.skipAll();
-			return;
-		}
+			// For now, we don't transform JSDoc comment nodes at all
+			recurseChildren = false;
+			break;
 
-		const previousSpan: Span | undefined = span.previousSibling;
-
-		let recurseChildren = true;
-		let sortChildren = false;
-
-		switch (span.kind) {
-			case ts.SyntaxKind.JSDocComment:
-				span.modification.skipAll();
-				// For now, we don't transform JSDoc comment nodes at all
-				recurseChildren = false;
+		case ts.SyntaxKind.ExportKeyword:
+			if (DtsEmitHelpers.isExportKeywordInNamespaceExportDeclaration(span.node)) {
+				// This is an export declaration inside a namespace - preserve the export keyword
 				break;
+			}
 
-			case ts.SyntaxKind.ExportKeyword:
-				if (DtsEmitHelpers.isExportKeywordInNamespaceExportDeclaration(span.node)) {
-					// This is an export declaration inside a namespace - preserve the export keyword
-					break;
+			// Otherwise, delete the export keyword -- we will re-add it below
+			span.modification.skipAll();
+			break;
+
+		case ts.SyntaxKind.DefaultKeyword:
+		case ts.SyntaxKind.DeclareKeyword:
+			// Delete any explicit "export" or "declare" keywords -- we will re-add them below
+			span.modification.skipAll();
+			break;
+
+		case ts.SyntaxKind.InterfaceKeyword:
+		case ts.SyntaxKind.ClassKeyword:
+		case ts.SyntaxKind.EnumKeyword:
+		case ts.SyntaxKind.NamespaceKeyword:
+		case ts.SyntaxKind.ModuleKeyword:
+		case ts.SyntaxKind.TypeKeyword:
+		case ts.SyntaxKind.FunctionKeyword:
+			// Replace the stuff we possibly deleted above
+			let replacedModifiers = '';
+
+			if (entity.shouldInlineExport) {
+				replacedModifiers = 'export ' + replacedModifiers;
+			}
+
+			if (previousSpan?.kind === ts.SyntaxKind.SyntaxList) {
+				// If there is a previous span of type SyntaxList, then apply it before any other modifiers
+				// (e.g. "abstract") that appear there.
+				previousSpan.modification.prefix = replacedModifiers + previousSpan.modification.prefix;
+			} else {
+				// Otherwise just stick it in front of this span
+				span.modification.prefix = replacedModifiers + span.modification.prefix;
+			}
+
+			break;
+
+		case ts.SyntaxKind.SyntaxList:
+			if (
+				span.parent &&
+				(AstDeclaration.isSupportedSyntaxKind(span.parent.kind) || span.parent.kind === ts.SyntaxKind.ModuleBlock)
+			) {
+				// If the immediate parent is an API declaration, and the immediate children are API declarations,
+				// then sort the children alphabetically
+				// Namespaces are special because their chain goes ModuleDeclaration -> ModuleBlock -> SyntaxList
+				sortChildren = true;
+			}
+
+			break;
+
+		case ts.SyntaxKind.VariableDeclaration:
+			if (!span.parent) {
+				// The VariableDeclaration node is part of a VariableDeclarationList, however
+				// the Entry.followedSymbol points to the VariableDeclaration part because
+				// multiple definitions might share the same VariableDeclarationList.
+				//
+				// Since we are emitting a separate declaration for each one, we need to look upwards
+				// in the ts.Node tree and write a copy of the enclosing VariableDeclarationList
+				// content (e.g. "var" from "var x=1, y=2").
+				const list: ts.VariableDeclarationList | undefined = TypeScriptHelpers.matchAncestor(span.node, [
+					ts.SyntaxKind.VariableDeclarationList,
+					ts.SyntaxKind.VariableDeclaration,
+				]);
+				if (!list) {
+					// This should not happen unless the compiler API changes somehow
+					throw new InternalError('Unsupported variable declaration');
 				}
 
-				// Otherwise, delete the export keyword -- we will re-add it below
-				span.modification.skipAll();
-				break;
-
-			case ts.SyntaxKind.DefaultKeyword:
-			case ts.SyntaxKind.DeclareKeyword:
-				// Delete any explicit "export" or "declare" keywords -- we will re-add them below
-				span.modification.skipAll();
-				break;
-
-			case ts.SyntaxKind.InterfaceKeyword:
-			case ts.SyntaxKind.ClassKeyword:
-			case ts.SyntaxKind.EnumKeyword:
-			case ts.SyntaxKind.NamespaceKeyword:
-			case ts.SyntaxKind.ModuleKeyword:
-			case ts.SyntaxKind.TypeKeyword:
-			case ts.SyntaxKind.FunctionKeyword:
-				// Replace the stuff we possibly deleted above
-				let replacedModifiers = '';
+				const listPrefix: string = list.getSourceFile().text.slice(list.getStart(), list.declarations[0]!.getStart());
+				span.modification.prefix = listPrefix + span.modification.prefix;
+				span.modification.suffix = ';';
 
 				if (entity.shouldInlineExport) {
-					replacedModifiers = 'export ' + replacedModifiers;
+					span.modification.prefix = 'export ' + span.modification.prefix;
 				}
-
-				if (previousSpan?.kind === ts.SyntaxKind.SyntaxList) {
-					// If there is a previous span of type SyntaxList, then apply it before any other modifiers
-					// (e.g. "abstract") that appear there.
-					previousSpan.modification.prefix = replacedModifiers + previousSpan.modification.prefix;
-				} else {
-					// Otherwise just stick it in front of this span
-					span.modification.prefix = replacedModifiers + span.modification.prefix;
-				}
-
-				break;
-
-			case ts.SyntaxKind.SyntaxList:
-				if (
-					span.parent &&
-					(AstDeclaration.isSupportedSyntaxKind(span.parent.kind) || span.parent.kind === ts.SyntaxKind.ModuleBlock)
-				) {
-					// If the immediate parent is an API declaration, and the immediate children are API declarations,
-					// then sort the children alphabetically
-					// Namespaces are special because their chain goes ModuleDeclaration -> ModuleBlock -> SyntaxList
-					sortChildren = true;
-				}
-
-				break;
-
-			case ts.SyntaxKind.VariableDeclaration:
-				if (!span.parent) {
-					// The VariableDeclaration node is part of a VariableDeclarationList, however
-					// the Entry.followedSymbol points to the VariableDeclaration part because
-					// multiple definitions might share the same VariableDeclarationList.
-					//
-					// Since we are emitting a separate declaration for each one, we need to look upwards
-					// in the ts.Node tree and write a copy of the enclosing VariableDeclarationList
-					// content (e.g. "var" from "var x=1, y=2").
-					const list: ts.VariableDeclarationList | undefined = TypeScriptHelpers.matchAncestor(span.node, [
-						ts.SyntaxKind.VariableDeclarationList,
-						ts.SyntaxKind.VariableDeclaration,
-					]);
-					if (!list) {
-						// This should not happen unless the compiler API changes somehow
-						throw new InternalError('Unsupported variable declaration');
-					}
-
-					const listPrefix: string = list.getSourceFile().text.slice(list.getStart(), list.declarations[0]!.getStart());
-					span.modification.prefix = listPrefix + span.modification.prefix;
-					span.modification.suffix = ';';
-
-					if (entity.shouldInlineExport) {
-						span.modification.prefix = 'export ' + span.modification.prefix;
-					}
-				}
-
-				break;
-
-			case ts.SyntaxKind.Parameter:
-				{
-					// (signature) -> SyntaxList -> Parameter
-					const signatureParent: Span | undefined = span.parent;
-					if (signatureParent && !context.alreadyProcessedSignatures.has(signatureParent)) {
-						context.alreadyProcessedSignatures.add(signatureParent);
-						DtsEmitHelpers.normalizeParameterNames(signatureParent);
-					}
-				}
-
-				break;
-
-			case ts.SyntaxKind.Identifier:
-				const referencedEntity: CollectorEntity | undefined = collector.tryGetEntityForNode(span.node as ts.Identifier);
-
-				if (referencedEntity) {
-					if (!referencedEntity.nameForEmit) {
-						// This should never happen
-						throw new InternalError('referencedEntry.nameForEmit is undefined');
-					}
-
-					span.modification.prefix = referencedEntity.nameForEmit;
-					// For debugging:
-					// span.modification.prefix += '/*R=FIX*/';
-				} else {
-					// For debugging:
-					// span.modification.prefix += '/*R=KEEP*/';
-				}
-
-				break;
-
-			case ts.SyntaxKind.TypeLiteral:
-				// eslint-disable-next-line no-param-reassign
-				insideTypeLiteral = true;
-				break;
-
-			case ts.SyntaxKind.ImportType:
-				DtsEmitHelpers.modifyImportTypeSpan(collector, span, astDeclaration, (childSpan, childAstDeclaration) => {
-					ApiReportGenerator._modifySpan(childSpan, entity, childAstDeclaration, insideTypeLiteral, context);
-				});
-				break;
-
-			default:
-				break;
-		}
-
-		if (recurseChildren) {
-			for (const child of span.children) {
-				let childAstDeclaration: AstDeclaration = astDeclaration;
-
-				if (AstDeclaration.isSupportedSyntaxKind(child.kind)) {
-					childAstDeclaration = collector.astSymbolTable.getChildAstDeclarationByNode(child.node, astDeclaration);
-
-					if (sortChildren) {
-						span.modification.sortChildren = true;
-						child.modification.sortKey = Collector.getSortKeyIgnoringUnderscore(
-							childAstDeclaration.astSymbol.localName,
-						);
-					}
-
-					if (!insideTypeLiteral) {
-						const messagesToReport: ExtractorMessage[] =
-							collector.messageRouter.fetchAssociatedMessagesForReviewFile(childAstDeclaration);
-						const aedocSynopsis: string = ApiReportGenerator._getAedocSynopsis(
-							collector,
-							childAstDeclaration,
-							messagesToReport,
-						);
-
-						child.modification.prefix = aedocSynopsis + child.modification.prefix;
-					}
-				}
-
-				ApiReportGenerator._modifySpan(child, entity, childAstDeclaration, insideTypeLiteral, context);
 			}
-		}
+
+			break;
+
+		case ts.SyntaxKind.Parameter:
+			{
+				// (signature) -> SyntaxList -> Parameter
+				const signatureParent: Span | undefined = span.parent;
+				if (signatureParent && !context.alreadyProcessedSignatures.has(signatureParent)) {
+					context.alreadyProcessedSignatures.add(signatureParent);
+					DtsEmitHelpers.normalizeParameterNames(signatureParent);
+				}
+			}
+
+			break;
+
+		case ts.SyntaxKind.Identifier:
+			const referencedEntity: CollectorEntity | undefined = collector.tryGetEntityForNode(span.node as ts.Identifier);
+
+			if (referencedEntity) {
+				if (!referencedEntity.nameForEmit) {
+					// This should never happen
+					throw new InternalError('referencedEntry.nameForEmit is undefined');
+				}
+
+				span.modification.prefix = referencedEntity.nameForEmit;
+				// For debugging:
+				// span.modification.prefix += '/*R=FIX*/';
+			} else {
+				// For debugging:
+				// span.modification.prefix += '/*R=KEEP*/';
+			}
+
+			break;
+
+		case ts.SyntaxKind.TypeLiteral:
+			// eslint-disable-next-line no-param-reassign
+			insideTypeLiteral = true;
+			break;
+
+		case ts.SyntaxKind.ImportType:
+			DtsEmitHelpers.modifyImportTypeSpan(collector, span, astDeclaration, (childSpan, childAstDeclaration) => {
+				_modifySpan(childSpan, entity, childAstDeclaration, insideTypeLiteral, context);
+			});
+			break;
+
+		default:
+			break;
 	}
 
-	private static _shouldIncludeDeclaration(
-		collector: Collector,
-		astDeclaration: AstDeclaration,
-		reportVariant: ApiReportVariant,
-	): boolean {
-		// Private declarations are not included in the API report
-		if ((astDeclaration.modifierFlags & ts.ModifierFlags.Private) !== 0) {
-			return false;
+	if (recurseChildren) {
+		for (const child of span.children) {
+			let childAstDeclaration: AstDeclaration = astDeclaration;
+
+			if (AstDeclaration.isSupportedSyntaxKind(child.kind)) {
+				childAstDeclaration = collector.astSymbolTable.getChildAstDeclarationByNode(child.node, astDeclaration);
+
+				if (sortChildren) {
+					span.modification.sortChildren = true;
+					child.modification.sortKey = Collector.getSortKeyIgnoringUnderscore(childAstDeclaration.astSymbol.localName);
+				}
+
+				if (!insideTypeLiteral) {
+					const messagesToReport: ExtractorMessage[] =
+						collector.messageRouter.fetchAssociatedMessagesForReviewFile(childAstDeclaration);
+					const aedocSynopsis: string = _getAedocSynopsis(collector, childAstDeclaration, messagesToReport);
+
+					child.modification.prefix = aedocSynopsis + child.modification.prefix;
+				}
+			}
+
+			_modifySpan(child, entity, childAstDeclaration, insideTypeLiteral, context);
+		}
+	}
+}
+
+function _shouldIncludeDeclaration(
+	collector: Collector,
+	astDeclaration: AstDeclaration,
+	reportVariant: ApiReportVariant,
+): boolean {
+	// Private declarations are not included in the API report
+	if ((astDeclaration.modifierFlags & ts.ModifierFlags.Private) !== 0) {
+		return false;
+	}
+
+	const apiItemMetadata: ApiItemMetadata = collector.fetchApiItemMetadata(astDeclaration);
+
+	return _shouldIncludeReleaseTag(apiItemMetadata.effectiveReleaseTag, reportVariant);
+}
+
+function _shouldIncludeReleaseTag(releaseTag: ReleaseTag, reportVariant: ApiReportVariant): boolean {
+	switch (reportVariant) {
+		case 'complete':
+			return true;
+		case 'alpha':
+			return (
+				releaseTag === ReleaseTag.Alpha ||
+				releaseTag === ReleaseTag.Beta ||
+				releaseTag === ReleaseTag.Public ||
+				// NOTE: No specified release tag is implicitly treated as `@public`.
+				releaseTag === ReleaseTag.None
+			);
+		case 'beta':
+			return (
+				releaseTag === ReleaseTag.Beta ||
+				releaseTag === ReleaseTag.Public ||
+				// NOTE: No specified release tag is implicitly treated as `@public`.
+				releaseTag === ReleaseTag.None
+			);
+		case 'public':
+			return (
+				releaseTag === ReleaseTag.Public ||
+				// NOTE: No specified release tag is implicitly treated as `@public`.
+				releaseTag === ReleaseTag.None
+			);
+		default:
+			throw new Error(`Unrecognized release level: ${reportVariant}`);
+	}
+}
+
+/**
+ * For declarations marked as `@preapproved`, this is used instead of _modifySpan().
+ */
+function _modifySpanForPreapproved(span: Span): void {
+	// Match something like this:
+	//
+	//   ClassDeclaration:
+	//     SyntaxList:
+	//       ExportKeyword:  pre=[export] sep=[ ]
+	//       DeclareKeyword:  pre=[declare] sep=[ ]
+	//     ClassKeyword:  pre=[class] sep=[ ]
+	//     Identifier:  pre=[_PreapprovedClass] sep=[ ]
+	//     FirstPunctuation:  pre=[{] sep=[\n\n    ]
+	//     SyntaxList:
+	//       ...
+	//     CloseBraceToken:  pre=[}]
+	//
+	// or this:
+	//   ModuleDeclaration:
+	//     SyntaxList:
+	//       ExportKeyword:  pre=[export] sep=[ ]
+	//       DeclareKeyword:  pre=[declare] sep=[ ]
+	//     NamespaceKeyword:  pre=[namespace] sep=[ ]
+	//     Identifier:  pre=[_PreapprovedNamespace] sep=[ ]
+	//     ModuleBlock:
+	//       FirstPunctuation:  pre=[{] sep=[\n\n    ]
+	//       SyntaxList:
+	//         ...
+	//       CloseBraceToken:  pre=[}]
+	//
+	// And reduce it to something like this:
+	//
+	//   // @internal (undocumented)
+	//   class _PreapprovedClass { /* (preapproved) */ }
+	//
+
+	let skipRest = false;
+	for (const child of span.children) {
+		if (skipRest || child.kind === ts.SyntaxKind.SyntaxList || child.kind === ts.SyntaxKind.JSDoc) {
+			child.modification.skipAll();
 		}
 
+		if (child.kind === ts.SyntaxKind.Identifier) {
+			skipRest = true;
+			child.modification.omitSeparatorAfter = true;
+			child.modification.suffix = ' { /* (preapproved) */ }';
+		}
+	}
+}
+
+/**
+ * Writes a synopsis of the AEDoc comments, which indicates the release tag,
+ * whether the item has been documented, and any warnings that were detected
+ * by the analysis.
+ */
+function _getAedocSynopsis(
+	collector: Collector,
+	astDeclaration: AstDeclaration,
+	messagesToReport: ExtractorMessage[],
+): string {
+	const writer: IndentedWriter = new IndentedWriter();
+
+	for (const message of messagesToReport) {
+		_writeLineAsComments(writer, 'Warning: ' + message.formatMessageWithoutLocation());
+	}
+
+	if (!collector.isAncillaryDeclaration(astDeclaration)) {
+		const footerParts: string[] = [];
 		const apiItemMetadata: ApiItemMetadata = collector.fetchApiItemMetadata(astDeclaration);
 
-		return this._shouldIncludeReleaseTag(apiItemMetadata.effectiveReleaseTag, reportVariant);
-	}
+		// 1. Release tag (if present)
+		if (!apiItemMetadata.releaseTagSameAsParent && apiItemMetadata.effectiveReleaseTag !== ReleaseTag.None) {
+			footerParts.push(releaseTagGetTagName(apiItemMetadata.effectiveReleaseTag));
+		}
 
-	private static _shouldIncludeReleaseTag(releaseTag: ReleaseTag, reportVariant: ApiReportVariant): boolean {
-		switch (reportVariant) {
-			case 'complete':
-				return true;
-			case 'alpha':
-				return (
-					releaseTag === ReleaseTag.Alpha ||
-					releaseTag === ReleaseTag.Beta ||
-					releaseTag === ReleaseTag.Public ||
-					// NOTE: No specified release tag is implicitly treated as `@public`.
-					releaseTag === ReleaseTag.None
-				);
-			case 'beta':
-				return (
-					releaseTag === ReleaseTag.Beta ||
-					releaseTag === ReleaseTag.Public ||
-					// NOTE: No specified release tag is implicitly treated as `@public`.
-					releaseTag === ReleaseTag.None
-				);
-			case 'public':
-				return (
-					releaseTag === ReleaseTag.Public ||
-					// NOTE: No specified release tag is implicitly treated as `@public`.
-					releaseTag === ReleaseTag.None
-				);
-			default:
-				throw new Error(`Unrecognized release level: ${reportVariant}`);
+		// 2. Enumerate configured tags, reporting standard system tags first and then other configured tags.
+		// Note that the ordering we handle the standard tags is important for backwards compatibility.
+		// Also note that we had special mechanisms for checking whether or not an item is documented with these tags,
+		// so they are checked specially.
+		const {
+			'@sealed': reportSealedTag,
+			'@virtual': reportVirtualTag,
+			'@override': reportOverrideTag,
+			'@eventProperty': reportEventPropertyTag,
+			'@deprecated': reportDeprecatedTag,
+			...otherTagsToReport
+		} = collector.extractorConfig.tagsToReport;
+
+		// 2.a Check for standard tags and report those that are both configured and present in the metadata.
+		if (reportSealedTag && apiItemMetadata.isSealed) {
+			footerParts.push('@sealed');
+		}
+
+		if (reportVirtualTag && apiItemMetadata.isVirtual) {
+			footerParts.push('@virtual');
+		}
+
+		if (reportOverrideTag && apiItemMetadata.isOverride) {
+			footerParts.push('@override');
+		}
+
+		if (reportEventPropertyTag && apiItemMetadata.isEventProperty) {
+			footerParts.push('@eventProperty');
+		}
+
+		if (reportDeprecatedTag && apiItemMetadata.tsdocComment?.deprecatedBlock) {
+			footerParts.push('@deprecated');
+		}
+
+		// 2.b Check for other configured tags and report those that are present in the tsdoc metadata.
+		for (const [tag, reportTag] of Object.entries(otherTagsToReport)) {
+			// If the tag was not handled specially, check if it is present in the metadata.
+			if (
+				reportTag &&
+				(apiItemMetadata.tsdocComment?.customBlocks.some((block) => block.blockTag.tagName === tag) ||
+					apiItemMetadata.tsdocComment?.modifierTagSet.hasTagName(tag))
+			) {
+				footerParts.push(tag);
+			}
+		}
+
+		// 3. If the item is undocumented, append notice at the end of the list
+		if (apiItemMetadata.undocumented) {
+			footerParts.push('(undocumented)');
+
+			collector.messageRouter.addAnalyzerIssue(
+				ExtractorMessageId.Undocumented,
+				`Missing documentation for "${astDeclaration.astSymbol.localName}".`,
+				astDeclaration,
+			);
+		}
+
+		if (footerParts.length > 0) {
+			if (messagesToReport.length > 0) {
+				_writeLineAsComments(writer, ''); // skip a line after the warnings
+			}
+
+			_writeLineAsComments(writer, footerParts.join(' '));
 		}
 	}
 
-	/**
-	 * For declarations marked as `@preapproved`, this is used instead of _modifySpan().
-	 */
-	private static _modifySpanForPreapproved(span: Span): void {
-		// Match something like this:
-		//
-		//   ClassDeclaration:
-		//     SyntaxList:
-		//       ExportKeyword:  pre=[export] sep=[ ]
-		//       DeclareKeyword:  pre=[declare] sep=[ ]
-		//     ClassKeyword:  pre=[class] sep=[ ]
-		//     Identifier:  pre=[_PreapprovedClass] sep=[ ]
-		//     FirstPunctuation:  pre=[{] sep=[\n\n    ]
-		//     SyntaxList:
-		//       ...
-		//     CloseBraceToken:  pre=[}]
-		//
-		// or this:
-		//   ModuleDeclaration:
-		//     SyntaxList:
-		//       ExportKeyword:  pre=[export] sep=[ ]
-		//       DeclareKeyword:  pre=[declare] sep=[ ]
-		//     NamespaceKeyword:  pre=[namespace] sep=[ ]
-		//     Identifier:  pre=[_PreapprovedNamespace] sep=[ ]
-		//     ModuleBlock:
-		//       FirstPunctuation:  pre=[{] sep=[\n\n    ]
-		//       SyntaxList:
-		//         ...
-		//       CloseBraceToken:  pre=[}]
-		//
-		// And reduce it to something like this:
-		//
-		//   // @internal (undocumented)
-		//   class _PreapprovedClass { /* (preapproved) */ }
-		//
+	return writer.toString();
+}
 
-		let skipRest = false;
-		for (const child of span.children) {
-			if (skipRest || child.kind === ts.SyntaxKind.SyntaxList || child.kind === ts.SyntaxKind.JSDocComment) {
-				child.modification.skipAll();
-			}
-
-			if (child.kind === ts.SyntaxKind.Identifier) {
-				skipRest = true;
-				child.modification.omitSeparatorAfter = true;
-				child.modification.suffix = ' { /* (preapproved) */ }';
-			}
-		}
-	}
-
-	/**
-	 * Writes a synopsis of the AEDoc comments, which indicates the release tag,
-	 * whether the item has been documented, and any warnings that were detected
-	 * by the analysis.
-	 */
-	private static _getAedocSynopsis(
-		collector: Collector,
-		astDeclaration: AstDeclaration,
-		messagesToReport: ExtractorMessage[],
-	): string {
-		const writer: IndentedWriter = new IndentedWriter();
-
-		for (const message of messagesToReport) {
-			ApiReportGenerator._writeLineAsComments(writer, 'Warning: ' + message.formatMessageWithoutLocation());
-		}
-
-		if (!collector.isAncillaryDeclaration(astDeclaration)) {
-			const footerParts: string[] = [];
-			const apiItemMetadata: ApiItemMetadata = collector.fetchApiItemMetadata(astDeclaration);
-
-			// 1. Release tag (if present)
-			if (!apiItemMetadata.releaseTagSameAsParent && apiItemMetadata.effectiveReleaseTag !== ReleaseTag.None) {
-				footerParts.push(releaseTagGetTagName(apiItemMetadata.effectiveReleaseTag));
-			}
-
-			// 2. Enumerate configured tags, reporting standard system tags first and then other configured tags.
-			// Note that the ordering we handle the standard tags is important for backwards compatibility.
-			// Also note that we had special mechanisms for checking whether or not an item is documented with these tags,
-			// so they are checked specially.
-			const {
-				'@sealed': reportSealedTag,
-				'@virtual': reportVirtualTag,
-				'@override': reportOverrideTag,
-				'@eventProperty': reportEventPropertyTag,
-				'@deprecated': reportDeprecatedTag,
-				...otherTagsToReport
-			} = collector.extractorConfig.tagsToReport;
-
-			// 2.a Check for standard tags and report those that are both configured and present in the metadata.
-			if (reportSealedTag && apiItemMetadata.isSealed) {
-				footerParts.push('@sealed');
-			}
-
-			if (reportVirtualTag && apiItemMetadata.isVirtual) {
-				footerParts.push('@virtual');
-			}
-
-			if (reportOverrideTag && apiItemMetadata.isOverride) {
-				footerParts.push('@override');
-			}
-
-			if (reportEventPropertyTag && apiItemMetadata.isEventProperty) {
-				footerParts.push('@eventProperty');
-			}
-
-			if (reportDeprecatedTag && apiItemMetadata.tsdocComment?.deprecatedBlock) {
-				footerParts.push('@deprecated');
-			}
-
-			// 2.b Check for other configured tags and report those that are present in the tsdoc metadata.
-			for (const [tag, reportTag] of Object.entries(otherTagsToReport)) {
-				// If the tag was not handled specially, check if it is present in the metadata.
-				if (
-					reportTag &&
-					(apiItemMetadata.tsdocComment?.customBlocks.some((block) => block.blockTag.tagName === tag) ||
-						apiItemMetadata.tsdocComment?.modifierTagSet.hasTagName(tag))
-				) {
-					footerParts.push(tag);
-				}
-			}
-
-			// 3. If the item is undocumented, append notice at the end of the list
-			if (apiItemMetadata.undocumented) {
-				footerParts.push('(undocumented)');
-
-				collector.messageRouter.addAnalyzerIssue(
-					ExtractorMessageId.Undocumented,
-					`Missing documentation for "${astDeclaration.astSymbol.localName}".`,
-					astDeclaration,
-				);
-			}
-
-			if (footerParts.length > 0) {
-				if (messagesToReport.length > 0) {
-					ApiReportGenerator._writeLineAsComments(writer, ''); // skip a line after the warnings
-				}
-
-				ApiReportGenerator._writeLineAsComments(writer, footerParts.join(' '));
-			}
-		}
-
-		return writer.toString();
-	}
-
-	private static _writeLineAsComments(writer: IndentedWriter, line: string): void {
-		const lines: string[] = Text.convertToLf(line).split('\n');
-		for (const realLine of lines) {
-			writer.write('// ');
-			writer.write(realLine);
-			writer.writeLine();
-		}
+function _writeLineAsComments(writer: IndentedWriter, line: string): void {
+	const lines: string[] = Text.convertToLf(line).split('\n');
+	for (const realLine of lines) {
+		writer.write('// ');
+		writer.write(realLine);
+		writer.writeLine();
 	}
 }

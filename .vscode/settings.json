@@ -48,7 +48,6 @@
 		["class:\\s*?[\"'`]([^\"'`]*).*?,"],
 		["className:\\s*?[\"'`]([^\"'`]*).*?,"]
 	],
-	"js/ts.experimental.useTsgo": false,
 	"js/ts.preferences.importModuleSpecifier": "project-relative",
 	"js/ts.preferences.importModuleSpecifierEnding": "index",
 	"js/ts.preferences.includePackageJsonAutoImports": "on",

@@ -1,7 +1,5 @@
-import { dirname, join, relative } from 'node:path';
-import { ReflectionKind } from 'typedoc';
+import { join, relative } from 'node:path';
 import packageFile from '../package.json' with { type: 'json' };
-import type { DeclarationReflection } from './index.js';
 import type { ChildTypes, Class, Config, CustomDocs, RootTypes } from './interfaces/index.js';
 import { DocumentedClass } from './types/class.js';
 import { DocumentedConstructor } from './types/constructor.js';
@@ -24,238 +22,127 @@ export class Documentation {
 	public readonly externals = new Map<string, DocumentedExternal>();
 
 	public constructor(
-		data: DeclarationReflection[] | RootTypes[],
+		data: (RootTypes | ChildTypes)[],
 		private readonly config: Config,
 		private readonly custom?: Record<string, CustomDocs>,
 	) {
-		if (config.typescript) {
-			const items = data as DeclarationReflection[];
+		let items = data;
+		items = items.filter((item) => !item.ignore);
 
-			for (const item of items) {
-				switch (item.kind) {
-					case ReflectionKind.Class: {
-						this.classes.set(item.name, new DocumentedClass(item, config));
-						if (item.children) {
-							this.parse(item.children, item);
-						}
+		for (const item of items) {
+			switch (item.kind) {
+				case 'class': {
+					this.classes.set(item.name, new DocumentedClass(item, config));
+					items = items.filter((otherItem) => otherItem.longname !== item.longname || otherItem.kind !== item.kind);
+					break;
+				}
 
-						break;
-					}
-
-					case ReflectionKind.Function: {
+				case 'function': {
+					if (item.scope === 'global' || !item.memberof) {
 						this.functions.set(item.name, new DocumentedMethod(item, config));
-						break;
+						items = items.filter((otherItem) => otherItem.longname !== item.longname);
 					}
 
-					case ReflectionKind.Interface:
-					case ReflectionKind.TypeAlias:
-					case ReflectionKind.Enum:
-						this.typedefs.set(item.name, new DocumentedTypeDef(item, config));
-						if (item.children) {
-							this.parse(item.children, item);
-						}
-
-						break;
-
-					default:
-						break;
+					break;
 				}
-			}
-		} else {
-			let items = data as RootTypes[];
-			items = items.filter((item) => !item.ignore);
 
-			for (const item of items) {
-				switch (item.kind) {
-					case 'class': {
-						this.classes.set(item.name, new DocumentedClass(item, config));
-						items = items.filter((otherItem) => otherItem.longname !== item.longname || otherItem.kind !== item.kind);
-						break;
-					}
-
-					case 'function': {
-						if (item.scope === 'global' || !item.memberof) {
-							this.functions.set(item.name, new DocumentedMethod(item, config));
-							items = items.filter((otherItem) => otherItem.longname !== item.longname);
-						}
-
-						break;
-					}
-
-					case 'interface': {
-						this.interfaces.set(item.name, new DocumentedInterface(item as unknown as Class, config));
-						items = items.filter((otherItem) => otherItem.longname !== item.longname);
-						break;
-					}
-
-					case 'typedef': {
-						this.typedefs.set(item.name, new DocumentedTypeDef(item, config));
-						items = items.filter((otherItem) => otherItem.longname !== item.longname);
-						break;
-					}
-
-					case 'external': {
-						this.externals.set(item.name, new DocumentedExternal(item, config));
-						items = items.filter((otherItem) => otherItem.longname !== item.longname);
-						break;
-					}
-
-					default:
-						break;
+				case 'interface': {
+					this.interfaces.set(item.name, new DocumentedInterface(item as unknown as Class, config));
+					items = items.filter((otherItem) => otherItem.longname !== item.longname);
+					break;
 				}
-			}
 
-			this.parse(items as ChildTypes[]);
+				case 'typedef': {
+					this.typedefs.set(item.name, new DocumentedTypeDef(item, config));
+					items = items.filter((otherItem) => otherItem.longname !== item.longname);
+					break;
+				}
+
+				case 'external': {
+					this.externals.set(item.name, new DocumentedExternal(item, config));
+					items = items.filter((otherItem) => otherItem.longname !== item.longname);
+					break;
+				}
+
+				default:
+					break;
+			}
 		}
+
+		this.parse(items);
 	}
 
-	public parse(items: ChildTypes[] | DeclarationReflection[], prop?: DeclarationReflection) {
-		if (this.config.typescript) {
-			const it = items as DeclarationReflection[];
+	public parse(items: (RootTypes | ChildTypes)[]) {
+		const it = items as ChildTypes[];
 
-			for (const member of it) {
-				let item: DocumentedConstructor | DocumentedEvent | DocumentedMember | DocumentedMethod | null = null;
+		for (const member of it) {
+			let item: DocumentedConstructor | DocumentedEvent | DocumentedMember | DocumentedMethod | null = null;
 
-				switch (member.kind) {
-					case ReflectionKind.Constructor: {
-						item = new DocumentedConstructor(member, this.config);
-						break;
-					}
-
-					case ReflectionKind.Method: {
-						const event = prop?.groups?.find((group) => group.title === 'Events');
-						if ((event?.children as unknown as number[])?.includes(member.id)) {
-							item = new DocumentedEvent(member, this.config);
-							break;
-						}
-
-						item = new DocumentedMethod(member, this.config);
-						break;
-					}
-
-					case ReflectionKind.Property:
-					case ReflectionKind.Accessor: {
-						item = new DocumentedMember(member, this.config);
-						break;
-					}
-
-					default: {
-						console.warn(
-							`- Unknown documentation kind "${ReflectionKind[member.kind]}" - \n${JSON.stringify(member)}\n`,
-						);
-					}
+			switch (member.kind) {
+				case 'constructor': {
+					item = new DocumentedConstructor(member, this.config);
+					break;
 				}
 
-				const parent = this.classes.get(prop!.name) ?? this.interfaces.get(prop!.name);
-				if (parent) {
-					if (item) {
-						parent.add(item);
-					} else {
-						console.warn(
-							`- Documentation item could not be constructed for "${member.name}" - \n${JSON.stringify(member)}\n`,
-						);
-					}
-
-					continue;
+				case 'function': {
+					item = new DocumentedMethod(member, this.config);
+					break;
 				}
 
-				const info = [];
-				const name = (member.name || item?.data.name) ?? 'UNKNOWN';
-				const meta =
-					member.kind === ReflectionKind.Constructor
-						? null
-						: {
-								file: member.sources?.[0]?.fileName,
-								line: member.sources?.[0]?.line,
-								path: dirname(member.sources?.[0]?.fileName ?? ''),
-							};
-
-				if (prop!.name) {
-					info.push(`member of "${prop!.name}"`);
+				case 'member': {
+					item = new DocumentedMember(member, this.config);
+					break;
 				}
 
-				if (meta) {
-					info.push(
-						`${relative(this.config.root, join(meta.path, meta.file ?? ''))}${meta.line ? `:${meta.line}` : ''}`,
+				case 'event': {
+					item = new DocumentedEvent(member, this.config);
+					break;
+				}
+
+				default: {
+					console.warn(
+						// @ts-expect-error: This is a valid case
+						`- Unknown documentation kind "${member.kind}" - \n${JSON.stringify(member)}\n`,
+					);
+				}
+			}
+
+			const parent = this.classes.get(member.memberof ?? '') ?? this.interfaces.get(member.memberof ?? '');
+			if (parent) {
+				if (item) {
+					parent.add(item);
+				} else {
+					console.warn(
+						`- Documentation item could not be constructed for "${member.name}" - \n${JSON.stringify(member)}\n`,
 					);
 				}
 
-				console.warn(`- "${name}"${info.length ? ` (${info.join(', ')})` : ''} has no accessible parent.`);
-				if (!name && !info.length) {
-					console.warn('Raw object:', member);
-				}
+				continue;
 			}
-		} else {
-			const it = items as ChildTypes[];
 
-			for (const member of it) {
-				let item: DocumentedConstructor | DocumentedEvent | DocumentedMember | DocumentedMethod | null = null;
+			const info = [];
+			const name = (member.name || item?.data.name) ?? 'UNKNOWN';
+			const memberof = member.memberof ?? item?.data?.memberof;
+			const meta =
+				member.kind === 'constructor'
+					? null
+					: {
+							file: member.meta.filename,
+							line: member.meta.lineno,
+							path: member.meta.path,
+						};
 
-				switch (member.kind) {
-					case 'constructor': {
-						item = new DocumentedConstructor(member, this.config);
-						break;
-					}
+			if (memberof) {
+				info.push(`member of "${memberof as string}"`);
+			}
 
-					case 'function': {
-						item = new DocumentedMethod(member, this.config);
-						break;
-					}
+			if (meta) {
+				info.push(`${relative(this.config.root, join(meta.path, meta.file))}${meta.line ? `:${meta.line}` : ''}`);
+			}
 
-					case 'member': {
-						item = new DocumentedMember(member, this.config);
-						break;
-					}
-
-					case 'event': {
-						item = new DocumentedEvent(member, this.config);
-						break;
-					}
-
-					default: {
-						// @ts-expect-error: This is a valid case
-						console.warn(`- Unknown documentation kind "${member.kind}" - \n${JSON.stringify(member)}\n`);
-					}
-				}
-
-				const parent = this.classes.get(member.memberof ?? '') ?? this.interfaces.get(member.memberof ?? '');
-				if (parent) {
-					if (item) {
-						parent.add(item);
-					} else {
-						console.warn(
-							`- Documentation item could not be constructed for "${member.name}" - \n${JSON.stringify(member)}\n`,
-						);
-					}
-
-					continue;
-				}
-
-				const info = [];
-				const name = (member.name || item?.data.name) ?? 'UNKNOWN';
-				// @ts-expect-error: Typescript can't infer this
-				const memberof = member.memberof ?? item?.data?.memberof;
-				const meta =
-					member.kind === 'constructor'
-						? null
-						: {
-								file: member.meta.filename,
-								line: member.meta.lineno,
-								path: member.meta.path,
-							};
-
-				if (memberof) {
-					info.push(`member of "${memberof as string}"`);
-				}
-
-				if (meta) {
-					info.push(`${relative(this.config.root, join(meta.path, meta.file))}${meta.line ? `:${meta.line}` : ''}`);
-				}
-
-				console.warn(`- "${name}"${info.length ? ` (${info.join(', ')})` : ''} has no accessible parent.`);
-				if (!name && !info.length) {
-					console.warn('Raw object:', member);
-				}
+			console.warn(`- "${name}"${info.length ? ` (${info.join(', ')})` : ''} has no accessible parent.`);
+			if (!name && !info.length) {
+				console.warn('Raw object:', member);
 			}
 		}
 	}
