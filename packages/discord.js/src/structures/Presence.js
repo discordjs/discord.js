@@ -106,6 +106,7 @@ export class Presence extends Base {
        * @property {?ClientPresenceStatus} web The current presence in the web application
        * @property {?ClientPresenceStatus} mobile The current presence in the mobile application
        * @property {?ClientPresenceStatus} desktop The current presence in the desktop application
+       * @property {?ClientPresenceStatus} embedded The current presence in Xbox, PlayStation and in-game application session
        */
 
       /**
