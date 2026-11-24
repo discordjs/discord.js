@@ -5,6 +5,7 @@ import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty'
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import Link from 'next/link';
 import { Fragment } from 'react';
+import { eventAnchor } from '@/util/eventAnchor';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/Collapsible';
 
 export async function Outline({ node }: { readonly node: any }) {
@@ -106,7 +107,7 @@ export async function Outline({ node }: { readonly node: any }) {
 													<div className="flex place-content-between place-items-center">
 														<Link
 															className="max-w-[25ch] grow truncate rounded-md p-2 font-mono transition-colors hover:bg-[#e7e7e9] md:max-w-none md:py-1 dark:hover:bg-[#242428]"
-															href={`#${event.displayName}`}
+															href={`#${eventAnchor(event.displayName)}`}
 														>
 															{event.displayName}
 														</Link>

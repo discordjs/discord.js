@@ -66,6 +66,10 @@ export async function DocItem({
 		return <OverloadNode node={node} packageName={packageName} version={version} />;
 	}
 
+	const nonEventNames = new Set<string>(
+		[...(node.members?.properties ?? []), ...(node.members?.methods ?? [])].map(({ displayName }) => displayName),
+	);
+
 	return (
 		<>
 			<InformationNode node={node} version={version} />
@@ -128,7 +132,12 @@ export async function DocItem({
 
 			{node.members?.events?.length ? (
 				<div>
-					<EventNode node={node.members.events} packageName={packageName} version={version} />
+					<EventNode
+						node={node.members.events}
+						nonEventNames={nonEventNames}
+						packageName={packageName}
+						version={version}
+					/>
 				</div>
 			) : null}
 
