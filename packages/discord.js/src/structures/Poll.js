@@ -17,7 +17,7 @@ export class Poll extends Base {
      *
      * @type {Snowflake}
      */
-    this.channelId = data.channel_id ?? channel.id;
+    this.channelId = data.channel_id ?? message.channelId;
 
     /**
      * The channel that this poll is in
@@ -166,6 +166,8 @@ export class Poll extends Base {
    * @returns {Promise<Poll>}
    */
   async fetch() {
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+
     await this.channel.messages.fetch(this.messageId);
 
     return this;
@@ -177,6 +179,8 @@ export class Poll extends Base {
    * @returns {Promise<Message>}
    */
   async end() {
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+
     if (this.expiresTimestamp !== null && Date.now() > this.expiresTimestamp) {
       throw new DiscordjsError(ErrorCodes.PollAlreadyExpired);
     }
