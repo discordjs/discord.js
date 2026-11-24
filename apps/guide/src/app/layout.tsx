@@ -57,39 +57,37 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 			<Body>
 				<RootProvider>
 					<DocsLayout
-						sidebar={{
-							tabs: {
-								transform(option, node) {
-									// fumadocs links a folder's tab to its first page, which in some cases is an external link
-									// that would send the tab off-site instead of into the guide section
-									const landingPage = node.children.find(
-										(child): child is Item => child.type === 'page' && !child.external,
-									);
-									const url = landingPage?.url ?? option.url;
+						tabs={{
+							transform(option, node) {
+								// fumadocs links a folder's tab to its first page, which in some cases is an external link
+								// that would send the tab off-site instead of into the guide section
+								const landingPage = node.children.find(
+									(child): child is Item => child.type === 'page' && !child.external,
+								);
+								const url = landingPage?.url ?? option.url;
 
-									const meta = source.getNodeMeta(node);
-									if (!meta || !node.icon) return { ...option, url };
+								const meta = source.getNodeMeta(node);
+								if (!meta || !node.icon) return { ...option, url };
 
-									// category selection color based on path src/styles/base.css
-									const color = `var(--${meta.path.split('/')[0]}-color, var(--color-fd-foreground))`;
+								// category selection color based on path src/styles/base.css
+								const color = `var(--${meta.path.split('/')[0]}-color, var(--color-fd-foreground))`;
 
-									return {
-										...option,
-										url,
-										icon: (
-											<div
-												className="size-full rounded-lg text-(--tab-color) max-md:border max-md:bg-(--tab-color)/10 max-md:p-1.5 [&_svg]:size-full"
-												style={
-													{
-														'--tab-color': color,
-													} as CSSProperties
-												}
-											>
-												{node.icon}
-											</div>
-										),
-									};
-								},
+								return {
+									...option,
+									url,
+									icon: (
+										<div
+											className="size-full rounded-lg text-(--tab-color) max-md:border max-md:bg-(--tab-color)/10 max-md:p-1.5 [&_svg]:size-full"
+											style={
+												{
+													'--tab-color': color,
+												} as CSSProperties
+											}
+										>
+											{node.icon}
+										</div>
+									),
+								};
 							},
 						}}
 						tree={source.pageTree}
