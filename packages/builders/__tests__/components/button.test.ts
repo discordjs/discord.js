@@ -26,7 +26,17 @@ describe('Button Components', () => {
 					.setCustomId('custom')
 					.setLabel('test')
 					.setDisabled(true)
-					.setEmoji({ name: 'test' });
+					.setEmoji({ name: '🩵' });
+
+				button.toJSON();
+			}).not.toThrowError();
+
+			expect(() => {
+				const button = new PrimaryButtonBuilder()
+					.setCustomId('custom')
+					.setLabel('test')
+					.setDisabled(true)
+					.setEmoji({ id: '1234567890123456', name: 'test', animated: true });
 
 				button.toJSON();
 			}).not.toThrowError();
@@ -37,7 +47,7 @@ describe('Button Components', () => {
 			}).not.toThrowError();
 
 			expect(() => {
-				const button = new DangerButtonBuilder().setCustomId('custom').setEmoji({ name: 'ok' });
+				const button = new DangerButtonBuilder().setCustomId('custom').setEmoji({ name: '👌' });
 				button.toJSON();
 			}).not.toThrowError();
 
@@ -47,7 +57,7 @@ describe('Button Components', () => {
 			}).not.toThrowError();
 
 			expect(() => {
-				const button = new LinkButtonBuilder().setURL('https://discord.js.org').setEmoji({ name: 'ok' });
+				const button = new LinkButtonBuilder().setURL('https://discord.js.org').setEmoji({ name: '👌' });
 				button.toJSON();
 			}).not.toThrowError();
 
@@ -72,7 +82,17 @@ describe('Button Components', () => {
 
 			expect(() => {
 				// @ts-expect-error: Invalid emoji
-				const button = new PrimaryButtonBuilder().setEmoji('test');
+				const button = new PrimaryButtonBuilder().setEmoji('🩵');
+				button.toJSON();
+			}).toThrowError();
+
+			expect(() => {
+				const button = new PrimaryButtonBuilder()
+					.setCustomId('custom')
+					.setLabel('test')
+					.setDisabled(true)
+					.setEmoji({ id: '1234567890123456', name: '1' });
+
 				button.toJSON();
 			}).toThrowError();
 
@@ -92,7 +112,7 @@ describe('Button Components', () => {
 			// @ts-expect-error: Invalid parameter for disabled
 			expect(() => new PrimaryButtonBuilder().setCustomId('hi').setDisabled(0).toJSON()).toThrowError();
 			// @ts-expect-error: Invalid emoji
-			expect(() => new PrimaryButtonBuilder().setCustomId('hi').setEmoji('foo').toJSON()).toThrowError();
+			expect(() => new PrimaryButtonBuilder().setCustomId('hi').setEmoji('🩵').toJSON()).toThrowError();
 
 			expect(() =>
 				new LinkButtonBuilder()
