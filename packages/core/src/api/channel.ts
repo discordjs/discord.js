@@ -358,7 +358,7 @@ export class ChannelsAPI {
 	 * @param messageId - The id of the message to delete
 	 * @param options - The options for deleting the message
 	 */
-	public async deleteMessage(channelId: Snowflake, messageId: Snowflake, options: RequestOptionsWithReason = {}) {
+	public async deleteMessage(channelId: Snowflake, messageId: Snowflake, options: RequestOptions = {}) {
 		await this.rest.delete(Routes.channelMessage(channelId, messageId), options);
 	}
 

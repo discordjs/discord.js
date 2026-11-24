@@ -1924,7 +1924,7 @@ export class ApiModelGenerator {
 
 				return `{@link ${target}${groups.prop ? `.${groups.prop}` : ''}${groups.name ? ` |${groups.name}` : ''}}`;
 			})
-			.replaceAll('* ', '\n * * ');
+			.replaceAll(/(?<!\*)\* /g, '\n * * ');
 	}
 
 	private _mapVarType(typey: DocgenVarTypeJson, nullable?: boolean): IExcerptToken[] {

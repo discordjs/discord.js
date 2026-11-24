@@ -27,7 +27,7 @@ import { toSnakeCase } from './Transformers.js';
  * @property {CacheFactory} [makeCache] Function to create a cache.
  * You can use your own function, or the {@link Options} class to customize the Collection used for the cache.
  * <warn>Overriding the cache used in `GuildManager`, `ChannelManager`, `GuildChannelManager`, `RoleManager`,
- * and `PermissionOverwriteManager` is unsupported and **will** break functionality</warn>
+ * and `PermissionOverwriteManager` is unsupported and will break functionality</warn>
  * @property {MessageMentionOptions} [allowedMentions] The default value for {@link BaseMessageOptions#allowedMentions}
  * @property {Partials[]} [partials] Structures allowed to be partial. This means events can be emitted even when
  * they're missing all the data for a particular structure. See the "Partial Structures" topic on the

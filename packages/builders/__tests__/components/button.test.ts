@@ -59,6 +59,12 @@ describe('Button Components', () => {
 			expect(() => new LinkButtonBuilder().setLabel('label').setURL('https://google.com').toJSON()).not.toThrowError();
 		});
 
+		test('GIVEN an id THEN every button style serializes it', () => {
+			expect(new PrimaryButtonBuilder().setCustomId('custom').setLabel('test').setId(5).toJSON().id).toBe(5);
+			expect(new LinkButtonBuilder().setURL('https://discord.js.org').setLabel('test').setId(5).toJSON().id).toBe(5);
+			expect(new PremiumButtonBuilder().setSKUId('123456789012345678').setId(5).toJSON().id).toBe(5);
+		});
+
 		test('GIVEN invalid fields THEN build does throw', () => {
 			expect(() => {
 				new PrimaryButtonBuilder().setCustomId(longStr).toJSON();
