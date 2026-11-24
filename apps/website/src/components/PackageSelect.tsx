@@ -11,7 +11,7 @@ export function PackageSelect() {
 	}>();
 
 	return (
-		<Select aria-label="Select a package" defaultSelectedKey={params.packageName} key={params.packageName}>
+		<Select aria-label="Select a package" defaultValue={params.packageName} key={params.packageName}>
 			<SelectTrigger className="bg-[#f3f3f4] dark:bg-[#121214]" />
 			<SelectList classNames={{ popover: 'bg-[#f3f3f4] dark:bg-[#28282d]' }} items={PACKAGES}>
 				{(item) => (

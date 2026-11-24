@@ -20,7 +20,7 @@ export function VersionSelect({
 	return (
 		<Select
 			aria-label={isLoading ? 'Loading versions...' : 'Select a version'}
-			defaultSelectedKey={params.version}
+			defaultValue={params.version}
 			key={`${params.packageName}-${params.version}`}
 			placeholder={isLoading ? 'Loading versions...' : 'Select a version'}
 		>
