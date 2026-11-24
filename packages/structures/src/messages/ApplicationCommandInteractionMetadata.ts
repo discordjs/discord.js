@@ -3,6 +3,9 @@ import { kData } from '../utils/symbols.js';
 import type { Partialize } from '../utils/types.js';
 import { InteractionMetadata } from './InteractionMetadata.js';
 
+// TODO: does this better belong in the ApplicationCommands/* folders
+// TODO: now that we have appcmds structures(?)
+
 /**
  * Represents metadata about the application command interaction causing a message.
  *
