@@ -19,7 +19,12 @@ export interface JSONEncodable<Value> {
  * @param maybeEncodable - The object to check against
  */
 export function isJSONEncodable(maybeEncodable: unknown): maybeEncodable is JSONEncodable<unknown> {
-	return maybeEncodable !== null && typeof maybeEncodable === 'object' && 'toJSON' in maybeEncodable;
+	return (
+		maybeEncodable !== null &&
+		typeof maybeEncodable === 'object' &&
+		'toJSON' in maybeEncodable &&
+		typeof maybeEncodable.toJSON === 'function'
+	);
 }
 
 /**
@@ -58,7 +63,12 @@ export interface FileBodyEncodable<BodyValue> {
  * @param maybeEncodable - The object to check against
  */
 export function isFileBodyEncodable(maybeEncodable: unknown): maybeEncodable is FileBodyEncodable<unknown> {
-	return maybeEncodable !== null && typeof maybeEncodable === 'object' && 'toFileBody' in maybeEncodable;
+	return (
+		maybeEncodable !== null &&
+		typeof maybeEncodable === 'object' &&
+		'toFileBody' in maybeEncodable &&
+		typeof maybeEncodable.toFileBody === 'function'
+	);
 }
 
 /**
@@ -79,5 +89,7 @@ export interface RawFileEncodable extends JSONEncodable<RESTAPIAttachment> {
  * @param maybeEncodable - The object to check against
  */
 export function isRawFileEncodable(maybeEncodable: unknown): maybeEncodable is RawFileEncodable {
-	return isJSONEncodable(maybeEncodable) && 'getRawFile' in maybeEncodable;
+	return (
+		isJSONEncodable(maybeEncodable) && 'getRawFile' in maybeEncodable && typeof maybeEncodable.getRawFile === 'function'
+	);
 }
