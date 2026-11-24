@@ -102,6 +102,13 @@ export default defineConfig({
 			},
 		},
 		{
+			files: ['packages/discord.js/**/*.{js,mjs,cjs}'],
+			env: { node: true, es2026: true },
+			rules: {
+				'no-undef': 2,
+			},
+		},
+		{
 			files: ['packages/discord.js/src/**/*.{js,cjs}'],
 			rules: {
 				'jsdoc/check-tag-names': [2, { definedTags: ['emits', 'extends', 'method'] }],
