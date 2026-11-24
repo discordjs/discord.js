@@ -195,10 +195,16 @@ export class GuildSoundboardSoundManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetch(options) {
-    if (!options) return this._fetchMany();
+    if (options === undefined) {
+      return this._fetchMany();
+    }
+
     const { cache, force, soundboardSound } = options;
     const resolvedSoundboardSound = this.resolveId(soundboardSound ?? options);
-    if (resolvedSoundboardSound) return this._fetchSingle({ cache, force, soundboardSound: resolvedSoundboardSound });
+    if (resolvedSoundboardSound !== null) {
+      return this._fetchSingle({ cache, force, soundboardSound: resolvedSoundboardSound });
+    }
+
     return this._fetchMany({ cache });
   }
 
