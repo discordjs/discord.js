@@ -5,12 +5,6 @@ export default (client, { d: data }) => {
   const guild = client.guilds.cache.get(data.guild_id);
   if (!guild) return;
 
-  // Update the state
-  const oldState =
-    guild.voiceStates.cache.get(data.user_id)?._clone() ?? new VoiceState(guild, { user_id: data.user_id });
-
-  const newState = guild.voiceStates._add(data);
-
   // Get the member
   let member = guild.members.cache.get(data.user_id);
   if (member && data.member) {
@@ -18,6 +12,17 @@ export default (client, { d: data }) => {
   } else if (data.member?.user && data.member.joined_at) {
     member = guild.members._add(data.member);
   }
+
+  // Update the state
+  const oldState =
+    guild.voiceStates.cache.get(data.user_id)?._clone() ??
+    new VoiceState(guild, {
+      user_id: data.user_id,
+      mute: member?._serverMute ?? null,
+      deaf: member?._serverDeaf ?? null,
+    });
+
+  const newState = guild.voiceStates._add(data);
 
   // Emit event
   if (member?.user.id === client.user.id) {

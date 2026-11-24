@@ -60,6 +60,22 @@ export class GuildMember extends Base {
      */
     Object.defineProperty(this, '_roles', { value: [], writable: true });
 
+    /**
+     * The server mute state of the member
+     * @name GuildMember#_serverMute
+     * @type {boolean}
+     * @private
+     */
+    Object.defineProperty(this, '_serverMute', { value: null, writable: true });
+
+    /**
+     * The server deaf state of the member
+     * @name GuildMember#_serverDeaf
+     * @type {boolean}
+     * @private
+     */
+    Object.defineProperty(this, '_serverDeaf', { value: null, writable: true });
+
     this._patch(data);
   }
 
@@ -112,6 +128,8 @@ export class GuildMember extends Base {
     }
 
     if ('roles' in data) this._roles = data.roles;
+    if ('mute' in data) this._serverMute = data.mute;
+    if ('deaf' in data) this._serverDeaf = data.deaf;
 
     if ('pending' in data) {
       this.pending = data.pending;
@@ -195,7 +213,14 @@ export class GuildMember extends Base {
    * @readonly
    */
   get voice() {
-    return this.guild.voiceStates.cache.get(this.id) ?? new VoiceState(this.guild, { user_id: this.id });
+    return (
+      this.guild.voiceStates.cache.get(this.id) ??
+      new VoiceState(this.guild, {
+        user_id: this.id,
+        mute: this._serverMute,
+        deaf: this._serverDeaf,
+      })
+    );
   }
 
   /**
