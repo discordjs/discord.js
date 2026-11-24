@@ -1,6 +1,6 @@
 'use client';
 
-import { isServer, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { environmentManager, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider as JotaiProvider } from 'jotai';
 import { ThemeProvider } from 'next-themes';
 import { useRouter } from 'next/navigation';
@@ -24,7 +24,7 @@ function makeQueryClient() {
 let browserQueryClient: QueryClient | undefined;
 
 function getQueryClient() {
-	if (isServer) {
+	if (environmentManager.isServer()) {
 		// Server: always make a new query client
 		return makeQueryClient();
 	} else {
