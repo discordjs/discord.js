@@ -683,11 +683,11 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		let accumulator!: InitialValue;
 
 		const iterator = this.entries();
-		if (initialValue === undefined) {
+		if (arguments.length < 2) {
 			if (this.size === 0) throw new TypeError('Reduce of empty collection with no initial value');
 			accumulator = iterator.next().value![1] as unknown as InitialValue;
 		} else {
-			accumulator = initialValue;
+			accumulator = initialValue as InitialValue;
 		}
 
 		for (const { 0: key, 1: value } of iterator) {
@@ -721,12 +721,12 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		let accumulator!: InitialValue;
 
 		let index: number;
-		if (initialValue === undefined) {
+		if (arguments.length < 2) {
 			if (entries.length === 0) throw new TypeError('Reduce of empty collection with no initial value');
 			accumulator = entries[entries.length - 1]![1] as unknown as InitialValue;
 			index = entries.length - 1;
 		} else {
-			accumulator = initialValue;
+			accumulator = initialValue as InitialValue;
 			index = entries.length;
 		}
 
