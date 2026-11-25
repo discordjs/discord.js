@@ -78,6 +78,11 @@ export class VoiceUDPSocket extends EventEmitter {
 	private readonly keepAliveInterval: NodeJS.Timeout;
 
 	/**
+	 * The Node.js immediate for the first keep alive message.
+	 */
+	private readonly keepAliveImmediate: NodeJS.Immediate;
+
+	/**
 	 * The time taken to receive a response to keep alive messages.
 	 *
 	 * @deprecated This field is no longer updated as keep alive messages are no longer tracked.
@@ -98,7 +103,7 @@ export class VoiceUDPSocket extends EventEmitter {
 		this.remote = remote;
 		this.keepAliveBuffer = Buffer.alloc(8);
 		this.keepAliveInterval = setInterval(() => this.keepAlive(), KEEP_ALIVE_INTERVAL);
-		setImmediate(() => this.keepAlive());
+		this.keepAliveImmediate = setImmediate(() => this.keepAlive());
 	}
 
 	/**
@@ -141,6 +146,7 @@ export class VoiceUDPSocket extends EventEmitter {
 		} catch {}
 
 		clearInterval(this.keepAliveInterval);
+		clearImmediate(this.keepAliveImmediate);
 	}
 
 	/**

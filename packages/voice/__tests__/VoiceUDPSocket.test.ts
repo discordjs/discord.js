@@ -37,6 +37,21 @@ async function wait() {
 	});
 }
 
+describe('VoiceUDPSocket#destroy', () => {
+	test('Does not send a keep alive after being destroyed', async () => {
+		const fake = new FakeSocket();
+		const fakeSend = vitest.fn();
+		fake.send = fakeSend;
+		createSocket.mockImplementation(() => fake as any);
+		const socket = new VoiceUDPSocket({ ip: '1.2.3.4', port: 25_565 });
+
+		socket.destroy();
+		await wait();
+
+		expect(fakeSend).not.toHaveBeenCalled();
+	});
+});
+
 describe('VoiceUDPSocket#performIPDiscovery', () => {
 	let socket: VoiceUDPSocket;
 
@@ -45,8 +60,8 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 	});
 
 	/*
-		Ensures that the UDP socket sends data and parses the response correctly
-	*/
+        Ensures that the UDP socket sends data and parses the response correctly
+    */
 	test('Resolves and cleans up with a successful flow', async () => {
 		const fake = new FakeSocket();
 		fake.send = vitest.fn().mockImplementation((_buffer: Buffer, _port: number, _address: string) => {
@@ -66,9 +81,9 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 	});
 
 	/*
-		In the case where an unrelated message is received before the IP discovery buffer,
-		the UDP socket should wait indefinitely until the correct buffer arrives.
-	*/
+        In the case where an unrelated message is received before the IP discovery buffer,
+        the UDP socket should wait indefinitely until the correct buffer arrives.
+    */
 	test('Waits for a valid response in an unexpected flow', async () => {
 		const fake = new FakeSocket();
 		const fakeResponse = Buffer.from([1, 2, 3, 4, 5]);
