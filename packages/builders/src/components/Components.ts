@@ -16,6 +16,9 @@ import {
 } from './button/CustomIdButton.js';
 import { LinkButtonBuilder } from './button/LinkButton.js';
 import { PremiumButtonBuilder } from './button/PremiumButton.js';
+import { CheckboxBuilder } from './checkbox/Checkbox.js';
+import { CheckboxGroupBuilder } from './checkbox/CheckboxGroup.js';
+import { RadioGroupBuilder } from './checkbox/RadioGroup.js';
 import { ComponentBuilder } from './Component.js';
 import { FileUploadBuilder } from './fileUpload/FileUpload.js';
 import { LabelBuilder } from './label/Label.js';
@@ -58,9 +61,12 @@ export type MessageComponentBuilder =
  */
 export type ModalComponentBuilder =
 	| ActionRowBuilder
+	| CheckboxBuilder
+	| CheckboxGroupBuilder
 	| FileUploadBuilder
 	| LabelBuilder
-	| ModalActionRowComponentBuilder;
+	| ModalActionRowComponentBuilder
+	| RadioGroupBuilder;
 
 /**
  * Any button builder
@@ -171,6 +177,18 @@ export interface MappedComponentTypes {
 	 * The file upload component type is associated with a {@link FileUploadBuilder}.
 	 */
 	[ComponentType.FileUpload]: FileUploadBuilder;
+	/**
+	 * The radio group component type is associated with a {@link RadioGroupBuilder}.
+	 */
+	[ComponentType.RadioGroup]: RadioGroupBuilder;
+	/**
+	 * The checkbox group component type is associated with a {@link CheckboxGroupBuilder}.
+	 */
+	[ComponentType.CheckboxGroup]: CheckboxGroupBuilder;
+	/**
+	 * The checkbox component type is associated with a {@link CheckboxBuilder}.
+	 */
+	[ComponentType.Checkbox]: CheckboxBuilder;
 }
 
 /**
@@ -235,8 +253,14 @@ export function createComponentBuilder(
 			return new LabelBuilder(data);
 		case ComponentType.FileUpload:
 			return new FileUploadBuilder(data);
+		case ComponentType.RadioGroup:
+			return new RadioGroupBuilder(data);
+		case ComponentType.CheckboxGroup:
+			return new CheckboxGroupBuilder(data);
+		case ComponentType.Checkbox:
+			return new CheckboxBuilder(data);
 		default:
-			// TODO: add back @ts-expect-error This case can still occur if we get a newer unsupported component type
+			// @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
 	}
 }

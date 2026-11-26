@@ -4,6 +4,13 @@ export * from './components/button/CustomIdButton.js';
 export * from './components/button/LinkButton.js';
 export * from './components/button/PremiumButton.js';
 
+export * from './components/checkbox/Checkbox.js';
+export * from './components/checkbox/CheckboxGroup.js';
+export * from './components/checkbox/CheckboxGroupOption.js';
+export * from './components/checkbox/RadioGroup.js';
+export * from './components/checkbox/RadioGroupOption.js';
+export * from './components/checkbox/Assertions.js';
+
 export * from './components/fileUpload/FileUpload.js';
 export * from './components/fileUpload/Assertions.js';
 

@@ -8,6 +8,7 @@ import {
 	selectMenuStringPredicate,
 	selectMenuUserPredicate,
 } from '../Assertions.js';
+import { checkboxGroupPredicate, checkboxPredicate, radioGroupPredicate } from '../checkbox/Assertions.js';
 import { fileUploadPredicate } from '../fileUpload/Assertions.js';
 import { textInputPredicate } from '../textInput/Assertions.js';
 
@@ -24,5 +25,8 @@ export const labelPredicate = z.object({
 		selectMenuMentionablePredicate,
 		selectMenuChannelPredicate,
 		fileUploadPredicate,
+		radioGroupPredicate,
+		checkboxGroupPredicate,
+		checkboxPredicate,
 	]),
 });
