@@ -49,7 +49,7 @@ export class OverflowMenuBuilder extends ComponentBuilder<APIOverflowMenuCompone
 	 * });
 	 * ```
 	 * @example
-	 * Creating a media gallery using setters and API data:
+	 * Creating a overflow menu using setters and API data:
 	 * ```ts
 	 * const overflowMenu = new OverflowMenuBuilder({
 	 * 	groups: [
