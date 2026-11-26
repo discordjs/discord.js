@@ -10,6 +10,13 @@ export * from './components/fileUpload/Assertions.js';
 export * from './components/label/Label.js';
 export * from './components/label/Assertions.js';
 
+export * from './components/overflowMenu/CustomIdMenuActionItem.js';
+export * from './components/overflowMenu/LinkMenuActionItem.js';
+export * from './components/overflowMenu/MenuActionItem.js';
+export * from './components/overflowMenu/OverflowMenu.js';
+export * from './components/overflowMenu/OverflowMenuGroup.js';
+export * from './components/overflowMenu/REMOVEBEFOREPRMERGE.js'; //TODO: remove!
+
 export * from './components/selectMenu/BaseSelectMenu.js';
 export * from './components/selectMenu/ChannelSelectMenu.js';
 export * from './components/selectMenu/MentionableSelectMenu.js';

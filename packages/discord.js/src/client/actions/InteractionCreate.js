@@ -4,6 +4,7 @@ import { ButtonInteraction } from '../../structures/ButtonInteraction.js';
 import { ChannelSelectMenuInteraction } from '../../structures/ChannelSelectMenuInteraction.js';
 import { ChatInputCommandInteraction } from '../../structures/ChatInputCommandInteraction.js';
 import { MentionableSelectMenuInteraction } from '../../structures/MentionableSelectMenuInteraction.js';
+import { MenuActionItemInteraction } from '../../structures/MenuActionItemInteraction.js';
 import { MessageContextMenuCommandInteraction } from '../../structures/MessageContextMenuCommandInteraction.js';
 import { ModalSubmitInteraction } from '../../structures/ModalSubmitInteraction.js';
 import { PrimaryEntryPointCommandInteraction } from '../../structures/PrimaryEntryPointCommandInteraction.js';
@@ -72,6 +73,9 @@ export class InteractionCreateAction extends Action {
             break;
           case ComponentType.ChannelSelect:
             InteractionClass = ChannelSelectMenuInteraction;
+            break;
+          case 26: // TODO: ComponentType.MenuActionItem
+            InteractionClass = MenuActionItemInteraction;
             break;
           default:
             client.emit(

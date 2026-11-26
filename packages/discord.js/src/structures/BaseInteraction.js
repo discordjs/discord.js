@@ -364,6 +364,15 @@ export class BaseInteraction extends Base {
   }
 
   /**
+   * Indicates whether this interaction is a {@link MenuActionItemInteraction}.
+   *
+   * @returns {boolean}
+   */
+  isMenuActionItem() {
+    return this.type === InteractionType.MessageComponent && this.componentType === 26; // TODO: ComponentType.MenuActionItem
+  }
+
+  /**
    * Indicates whether this interaction can be replied to.
    *
    * @returns {boolean}

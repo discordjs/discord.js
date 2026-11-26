@@ -1,6 +1,12 @@
-import { ButtonStyle, ChannelType, ComponentType, SelectMenuDefaultValueType } from 'discord-api-types/v10';
+import {
+	/* MenuActionItemStyle,*/ ButtonStyle,
+	ChannelType,
+	ComponentType,
+	SelectMenuDefaultValueType,
+} from 'discord-api-types/v10';
 import { z } from 'zod';
 import { idPredicate, customIdPredicate, snowflakePredicate } from '../Assertions.js';
+import { MenuActionItemStyle } from './overflowMenu/REMOVEBEFOREPRMERGE.js';
 
 export const emojiPredicate = z
 	.strictObject({
@@ -180,4 +186,50 @@ export const actionRowPredicate = z.object({
 			.array()
 			.length(1),
 	]),
+});
+
+const menuActionItemPredicateBase = z
+	.strictObject({
+		id: idPredicate,
+		type: z.literal(26), //TODO: ComponentType.MenuActionItem
+		label: z.string().min(1).max(80),
+		description: z.string().min(1).max(100).optional(),
+		emoji: emojiPredicate.optional(),
+		disabled: z.boolean().optional(),
+	})
+	.refine((data) => data.emoji !== undefined || data.label !== undefined, {
+		message: 'Menu action items must have either an emoji or a label.',
+	});
+
+const menuActionItemCustomIdPredicateBase = menuActionItemPredicateBase.extend({
+	customId: customIdPredicate,
+});
+
+const menuActionItemDefaultPredicate = menuActionItemCustomIdPredicateBase.safeExtend({
+	style: z.literal(MenuActionItemStyle.Default),
+});
+const menuActionItemDangerPredicate = menuActionItemCustomIdPredicateBase.safeExtend({
+	style: z.literal(MenuActionItemStyle.Danger),
+});
+
+const menuActionItemLinkPredicate = menuActionItemPredicateBase.extend({
+	url: z.url({ protocol: /^(?:https?|discord)$/ }).max(512),
+	style: z.literal(MenuActionItemStyle.Link),
+});
+
+export const menuActionItemPredicate = z.union([
+	menuActionItemDefaultPredicate,
+	menuActionItemDangerPredicate,
+	menuActionItemLinkPredicate,
+]);
+
+export const overflowMenuGroupPredicate = z.object({
+	label: z.string().min(1).max(80).optional(),
+	components: menuActionItemPredicate.array().min(1).max(8),
+});
+
+export const overflowMenuPredicate = z.object({
+	id: idPredicate,
+	type: z.literal(25), //TODO: ComponentType.OverflowMenu
+	groups: overflowMenuGroupPredicate.array().min(1).max(8),
 });

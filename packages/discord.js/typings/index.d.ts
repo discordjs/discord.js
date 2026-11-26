@@ -2,6 +2,7 @@ import { Buffer } from 'node:buffer';
 import { ChildProcess } from 'node:child_process';
 import { Stream } from 'node:stream';
 import { MessagePort, Worker } from 'node:worker_threads';
+import type { APIMenuActionItemComponent, APIOverflowMenuComponent } from '@discordjs/builders'; // TODO: import from dtypes
 import { Collection, ReadonlyCollection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions, EmojiURLOptions } from '@discordjs/rest';
 import { Awaitable, FileBodyEncodable, JSONEncodable, RawFileEncodable } from '@discordjs/util';
@@ -291,7 +292,8 @@ export type MessageActionRowComponentData =
   | MentionableSelectMenuComponentData
   | RoleSelectMenuComponentData
   | StringSelectMenuComponentData
-  | UserSelectMenuComponentData;
+  | UserSelectMenuComponentData
+  | OverflowMenuComponentData;
 
 export type ActionRowComponentData = MessageActionRowComponentData;
 
@@ -731,7 +733,9 @@ export type AnyComponent =
   | AnyComponentV2
   | APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>
   | APIMessageComponent
-  | APIModalComponent;
+  | APIModalComponent
+  | APIOverflowMenuComponent
+  | APIMenuActionItemComponent; // TODO: remove special handling
 
 export class Component<RawComponentData extends AnyComponent = AnyComponent> {
   public readonly data: Readonly<RawComponentData>;
@@ -772,6 +776,23 @@ export class ButtonComponent extends Component<APIButtonComponent> {
 }
 
 export type ComponentEmojiResolvable = APIMessageComponentEmoji | string;
+
+export class OverflowMenuComponent extends Component<APIOverflowMenuComponent> {
+  public readonly groups: OverflowMenuGroup[];
+}
+
+export class OverflowMenuGroup {
+  public readonly components: MenuActionItemComponent[];
+  public get label(): string | null;
+}
+export class MenuActionItemComponent extends Component<APIMenuActionItemComponent> {
+  public get style(): MenuActionItemStyle;
+  public get label(): string;
+  public get emoji(): APIMessageComponentEmoji | null;
+  public get disabled(): boolean;
+  public get customId(): string | null;
+  public get url(): string | null;
+}
 
 export class TextInputComponent extends Component<APITextInputComponent> {
   public get customId(): string;
@@ -3103,7 +3124,7 @@ export class RoleFlagsBitField extends BitField<RoleFlagsString> {
 }
 
 export interface SectionComponentData extends BaseComponentData<ComponentType.Section> {
-  accessory: ButtonComponentData | ThumbnailComponentData;
+  accessory: ButtonComponentData | ThumbnailComponentData | OverflowMenuComponentData;
   components: readonly TextDisplayComponentData[];
 }
 
@@ -6809,6 +6830,42 @@ export interface InteractionButtonComponentData extends BaseButtonComponentData 
 }
 
 export type ButtonComponentData = InteractionButtonComponentData | LinkButtonComponentData;
+
+export interface OverflowMenuComponentData extends BaseComponentData<ComponentType.OverflowMenu> {
+  groups: readonly OverflowMenuGroupData[];
+}
+
+export interface OverflowMenuGroupData {
+  label?: string;
+  components: readonly MenuActionItemComponentData[];
+}
+export interface BaseMenuActionItemComponentData<
+  Style extends MenuActionItemStyle,
+> extends BaseComponentData<ComponentType.MenuActionItem> {
+  label: string;
+  style: Style;
+  description?: string;
+  emoji?: ComponentEmojiResolvable;
+  disabled?: boolean;
+}
+
+export interface MenuActionItemComponentWithCustomIdData extends BaseMenuActionItemComponentData<
+  MenuActionItemStyle.Danger | MenuActionItemStyle.Default
+> {
+  customId: string;
+}
+
+export interface MenuActionItemComponentWithURLData extends BaseMenuActionItemComponentData<MenuActionItemStyle.Link> {
+  url: string;
+}
+
+export enum MenuActionItemStyle {
+  Default = 1,
+  Danger = 2,
+  Link = 3,
+} // TODO: import from dtypes
+
+export type MenuActionItemComponentData = MenuActionItemComponentWithCustomIdData | MenuActionItemComponentWithURLData;
 
 export interface MessageCollectorOptions extends CollectorOptions<[Message, Collection<Snowflake, Message>]> {
   max?: number;
