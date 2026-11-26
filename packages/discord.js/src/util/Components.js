@@ -8,6 +8,8 @@ import { FileComponent } from '../structures/FileComponent.js';
 import { LabelComponent } from '../structures/LabelComponent.js';
 import { MediaGalleryComponent } from '../structures/MediaGalleryComponent.js';
 import { MentionableSelectMenuComponent } from '../structures/MentionableSelectMenuComponent.js';
+import { MenuActionItemComponent } from '../structures/MenuActionItemComponent.js';
+import { OverflowMenuComponent } from '../structures/OverflowMenuComponent.js';
 import { RoleSelectMenuComponent } from '../structures/RoleSelectMenuComponent.js';
 import { SectionComponent } from '../structures/SectionComponent.js';
 import { SeparatorComponent } from '../structures/SeparatorComponent.js';
@@ -263,6 +265,10 @@ const ComponentTypeToClass = {
   [ComponentType.Separator]: SeparatorComponent,
   [ComponentType.Thumbnail]: ThumbnailComponent,
   [ComponentType.Label]: LabelComponent,
+  // TODO: [ComponentType.OverflowMenu]: OverflowMenuComponent,
+  // TODO: [ComponentType.MenuActionItem]: MenuActionItemComponent,
+  25: OverflowMenuComponent,
+  26: MenuActionItemComponent,
 };
 
 /**

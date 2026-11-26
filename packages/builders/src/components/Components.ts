@@ -2,6 +2,7 @@ import type {
 	APIBaseComponent,
 	APIButtonComponent,
 	APIMessageComponent,
+	APIMessageComponentEmoji,
 	APIModalComponent,
 	APISectionAccessoryComponent,
 } from 'discord-api-types/v10';
@@ -19,6 +20,9 @@ import { PremiumButtonBuilder } from './button/PremiumButton.js';
 import { ComponentBuilder } from './Component.js';
 import { FileUploadBuilder } from './fileUpload/FileUpload.js';
 import { LabelBuilder } from './label/Label.js';
+import { DangerMenuActionItemBuilder, DefaultMenuActionItemBuilder } from './overflowMenu/CustomIdMenuActionItem.js';
+import { LinkMenuActionItemBuilder } from './overflowMenu/LinkMenuActionItem.js';
+import { OverflowMenuBuilder } from './overflowMenu/OverflowMenu.js';
 import { ChannelSelectMenuBuilder } from './selectMenu/ChannelSelectMenu.js';
 import { MentionableSelectMenuBuilder } from './selectMenu/MentionableSelectMenu.js';
 import { RoleSelectMenuBuilder } from './selectMenu/RoleSelectMenu.js';
@@ -32,6 +36,50 @@ import { SectionBuilder } from './v2/Section.js';
 import { SeparatorBuilder } from './v2/Separator.js';
 import { TextDisplayBuilder } from './v2/TextDisplay.js';
 import { ThumbnailBuilder } from './v2/Thumbnail.js';
+
+// TODO: import from discord-api-types when available
+declare module 'discord-api-types/v10' {
+	enum ComponentType {
+		OverflowMenu = 25,
+		MenuActionItem = 26,
+	}
+}
+
+export interface APIOverflowMenuComponent extends APIBaseComponent<ComponentType.OverflowMenu> {
+	groups: APIOverflowMenuGroup[];
+}
+
+export interface APIOverflowMenuGroup {
+	label?: string;
+	components: APIMenuActionItemComponent[];
+}
+export interface APIMenuActionItemComponentBase<
+	Style extends MenuActionItemStyle,
+> extends APIBaseComponent<ComponentType.MenuActionItem> {
+	label: string;
+	style: Style;
+	description?: string;
+	emoji?: APIMessageComponentEmoji;
+	disabled?: boolean;
+}
+
+export interface APIMenuActionItemComponentWithCustomId extends APIMenuActionItemComponentBase<
+	MenuActionItemStyle.Danger | MenuActionItemStyle.Default
+> {
+	custom_id: string;
+}
+
+export interface APIMenuActionItemComponentWithURL extends APIMenuActionItemComponentBase<MenuActionItemStyle.Link> {
+	url: string;
+}
+
+export enum MenuActionItemStyle {
+	Default = 1,
+	Danger = 2,
+	Link = 3,
+}
+
+export type APIMenuActionItemComponent = APIMenuActionItemComponentWithCustomId | APIMenuActionItemComponentWithURL;
 
 /**
  * The builders that may be used as top-level components on messages
@@ -51,7 +99,8 @@ export type MessageTopLevelComponentBuilder =
 export type MessageComponentBuilder =
 	| MessageActionRowComponentBuilder
 	| MessageTopLevelComponentBuilder
-	| ThumbnailBuilder;
+	| ThumbnailBuilder
+	| MenuActionItemBuilder;
 
 /**
  * The builders that may be used for modals.
@@ -74,6 +123,14 @@ export type ButtonBuilder =
 	| SuccessButtonBuilder;
 
 /**
+ * Any menu action item builder
+ */
+export type MenuActionItemBuilder =
+	| DefaultMenuActionItemBuilder
+	| DangerMenuActionItemBuilder
+	| LinkMenuActionItemBuilder;
+
+/**
  * The builders that may be used within an action row for messages.
  */
 export type MessageActionRowComponentBuilder =
@@ -82,7 +139,8 @@ export type MessageActionRowComponentBuilder =
 	| MentionableSelectMenuBuilder
 	| RoleSelectMenuBuilder
 	| StringSelectMenuBuilder
-	| UserSelectMenuBuilder;
+	| UserSelectMenuBuilder
+	| OverflowMenuBuilder;
 
 /**
  * The builders that may be used within an action row for modals.
@@ -171,6 +229,14 @@ export interface MappedComponentTypes {
 	 * The file upload component type is associated with a {@link FileUploadBuilder}.
 	 */
 	[ComponentType.FileUpload]: FileUploadBuilder;
+	/**
+	 * The overflow menu component type is associated with a {@link OverflowMenuBuilder}.
+	 */
+	[ComponentType.OverflowMenu]: OverflowMenuBuilder;
+	/**
+	 * The menu action item component type is associated with a {@link BaseMenuActionItemBuilder}.
+	 */
+	[ComponentType.MenuActionItem]: MenuActionItemBuilder;
 }
 
 /**
@@ -180,7 +246,9 @@ export interface MappedComponentTypes {
  * @param data - The API data to transform to a component class
  */
 export function createComponentBuilder<ComponentType extends keyof MappedComponentTypes>(
-	data: (APIModalComponent | APIMessageComponent) & { type: ComponentType },
+	data: (APIModalComponent | APIMessageComponent | APIOverflowMenuComponent | APIMenuActionItemComponent) & {
+		type: ComponentType;
+	}, // TODO: remove special handling
 ): MappedComponentTypes[ComponentType];
 
 /**
@@ -194,7 +262,12 @@ export function createComponentBuilder<ComponentBuilder extends MessageComponent
 ): ComponentBuilder;
 
 export function createComponentBuilder(
-	data: APIMessageComponent | APIModalComponent | MessageComponentBuilder,
+	data:
+		| APIMessageComponent
+		| APIModalComponent
+		| MessageComponentBuilder
+		| APIOverflowMenuComponent
+		| APIMenuActionItemComponent, // TODO: remove special handling
 ): ComponentBuilder<APIBaseComponent<ComponentType>> {
 	if (data instanceof ComponentBuilder) {
 		return data;
@@ -235,6 +308,10 @@ export function createComponentBuilder(
 			return new LabelBuilder(data);
 		case ComponentType.FileUpload:
 			return new FileUploadBuilder(data);
+		case ComponentType.OverflowMenu:
+			return new OverflowMenuBuilder(data);
+		case ComponentType.MenuActionItem:
+			return createMenuActionItemBuilder(data);
 		default:
 			// TODO: add back @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
@@ -258,6 +335,20 @@ function createButtonBuilder(data: APIButtonComponent): ButtonBuilder {
 		default:
 			// @ts-expect-error This case can still occur if we get a newer unsupported button style
 			throw new Error(`Cannot properly serialize button with style: ${data.style}`);
+	}
+}
+
+function createMenuActionItemBuilder(data: APIMenuActionItemComponent): MenuActionItemBuilder {
+	switch (data.style) {
+		case MenuActionItemStyle.Default:
+			return new DefaultMenuActionItemBuilder(data);
+		case MenuActionItemStyle.Danger:
+			return new DangerMenuActionItemBuilder(data);
+		case MenuActionItemStyle.Link:
+			return new LinkMenuActionItemBuilder(data);
+		default:
+			// @ts-expect-error This case can still occur if we get a newer unsupported menu action item style
+			throw new Error(`Cannot properly serialize menu action item with style ${data.style}`);
 	}
 }
 
