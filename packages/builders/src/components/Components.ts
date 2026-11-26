@@ -2,7 +2,6 @@ import type {
 	APIBaseComponent,
 	APIButtonComponent,
 	APIMessageComponent,
-	APIMessageComponentEmoji,
 	APIModalComponent,
 	APISectionAccessoryComponent,
 } from 'discord-api-types/v10';
@@ -23,6 +22,11 @@ import { LabelBuilder } from './label/Label.js';
 import { DangerMenuActionItemBuilder, DefaultMenuActionItemBuilder } from './overflowMenu/CustomIdMenuActionItem.js';
 import { LinkMenuActionItemBuilder } from './overflowMenu/LinkMenuActionItem.js';
 import { OverflowMenuBuilder } from './overflowMenu/OverflowMenu.js';
+import {
+	MenuActionItemStyle,
+	type APIMenuActionItemComponent,
+	type APIOverflowMenuComponent,
+} from './overflowMenu/REMOVEBEFOREPRMERGE.js';
 import { ChannelSelectMenuBuilder } from './selectMenu/ChannelSelectMenu.js';
 import { MentionableSelectMenuBuilder } from './selectMenu/MentionableSelectMenu.js';
 import { RoleSelectMenuBuilder } from './selectMenu/RoleSelectMenu.js';
@@ -36,50 +40,6 @@ import { SectionBuilder } from './v2/Section.js';
 import { SeparatorBuilder } from './v2/Separator.js';
 import { TextDisplayBuilder } from './v2/TextDisplay.js';
 import { ThumbnailBuilder } from './v2/Thumbnail.js';
-
-// TODO: import from discord-api-types when available
-declare module 'discord-api-types/v10' {
-	enum ComponentType {
-		OverflowMenu = 25,
-		MenuActionItem = 26,
-	}
-}
-
-export interface APIOverflowMenuComponent extends APIBaseComponent<ComponentType.OverflowMenu> {
-	groups: APIOverflowMenuGroup[];
-}
-
-export interface APIOverflowMenuGroup {
-	label?: string;
-	components: APIMenuActionItemComponent[];
-}
-export interface APIMenuActionItemComponentBase<
-	Style extends MenuActionItemStyle,
-> extends APIBaseComponent<ComponentType.MenuActionItem> {
-	label: string;
-	style: Style;
-	description?: string;
-	emoji?: APIMessageComponentEmoji;
-	disabled?: boolean;
-}
-
-export interface APIMenuActionItemComponentWithCustomId extends APIMenuActionItemComponentBase<
-	MenuActionItemStyle.Danger | MenuActionItemStyle.Default
-> {
-	custom_id: string;
-}
-
-export interface APIMenuActionItemComponentWithURL extends APIMenuActionItemComponentBase<MenuActionItemStyle.Link> {
-	url: string;
-}
-
-export enum MenuActionItemStyle {
-	Default = 1,
-	Danger = 2,
-	Link = 3,
-}
-
-export type APIMenuActionItemComponent = APIMenuActionItemComponentWithCustomId | APIMenuActionItemComponentWithURL;
 
 /**
  * The builders that may be used as top-level components on messages
@@ -247,8 +207,9 @@ export interface MappedComponentTypes {
  */
 export function createComponentBuilder<ComponentType extends keyof MappedComponentTypes>(
 	data: (APIModalComponent | APIMessageComponent | APIOverflowMenuComponent | APIMenuActionItemComponent) & {
+		// TODO: remove special handling
 		type: ComponentType;
-	}, // TODO: remove special handling
+	},
 ): MappedComponentTypes[ComponentType];
 
 /**

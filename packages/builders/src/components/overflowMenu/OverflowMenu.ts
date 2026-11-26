@@ -4,8 +4,8 @@ import { resolveBuilder } from '../../util/resolveBuilder.js';
 import { validate } from '../../util/validation.js';
 import { overflowMenuPredicate } from '../Assertions.js';
 import { ComponentBuilder } from '../Component.js';
-import type { APIOverflowMenuComponent, APIOverflowMenuGroup } from '../Components.js';
 import { OverflowMenuGroupBuilder } from './OverflowMenuGroup.js';
+import type { APIOverflowMenuComponent, APIOverflowMenuGroup } from './REMOVEBEFOREPRMERGE.js';
 
 export interface OverflowMenuBuilderData extends Partial<Omit<APIOverflowMenuComponent, 'groups'>> {
 	groups: OverflowMenuGroupBuilder[];

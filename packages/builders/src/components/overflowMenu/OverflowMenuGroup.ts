@@ -4,15 +4,14 @@ import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
 import { validate } from '../../util/validation.js';
 import { overflowMenuGroupPredicate } from '../Assertions.js';
-import {
-	createComponentBuilder,
-	type APIMenuActionItemComponentWithCustomId,
-	type APIMenuActionItemComponentWithURL,
-	type APIOverflowMenuGroup,
-	type MenuActionItemBuilder,
-} from '../Components.js';
+import { createComponentBuilder, type MenuActionItemBuilder } from '../Components.js';
 import { DangerMenuActionItemBuilder, DefaultMenuActionItemBuilder } from './CustomIdMenuActionItem.js';
 import { LinkMenuActionItemBuilder } from './LinkMenuActionItem.js';
+import type {
+	APIMenuActionItemComponentWithCustomId,
+	APIMenuActionItemComponentWithURL,
+	APIOverflowMenuGroup,
+} from './REMOVEBEFOREPRMERGE.js';
 
 export interface OverflowMenuGroupBuilderData extends Partial<Omit<APIOverflowMenuGroup, 'components'>> {
 	components: MenuActionItemBuilder[];

@@ -6,7 +6,7 @@ import {
 } from 'discord-api-types/v10';
 import { z } from 'zod';
 import { idPredicate, customIdPredicate, snowflakePredicate } from '../Assertions.js';
-import { MenuActionItemStyle } from './Components.js';
+import { MenuActionItemStyle } from './overflowMenu/REMOVEBEFOREPRMERGE.js';
 
 export const emojiPredicate = z
 	.strictObject({

@@ -2,7 +2,7 @@ import { /* type APIMenuActionItemComponent,*/ type APIMessageComponentEmoji } f
 import { validate } from '../../util/validation.js';
 import { menuActionItemPredicate } from '../Assertions.js';
 import { ComponentBuilder } from '../Component.js';
-import type { APIMenuActionItemComponent } from '../Components.js';
+import type { APIMenuActionItemComponent } from './REMOVEBEFOREPRMERGE.js';
 
 /**
  * A builder that creates API-compatible JSON data for menu action items.

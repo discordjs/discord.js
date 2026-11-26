@@ -1,6 +1,6 @@
-import { MenuActionItemStyle, type APIMenuActionItemComponentWithCustomId } from '../Components.js';
 // import { MenuActionItemStyle, type APIMenuActionItemComponentWithCustomId, ComponentType } from 'discord-api-types/v10';
 import { BaseMenuActionItemBuilder } from './MenuActionItem.js';
+import { MenuActionItemStyle, type APIMenuActionItemComponentWithCustomId } from './REMOVEBEFOREPRMERGE.js';
 
 /**
  * A builder that creates API-compatible JSON data for menu action items with custom IDs.

@@ -1,6 +1,6 @@
-import { MenuActionItemStyle, type APIMenuActionItemComponentWithURL } from '../Components.js';
 // import { MenuActionItemStyle, type APIMenuActionItemComponentWithURL, ComponentType } from 'discord-api-types/v10';
 import { BaseMenuActionItemBuilder } from './MenuActionItem.js';
+import { MenuActionItemStyle, type APIMenuActionItemComponentWithURL } from './REMOVEBEFOREPRMERGE.js';
 
 /**
  * A builder that creates API-compatible JSON data for menu action items with links.
