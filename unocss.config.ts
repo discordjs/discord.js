@@ -1,5 +1,5 @@
 import type { UserConfig } from 'unocss';
-import { defineConfig, presetTypography, presetUno } from 'unocss';
+import { defineConfig, presetTypography, presetWind3 } from 'unocss';
 
 export default defineConfig({
 	content: {
@@ -26,7 +26,7 @@ export default defineConfig({
 		},
 	},
 	presets: [
-		presetUno({ dark: 'class' }),
+		presetWind3({ dark: 'class' }),
 		presetTypography({
 			cssExtend: {
 				pre: {
