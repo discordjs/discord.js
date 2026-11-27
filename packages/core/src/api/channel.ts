@@ -32,6 +32,7 @@ import {
 	type RESTPostAPISoundboardSendSoundJSONBody,
 	type RESTPutAPIChannelPermissionJSONBody,
 	type RESTPutAPIChannelRecipientJSONBody,
+	type RESTPutAPIChannelVoiceStatusJSONBody,
 	type Snowflake,
 } from 'discord-api-types/v10';
 import type { RequestOptions, RequestOptionsWithReason } from '../util/types.js';
@@ -680,5 +681,24 @@ export class ChannelsAPI {
 	 */
 	public async removeGroupDMRecipient(channelId: Snowflake, userId: Snowflake, options: RequestOptions = {}) {
 		await this.rest.delete(Routes.channelRecipient(channelId, userId), options);
+	}
+
+	/**
+	 * Sets a voice channel's status
+	 *
+	 * @see {@link https://docs.discord.com/developers/resources/channel#set-voice-channel-status}
+	 * @param channelId - The id of the voice channel
+	 * @param body - The data for setting the voice channel status
+	 * @param options - The options for setting the voice channel status
+	 */
+	public async setVoiceChannelStatus(
+		channelId: Snowflake,
+		body: RESTPutAPIChannelVoiceStatusJSONBody,
+		options: RequestOptionsWithReason = {},
+	) {
+		await this.rest.put(Routes.channelVoiceStatus(channelId), {
+			...options,
+			body,
+		});
 	}
 }

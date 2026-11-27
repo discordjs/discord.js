@@ -2,7 +2,14 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import { Collection } from '@discordjs/collection';
 import { makeURLSearchParams } from '@discordjs/rest';
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import { ChannelType, GuildPremiumTier, Routes, GuildFeature, RESTJSONErrorCodes } from 'discord-api-types/v10';
+import {
+  ChannelType,
+  GatewayOpcodes,
+  GuildPremiumTier,
+  Routes,
+  GuildFeature,
+  RESTJSONErrorCodes,
+} from 'discord-api-types/v10';
 import { DiscordjsError, DiscordjsTypeError, ErrorCodes } from '../errors/index.js';
 import { AutoModerationRuleManager } from '../managers/AutoModerationRuleManager.js';
 import { GuildApplicationCommandManager } from '../managers/GuildApplicationCommandManager.js';
@@ -22,6 +29,7 @@ import { resolveImage } from '../util/DataResolver.js';
 import { SystemChannelFlagsBitField } from '../util/SystemChannelFlagsBitField.js';
 import { _transformAPIIncidentsData } from '../util/Transformers.js';
 import { discordSort, getSortableGroupTypes, resolvePartialEmoji } from '../util/Util.js';
+import { Events } from '../utils/Events.js';
 import { AnonymousGuild } from './AnonymousGuild.js';
 import { GuildAuditLogs } from './GuildAuditLogs.js';
 import { GuildOnboarding } from './GuildOnboarding.js';
@@ -1631,6 +1639,66 @@ export class Guild extends AnonymousGuild {
     const features = this.features.filter(feature => feature !== GuildFeature.InvitesDisabled);
     if (disabled) features.push(GuildFeature.InvitesDisabled);
     return this.edit({ features });
+  }
+
+  /**
+   * @typedef {Object} RequestChannelInfoOptions
+   * @property {GatewayRequestChannelInfoField[]} fields The fields to request
+   * @property {number} [time=10_000] The timeout for receipt of the channel info
+   */
+
+  /**
+   * Requests ephemeral channel data for channels in this guild via the gateway.
+   * The gateway responds with a {@link Events.ChannelInfo} event containing the requested
+   * fields for each channel that has them.
+   *
+   * @param {RequestChannelInfoOptions} options The options for requesting channel info for this guild
+   * @returns {Promise<Collection<Snowflake, VoiceChannel>>}
+   * @example
+   * // Request voice channel status and start time for all channels in a guild
+   * const channels = await guild.requestChannelInfo({
+   *   fields: [GatewayRequestChannelInfoField.Status, GatewayRequestChannelInfoField.VoiceStartTime],
+   * });
+   *
+   * for (const channel of channels.values()) {
+   *   if (channel.status && channel.voiceStartTimestamp) {
+   *     console.log(
+   *       `Voice channel ${channel.name} has status set to ${channel.status} and the voice session started at ${channel.voiceStartTimestamp}.`,
+   *     );
+   *   }
+   * }
+   */
+  requestChannelInfo({ fields, time = 10_000 }) {
+    return new Promise((resolve, reject) => {
+      const handler = (channels, guild) => {
+        if (guild.id !== this.id) return;
+
+        // eslint-disable-next-line no-use-before-define
+        clearTimeout(timeout);
+        this.client.removeListener(Events.ChannelInfo, handler);
+        this.client.decrementMaxListeners();
+
+        resolve(channels);
+      };
+
+      const timeout = setTimeout(() => {
+        this.client.removeListener(Events.ChannelInfo, handler);
+        this.client.decrementMaxListeners();
+        reject(new DiscordjsError(ErrorCodes.GuildChannelInfoTimeout));
+      }, time).unref();
+
+      this.client.incrementMaxListeners();
+      this.client.on(Events.ChannelInfo, handler);
+
+      this.client.ws.send(this.shardId, {
+        op: GatewayOpcodes.RequestChannelInfo,
+        // eslint-disable-next-line id-length
+        d: {
+          guild_id: this.id,
+          fields,
+        },
+      });
+    });
   }
 
   /**
