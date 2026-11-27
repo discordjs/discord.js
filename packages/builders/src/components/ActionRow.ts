@@ -336,7 +336,7 @@ export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<API
 
 		const data = {
 			...structuredClone(rest),
-			components: components.map((component) => component.toJSON(validationOverride)),
+			components: components.map((component) => component.toJSON(false)),
 		};
 
 		validate(actionRowPredicate, data, validationOverride);

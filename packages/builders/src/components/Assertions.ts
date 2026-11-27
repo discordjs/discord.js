@@ -1,6 +1,7 @@
 import { ButtonStyle, ChannelType, ComponentType, SelectMenuDefaultValueType } from 'discord-api-types/v10';
 import { z } from 'zod';
 import { idPredicate, customIdPredicate, snowflakePredicate } from '../Assertions.js';
+import { textInputPredicate } from './textInput/Assertions.js';
 
 export const emojiPredicate = z
 	.strictObject({
@@ -161,22 +162,16 @@ export const actionRowPredicate = z.object({
 	id: idPredicate,
 	type: z.literal(ComponentType.ActionRow),
 	components: z.union([
+		buttonPredicate.array().min(1).max(5),
 		z
-			.object({ type: z.literal(ComponentType.Button) })
-			.array()
-			.min(1)
-			.max(5),
-		z
-			.object({
-				type: z.literal([
-					ComponentType.ChannelSelect,
-					ComponentType.MentionableSelect,
-					ComponentType.StringSelect,
-					ComponentType.RoleSelect,
-					ComponentType.TextInput,
-					ComponentType.UserSelect,
-				]),
-			})
+			.union([
+				selectMenuChannelPredicate,
+				selectMenuMentionablePredicate,
+				selectMenuRolePredicate,
+				selectMenuStringPredicate,
+				selectMenuUserPredicate,
+				textInputPredicate,
+			])
 			.array()
 			.length(1),
 	]),
