@@ -4,13 +4,14 @@ import {
 	type APIActionRowComponent,
 	type APIComponentInMessageActionRow,
 } from 'discord-api-types/v10';
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, vi } from 'vitest';
 import {
 	ActionRowBuilder,
 	createComponentBuilder,
 	PrimaryButtonBuilder,
 	StringSelectMenuBuilder,
 	StringSelectMenuOptionBuilder,
+	TextInputBuilder,
 } from '../../src/index.js';
 
 const rowWithButtonData: APIActionRowComponent<APIComponentInMessageActionRow> = {
@@ -49,6 +50,33 @@ const rowWithSelectMenuData: APIActionRowComponent<APIComponentInMessageActionRo
 
 describe('Action Row Components', () => {
 	describe('Assertion Tests', () => {
+		test('GIVEN action row components THEN serializes them without nested validation', () => {
+			const button = new PrimaryButtonBuilder().setLabel('test').setCustomId('123');
+			const toJSON = vi.spyOn(button, 'toJSON');
+
+			new ActionRowBuilder().addPrimaryButtonComponents(button).toJSON();
+
+			expect(toJSON).toHaveBeenCalledWith(false);
+		});
+
+		test('GIVEN an invalid button component THEN it throws', () => {
+			expect(() =>
+				new ActionRowBuilder().addPrimaryButtonComponents(new PrimaryButtonBuilder().setCustomId('123')).toJSON(),
+			).toThrow();
+		});
+
+		test('GIVEN an invalid select menu component THEN it throws', () => {
+			expect(() =>
+				new ActionRowBuilder().addStringSelectMenuComponent(new StringSelectMenuBuilder().setCustomId('1234')).toJSON(),
+			).toThrow();
+		});
+
+		test('GIVEN an invalid text input component THEN it throws', () => {
+			expect(() =>
+				new ActionRowBuilder().addTextInputComponent(new TextInputBuilder().setCustomId('1234')).toJSON(),
+			).toThrow();
+		});
+
 		test('GIVEN valid JSON input THEN valid JSON output is given', () => {
 			const actionRowData: APIActionRowComponent<APIComponentInMessageActionRow> = {
 				type: ComponentType.ActionRow,
