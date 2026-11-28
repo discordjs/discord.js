@@ -126,6 +126,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private readonly timeoutAbortControllers = new Collection<WebSocketShardEvents, AbortController>();
 
+	// Aborted when the shard is destroyed without a recovery, as it then has to stay down until it is connected again
+	private recoveryAbortController = new AbortController();
+
 	private readonly strategy: IContextFetchingStrategy;
 
 	public readonly id: number;
@@ -164,6 +167,11 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				once(this, WebSocketShardEvents.Ready, { signal: controller.signal }),
 				once(this, WebSocketShardEvents.Resumed, { signal: controller.signal }),
 			]);
+		}
+
+		// The shard might have been destroyed before, allow it to recover again
+		if (this.recoveryAbortController.signal.aborted) {
+			this.recoveryAbortController = new AbortController();
 		}
 
 		void this.internalConnect();
@@ -321,6 +329,11 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	public async destroy(options: WebSocketShardDestroyOptions = {}) {
+		// Without a recovery, the shard has to stay down, even if another destroy call is about to reconnect it
+		if (options.recover === undefined) {
+			this.recoveryAbortController.abort();
+		}
+
 		if (this.#status === WebSocketShardStatus.Idle) {
 			this.debug(['Tried to destroy a shard that was idle']);
 			return;
@@ -392,11 +405,15 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 				await promise;
 				this.emit(WebSocketShardEvents.Closed, options.code);
+			} else if (this.connection.readyState === WebSocket.CONNECTING) {
+				// Abort the handshake, or the connection would open (or fail) later on with nothing handling it anymore
+				this.connection.close();
 			}
 
-			// Lastly, remove the error event.
-			// Doing this earlier would cause a hard crash in case an error event fired on our `close` call
-			this.connection.onerror = null;
+			// Lastly, stop handling the error event.
+			// Doing this earlier would hide an error fired on our `close` call
+			// It still needs a listener: an error event without one is thrown, and aborting the handshake fires one
+			this.connection.onerror = () => {};
 		} else {
 			this.debug(['Destroying a shard that has no connection; please open an issue on GitHub']);
 		}
@@ -406,7 +423,13 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		if (options.recover !== undefined) {
 			// There's cases (like no internet connection) where we immediately fail to connect,
 			// causing a very fast and draining reconnection loop.
-			await sleep(500);
+			try {
+				await sleep(500, undefined, { signal: this.recoveryAbortController.signal });
+			} catch {
+				this.debug(['Cancelled recovery due to #destroy being called']);
+				return;
+			}
+
 			return this.internalConnect();
 		}
 	}
